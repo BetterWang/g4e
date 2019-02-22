@@ -1,4 +1,5 @@
-work/*
+#work/*
+work/*.root
 build/*
 
 

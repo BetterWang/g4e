@@ -1,0 +1,1 @@
+../conffiles/pythia_10GeV_20.txt

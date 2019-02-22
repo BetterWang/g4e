@@ -1,0 +1,1 @@
+../conffiles/pythia_e-p_10x50_Q2_100k_msel2_DIS.txt

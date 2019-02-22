@@ -162,6 +162,7 @@ private:
   G4FieldManager* SetDipoleMagField(G4double fx, G4double fy, G4double fz,float theta);
 
     
+
   G4VPhysicalVolume* SimpleSetUpALICE();     
   G4VPhysicalVolume* SetUpALICE06();     
   G4VPhysicalVolume* SetUpBari05();     

@@ -24,8 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: JLeicDetectorConstruction.cc,v 1.32 2007-07-27 17:52:04 vnivanch Exp $
-// GEANT4 tag $Name: geant4-09-04-patch-01 $
+//  JLeicDetectorConstruction.cc, v1  -- JF--- 2019-02-19------
 //
 // 
 
@@ -181,23 +180,14 @@ G4VPhysicalVolume* JLeicDetectorConstruction::ConstructDetectorXTR()
 
   G4cout<<"USE Experimental setup : " << fSetUp <<G4endl;
 
-  if( fSetUp == "depfet09" )
+  if( fSetUp == "jleic2019" )
   {
-    return SetUpDepfet09();
-  }
-  else if( fSetUp == "vertex16" )
-  {
-    return SetUpVertex16();
-  }
-  else if( fSetUp == "fdc15" )
-  {
-    return SetUpFDC15();
+    return SetUpJLEIC2019();
   }
   else
   {
-    G4cout<<"Experimental setup is unsupported. Check /XTRdetector/setup "<<G4endl;
-    G4cout<<"Run default: barr90 "<<G4endl;
-    return SetUpDepfet09();
+    G4cout<<"Experimental setup is unsupported.  "<<G4endl;
+    return SetUpJLEIC09();
 
     //  return 0;
   }
@@ -212,7 +202,7 @@ G4VPhysicalVolume* JLeicDetectorConstruction::ConstructDetectorXTR()
 //
 
 
-G4VPhysicalVolume* JLeicDetectorConstruction::SetUpVertex16()
+G4VPhysicalVolume* JLeicDetectorConstruction::SetUpJLEIC2019()
 {
  
 char abname[128];
@@ -1863,7 +1853,7 @@ for (j=0; j<50; j++) {
   rtFactory.SetDebug(1);
   g4Factory.Export(&rtFactory);
   gGeoManager->CloseGeometry();
-  gGeoManager->Export("geometryTRD.root");
+  gGeoManager->Export("geometryJLEIC.root");
   //
   // end VGM demo
   //---------------------------------------------------------------------------
@@ -1879,35 +1869,12 @@ for (j=0; j<50; j++) {
 
 
 //==========================================================================================================
-//                                       VTX   END
+//                                      JLEIC   END
 //==========================================================================================================
 
-//==========================================================================================================
-//                              DEPFET  2009 
-//==========================================================================================================
 
-/////////////////////////////////////////////////////////////////////////////////
-//
-// Setup for DEPFET/TRD test beam (2009) at CERN and DESY. 
-// J.Furletova,S.Furletov  NIM A628 (2011) 309-319
-// Runs by : VertexEIC depfet09.mac   ##1
 
-G4VPhysicalVolume* JLeicDetectorConstruction::SetUpDepfet09()
-{
- }
-
-//==========================================================================================================
-//                                         DEPFET  09   END
-//==========================================================================================================
-
-//==========================================================================================================
-//                                         FDC 2015
-//==========================================================================================================
-//
-//
-//
-
-G4VPhysicalVolume* JLeicDetectorConstruction::SetUpFDC15()
+G4VPhysicalVolume* JLeicDetectorConstruction::SetUpJLEIC09()
 {
  }
 

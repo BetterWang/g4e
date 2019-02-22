@@ -64,7 +64,8 @@
 #
 # CERN test beam setup DEPFET/TRD      
 #
-/XTRdetector/setup  vertex16
+/XTRdetector/setup  jleic2019
+#/XTRdetector/setup  vertex16
 #/XTRdetector/setup depfet09
 #/XTRdetector/setup fdc15
 #

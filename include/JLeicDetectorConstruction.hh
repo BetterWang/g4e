@@ -165,9 +165,8 @@ private:
   G4VPhysicalVolume* SimpleSetUpALICE();     
   G4VPhysicalVolume* SetUpALICE06();     
   G4VPhysicalVolume* SetUpBari05();     
-  G4VPhysicalVolume* SetUpDepfet09();
-  G4VPhysicalVolume* SetUpVertex16();
-  G4VPhysicalVolume* SetUpFDC15();
+  G4VPhysicalVolume* SetUpJLEIC2019();
+  G4VPhysicalVolume* SetUpJLEIC09();
   G4VPhysicalVolume* SetUpHarris73(); 
   G4VPhysicalVolume* SetUpWatase86(); 
   G4VPhysicalVolume* SetUpBarr90(); 

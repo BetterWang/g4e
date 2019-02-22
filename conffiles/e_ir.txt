@@ -1,0 +1,24 @@
+Detector region electron elements																
+10 GeV/c electrons  (use more digits to calculate the brho)																
+																
+Element name	Type	Length [m]	Good field half-aperture [cm]	Inner Half-A [cm]	Outer Radius [cm]	Dipole field [T]		Quadrupole field [T/m]		Sextupole [T/m^2]	Solenoid [T]	X center [m]	Y center [m]	Z center [m]	Theta center [rad]	Phi [rad]
+Downstream elements (second focusing point approximately in the middle of chicane)						Bx	By	Normal	Skew							
+eBDS6	RBEND	3	1.8	4.5	11	0	0.444722484	0	0	0	0	-0.029998	0	-34.49102238	-0.02	0
+eBDS5	RBEND	3	1.8	4.5	11	0	-0.416930695	0	0	0	0	-0.259823805	0	-27.29502059	-0.02125	0
+eBDS4	RBEND	0.5	1.8	4.5	11	0	-0.166782007	0	0	0	0	-0.293258905	0	-25.04536101	-0.00125	0
+eBDS3	RBEND	0.5	1.8	4.5	11	0	-0.166782007	0	0	0	0	-0.293258905	0	-21.3453614	0.00125	0
+eBDS2	RBEND	3	1.8	4.5	11	0	-0.416930695	0	0	0	0	-0.259823805	0	-19.09570181	0.02125	0
+eBDS1	RBEND	3	1.8	4.5	11	0	0.444722484	0	0	0	0	-0.029998	0	-11.89970001	0.02	0
+eASDS	SOLENOID	1.2	2.2	4.5	11	0	0	0	0	0	-4.000000001	0	0	-7	0	0
+eQDS3	QUADRUPOLE	0.6	2.4	4.5	10	0	0	-18.71818009	-2.712300572	0	0	0	0	-5.6	0	0
+eQDS2	QUADRUPOLE	0.6	2.8	4.5	8.5	0	0	36.21793947	5.248049621	0	0	0	0	-4.4	0	0
+eQDS1	QUADRUPOLE	0.6	1.7	4.5	8	0	0	-33.74690896	-4.889992513	0	0	0	0	-2.5	0	0
+eDSDS	SOLENOID	1.6	2	160	210	0	0	0	0	0	3.000000001	0	0	-0.8	0	0
+																
+Upstream elements 																
+eDSUS	SOLENOID	2.4	2	160	210	0	0	0	0	0	3.000000001	0	0	1.2	0	0
+eQUS1	QUADRUPOLE	0.6	2	4.5	10	0	0	-36.93784128	8.099231435	0	0	0	0	3.26	0	0
+eQUS2	QUADRUPOLE	0.6	3.2	4.5	11	0	0	33.65906795	-7.380306262	0	0	0	0	4.46	0	0
+eQUS3	QUADRUPOLE	0.6	1.5	4.5	11	0	0	-20.79893591	4.560510027	0	0	0	0	8.01	0	0
+eASUS	SOLENOID	1.8	2.2	4.5	11	0	0	0	0	0	-4.000000001	0	0	9.61	0	0
+

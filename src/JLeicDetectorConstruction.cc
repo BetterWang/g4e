@@ -77,6 +77,10 @@
 
 #define USE_VERTEX
 #define  USE_VTX0 1   // for simple vtx geom
+//#define USE_VTX_B
+#define  USE_VTX_ENDCAP    // for vxt endcaps ladders
+//#define  USE_VTX_DISKS    // for vxt disks along beampipe
+
 //#define USE_VTX_E 1   // for vxt endcaps 
 #define USE_CTD
 #define USE_CTD_Si  1 // silicon version of CTD 
@@ -1037,21 +1041,21 @@ for (j=0; j<50; j++) {
  
 #endif
 
+  int NUM;
+  G4double Rx[10],Ry[10]; 
+ G4double phi,deltaphi1,deltaphi,deltashi, x, y, z;
  
 //===================================================================================
 //                                V E R T E X
 //===================================================================================
 #ifdef  USE_VTX0
-  /*----------vtx barrel--------------*/ 
+  /*----------vtx barrel simple geometry--------------*/ 
 
   int FDIV=0;
    fVTXMaterial = fMat->GetMaterial("Si");
 
   G4RotationMatrix rm[10][20], rm1[10][20], rm2[10][20];
-  G4double phi,deltaphi1,deltaphi,deltashi, x, y, z;
-  int NUM;
-  G4double Rx[10],Ry[10]; 
-  deltaphi1=0; deltaphi=30.*deg; phi=0; x=3*cm; y=0*cm; z=0*cm;
+   deltaphi1=0; deltaphi=30.*deg; phi=0; x=3*cm; y=0*cm; z=0*cm;
   deltashi=-7.*deg;
   G4double           fAbsorberDX=10*cm;
   G4double           fAbsorberDY=2*cm;
@@ -1103,53 +1107,286 @@ for (j=0; j<50; j++) {
 	if (fLogicVTXBarrel[ia]) { 	printf("Sensitive BarrelVTX_layer_%d\n",ia); fLogicVTXBarrel[ia]->SetSensitiveDetector(fCalorimeterSD);  } 
     }
  printf(" end of VERTEX detector \n");
+
+
+
+#endif
+
+  /*--------------------------------------------------*/ 
+  /*----------vtx barrel ladder geometry--------------*/ 
+  /*--------------------------------------------------*/ 
+ // G4double phi,deltaphi1,deltaphi,deltashi, x, y, z;
+ //  int NUM;
+ //   G4double Rx[10],Ry[10]; 
+ 
+#ifdef  USE_VTX_B
+
+   G4RotationMatrix rm[10][20], rm1[10][20], rm2[10][20];
+    deltaphi1=0; deltaphi=30.*deg; phi=0; x=3*cm; y=0*cm; z=0*cm;
+    deltashi=-7.*deg;
+    //phi=26.*deg; x=0; y=0; z=fAbsorberZ;
+    //phi=0.*deg; x=0; y=0; z=fAbsorberZ;
+    G4double           fAbsorberDX=10*cm;
+    G4double           fAbsorberDY=2*cm;
+     int FDIV=0;
+ 
+    fAbsorberZ = fStartZ + fRadThick + 2*cm;  //-- Si at dist. 2cm
+  int NLAYBARR=6;
+  
+
+    for (int lay=0;lay<NLAYBARR;lay++) { 
+	//for (int lay=0;lay<1;lay++) { 
+      printf("Layer loop:: %d\n",lay);
+         if (lay==0) { 
+           NUM  = 12;
+	   fAbsorberDX=10*cm;
+	   fAbsorberDY=2*cm;
+	   fAbsorberThickness = 0.050*mm;
+            deltaphi=30.*deg; 
+           Rx[lay]=(0.35 +0.005)*cm;
+	   Ry[lay]=Rx[lay];
+	   
+	 }  else if (lay==1)  {
+	   NUM  = 14;
+	   fAbsorberDX=11*cm;
+	   fAbsorberDY=2*cm;
+           fAbsorberThickness = 0.050*mm;
+           deltaphi=26.*deg;
+           Rx[lay]=(0.35 +0.1 + 0.005)*cm;
+	   Ry[lay]=Rx[lay];
+	 } else if (lay==2) {
+	   NUM  = 12;
+	   fAbsorberDX=18*cm;
+	   fAbsorberDY=4*cm;
+	   fAbsorberThickness = 0.300*mm;
+ 
+	   deltaphi=30.*deg;
+           Rx[lay]=(0.35 +0.3 + 0.005)*cm;
+           Ry[lay]=Rx[lay];
+	 } else if (lay==3) {
+	   NUM  = 12;
+	   fAbsorberDX=24*cm;
+	   fAbsorberDY=6*cm;
+	   fAbsorberThickness = 0.300*mm;
+	   deltaphi=30.*deg;
+           Rx[lay]=(0.35 +0.7 + 0.005)*cm;
+           Ry[lay]=Rx[lay];
+	 } else if (lay==4) {
+	   NUM  = 18;
+	   fAbsorberDX=36*cm;
+	   fAbsorberDY=6*cm;
+	   fAbsorberThickness = 0.300*mm;
+	   deltaphi=20.*deg;
+           Rx[lay]=(0.35 +1.1 + 0.005)*cm;
+           Ry[lay]=Rx[lay];
+	 } else if (lay==5) {
+	   NUM  = 20;
+	   fAbsorberDX=40*cm;
+	   fAbsorberDY=6*cm;
+	   fAbsorberThickness = 0.300*mm;
+	   deltaphi=18.*deg;
+           Rx[lay]=(0.35 +1.4 + 0.005)*cm;
+           Ry[lay]=Rx[lay];
+	 } else if (lay==6) {
+	   NUM  = 24;
+	   fAbsorberDX=48*cm;
+	   fAbsorberDY=6*cm;
+	   deltaphi=15.*deg;
+           Rx[lay]=(0.35 +1.6 + 0.005)*cm;
+           Ry[lay]=Rx[lay];
+	   
+	 } else {
+	   NUM  = 14;
+	   fAbsorberDX=12*cm;
+	   fAbsorberDY=6*cm;
+	   fAbsorberThickness = 0.300*mm;
+	   deltaphi=26.*deg;
+           Rx[lay]=(0.35 +2.0 + 0.005)*cm;
+           Ry[lay]=Rx[lay];
+	   
+	 }
+
+	 
+	 sprintf(abname,"Solid_VTX_ladder%d",lay);
+	 fSolidAbsorberBarrel[lay] = new G4Box(abname, 
+				    fAbsorberDX/2., fAbsorberDY/2., 
+				    //10.*mm,10.*mm,
+				    fAbsorberThickness/2.); 
+	 
+	 sprintf(abname,"Logic_VTX_ladder_%d",lay);
+	 fLogicAbsorberBarrel[lay] = new G4LogicalVolume(fSolidAbsorberBarrel[lay], fAbsorberMaterial, 
+					      abname);     
+	 
+	 G4VisAttributes* vs1;
+	 if(lay==0 || lay==1 ){  vs1= new G4VisAttributes(G4Color(0.0,0.2,0.8,2.0));}
+	    else if(lay==2) {  vs1= new G4VisAttributes(G4Color(0.0,0.2,0.8,0.7));}
+         else {	
+	   //vs1= new G4VisAttributes(G4Color(1.0-0.1*lay, 1.0, 0.0+0.1*lay,0.1));
+	   //	 vs1= new G4VisAttributes(G4Color(1.0-0.1*lay, 1.0, 0.0+0.1*lay,0.1));
+	  vs1= new G4VisAttributes(G4Color(0.0+0.1*double(lay-3),1.,1.-0.1*double(lay-3),1.0));
+	 }
+	 // vs1->SetForceWireframe(true);
+	 vs1->SetForceSolid(true);
+	 fLogicAbsorberBarrel[lay]->SetVisAttributes(vs1);
+
+
+	 printf(" %d Rx=%f  Ry=%f deltaphi=%f \n", lay,  Rx[lay], Ry[lay],deltaphi);
+	 
+	 for (int ia=0;ia<NUM;ia++) {
+	   //for (int ia=0;ia<1;ia++) {
+	   printf("Module  loop:: %d\n",ia);
+	    
+	    phi=(ia*(deltaphi));
+	    x=-Rx[lay]*cos(phi)*cm;
+	    y=-Ry[lay]*sin(phi)*cm;
+	    rm[lay][ia].rotateX(-(deltaphi*ia+deltashi));
+	    rm[lay][ia].rotateY(90*deg);
+	    //WORKIN	rm[lay][ia].rotateX(-(deltaphi*ia+deltashi));
+	    //WORKING      rm[lay][ia].rotateY(90*deg);
+	    
+	    printf(" %d %d x=%f  y=%f  \n", lay, ia, x, y);
+	    sprintf(abname,"VTX_ladder%d_%d",lay,ia);
+	    fPhysicsAbsorber = new G4PVPlacement(G4Transform3D(rm[lay][ia],G4ThreeVector(x,y,z)),
+						 abname,fLogicAbsorberBarrel[lay], 
+						 fPhysicsVTX,false,0.);
+	    //rm.rotateX(+(deltaphi*ia+deltashi));
+	    //   rm.rotateY(-90*deg);
+	    //  rm.rotateX(0);
+	 }
+	    //=========================================================================
+	    //                          VTX  slices and pixels
+	    //=========================================================================
+	    G4Box *pxdBox_slice[10];
+            G4Box *pxdBox_pixel[10];
+	    G4double PixelDX,PixelDY;
+            if(lay<2) { 
+	       PixelDX=fAbsorberDX/10.; //2000.*um;
+	       PixelDY=fAbsorberDY/50.; //2000.*um;
+	    } else {
+	       PixelDX=fAbsorberDX/50.; //2000.*um;
+	       PixelDY=fAbsorberDY/10.; //2000.*um;
+
+	    }
+	    //G4double PixelDX=20.*um;
+	    //G4double PixelDY=20.*um;
+	    //G4double PixelDX=24.*um;
+	    //G4double PixelDY=24.*um;
+	    G4double PixelDZ=fAbsorberThickness; // 0.450*mm
+	    
+	    if (FDIV>=1) {
+	      printf("SetUpVertex16():: construct slices %d \n",lay);
+	      
+	      sprintf(abname,"pxdSlice_%d",lay);
+	      pxdBox_slice[lay] = new G4Box(abname,
+					      PixelDX/2,                   //gD->GetPixelDX(),
+					      fAbsorberDY/2., // 10.*mm,  //gD->GetHalfMPXWaferDY(),
+					      fAbsorberThickness/2.);    //gD->GetHalfMPXWaferDZ());
+
+	      pxdSlice_log[lay] = new G4LogicalVolume(pxdBox_slice[lay], fAbsorberMaterial, abname,0,0,0);
+	      
+	      G4VisAttributes* pixelVisAtt= new G4VisAttributes(G4Color(0,1,1,1));
+	      pixelVisAtt->SetLineWidth(1);
+	      pixelVisAtt->SetForceWireframe(true);
+	      pxdSlice_log[lay]->SetVisAttributes(pixelVisAtt);
+	      
+	      
+	      // divide in slices
+	      sprintf(abname,"pxdSlice_%d",lay);
+	      G4PVDivision *sliceDiv = new G4PVDivision(abname,
+							 pxdSlice_log[lay],
+							 fLogicAbsorberBarrel[lay],
+							 kXAxis,
+							 PixelDX,
+							 0);
+	      printf("SetUpVertex16():: construct done\n");
+
+
+	      if (FDIV>=2 ) {
+		printf("SetUpVertex16():: construct pixels \n");
+		if(lay<2)  { sprintf(abname,"pxdPixel"); }
+		else{ sprintf(abname,"svdPixel");
+		}
+		
+		//sprintf(abname,"pxdPixel_%d",lay);
+		pxdBox_pixel[lay] = new G4Box(abname,
+						PixelDX/2,
+						PixelDY/2.,
+						PixelDZ/2.);
+		pxdPixel_log[lay]= new G4LogicalVolume(pxdBox_pixel[lay], fAbsorberMaterial, abname,0,0,0);
+		pxdPixel_log[lay]->SetVisAttributes(pixelVisAtt);
+		
+		// divide in pixels
+		G4PVDivision * pixelDiv = new G4PVDivision(abname,
+							   pxdPixel_log[lay],
+							   pxdSlice_log[lay],
+							   kYAxis,
+							   PixelDY,
+							   0);
+	      } //-- end if pixel division 
+	    } //-- end if slices division 
+	    
+	    //	 };  // -- end loop over modules
+	 
+    }; // --- end loop over layers
+
 #endif
 
 
-#ifdef  USE_VTX_E
 
-    int  lay=0;    
+  /*--------------------------------------------------*/ 
+   /*-----------VTX  End caps ladder geometry----------*/ 
+   /*--------------------------------------------------*/ 
+ 
+
+#ifdef  USE_VTX_ENDCAP
+
+    lay=0;    
     int NUMF;
+   G4RotationMatrix rme[10][20], rme1[10][20], rme2[10][20];
     G4double Fdeltaphi,Ftheta, F2theta;
     G4double RxF[10],RyF[10], RzF[10], RxF2[10],RyF2[10], RzF2[10]; 
+    //for simple version    
+    G4double Rzshift =24.;
+    //  G4double Rzshift =28.;
+
     //  Rx[lay]=(1.4)*cm; Ry[lay]=Rx[lay];
     G4double           fVTX_END_EDY=12*cm;
     G4double           fVTX_END_EDZ=0.05*cm;
     G4double           fVTX_END_EDX1=6*cm;
     G4double           fVTX_END_EDX2=4*cm;
   
-     for (int lay=0;lay<4;lay++) { 
+     for (lay=0;lay<4;lay++) { 
          if (lay==3) { 
            fVTX_END_EDY=18*cm;
            NUMF  = 24;
            Fdeltaphi=15.*deg;
            Ftheta=-40.*deg;
-           RxF[lay]=(1.3)*cm; RyF[lay]=RxF[lay];RzF[lay]=-24.*cm-5.5*cm;
-           RxF2[lay]=(1.3)*cm; RyF2[lay]=RxF2[lay];RzF2[lay]=24.*cm+5.5*cm;
+           RxF[lay]=(1.3)*cm; RyF[lay]=RxF[lay];RzF[lay]=- Rzshift*cm-5.5*cm;
+           RxF2[lay]=(1.3)*cm; RyF2[lay]=RxF2[lay];RzF2[lay]= Rzshift*cm+5.5*cm;
          }
          if (lay==2) { 
            NUMF  = 20;
            fVTX_END_EDY=16*cm;
            Fdeltaphi=18.*deg;
           Ftheta=-38.*deg;
-           RxF[lay]=(1.1)*cm; RyF[lay]=RxF[lay];RzF[lay]=-24.*cm-1.*cm;
-           RxF2[lay]=(1.1)*cm; RyF2[lay]=RxF2[lay];RzF2[lay]=24.*cm+1.*cm;
+           RxF[lay]=(1.1)*cm; RyF[lay]=RxF[lay];RzF[lay]=- Rzshift*cm-1.*cm;
+           RxF2[lay]=(1.1)*cm; RyF2[lay]=RxF2[lay];RzF2[lay]= Rzshift*cm+1.*cm;
          }
          if (lay==1) { 
            NUMF  = 18;
            fVTX_END_EDY=14*cm;
            Fdeltaphi=20.*deg;
            Ftheta=-45.*deg;
-           RxF[lay]=(1.0)*cm; RyF[lay]=RxF[lay];RzF[lay]=-24.*cm+1.0*cm;
-           RxF2[lay]=(1.0)*cm; RyF2[lay]=RxF2[lay];RzF2[lay]=24.*cm-1.0*cm;
+           RxF[lay]=(1.0)*cm; RyF[lay]=RxF[lay];RzF[lay]=- Rzshift*cm+1.0*cm;
+           RxF2[lay]=(1.0)*cm; RyF2[lay]=RxF2[lay];RzF2[lay]= Rzshift*cm-1.0*cm;
          }
           if (lay==0) { 
            NUMF  = 12;
            fVTX_END_EDY=12*cm;
            Fdeltaphi=30.*deg;
            Ftheta=-55.*deg;
-           RxF[lay]=(0.8)*cm; RyF[lay]=RxF[lay];RzF[lay]=-24.*cm+7.*cm;
-           RxF2[lay]=(0.8)*cm; RyF2[lay]=RxF2[lay];RzF2[lay]=24.*cm-7.*cm;
+           RxF[lay]=(0.8)*cm; RyF[lay]=RxF[lay];RzF[lay]=- Rzshift*cm+7.*cm;
+           RxF2[lay]=(0.8)*cm; RyF2[lay]=RxF2[lay];RzF2[lay]= Rzshift*cm-7.*cm;
          }
         printf("x1=%f x2=%f  ,y=%f ,z=%f \n",fVTX_END_EDZ,fVTX_END_EDY+lay*2.,fVTX_END_EDX1,fVTX_END_EDX2);
         sprintf(abname,"Solid_VTX_ladder_END_E%d",lay);
@@ -1173,12 +1410,12 @@ for (j=0; j<50; j++) {
         x=- RxF[lay]*cos(phi)*cm;
         y=- RyF[lay]*sin(phi)*cm;
         z= RzF[lay];
-        rm1[lay][ia].rotateX(Ftheta);
-        rm1[lay][ia].rotateZ(-90+(Fdeltaphi*(ia+1)));
+        rme1[lay][ia].rotateX(Ftheta);
+        rme1[lay][ia].rotateZ(-90+(Fdeltaphi*(ia+1)));
         //WORKING       rm1[lay][ia].rotateX(-60*deg);
         //WORKING       rm1[lay][ia].rotateZ(-90+(deltaphi*(ia+1)));
         sprintf(abname,"VTX_ladderEnd_%d_%d",lay,ia);
-        fPhysicsVTXEndE = new G4PVPlacement(G4Transform3D(rm1[lay][ia],G4ThreeVector(x,y,z)),
+        fPhysicsVTXEndE = new G4PVPlacement(G4Transform3D(rme1[lay][ia],G4ThreeVector(x,y,z)),
                                              abname,fLogicVTXEndE[lay], 
                                              fPhysicsVTX,false,0.);
       }
@@ -1206,12 +1443,12 @@ for (j=0; j<50; j++) {
         x=- RxF2[lay]*cos(phi)*cm;
         y=- RyF2[lay]*sin(phi)*cm;
         z= RzF2[lay];
-        rm2[lay][ia].rotateX(-Ftheta);
-        rm2[lay][ia].rotateZ(-90+(Fdeltaphi*(ia+1)));
+        rme2[lay][ia].rotateX(-Ftheta);
+        rme2[lay][ia].rotateZ(-90+(Fdeltaphi*(ia+1)));
         //WORKING       rm1[lay][ia].rotateX(-60*deg);
         //WORKING       rm1[lay][ia].rotateZ(-90+(deltaphi*(ia+1)));
         sprintf(abname,"VTX_ladderEnd2_%d_%d",lay,ia);
-        fPhysicsVTXEndH = new G4PVPlacement(G4Transform3D(rm2[lay][ia],G4ThreeVector(x,y,z)),
+        fPhysicsVTXEndH = new G4PVPlacement(G4Transform3D(rme2[lay][ia],G4ThreeVector(x,y,z)),
                                              abname,fLogicVTXEndH[lay], 
                                              fPhysicsVTX,false,0.);
 

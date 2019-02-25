@@ -78,16 +78,16 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step* aStep)
   IDnow = evno+10000*(aStep->GetTrack()->GetTrackID())+
     100000000*(aStep->GetTrack()->GetParentID());                //-- 100 k events only ???
 
-  printf("SteppingAction:: Volume=%s  x=%f y=%f z=%f   mom (%f,%f, %f ) \n",aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str(),
- 	 aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), aStep->GetTrack()->GetPosition().z(),
-         aStep->GetTrack()->GetMomentumDirection().x(),aStep->GetTrack()->GetMomentumDirection().y(),aStep->GetTrack()->GetMomentumDirection().z());
+  // printf("SteppingAction:: Volume=%s  x=%f y=%f z=%f   mom (%f,%f, %f ) \n",aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str(),
+  // 	 aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), aStep->GetTrack()->GetPosition().z(),
+  //       aStep->GetTrack()->GetMomentumDirection().x(),aStep->GetTrack()->GetMomentumDirection().y(),aStep->GetTrack()->GetMomentumDirection().z());
  
 
   if( strcmp(aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str(),"Physics_DIPOLE_m_iBDS1a")==0){
 
  char myftune[256];
  float my_or;
-  printf("read Di file\n");
+ // printf("read Di file\n");
  sprintf(myftune,"tune.txt");
  rc=fopen(myftune,"w");
  if (rc == NULL) return;

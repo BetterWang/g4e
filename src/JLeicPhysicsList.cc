@@ -67,6 +67,9 @@
 
 #include "G4SynchrotronRadiation.hh"
 
+//#include "HadronElasticPhysicsHP.hh"
+#include "G4HadronPhysicsFTFP_BERT_HP.hh"
+
 #include "G4MuIonisation.hh"
 #include "G4MuBremsstrahlung.hh"
 #include "G4MuPairProduction.hh"
@@ -224,6 +227,7 @@ void JLeicPhysicsList::ConstructProcess()
 {
   AddTransportation();
   ConstructEM();
+  ConstructHAD();
   ConstructGeneral();
 }
 
@@ -441,7 +445,16 @@ void JLeicPhysicsList::ConstructEM()
   G4EmProcessOptions opt;
   opt.SetApplyCuts(true);
 }
+void JLeicPhysicsList::ConstructHAD()
+{
+  G4int verb = 1;
+  // Hadron Elastic scattering
+  //RegisterPhysics( new HadronElasticPhysicsHP(verb) );
+  
+  // Hadron Inelastic Physics
+   RegisterPhysics( new G4HadronPhysicsFTFP_BERT_HP(verb));
 
+}
 void JLeicPhysicsList::ConstructGeneral()
 {
   // Add Decay Process

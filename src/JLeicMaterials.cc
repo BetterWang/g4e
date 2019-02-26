@@ -404,8 +404,8 @@ void JLeicMaterials::Initialise()
   new G4Material(name="Iron", z=26., a,density);
  
 
-  density =700.87*g/cm3;
-  a = 55.85*g/mole;
+  density =70000.87*g/cm3;
+  a = 5005.85*g/mole;
   new G4Material(name="IronAll", z=26., a,density);
 
 G4int natoms;

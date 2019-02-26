@@ -69,6 +69,7 @@ private:
   void AddParameterisation();
   void ConstructGeneral();
   void ConstructEM();
+  void ConstructHAD();
 
 public:
 

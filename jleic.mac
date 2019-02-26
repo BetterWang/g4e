@@ -167,7 +167,7 @@
 #===================================================================
 #                 V E R T E X   E I C 
 #===================================================================
-/plots/sethistName      hist_vtx.root
+/plots/sethistName      hist_jleic.root
 #
 #/generator/select particleGun
 #/gun/particle proton
@@ -220,7 +220,7 @@
 #/generator/pythiaAscii/open  pythia_50GeV_50mrad.txt
 #/generator/pythiaAscii/open  pythia_100GeV_50mrad.txt
 #/generator/pythiaAscii/open  pythia_200GeV_50mrad.txt
-----------electrons-----------
+#----------electrons-----------
 #/generator/pythiaAscii/open  pythia_e_50GeV_90.txt
 #/generator/pythiaAscii/open  pythia_e_10GeV_90.txt
 #/generator/pythiaAscii/open  pythia_e_1GeV_90.txt
@@ -259,4 +259,5 @@
 
 #/generator/hepmcAscii/verbose 1
 
-#/run/beamOn 1
+/run/beamOn 1
+exit

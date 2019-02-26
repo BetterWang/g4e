@@ -266,6 +266,23 @@ private:
   G4LogicalVolume*   fLogicHendcap;    //pointer to the logical 
   G4VPhysicalVolume* fPhysicsHendcap;  //pointer to the physical 
     
+//--------------H-endcap HCAL vol -------------------
+ // G4double           fEMCALbSizeRin;
+ // G4double           fEMCALbSizeRout;
+ // G4double           fEMCALbSizeZ;
+
+  //  G4Polycone*        fSolid_HCAP_HCAL;    //pointer to the solid HCAP_HCAL volume
+  G4Tubs*         fSolid_HCAP_HCAL;    //pointer to the solid HCAP_HCAL volume
+  G4LogicalVolume*    fLogic_HCAP_HCAL;    //pointer to the logicalHCAP_HCAL  volume
+  G4VPhysicalVolume*  fPhysics_HCAP_HCAL;    //pointer to the physical EMCAL barrel volume
+
+  G4Tubs*             fSolid_HCAP_HCAL_D;    //pointer to the solid HCAP_HCAL volume
+  G4LogicalVolume*    fLogic_HCAP_HCAL_D;    //pointer to the logicalHCAP_HCAL  volume
+  G4VPhysicalVolume*  fPhysics_HCAP_HCAL_D;    //pointer to the physical EMCAL barrel volume
+ 
+
+
+
    //----------------VTX volume -------------------
   G4double           fVTXSizeRin;
   G4double           fVTXSizeRout;
@@ -306,10 +323,17 @@ private:
   G4double  fHCALbSizeRin ;
   G4double  fHCALbSizeRout;
   G4double  fHCALbSizeZ ;
-  G4Material*        fHCALbMaterial;
   G4Tubs*           fSolidHCALb;      //pointer to the solid 
   G4LogicalVolume*   fLogicHCALb;    //pointer to the logical 
   G4VPhysicalVolume* fPhysicsHCALb;  //pointer to the physical 
+ 
+  G4double  fHCALbdet_SizeRin ;
+  G4double  fHCALbdet_SizeRout;
+  G4double  fHCALbdet_SizeZ ;
+   G4Material*        fHCALbMaterial;
+  G4Tubs*           fSolidHCALbdet;      //pointer to the solid 
+  G4LogicalVolume*   fLogicHCALbdet;    //pointer to the logical 
+  G4VPhysicalVolume* fPhysicsHCALbdet;  //pointer to the physical 
     
 //-----------------ENDCAP-E GEM  volume--------------------
 

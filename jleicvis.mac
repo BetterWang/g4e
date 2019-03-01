@@ -4,6 +4,11 @@
 #/control/execute fdc15.mac
 #
 #-----------------------------------------------------------------------
+
+/vis/open VRML2FILE
+/vis/drawVolume
+/vis/viewer/flush
+
 # Use this open statement to create an OpenGL view:
 ### This works  ->   
 /vis/open OGL 600x600-0+0
@@ -103,8 +108,8 @@
 
 /vis/viewer/set/cutawayMode intersection
 
-#/vis/viewer/addCutawayPlane 0  20  0  cm  0. -2000 0
-/vis/viewer/addCutawayPlane 0  1  0  cm  0. -0.1 0
+/vis/viewer/addCutawayPlane 0  20  0  cm  0. -2000 0
+#/vis/viewer/addCutawayPlane 0  1  0  cm  0. -0.1 0
 #/vis/viewer/addCutawayPlane 0  1  0  cm  0. -100. 1.
 #/vis/viewer/addCutawayPlane 0  1  0  cm  0. 100. 1.
 # XY 

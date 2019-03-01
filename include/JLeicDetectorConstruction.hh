@@ -222,6 +222,7 @@ private:
   G4Tubs*            fSolid_ENDCAP_H;    //pointer to the solid  ENDCAP-H volume
   G4LogicalVolume*   fLogic_ENDCAP_H;    //pointer to the logical  ENDCAP-H  volume
   G4VPhysicalVolume* fPhysics_ENDCAP_H;    //pointer to the physical ENDCAP-H  volume
+ 
 //-----------------ENDCAP-E  volume--------------------
   G4double           fENDCAP_E_SizeRin;
   G4double           fENDCAP_E_SizeRout;
@@ -232,6 +233,19 @@ private:
   G4LogicalVolume*   fLogic_ENDCAP_E;    //pointer to the logical ENDCAP-E  volume
   G4VPhysicalVolume* fPhysics_ENDCAP_E;    //pointer to the physical ENDCAP-E  volume
 
+//-------------endcap-E  HCAL vol -------------------
+ // G4double           fEMCALbSizeRin;
+ // G4double           fEMCALbSizeRout;
+ // G4double           fEMCALbSizeZ;
+
+  //  G4Polycone*        fSolid_ECAP_HCAL;    //pointer to the solid ECAP_HCAL volume
+  G4Tubs*         fSolid_ECAP_HCAL;    //pointer to the solid ECAP_HCAL volume
+  G4LogicalVolume*    fLogic_ECAP_HCAL;    //pointer to the logicalECAP_HCAL  volume
+  G4VPhysicalVolume*  fPhysics_ECAP_HCAL;    //pointer to the physical EMCAL barrel volume
+
+  G4Tubs*             fSolid_ECAP_HCAL_D;    //pointer to the solid ECAP_HCAL volume
+  G4LogicalVolume*    fLogic_ECAP_HCAL_D;    //pointer to the logicalECAP_HCAL  volume
+  G4VPhysicalVolume*  fPhysics_ECAP_HCAL_D;    //pointer to the physical EMCAL barrel volume
 //-----------------E-endcap MRICH  -------------------
   G4double           fMRICHSizeRin;
   G4double           fMRICHSizeRout;

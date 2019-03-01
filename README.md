@@ -37,6 +37,11 @@ Jefferson Lab EIC Geant4 simulation
 		....
 		Idle> type your commands
 		....
+        - execute JLEICgeant4 in 'batch' mode  
+                  ( set number of events in jleic.mac, example   /run/beamOn 100) 
+                 % JLEICgeant4 jleic.mac
+                 
+
 		
  List of the built-in histograms
  -------------------------------

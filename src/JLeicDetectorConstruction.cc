@@ -99,10 +99,12 @@
 //------- subdetector-volumes H-encap ----- 
 #define USE_H_dRICH
 #define USE_H_EMCAL
-#define USE_H_ENDCAP_HCAL
-#define USE_H_ENDCAP_HCAL_D
+//#define USE_H_ENDCAP_HCAL
+//#define USE_H_ENDCAP_HCAL_D
 //--------E-encap------
 #define USE_E_ENDCAP
+//#define USE_E_ENDCAP_HCAL
+//#define USE_E_ENDCAP_HCAL_D
 //------- subdetector-volumes E-encap ----- 
 #define  USE_E_EMCAL
 #define  USE_E_MRICH
@@ -341,8 +343,8 @@ char abname[128];
   //   fLogicSolenoid->SetVisAttributes(vvtx);
  
   // G4double fieldStrength = 3.0*tesla;  // 0.01*tesla; // field strength in pipe
-  G4double fieldStrength = 3.0*tesla;  // 0.01*tesla; // field strength in pipe
-  G4double alphaB        = 180.*degree;
+  G4double fieldStrength = -2.0*tesla;  // 0.01*tesla; // field strength in pipe
+  G4double alphaB        = 0.*degree;
   fPipeField     =  true;   // field in helium pipe used?
   if ( fPipeField )
     {
@@ -366,7 +368,6 @@ char abname[128];
 
  
 
- 
   //===================================================================================
   //==                           ELECTRON-ENDCAP                                     ==
   //===================================================================================
@@ -391,8 +392,6 @@ char abname[128];
  
  #endif
 
-
- 
 
 //===================================================================================
 
@@ -454,11 +453,92 @@ char abname[128];
 #endif // end HCALbdet
 #endif // end HCALb
 //===================================================================================
+
+
+ 
+ //===================================================================================
+  //==                          ELECTRON-ENDCAP    HCAL   DETECTOR VOLUME              ==
+  //===================================================================================
+#ifdef USE_E_ENDCAP_HCAL
+     // G4double fHCAL_ECAP_SizeRi[2]={60*cm, 70*cm } ;
+     //  G4double fHCAL_ECAP_SizeRi[2]={0*cm, 0*cm } ;
+     // G4double fHCAL_ECAP_SizeRo[2]={fHCALbSizeRout,fHCALbSizeRout }; 
+ G4double fHCAL_ECAP_SizeRi=0*cm ;
+ G4double fHCAL_ECAP_SizeRo= fHCALbSizeRout; 
+ G4double  fHCAL_ECAP_SizeZ=100*cm;
+ G4double  fHCAL_ECAP_Zshift=5*cm;
+ // G4double  fHCAL_ECAP_Zcone[2]= {fENDCAP_H_SizeZshift+ fENDCAP_H_SizeZ/2+fHCAL_ECAP_Zshift,fENDCAP_H_SizeZshift+ fENDCAP_H_SizeZ/2+fHCAL_ECAP_SizeZ + fHCAL_ECAP_Zshift} ;
+
+
+
+ // printf("ECAP_HCAL_det_sol::2  in= %lf %lf  out= %lf %lf z=%lf\n",fHCAL_ECAP_SizeRi[0],fHCAL_ECAP_SizeRi[1],fHCAL_ECAP_SizeRo[0], fHCAL_ECAP_SizeRo[1], fHCAL_ECAP_SizeZ); 
+
+   //fHCALbMaterial = fMat->GetMaterial("StainlessSteel");
+ //   fSolid_ECAP_HCAL = new G4Polycone("ECAP_HCAL_vol_sol",0.*deg,360.*deg,2,fHCAL_ECAP_Zcone, fHCAL_ECAP_SizeRi, fHCAL_ECAP_SizeRo);
+ fSolid_ECAP_HCAL  = new G4Tubs("ECAP_HCAL_vol_sol", fHCAL_ECAP_SizeRi, fHCAL_ECAP_SizeRo, fHCAL_ECAP_SizeZ/2.,0.,360*deg);                        
+    fLogic_ECAP_HCAL = new G4LogicalVolume(fSolid_ECAP_HCAL,  fWorldMaterial,  "ECAP_HCAL_vol_log");	
+    //  fPhysics_ECAP_HCAL = new G4PVPlacement(0, G4ThreeVector(0,0,0), "ECAP_HCAL_vol_phys",fLogic_ECAP_HCAL, 		
+    //					  fPhysicsWorld, false,	0 );	
+
+   fPhysics_ECAP_HCAL = new G4PVPlacement(0, G4ThreeVector(0,0,fENDCAP_E_Z- fENDCAP_E_SizeZ/2-fHCAL_ECAP_Zshift-fHCAL_ECAP_SizeZ/2.), "ECAP_HCAL_vol_phys",fLogic_ECAP_HCAL, 		
+					  fPhysicsWorld, false,	0 );	
+  
+   vtpc1= new G4VisAttributes(G4Color(0.3,0,3.,0.1));
+   vtpc1->SetLineWidth(1); vtpc1->SetForceSolid(true);
+     fLogic_ECAP_HCAL->SetVisAttributes(vtpc1);
+  //  fLogicHCALb->SetVisAttributes(G4VisAttributes::Invisible);	
+#endif // end HCALb
+     //---------------------------- ELECTRON-ENDCAP ----HCAL IRON--------------------------------------
+#ifdef USE_E_ENDCAP_HCAL
+#ifdef USE_E_ENDCAP_HCAL_D
+
+  G4double fHCAL_ECAP_DET_SizeRi= 30*cm ;
+  G4double fHCAL_ECAP_DET_SizeRo=fHCAL_ECAP_SizeRo -1*cm; 
+ G4double  fHCAL_ECAP_DET_SizeZ=2*cm;
+ G4double  fHCAL_ECAP_DET_Zgap=2*cm;
+ G4double  fHCAL_ECAP_DET_Z;
+ fHCALbMaterial= fMat->GetMaterial("IronAll");  
+  printf("ECAP_HCAL_det_sol::1 %f %f ,%f\n",fHCAL_ECAP_DET_SizeRi, fHCAL_ECAP_DET_SizeRo, fHCAL_ECAP_DET_SizeZ); 
+
+ sprintf(abname,"ECAP_HCAL_det_sol");
+ fSolid_ECAP_HCAL_D  = new G4Tubs(abname, fHCAL_ECAP_DET_SizeRi, fHCAL_ECAP_DET_SizeRo, fHCAL_ECAP_DET_SizeZ/2.,0.,360*deg);                        
+
+ sprintf(abname,"ECAP_HCAL_det_log"); 
+ fLogic_ECAP_HCAL_D = new G4LogicalVolume(fSolid_ECAP_HCAL_D,   fWorldMaterial,abname);	
+ 
+ G4VisAttributes* vehcal1= new G4VisAttributes(G4Color(0.6,0,0.6,1));
+ vehcal1->SetLineWidth(1); vehcal1->SetForceSolid(true);
+ fLogic_ECAP_HCAL_D->SetVisAttributes(vehcal1);
+ 
+  int ehlay=0; 
+  int NLAY_ECAP_HCAL=20;
+  for (ehlay=0;ehlay<NLAY_ECAP_HCAL;ehlay++){ 
+    fHCAL_ECAP_DET_Z= fHCAL_ECAP_SizeZ/2   -(ehlay+1)*fHCAL_ECAP_DET_SizeZ -(ehlay+1)*5*cm;
+    printf("ECAP_HCAL_det_sol::2 %f %f ,%f\n", fHCAL_ECAP_DET_Z,abs(fHCAL_ECAP_DET_Z- fHCAL_ECAP_DET_SizeZ),fHCAL_ECAP_SizeZ/2); 
+
+    if( ( abs (fHCAL_ECAP_DET_Z- fHCAL_ECAP_DET_SizeZ)) > fHCAL_ECAP_SizeZ/2) continue;
+    //   fHCAL_ECAP_DET_Z=-fHCAL_ECAP_SizeZ/2+ehlay*fHCAL_ECAP_DET_SizeZ+fHCAL_ECAP_DET_Zgap*ehlay;
+    // fHCAL_ECAP_DET_Z= ehlay*fHCAL_ECAP_DET_SizeZ+fHCAL_ECAP_DET_Zgap*ehlay;
+     sprintf(abname,"ECAP_HCAL_det_phys_%d",ehlay); 
+    fPhysics_ECAP_HCAL_D = new G4PVPlacement(0, G4ThreeVector(0,0, fHCAL_ECAP_DET_Z), abname,fLogic_ECAP_HCAL_D,	
+				           fPhysics_ECAP_HCAL,  false, ehlay);
+   }
+
+
+#endif // end HCAL --- ELECTRON-ENDCAP
+#endif // end HCAL--- ELECTRON-ENDCAP
+
+ //===================================================================================
+
+ 
+
+
+
 #ifdef USE_H_ENDCAP
   //===================================================================================
   //==                           HADRON-ENDCAP                                       ==
   //===================================================================================
-  fENDCAP_H_SizeRin=50.*cm ;
+  fENDCAP_H_SizeRin=20.*cm ;
   fENDCAP_H_SizeRout=fHCALbSizeRout;
   fENDCAP_H_SizeZ= 250*cm ;
   double fENDCAP_H_Zshift=0.*cm; 
@@ -513,11 +593,11 @@ char abname[128];
 #ifdef USE_H_ENDCAP_HCAL
 #ifdef USE_H_ENDCAP_HCAL_D
 
-  G4double fHCAL_HCAP_DET_SizeRi= 80*cm ;
-  G4double fHCAL_HCAP_DET_SizeRo=fHCAL_HCAP_SizeRo -1*cm; 
- G4double  fHCAL_HCAP_DET_SizeZ=2*cm;
- G4double  fHCAL_HCAP_DET_Zgap=2*cm;
- G4double  fHCAL_HCAP_DET_Z;
+G4double fHCAL_HCAP_DET_SizeRi= 80*cm ;
+G4double fHCAL_HCAP_DET_SizeRo=fHCAL_HCAP_SizeRo -1*cm; 
+G4double  fHCAL_HCAP_DET_SizeZ=2*cm;
+G4double  fHCAL_HCAP_DET_Zgap=2*cm;
+G4double  fHCAL_HCAP_DET_Z;
  fHCALbMaterial= fMat->GetMaterial("Iron");  
   printf("HCAP_HCAL_det_sol::1 %f %f ,%f\n",fHCAL_HCAP_DET_SizeRi, fHCAL_HCAP_DET_SizeRo, fHCAL_HCAP_DET_SizeZ); 
 
@@ -760,7 +840,7 @@ G4VisAttributes* vhcal1= new G4VisAttributes(G4Color(0.6,0,0.6,1));
 #ifdef USE_H_EMCAL
 
      fEMCAL_H_SizeRin=20*cm;
-     fEMCAL_H_SizeRout=150*cm;
+     fEMCAL_H_SizeRout=200*cm;
      fEMCAL_H_SizeZ=40*cm;   
      double my_z2=-fENDCAP_H_SizeZ/2+f_H_RICHSizeZ+f_H_TRDSizeZ+fEMCAL_H_SizeZ/2; 
      fSolidEMCAL_H = new G4Tubs("H_CAP_EMCAL_Solid",  fEMCAL_H_SizeRin,fEMCAL_H_SizeRout,fEMCAL_H_SizeZ/2.,0.,360*deg);
@@ -939,7 +1019,7 @@ for (j=0; j<10; j++) {
 #ifdef USE_E_EMCAL
 
       fEMCALeSizeRin=12*cm;
-     fEMCALeSizeRout=120*cm;
+     fEMCALeSizeRout=130*cm;
      fEMCALeSizeZ=40*cm;   
      double my_z=-fENDCAP_E_SizeZ/2+fEMCALeSizeZ/2; 
      fSolidEMCALe = new G4Tubs("E_CAP_EMCAL_Solid",  fEMCALeSizeRin,fEMCALeSizeRout,fEMCALeSizeZ/2.,0.,360*deg);
@@ -988,11 +1068,11 @@ for (j=0; j<50; j++) {
    for (i=0; i<50; i++) {
     double R=sqrt(x_C*x_C + y_C*y_C);
 
-     printf("EMCALLL::k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ",k, j,i, x_C,y_C, R, R0);
+    //   printf("EMCALLL::k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ",k, j,i, x_C,y_C, R, R0);
 
 
     if( R  <  fEMCALeSizeRout -fEcalWidth + gap && R > R0 ) { 
-      printf("EMCALLL::k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ",k, j,i, x_C,y_C, R, R0);
+      // printf("EMCALLL::k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ",k, j,i, x_C,y_C, R, R0);
 
       
       k++; 	sprintf(abname,"E_CAP_EMCAL_ph_%d",k);
@@ -2026,11 +2106,11 @@ for (j=0; j<50; j++) {
    for (i=0; i<50; i++) {
      float R=sqrt(x_C*x_C + y_C*y_C);
 
-     printf("found D1b= EMCAL D1::k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ",k, j,i, x_C,y_C, R, R0);
+     // printf("found D1b= EMCAL D1::k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ",k, j,i, x_C,y_C, R, R0);
 
 
     if( R  <  fSI_FORWDD1b_SizeRout -fEcalWidth + gap_D1 && R > R0 ) { 
-      printf("found D1b= EMCAL D1::k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ",k, j,i, x_C,y_C, R, R0);
+      //  printf("found D1b= EMCAL D1::k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ",k, j,i, x_C,y_C, R, R0);
 
 
       k++;	sprintf(abname,"EMCAL_D1_%d",k);
@@ -2148,10 +2228,10 @@ for (j=0; j<50; j++) {
  
   for(int id=0;id<20;id++){ 
      if(strcmp(fSolid_BigDi_ffqsNAME[id],"iBDS2")==0) 
-       { printf("found D2 =%s  Z=%f dZ=%f \n",fSolid_BigDi_ffqsNAME[id],fSolid_BigDi_ffqsZ[id], fSolid_BigDi_ffqsSizeZDi[id]);
+       { //printf("found D2 =%s  Z=%f dZ=%f \n",fSolid_BigDi_ffqsNAME[id],fSolid_BigDi_ffqsZ[id], fSolid_BigDi_ffqsSizeZDi[id]);
 	 fGEM_FARFORWD_Z=fSolid_BigDi_ffqsZ[id] *m + fSolid_BigDi_ffqsSizeZDi[id]/2*m+ fGEM_FARFORWD_SizeZ/2+10*cm; 
   	 fGEM_FARFORWD_X=fSolid_BigDi_ffqsX[id] *m -10*cm; 
-         printf("found D2 =%f \n", fGEM_FARFORWD_Z);
+	 //  printf("found D2 =%f \n", fGEM_FARFORWD_Z);
     };
   };
                          
@@ -2183,6 +2263,7 @@ for (j=0; j<50; j++) {
   vgemff->SetLineWidth(1); vgemff->SetForceSolid(true);
    fLogicGEM_FARFORWD_Lay->SetVisAttributes(vgemff);
 
+   //---------------------------- after D2-----------------------
   int ff_counter=0;
   for(int fflay=0;fflay<5;fflay++) {
     double  Z=-fGEM_FARFORWD_SizeZ/2+(fflay+1)*fGEM_FARFORWD_Lay_SizeZ/2 +(fflay+1)*5*cm;
@@ -2190,7 +2271,7 @@ for (j=0; j<50; j++) {
 			       "GEM_FARFORWD_Lay_phys",fLogicGEM_FARFORWD_Lay , fPhysicsGEM_FARFORWD, false, ff_counter);
 	  ff_counter++;
   }
-
+ 
 #endif
 
 
@@ -2207,12 +2288,12 @@ for (j=0; j<50; j++) {
   //
   // Import Geant4 geometry to VGM
   Geant4GM::Factory g4Factory;
-  g4Factory.SetDebug(1);
+  g4Factory.SetDebug(0);
   g4Factory.Import(fPhysicsWorld);
   // 
   // Export VGM geometry to Root
   RootGM::Factory rtFactory;
-  rtFactory.SetDebug(1);
+  rtFactory.SetDebug(0);
   g4Factory.Export(&rtFactory);
   gGeoManager->CloseGeometry();
   gGeoManager->Export("geometryJLEIC.root");

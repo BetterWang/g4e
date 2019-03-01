@@ -24,8 +24,8 @@
 // ********************************************************************
 //
 //
-// $Id: JLeicRunAction.cc,v 1.9 2006-06-29 16:38:59 gunter Exp $
-// GEANT4 tag $Name: geant4-09-04-patch-01 $
+// JLeicRunAction.cc,
+// 
 //
 // 
 

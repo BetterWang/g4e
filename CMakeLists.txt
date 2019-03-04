@@ -42,11 +42,25 @@ Execute_process(
 #----------------------------------------------------------------------------
 # Locate sources and headers for this project
 #
-IF(DEFINED ENV{VGM_SOURCE_DIR})
- SET(VGM_SOURCE_DIR $ENV{VGM_SOURCE_DIR})
-ELSE()
- set(VGM_SOURCE_DIR /home/yulia/VGM)
-ENDIF()
+
+if(EXISTS ${VGM_DIR})
+    message(STATUS "jleic-geant: cmake VGM_DIR provided: ${VGM_DIR}")
+elseif(EXISTS $ENV{VGM_DIR})
+    set(VGM_DIR $ENV{VGM_DIR})
+    message(STATUS "jleic-geant: VGM_DIR set from environemnt ${VGM_DIR}")
+else()
+    message(STATUS "jleic-geant: No cmake VGM_DIR nor env:VGM_DIR provided")
+    message(STATUS "jleic-geant: Build will try to locate VGMConfig.cmake or FindVGM.cmake")
+endif()
+
+find_library(VGM_Geant4GM NAMES Geant4GM HINTS ${VGM_DIR})
+find_library(VGM_BaseVGM  NAMES BaseVGM  HINTS ${VGM_DIR})
+find_library(VGM_RootGM   NAMES RootGM   HINTS ${VGM_DIR})
+
+message(STATUS "jleic-geant: VGM_Geant4GM :${VGM_Geant4GM} ")
+message(STATUS "jleic-geant: VGM_BaseVGM  :${VGM_BaseVGM}  ")
+message(STATUS "jleic-geant: VGM_RootGM   :${VGM_RootGM}   ")
+
 
 IF(DEFINED ENV{HEPMC_DIR})
  SET(HEPMC_DIR $ENV{HEPMC_DIR})
@@ -58,11 +72,13 @@ ENDIF()
 
 find_package(HepMC REQUIRED)
 
-include_directories(${PROJECT_SOURCE_DIR}/include 
-                    ${Geant4_INCLUDE_DIR}
-		    ${HEPMC_INCLUDE_DIR}
-   ${VGM_SOURCE_DIR}/include
-   ${VGM_SOURCE_DIR}/test/include)
+include_directories(
+        ${PROJECT_SOURCE_DIR}/include
+        ${Geant4_INCLUDE_DIR}
+		${HEPMC_INCLUDE_DIR}
+        ${VGM_DIR}/include
+        ${VGM_DIR}/test/include
+)
 
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
@@ -71,8 +87,18 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 # Add the executable, and link it to the Geant4 libraries
 #
 add_executable(JLEICgeant4 JLEICgeant4.cc ${sources} ${headers})
-target_link_libraries(JLEICgeant4 ${Geant4_LIBRARIES} ${VGM_SOURCE_DIR}/lib64/libGeant4GM.so ${VGM_SOURCE_DIR}/lib64/libBaseVGM.so
-                       ${VGM_SOURCE_DIR}/lib64/libRootGM.so ${HEPMC_LIBRARIES} $ENV{ROOTSYS}/lib/libGeom.so ) 
+target_link_libraries(JLEICgeant4
+        ${Geant4_LIBRARIES}
+        ${HEPMC_LIBRARIES}
+        ${VGM_Geant4GM}
+        ${VGM_BaseVGM}
+        ${VGM_RootGM}
+        # TODO replace for NORMAL root config
+        $ENV{ROOTSYS}/lib/libGeom.so
+        $ENV{ROOTSYS}/lib/libCore.so
+        $ENV{ROOTSYS}/lib/libRIO.so
+        $ENV{ROOTSYS}/lib/libHist.so
+        $ENV{ROOTSYS}/lib/libTree.so)
 #${HEPMC_FIO_LIBRARIES}
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we

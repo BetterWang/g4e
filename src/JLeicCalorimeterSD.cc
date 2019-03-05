@@ -103,7 +103,7 @@ JLeicCalorimeterSD::JLeicCalorimeterSD(G4String name,
   if (save_hits_root) {
     printf("JLeicCalorimeterSD():: book Tree  for hitss \n");
     printf("JLeicCalorimeterSD():: SAVE Matrix file trd_hits.root \n");
-    fhits = new TFile("trd_hits.root","RECREATE");
+    fhits = new TFile("jleic_geant_hits.root","RECREATE");
 
     //--- Vector Branches -----
 
@@ -112,6 +112,7 @@ JLeicCalorimeterSD::JLeicCalorimeterSD(G4String name,
     EVENT_VECT->Branch("event_num",&event_num,"event_num/I");
     EVENT_VECT->Branch("hit_size",&hit_size,"hit_size/I");
     EVENT_VECT->Branch("trackID",&trackID);
+    EVENT_VECT->Branch("DetectorName",&DetectorName);
     EVENT_VECT->Branch("planeID",&planeID);
     EVENT_VECT->Branch("xpos",&xpos);
     EVENT_VECT->Branch("ypos",&ypos);
@@ -223,6 +224,7 @@ void JLeicCalorimeterSD::hits_reset() {
   dedx.clear();
   trackID.clear();
   trackNUM.clear();
+  DetectorName.clear();
   planeID.clear();
   ipos.clear();
   jpos.clear();
@@ -487,6 +489,8 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step* aStep,G4TouchableHistory*)
     trackID.push_back(curTrackID);
     //trackNUM.push_back();
     planeID.push_back(0);
+    //  printf("NAME %s, myname= %d \n", theTouchable->GetVolume()->GetName().c_str(),);
+    DetectorName.push_back(theTouchable->GetVolume()->GetName().c_str());
     ipos.push_back(copyIDx_pre);
     jpos.push_back(copyIDy_pre);
     hit_size++; printf("Fill hits tree ...%d\n",hit_size);

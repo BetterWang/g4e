@@ -169,13 +169,13 @@
 #===================================================================
 /plots/sethistName      hist_jleic.root
 #
-/generator/select particleGun
-/gun/particle proton
+#/generator/select particleGun
+#/gun/particle proton
 #/gun/energy  10 GeV
 #--------------crossing angle 50mrad-------
-/gun/energy  200 GeV
+#/gun/energy  200 GeV
 #/gun/momentum   -9.9958   0.    199.75
-/gun/momentum   -9.995833854   0.    199.7500520
+#/gun/momentum   -9.995833854   0.    199.7500520
 #/gun/energy  100 GeV
 #/gun/momentum   -4.9979169   0.       99.875 
 #/gun/momentum   -0.49979169   0.       9.9875 
@@ -238,8 +238,8 @@
 #/generator/pythiaAscii/verbose 1
 #
 #--------------------------------------------------------------------
-#/generator/select hepmcAscii
-#/generator/hepmcAscii/open /data/yulia/yulia-PCbackup/Herwig7/test/EIC_DIS.hepmc 
+/generator/select hepmcAscii
+/generator/hepmcAscii/open /data/yulia/yulia-PCbackup/Herwig7/test/EIC_DIS.hepmc 
 #/generator/hepmcAscii/open   /home/yulia/work/Herwig6_HepMC/DATA/herwig6_P19000_Q10_N1e+05_e-p10x100.hepmc
 #/generator/hepmcAscii/open  /home/yulia/work/Herwig6_HepMC/DATA/herwig6_P19000_Q2_N1e+06_e-p10x100.hepmc
 #/generator/hepmcAscii/open /home/yulia/work/Herwig6_HepMC/DATA/
@@ -249,5 +249,5 @@
 #/generator/hepmcAscii/open /home/yulia/work/Herwig6_HepMC/DATA/herwig6_P19000_Q100_N1e+06_e+p_10x100.hepmc
 #/generator/hepmcAscii/verbose 1
 
-/run/beamOn 1
+/run/beamOn 1000
 exit

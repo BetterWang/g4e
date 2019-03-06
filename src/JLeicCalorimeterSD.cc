@@ -102,7 +102,7 @@ JLeicCalorimeterSD::JLeicCalorimeterSD(G4String name,
 
   if (save_hits_root) {
     printf("JLeicCalorimeterSD():: book Tree  for hitss \n");
-    printf("JLeicCalorimeterSD():: SAVE Matrix file trd_hits.root \n");
+    printf("JLeicCalorimeterSD():: SAVE Matrix file jleic_geant_hits.root \n");
     fhits = new TFile("jleic_geant_hits.root","RECREATE");
 
     //--- Vector Branches -----
@@ -337,7 +337,7 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step* aStep,G4TouchableHistory*)
   G4double 	yloc=(yinp+yend)/2;
   G4double 	zloc=(zinp+zend)/2;
 
-   printf("xloc=%f yloc=%f zloc=%f  \n",xloc,yloc,zloc);
+  if (jDebug>2)  printf("xloc=%f yloc=%f zloc=%f  \n",xloc,yloc,zloc);
   if (use_fdc) {  //----- FDC / TRD  ---
 
     int zbin = (zloc/mm+Detector->GetAbsorberThickness()/2.) / Detector->fadc_slice; //-- z position , slice number
@@ -368,15 +368,15 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step* aStep,G4TouchableHistory*)
    G4TouchableHistory* theTouchable
     = (G4TouchableHistory*)(aStep->GetPreStepPoint()->GetTouchable());
     
-   printf("--> JLeicCalorimeterSD::ProcessHits() Vol: 0=%s \n",theTouchable->GetVolume()->GetName().c_str());
-  /*
-   printf("--> JLeicCalorimeterSD::ProcessHits() Vol: 0=%s 1=%s  2=%s 3=%s Abs=%s\n"
+   if (jDebug>3) printf("--> JLeicCalorimeterSD::ProcessHits() Vol: 0=%s \n",theTouchable->GetVolume()->GetName().c_str());
+  
+    if (jDebug>3) printf("--> JLeicCalorimeterSD::ProcessHits() Vol: 0=%s 1=%s  2=%s 3=%s Abs=%s\n"
 	  ,theTouchable->GetVolume()->GetName().c_str()
 	  ,theTouchable->GetVolume(1)->GetName().c_str()
 	  ,theTouchable->GetVolume(2)->GetName().c_str()
 	  ,theTouchable->GetVolume(3)->GetName().c_str()
 	  ,Detector->GetAbsorber()->GetName().c_str());
-   */
+   
   if (use_depfet>0) {
     G4String VTXmod = theTouchable->GetVolume()->GetName();
     if (jDebug>2) printf("VTX_ladder=%s \n",VTXmod.c_str());

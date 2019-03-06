@@ -361,7 +361,7 @@ char abname[128];
     }
   else   G4cout<<"No Magnetic field "<<G4endl<<G4endl;
       vtpc1= new G4VisAttributes(G4Color(0.1,0,0.1,0.4));
-      vtpc1->SetLineWidth(1); vtpc1->SetForceSolid(true);
+      vtpc1->SetLineWidth(1); vtpc1->SetForceSolid(false);
       fLogicSolenoid->SetVisAttributes(vtpc1);
 			
 #endif
@@ -387,7 +387,7 @@ char abname[128];
                                  fPhysicsWorld, false,	0 );	
 
   vtpc1= new G4VisAttributes(G4Color(0.3,0,3.,0.1));
-  vtpc1->SetLineWidth(1); vtpc1->SetForceSolid(true);
+  vtpc1->SetLineWidth(1); vtpc1->SetForceSolid(false);
   fLogic_ENDCAP_E->SetVisAttributes(vtpc1);
  
  #endif
@@ -411,7 +411,7 @@ char abname[128];
 				        fPhysicsWorld,  false, 0);
   
       vtpc1= new G4VisAttributes(G4Color(0.3,0,3.,0.1));
-     vtpc1->SetLineWidth(1); vtpc1->SetForceSolid(true);
+     vtpc1->SetLineWidth(1); vtpc1->SetForceSolid(false);
      fLogicHCALb->SetVisAttributes(vtpc1);
   //  fLogicHCALb->SetVisAttributes(G4VisAttributes::Invisible);	
 #endif // end HCALb
@@ -484,7 +484,7 @@ char abname[128];
 					  fPhysicsWorld, false,	0 );	
   
    vtpc1= new G4VisAttributes(G4Color(0.3,0,3.,0.1));
-   vtpc1->SetLineWidth(1); vtpc1->SetForceSolid(true);
+   vtpc1->SetLineWidth(1); vtpc1->SetForceSolid(false);
      fLogic_ECAP_HCAL->SetVisAttributes(vtpc1);
   //  fLogicHCALb->SetVisAttributes(G4VisAttributes::Invisible);	
 #endif // end HCALb
@@ -553,7 +553,7 @@ char abname[128];
 				       fPhysicsWorld,  false, 0);
 
      vtpc1= new G4VisAttributes(G4Color(0.3,0,3.,0.1));
-     vtpc1->SetLineWidth(1); vtpc1->SetForceSolid(true);
+     vtpc1->SetLineWidth(1); vtpc1->SetForceSolid(false);
      fLogic_ENDCAP_H->SetVisAttributes(vtpc1);
 
  #endif
@@ -585,7 +585,7 @@ char abname[128];
 					  fPhysicsWorld, false,	0 );	
   
    vtpc1= new G4VisAttributes(G4Color(0.3,0,3.,0.1));
-   vtpc1->SetLineWidth(1); vtpc1->SetForceSolid(true);
+   vtpc1->SetLineWidth(1); vtpc1->SetForceSolid(false);
      fLogic_HCAP_HCAL->SetVisAttributes(vtpc1);
   //  fLogicHCALb->SetVisAttributes(G4VisAttributes::Invisible);	
 #endif // end HCALb
@@ -665,7 +665,7 @@ G4VisAttributes* vhcal1= new G4VisAttributes(G4Color(0.6,0,0.6,1));
 
   // fLogicVTX->SetVisAttributes(G4VisAttributes::Invisible);	
   G4VisAttributes* vvtx= new G4VisAttributes(G4Color(0.1,0,1.,0.1));
-  vvtx->SetLineWidth(1); vvtx->SetForceSolid(true); fLogicVTX->SetVisAttributes(vvtx);
+  vvtx->SetLineWidth(1); vvtx->SetForceSolid(false); fLogicVTX->SetVisAttributes(vvtx);
 
 //===================================================================================
   #endif  // end VERTEX 
@@ -686,7 +686,7 @@ G4VisAttributes* vhcal1= new G4VisAttributes(G4Color(0.6,0,0.6,1));
 
   // fLogicCTD->SetVisAttributes(G4VisAttributes::Invisible);	
     G4VisAttributes* vctd1= new G4VisAttributes(G4Color(0.1,0,1.,0.1));
-    vctd1->SetLineWidth(1); vctd1->SetForceSolid(true); fLogicCTD->SetVisAttributes(vctd1);
+    vctd1->SetLineWidth(1); vctd1->SetForceSolid(false); fLogicCTD->SetVisAttributes(vctd1);
  
 //===================================================================================
   #endif  // end CTD
@@ -716,7 +716,7 @@ G4VisAttributes* vhcal1= new G4VisAttributes(G4Color(0.6,0,0.6,1));
 
 
     G4VisAttributes* vemcal= new G4VisAttributes(G4Color(0.3,0.5,0.9,1.));
-      vemcal->SetLineWidth(1); vemcal->SetForceSolid(true);
+      vemcal->SetLineWidth(1); vemcal->SetForceSolid(false);
       fLogicEMCALb->SetVisAttributes(vemcal);     
   
  
@@ -752,7 +752,7 @@ G4VisAttributes* vhcal1= new G4VisAttributes(G4Color(0.6,0,0.6,1));
  //====================================================================================
  //==                          GEM DETECTOR VOLUME  CAP-barrel- Hadron side          ==
  //====================================================================================
-  fGEM_H_SizeRin=20*cm;
+  fGEM_H_SizeRin=0*cm;
   fGEM_H_SizeRout=65*cm+50*cm;
   fGEM_H_SizeZ=30*cm;
   double fGEM_H_Zshift=0*cm;
@@ -769,7 +769,7 @@ G4VisAttributes* vhcal1= new G4VisAttributes(G4Color(0.6,0,0.6,1));
  //===================================================================================
  //==                          GEM DETECTOR VOLUME     CAP-barrel- Electron side    ==
  //===================================================================================
-  fGEM_E_SizeRin=20*cm;
+  fGEM_E_SizeRin=0*cm;
   fGEM_E_SizeRout=65*cm+50*cm;
   fGEM_E_SizeZ=30*cm;
   double fGEM_E_Zshift=0*cm;
@@ -821,7 +821,7 @@ G4VisAttributes* vhcal1= new G4VisAttributes(G4Color(0.6,0,0.6,1));
   //  fLogic_H->SetVisAttributes(G4VisAttributes::Invisible);	
  
        vtpc1= new G4VisAttributes(G4Color(1.,1.,0.2,0.2));
-       vtpc1->SetLineWidth(1); vtpc1->SetForceSolid(true);
+       vtpc1->SetLineWidth(1); vtpc1->SetForceSolid(false);
       fLogic_H_RICH->SetVisAttributes(vtpc1);
 
 //===================================================================================

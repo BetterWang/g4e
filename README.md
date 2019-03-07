@@ -28,7 +28,6 @@ Jefferson Lab EIC Geant4 simulation
  4- PHYSICS DEMO
  
  	
-
  5- HOW TO START ?
  
 	

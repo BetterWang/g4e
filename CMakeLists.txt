@@ -53,9 +53,9 @@ else()
     message(STATUS "jleic-geant: Build will try to locate VGMConfig.cmake or FindVGM.cmake")
 endif()
 
-find_library(VGM_Geant4GM NAMES Geant4GM HINTS ${VGM_DIR})
-find_library(VGM_BaseVGM  NAMES BaseVGM  HINTS ${VGM_DIR})
-find_library(VGM_RootGM   NAMES RootGM   HINTS ${VGM_DIR})
+find_library(VGM_Geant4GM NAMES Geant4GM HINTS ${VGM_DIR} PATH_SUFFIXES lib lib64)
+find_library(VGM_BaseVGM  NAMES BaseVGM  HINTS ${VGM_DIR} PATH_SUFFIXES lib lib64)
+find_library(VGM_RootGM   NAMES RootGM   HINTS ${VGM_DIR} PATH_SUFFIXES lib lib64)
 
 message(STATUS "jleic-geant: VGM_Geant4GM :${VGM_Geant4GM} ")
 message(STATUS "jleic-geant: VGM_BaseVGM  :${VGM_BaseVGM}  ")

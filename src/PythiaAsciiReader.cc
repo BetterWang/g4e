@@ -143,9 +143,11 @@ PythiaAsciiReader* PythiaAsciiReader::GeneratePythiaEvent()
 	    double ptot = sqrt(px*px + py*py + pz*pz);
 
 	    double Theta = acos(pz/ptot);
+            
 	    double dTheta = (0.5-G4UniformRand())*2. *  dCone; // --- flat
 	    Theta+=dTheta;
 
+ 
 	    //double rpz  = (0.5-G4UniformRand())*2.*0.05 * pz*GeV;
 	    double rpz = ptot*cos(Theta);
 	    

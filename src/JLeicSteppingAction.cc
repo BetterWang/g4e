@@ -100,12 +100,12 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step* aStep)
  //       +( aStep->GetTrack()->GetMomentumDirection().x()+200*tan(0.05299800449))*( aStep->GetTrack()->GetMomentumDirection().x()+200*tan(0.05299800449))
  //       +aStep->GetTrack()->GetPosition().y()*aStep->GetTrack()->GetPosition().y()
  //       +aStep->GetTrack()->GetMomentumDirection().y()*aStep->GetTrack()->GetMomentumDirection().y(); 
-   my_or= (aStep->GetTrack()->GetPosition().x()/100.+0.3529979921)*(aStep->GetTrack()->GetPosition().x()/100.+0.3529979921) 
+   my_or= (aStep->GetTrack()->GetPosition().x()/1000.+0.3529979921)*(aStep->GetTrack()->GetPosition().x()/1000.+0.3529979921) 
         +(200*aStep->GetTrack()->GetMomentumDirection().x()+200*tan(0.05299800449))*(200*aStep->GetTrack()->GetMomentumDirection().x()+200*tan(0.05299800449))
-     +(aStep->GetTrack()->GetPosition().y()/100.)*(aStep->GetTrack()->GetPosition().y()/100.)
+     +(aStep->GetTrack()->GetPosition().y()/1000.)*(aStep->GetTrack()->GetPosition().y()/1000.)
      +(200*aStep->GetTrack()->GetMomentumDirection().y())*(200*aStep->GetTrack()->GetMomentumDirection().y()); 
 
-   //   fprintf(rc," %f %f %f %f %f %f \n", aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), aStep->GetTrack()->GetPosition().z(),  aStep->GetTrack()->GetMomentumDirection().x(),aStep->GetTrack()->GetMomentumDirection().y(),aStep->GetTrack()->GetMomentumDirection().z());
+   //   printf(" %f %f %f %f %f %f \n", aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), aStep->GetTrack()->GetPosition().z(),  aStep->GetTrack()->GetMomentumDirection().x(),aStep->GetTrack()->GetMomentumDirection().y(),aStep->GetTrack()->GetMomentumDirection().z());
       printf("SteppingAction:: %f \n", my_or );
       fprintf(rc,"%f", my_or );
       fclose(rc);

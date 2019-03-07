@@ -172,12 +172,11 @@
 #===================================================================
 /plots/sethistName      hist_jleic.root
 #
-/generator/select particleGun
-/gun/particle proton
-#/gun/energy  10 GeV
+#/generator/select particleGun
+#/gun/particle proton
 #--------------crossing angle 50mrad-------
-/gun/energy  200 GeV
-/gun/momentum   -9.995833854   0.    199.7500520
+#/gun/energy  200 GeV
+#/gun/momentum   -9.995833854   0.    199.7500520
 #/gun/energy  100 GeV
 #/gun/momentum   -4.9979169   0.       99.875 
 #/gun/momentum   -0.49979169   0.       9.9875 
@@ -190,7 +189,7 @@
 
 #
 # GEMC/BNL version
-#/generator/select pythiaAscii
+/generator/select pythiaAscii
 #/generator/pythiaAscii/verbose 1
 #/generator/pythiaAscii/open  pythia1pis.txt
 #/generator/pythiaAscii/open  /home/yulia/yulia/TestVTXhmc/build.newnewOK/pythiaBeautyDIS100.txt
@@ -221,7 +220,7 @@
 #------ for roman pots------
 #/generator/pythiaAscii/open  pythia_50GeV_50mrad.txt
 #/generator/pythiaAscii/open  pythia_100GeV_50mrad.txt
-#/generator/pythiaAscii/open  pythia_200GeV_50mrad.txt
+/generator/pythiaAscii/open  pythia_200GeV_50mrad.txt
 #----------electrons-----------
 #/generator/pythiaAscii/open  pythia_e_50GeV_90.txt
 #/generator/pythiaAscii/open  pythia_e_10GeV_90.txt
@@ -242,6 +241,8 @@
 #--------------------------------------------------------------------
 #/generator/select hepmcAscii
 #/generator/hepmcAscii/open /data/yulia/yulia-PCbackup/Herwig7/test/EIC_DIS.hepmc 
+#/generator/hepmcAscii/open pythia8_CCdis.hepmc
+#---------old------------------
 #/generator/hepmcAscii/open   /home/yulia/work/Herwig6_HepMC/DATA/herwig6_P19000_Q10_N1e+05_e-p10x100.hepmc
 #/generator/hepmcAscii/open  /home/yulia/work/Herwig6_HepMC/DATA/herwig6_P19000_Q2_N1e+06_e-p10x100.hepmc
 #/generator/hepmcAscii/open /home/yulia/work/Herwig6_HepMC/DATA/

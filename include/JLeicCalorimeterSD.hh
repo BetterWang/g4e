@@ -97,7 +97,7 @@ class JLeicCalorimeterSD : public G4VSensitiveDetector
   std::vector <int> trackID;  
   std::vector <int> trackNUM; 
   std::vector <int> planeID;  
-  std::vector <string> DetectorName;  
+  std::vector <std::string> DetectorName;
   std::vector <int> ipos;     
   std::vector <int> jpos;     
 

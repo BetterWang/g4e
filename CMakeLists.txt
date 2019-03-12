@@ -106,7 +106,8 @@ target_link_libraries(JLEICgeant4
 # relies on these scripts being in the current working directory.
 #
 set(JLEICgeant4_SCRIPTS
-       vis.mac jleic.mac jleicvis.mac
+       jleic.mac
+       jleicvis.mac
   )
 
 foreach(_script ${JLEICgeant4_SCRIPTS})

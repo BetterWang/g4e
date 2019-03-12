@@ -78,10 +78,10 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step* aStep)
   IDnow = evno+10000*(aStep->GetTrack()->GetTrackID())+
     100000000*(aStep->GetTrack()->GetParentID());                //-- 100 k events only ???
 
-  printf("SteppingAction:: Volume=%s  x=%f y=%f z=%f   mom (%f,%f, %f ) \n",aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str(),
+  /* printf("SteppingAction:: Volume=%s  x=%f y=%f z=%f   mom (%f,%f, %f ) \n",aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str(),
   	 aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), aStep->GetTrack()->GetPosition().z(),
          aStep->GetTrack()->GetMomentumDirection().x(),aStep->GetTrack()->GetMomentumDirection().y(),aStep->GetTrack()->GetMomentumDirection().z());
- 
+  */
 
   //--------------------------for TUNE-------------------------------------------------------------------------
   if( strcmp(aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str(),"Physics_QUADS_hd_m_iQDS1a")==0){
@@ -105,12 +105,12 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step* aStep)
      +(aStep->GetTrack()->GetPosition().y()/1000.)*(aStep->GetTrack()->GetPosition().y()/1000.)
      +(200*aStep->GetTrack()->GetMomentumDirection().y())*(200*aStep->GetTrack()->GetMomentumDirection().y()); 
 
-     printf("SteppingAction::  %f %f %f %f %f %f \n", aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), aStep->GetTrack()->GetPosition().z(),  aStep->GetTrack()->GetMomentumDirection().x(),aStep->GetTrack()->GetMomentumDirection().y(),aStep->GetTrack()->GetMomentumDirection().z());
+   //   printf(" %f %f %f %f %f %f \n", aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), aStep->GetTrack()->GetPosition().z(),  aStep->GetTrack()->GetMomentumDirection().x(),aStep->GetTrack()->GetMomentumDirection().y(),aStep->GetTrack()->GetMomentumDirection().z());
       printf("SteppingAction:: %f \n", my_or );
       fprintf(rc,"%f", my_or );
       fclose(rc);
      
-  }
+    }
  //--------------------------end for TUNE-------------------------------------------------------------------------
 
   if(IDnow != IDold)

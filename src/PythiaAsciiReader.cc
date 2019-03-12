@@ -58,6 +58,7 @@ PythiaAsciiReader::PythiaAsciiReader()
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 PythiaAsciiReader::~PythiaAsciiReader()
 {
+   gif.close();
   delete messenger;
 }
 
@@ -105,6 +106,8 @@ PythiaAsciiReader* PythiaAsciiReader::GeneratePythiaEvent()
       }
       double dCone;
       gif >> dCone ;
+      double dmyPhi;
+      gif >> dmyPhi;
 
       
       printf("=====> LUND 1  !!!! npart=%d \n",nparticles);
@@ -152,13 +155,13 @@ PythiaAsciiReader* PythiaAsciiReader::GeneratePythiaEvent()
 	    double rpz = ptot*cos(Theta);
 	    
 	    double Phi = atan2(py,px);
-	    double dPhi = (0.5-G4UniformRand())*2. *  dCone; // --- flat
+	    double dPhi = (0.5-G4UniformRand())*2. *  dmyPhi; // --- flat
 
 	    Phi += dPhi;
 	    double rpt = ptot*sin(Theta);
 	    double rpx=rpt*cos(Phi);
 	    double rpy=rpt*sin(Phi);
-
+	    std::cout << "G4LorentzVector px "<<rpx<< " py "<<rpy<<" pz "<<rpz;
 	    /*
 	    double rpt = sqrt(px*px + py*py);
 	    //double rphi = (0.5-G4UniformRand())*2. * 3.1415 / 2.;
@@ -182,6 +185,7 @@ PythiaAsciiReader* PythiaAsciiReader::GeneratePythiaEvent()
 	    ptrk.P=p;
 	    ptrk.V=v;
 	    pyEvt.push_back(ptrk);
+            
 	    N++;
 	  }		
 	  gif.clear();  gif.seekg(0);

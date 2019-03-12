@@ -143,7 +143,7 @@ JLeicCalorimeterSD::JLeicCalorimeterSD(G4String name,
   if (use_fdc) {
     dedx_fadc=new TH1F("dedx_fadc"," FDC dE/dX",50,-0.5,49.5);
     printf(" SAVE Matrix file trd_frames.root \n");
-    fm = new TFile("fdc_frames.root","RECREATE");
+    fm1 = new TFile("fdc_frames.root","RECREATE");
     for (int ii=0; ii<100; ii++) dEslice[ii]=0; // reset
   }
   //-----------------  charge sharing hist ------
@@ -209,7 +209,9 @@ JLeicCalorimeterSD::~JLeicCalorimeterSD()
 
   if (send_farmes_tcp) tcp_main(3);
 
-  printf("JLeicCalorimeterSD():: Done ...  \n");
+ delete fm; delete fm1; 
+ printf("JLeicCalorimeterSD():: Done ...  \n");
+   
 
 }
 

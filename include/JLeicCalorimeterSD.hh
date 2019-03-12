@@ -58,7 +58,7 @@ class JLeicCalorimeterSD : public G4VSensitiveDetector
   public:
   
       JLeicCalorimeterSD(G4String, JLeicDetectorConstruction* );
-     ~JLeicCalorimeterSD();
+  ~JLeicCalorimeterSD() ;
 
       void Initialize(G4HCofThisEvent*);
       G4bool ProcessHits(G4Step*,G4TouchableHistory*);
@@ -82,7 +82,7 @@ class JLeicCalorimeterSD : public G4VSensitiveDetector
   G4int ntr , ntr1, ntr2, ntr3;
   int N_bin,char_sh; 
   TH2F  *hist_charge[45+1];
-  TFile* fm, *fhits;
+  TFile* fm,*fm1, *fhits;
 
  //----- EVENT STRUCTURE -----
   
@@ -97,7 +97,7 @@ class JLeicCalorimeterSD : public G4VSensitiveDetector
   std::vector <int> trackID;  
   std::vector <int> trackNUM; 
   std::vector <int> planeID;  
-  std::vector <string> DetectorName;  
+  std::vector <std::string> DetectorName;
   std::vector <int> ipos;     
   std::vector <int> jpos;     
 

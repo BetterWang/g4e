@@ -1,7 +1,7 @@
 #----------------------------------------------------------------------------
 # Setup the project
 cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
-project(JLEICgeant4)
+project(g4e)
 
 #----------------------------------------------------------------------------
 # Find Geant4 package, activating all available UI and Vis drivers by default
@@ -57,10 +57,10 @@ find_library(VGM_Geant4GM NAMES Geant4GM HINTS ${VGM_DIR} PATH_SUFFIXES lib lib6
 find_library(VGM_BaseVGM  NAMES BaseVGM  HINTS ${VGM_DIR} PATH_SUFFIXES lib lib64)
 find_library(VGM_RootGM   NAMES RootGM   HINTS ${VGM_DIR} PATH_SUFFIXES lib lib64)
 
-message(STATUS "jleic-geant: VGM_Geant4GM :${VGM_Geant4GM} ")
-message(STATUS "jleic-geant: VGM_BaseVGM  :${VGM_BaseVGM}  ")
-message(STATUS "jleic-geant: VGM_RootGM   :${VGM_RootGM}   ")
-
+message(STATUS "g4e: VGM_Geant4GM :${VGM_Geant4GM} ")
+message(STATUS "g4e: VGM_BaseVGM  :${VGM_BaseVGM}  ")
+message(STATUS "g4e: VGM_RootGM   :${VGM_RootGM}   ")
+message(STATUS "g4e: Geant4_LIBS  :${Geant4_LIBRARIES}" )
 
 IF(DEFINED ENV{HEPMC_DIR})
  SET(HEPMC_DIR $ENV{HEPMC_DIR})

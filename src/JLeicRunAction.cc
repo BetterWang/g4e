@@ -943,14 +943,14 @@ void JLeicRunAction::EndOfRunAction(const G4Run*)
   printf(" SAVE hist to file: %s\n",histName.c_str());
   //TFile* f = new TFile("trd_hist.root","RECREATE");histName
   //TFile* f = new TFile(histName,"RECREATE");
-  TFile* f = new TFile(RootFileName,"RECREATE");
+  TFile* myRootfile = new TFile(RootFileName,"RECREATE");
 
   if (histo1) {
-    printf(" Write histo1 to file %s, histo1=%p f=%p \n",histName.c_str(),histo1,f);
+    printf(" Write histo1 to file %s, histo1=%p f=%p \n",histName.c_str(),histo1,myRootfile);
     histo1->Write();
   }
   if (histo2) {
-    printf(" Write histo2 to file %s, histo2=%p f=%p \n",histName.c_str(),histo2,f);
+    printf(" Write histo2 to file %s, histo2=%p f=%p \n",histName.c_str(),histo2,myRootfile);
     histo2->Write();
   }
   if (histo3) histo3->Write();
@@ -967,12 +967,12 @@ void JLeicRunAction::EndOfRunAction(const G4Run*)
   if (histo14) histo14->Write();
   //------------------------------------------------------------
   for (int ihi=0; ihi<NHIST; ihi++) {
-    printf(" Test hist%d  hist=%p f=%p \n",ihi,hist[ihi],f);
+    printf(" Test hist%d  hist=%p f=%p \n",ihi,hist[ihi],myRootfile);
 
     if (d2_hist[ihi])  d2_hist[ihi]->Write();
     if (hist[ihi]) {
       hist[ihi]->Write();
-      printf(" Write hist[%d] to file %s, hist=%p f=%p \n",ihi,histName.c_str(),f);
+      printf(" Write hist[%d] to file %s, hist=%p f=%p \n",ihi,histName.c_str(),myRootfile);
     }
   }
    //------------------------------------------------------------
@@ -987,8 +987,8 @@ void JLeicRunAction::EndOfRunAction(const G4Run*)
     if (HLikelihood[ihi]) HLikelihood[ihi]->Write();
   }
 
-  printf(" Close file %s, f=%p \n",histName.c_str(),f);
-  f->Close();
+  printf(" Close file %s, f=%p \n",histName.c_str(),myRootfile);
+  myRootfile->Close();
 }
 
 ///////////////////////////////////////////////////////////////////////////

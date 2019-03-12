@@ -32,7 +32,7 @@
 #include "G4RotationMatrix.hh"
 
 static G4RotationMatrix IdentityMatrix; 
-static int SFdebug=0;
+static int SFdebug=3;
 
 G4QuadrupoleMagField::G4QuadrupoleMagField(G4double pGradient)
 {
@@ -112,6 +112,9 @@ void G4QuadrupoleMagField::GetFieldValue( const G4double y[7],
            fpMatrix->inverse().rowX() * B_local,
            fpMatrix->inverse().rowY() * B_local,
            fpMatrix->inverse().rowZ() * B_local);
+   //         fpMatrix->inverse().rowX() * B_local,
+   //         fpMatrix->inverse().rowY() * B_local,
+   //        fpMatrix->inverse().rowZ() * B_local);
 
    G4ThreeVector B_global2 = fpMatrix->inverse() * B_local;
    

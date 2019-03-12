@@ -260,7 +260,7 @@ char abname[128];
   //==                    create a world                                            ==
   //===================================================================================
  
-  fWorldSizeZ = 20000.*cm; 
+  fWorldSizeZ = 40000.*cm; 
   fWorldSizeR = 10000.*cm;
 
   // fWorldMaterial    = Air; 
@@ -345,6 +345,7 @@ char abname[128];
   // G4double fieldStrength = 3.0*tesla;  // 0.01*tesla; // field strength in pipe
   G4double fieldStrength = -2.0*tesla;  // 0.01*tesla; // field strength in pipe
   G4double alphaB        = 0.*degree;
+  //  fPipeField     =  true;   // field in helium pipe used?
   fPipeField     =  true;   // field in helium pipe used?
   if ( fPipeField )
     {
@@ -821,7 +822,7 @@ G4VisAttributes* vhcal1= new G4VisAttributes(G4Color(0.6,0,0.6,1));
   //  fLogic_H->SetVisAttributes(G4VisAttributes::Invisible);	
  
        vtpc1= new G4VisAttributes(G4Color(1.,1.,0.2,0.2));
-       vtpc1->SetLineWidth(1); vtpc1->SetForceSolid(false);
+       vtpc1->SetLineWidth(1); vtpc1->SetForceSolid(true);
       fLogic_H_RICH->SetVisAttributes(vtpc1);
 
 //===================================================================================
@@ -1990,7 +1991,7 @@ sprintf(abname,"Phys_CTD_Straw_layer_Wall");
  //                     Si detectors  
  // ---------------------------------------------------------------------------
   fSI_FORWDD1a_SizeRin_Lay=5*cm;
-  fSI_FORWDD1a_SizeRout_Lay= fSI_FORWDD1a_SizeRout-1*cm;
+  fSI_FORWDD1a_SizeRout_Lay= fSI_FORWDD1a_SizeRout-5*cm;
   fSI_FORWDD1a_SizeZ_Lay=1*cm;
  
   fGEM_E_Material  = fMat->GetMaterial("Ar10CO2");  //----   !!!!! ----
@@ -2525,7 +2526,7 @@ void JLeicDetectorConstruction::SetMagField(G4double)
 ///////////////////////////////////////////////////////////////////////////////
 //
 //
-G4FieldManager* JLeicDetectorConstruction::SetQMagField(float field, float skew, float theta)
+G4FieldManager* JLeicDetectorConstruction::SetQMagField(float field, float skew, float theta, G4ThreeVector fieldorigin)
 //
 //
 ////////////////////////////////////////////////////////////////////////////
@@ -2545,13 +2546,14 @@ G4FieldManager* JLeicDetectorConstruction::SetQMagField(float field, float skew,
   } 
 
   qrm_f= new G4RotationMatrix();
+
   qrm_f->rotateZ(angle*rad);
   qrm_f->rotateY(theta*rad);
 
   //G4ThreeVector fieldValue = G4ThreeVector( fGradient_x,fGradient_y,fGradient_z);
   // old  G4QuadrupoleMagField* pipeField = new G4QuadrupoleMagField(fGradient);
   
-  G4ThreeVector fieldorigin = G4ThreeVector(0,0,0);
+  // G4ThreeVector fieldorigin = G4ThreeVector(0,0,0);
 
   G4QuadrupoleMagField* pipeField = new G4QuadrupoleMagField(fGradient,fieldorigin,qrm_f);
 
@@ -2569,9 +2571,11 @@ G4LogicalVolume* logicB = new G4LogicalVolume(solidB, Mat("G4_Galactic"), "logic
 new G4PVPlacement(0, G4ThreeVector(5*m,5*m,-7*m), logicB,
                                            "physiB", world->getLogic(), false, 0);
 */
-  delete qrm_f;
+  //delete qrm_f;
   return fieldMgr;
 }
+
+
 G4FieldManager*  JLeicDetectorConstruction::SetDipoleMagField(G4double fx, G4double fy, G4double fz,float theta)
 {
   // G4Box  *sMagField = new G4Bo "dipole_magfield", 10/2*cm, 10/2*cm, 10/2*cm);
@@ -2812,8 +2816,6 @@ rc=fopen(fname,"r");
      }
  }
  
-
-
  fclose(rc);
  return;
 }
@@ -2856,9 +2858,10 @@ void  JLeicDetectorConstruction::CreateQuad(int j, char *ffqsNAME, float ffqsSiz
     fPhysics_QUADS_hd_v[j] = new G4PVPlacement(G4Transform3D(brm_hd[j], G4ThreeVector(ffqsX*m,ffqsY*m,ffqsZ*m)),abname,  
                                             fLogic_QUADS_hd_v[j],  fPhysicsWorld, false,  0 );  
     //printf("create %s ");
-    //--------------------Iron---------   
+     
+   //--------------------Iron---------   
     sprintf(abname,"Solid_QUADS_hd_ir_%s",ffqsNAME); 
-    fSolid_QUADS_hd_ir[j] = new G4Tubs(abname,  ffqsRinDi*cm, ffqsRoutDi*cm,(ffqsSizeZDi/2.)*m,0.,360*deg);                    
+    fSolid_QUADS_hd_ir[j] = new G4Tubs(abname,  ffqsRinDi*cm, (ffqsRoutDi+0.005)*cm,(ffqsSizeZDi/2.)*m,0.,360*deg);                    
     sprintf(abname,"Logic_QUADS_hd_ir_%s",ffqsNAME);
     fLogic_QUADS_hd_ir[j] = new G4LogicalVolume(fSolid_QUADS_hd_ir[j],   ffqsMaterial, abname);
     sprintf(abname,"Physics_QUADS_hd_ir_%s",ffqsNAME);                                      
@@ -2873,14 +2876,18 @@ void  JLeicDetectorConstruction::CreateQuad(int j, char *ffqsNAME, float ffqsSiz
     sprintf(abname,"Physics_QUADS_hd_m_%s",ffqsNAME);                                      
     fPhysics_QUADS_hd_m[j] = new G4PVPlacement(0,G4ThreeVector(),abname,fLogic_QUADS_hd_m[j], fPhysics_QUADS_hd_v[j], false,  0 );     
    
-
+   
     //    G4FieldManager* fieldMgr = SetQMagField(qFIELDx[j],qFIELDy[j]);   // gradient tesla/m;
     // fLogic_QUADSm[j]->SetFieldManager(fieldMgr,true);
 
     printf("CreateQuad:: FIELD =%f %f --  %f %f -- %f %f \n", qFIELDx,qFIELDy, qFIELQn, qFIELQs,qFIELSek,qFIELSol);
-    fieldMgr_QUADS_hd[j] = SetQMagField(qFIELQn, qFIELQs,ffqsTheta);   // gradient tesla/m;
-    fLogic_QUADS_hd_m[j]->SetFieldManager(fieldMgr_QUADS_hd[j],true);
+ 
+
+
+    fieldMgr_QUADS_hd[j] = SetQMagField(qFIELQn, qFIELQs,ffqsTheta,G4ThreeVector(ffqsX*m,ffqsY*m,ffqsZ*m));   // gradient tesla/m;
    
+    fLogic_QUADS_hd_m[j]->SetFieldManager(fieldMgr_QUADS_hd[j],true);
+    
 }
 
 

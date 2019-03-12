@@ -157,7 +157,7 @@ G4int fModuleNumber;   // the number of Rad-et modules
 private:
     
   G4VPhysicalVolume* ConstructDetectorXTR(); 
-  G4FieldManager* SetQMagField(float field,float angle,float theta);  
+  G4FieldManager* SetQMagField(float field,float angle,float theta,G4ThreeVector fieldorigin);  
   // G4FieldManager* SetQMagField(G4double field_x);  
   G4FieldManager* SetDipoleMagField(G4double fx, G4double fy, G4double fz,float theta);
 
@@ -566,11 +566,11 @@ private:
   G4Material*ffqsMaterial_G;
   double fZ1; 
   //---------------- BEAM QUADS -------------------------------------------
-  G4Tubs *fSolid_QUADS_hd_v[40], *fSolid_QUADS_hd_ir[40],*fSolid_QUADS_hd_m[40];  
-  G4LogicalVolume *fLogic_QUADS_hd_v[40],*fLogic_QUADS_hd_ir[40],*fLogic_QUADS_hd_m[40]; 
-  G4PVPlacement *fPhysics_QUADS_hd_v[40],*fPhysics_QUADS_hd_ir[40],*fPhysics_QUADS_hd_m[40];
-  G4FieldManager* fieldMgr_QUADS_hd[40];
-   G4RotationMatrix brm_hd[40];
+  G4Tubs *fSolid_QUADS_hd_v[100], *fSolid_QUADS_hd_ir[100],*fSolid_QUADS_hd_m[100];  
+  G4LogicalVolume *fLogic_QUADS_hd_v[100],*fLogic_QUADS_hd_ir[100],*fLogic_QUADS_hd_m[100]; 
+  G4PVPlacement *fPhysics_QUADS_hd_v[100],*fPhysics_QUADS_hd_ir[100],*fPhysics_QUADS_hd_m[100];
+  G4FieldManager* fieldMgr_QUADS_hd[100];
+   G4RotationMatrix brm_hd[100];
 //---------------- BEAM ASOLENOID -------------------------------------------
   G4Tubs *fSolid_ASOLENOID_hd_v[40], *fSolid_ASOLENOID_hd_ir[40],*fSolid_ASOLENOID_hd_m[40];  
   G4LogicalVolume *fLogic_ASOLENOID_hd_v[40],*fLogic_ASOLENOID_hd_ir[40],*fLogic_ASOLENOID_hd_m[40]; 

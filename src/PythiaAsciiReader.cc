@@ -49,189 +49,197 @@ double GEN_VERBOSITY;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 PythiaAsciiReader::PythiaAsciiReader()
-  :  filename("xxx.dat"), verbose(0)
-{
+        : filename("xxx.dat"), verbose(0) {
 
-  messenger= new PythiaAsciiReaderMessenger(this);
+    messenger = new PythiaAsciiReaderMessenger(this);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-PythiaAsciiReader::~PythiaAsciiReader()
-{
-   gif.close();
-  delete messenger;
+PythiaAsciiReader::~PythiaAsciiReader() {
+    gif.close();
+    delete messenger;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void PythiaAsciiReader::Initialize()
-{
-  //=====================  open pythia file =========================
-  gif.close();
-  gif.open(filename.c_str());
-  if(!gif)
-    {
-      std::cerr << hd_msg << " Can't open input file " << filename.c_str() << ". Exiting. " << std::endl;
-      exit(1);
+void PythiaAsciiReader::Initialize() {
+    //=====================  open pythia file =========================
+    gif.close();
+    gif.open(filename.c_str());
+    if (!gif) {
+        std::cerr << hd_msg << " Can't open input file " << filename.c_str() << ". Exiting. " << std::endl;
+        exit(1);
     }
 
-  gif.seekg(0);
-  gformat = "LUND";
-  hd_msg = "ERROR: Pythia:: ";
-  GEN_VERBOSITY=0;
-  //=================================================================
+    gif.seekg(0);
+    gformat = "LUND";
+    hd_msg = "ERROR: Pythia:: ";
+    GEN_VERBOSITY = 0;
+    //=================================================================
 }
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-PythiaAsciiReader* PythiaAsciiReader::GeneratePythiaEvent()
-{
+PythiaAsciiReader *PythiaAsciiReader::GeneratePythiaEvent() {
 
 
-  
     printf("Read lund\n");
-    if((gformat == "LUND" || gformat == "lund") && !gif.eof())     {
-      //printf("=====> LUND 0 !!!!  \n");
-      lundUserDefined.clear();                        
-      gif >> nparticles ;
-      for(unsigned i=0; i<9; i++)  {
-	double tmp;
-	if(i==3) {
-	  gif >> beamPol;
-	  if(beamPol>1)
-	    beamPol = 1;
-	} else {
-	  gif >> tmp;                             
-	  lundUserDefined.push_back(tmp);
-	}
-      }
-      double dCone;
-      gif >> dCone ;
-      double dmyPhi;
-      gif >> dmyPhi;
+    if ((gformat == "LUND" || gformat == "lund") && !gif.eof()) {
+        //printf("=====> LUND 0 !!!!  \n");
+        lundUserDefined.clear();
+        gif >> nparticles;
+        for (unsigned i = 0; i < 9; i++) {
+            double tmp;
+            if (i == 3) {
+                gif >> beamPol;
+                if (beamPol > 1)
+                    beamPol = 1;
+            } else {
+                gif >> tmp;
+                lundUserDefined.push_back(tmp);
+            }
+        }
+        double dCone;
+        gif >> dCone;
+        double dmyPhi;
+        gif >> dmyPhi;
 
-      
-      printf("=====> LUND 1  !!!! npart=%d \n",nparticles);
-      N=0; pyEvt.clear();
 
-      if (nparticles<0) { //--- generate particles in CONE ---
+        printf("=====> LUND 1  !!!! npart=%d \n", nparticles);
+        N = 0;
+        pyEvt.clear();
 
-	nparticles=-nparticles;
-	for(int kp=0; kp<nparticles; kp++)	{  
-	  
-	  //--- GEMC version of LUND ---
-	  double px, py, pz, etot, mass;
-	  int parent=0, daughter1=0, daughter2=0;
-	  // i,icharge,flag,PID,K(I,4),K(I,5) P(I,1),P(I,2),P(I,3),P(I,4),P(I,5)  V(I,1)*0.1,V(I,2)*0.1,VZoffSet*0.1
-	  int ip, icharge, itype, iPDG, K4, K5; //, pPDG=0;
-	  gif >> ip >> icharge >> itype >> iPDG >> K4 >> K5 >> px >> py >> pz >> etot >> mass >> Vx >> Vy >> Vz;
-	  printf("read: i=%3d Charge=%2d  Sts=%d  PDG=%5d  K4=%3d  K5=%3d    P=(%8.3f,%8.3f,%8.3f,%8.3f,%8.3f)    Vtx=(%f,%f,%f) \n"
-		 ,ip,icharge,itype,iPDG,K4,K5,px,py,pz,etot,mass,Vx,Vy,Vz);
-	  Vt=0;
-	  daughter1=K4; daughter2=K5;
-	  
-	  printf("GeV=%f  mm=%f c_light=%f \n",GeV,mm,c_light);
-	  
-	  if(itype == 1)   {  // use only final stae particles , c_light=1 !!!
-	    /*
-	      K[1][N]=itype;   K[2][N]=iPDG;     K[4][N]=K4;      K[5][N]=K5;
-	      P[0][N]=px*GeV;  P[1][N]=py*GeV;   P[2][N]=pz*GeV;  P[3][N]=etot*GeV;  P[4][N]=mass*GeV;
-	      V[0][N]=Vx*mm;   V[1][N]=Vy*mm;    V[2][N]=Vz*mm;   V[3][N]=Vt*mm/c_light; 
-	      N++;
-	    */
-	    //-- vector version --
-	    PyTrack ptrk;
-	    ptrk.K[0]=kp;  ptrk.K[1]=itype;  ptrk.K[2]=iPDG; ptrk.K[3]=parent; ptrk.K[4]=daughter1; ptrk.K[5]=daughter2;  
-	    
+        if (nparticles < 0) { //--- generate particles in CONE ---
 
-	    double ptot = sqrt(px*px + py*py + pz*pz);
+            nparticles = -nparticles;
+            for (int kp = 0; kp < nparticles; kp++) {
 
-	    double Theta = acos(pz/ptot);
-            
-	    double dTheta = (0.5-G4UniformRand())*2. *  dCone; // --- flat
-	    Theta+=dTheta;
+                //--- GEMC version of LUND ---
+                double px, py, pz, etot, mass;
+                int parent = 0, daughter1 = 0, daughter2 = 0;
+                // i,icharge,flag,PID,K(I,4),K(I,5) P(I,1),P(I,2),P(I,3),P(I,4),P(I,5)  V(I,1)*0.1,V(I,2)*0.1,VZoffSet*0.1
+                int ip, icharge, itype, iPDG, K4, K5; //, pPDG=0;
+                gif >> ip >> icharge >> itype >> iPDG >> K4 >> K5 >> px >> py >> pz >> etot >> mass >> Vx >> Vy >> Vz;
+                printf("read: i=%3d Charge=%2d  Sts=%d  PDG=%5d  K4=%3d  K5=%3d    P=(%8.3f,%8.3f,%8.3f,%8.3f,%8.3f)    Vtx=(%f,%f,%f) \n",
+                       ip, icharge, itype, iPDG, K4, K5, px, py, pz, etot, mass, Vx, Vy, Vz);
+                Vt = 0;
+                daughter1 = K4;
+                daughter2 = K5;
 
- 
-	    //double rpz  = (0.5-G4UniformRand())*2.*0.05 * pz*GeV;
-	    double rpz = ptot*cos(Theta);
-	    
-	    double Phi = atan2(py,px);
-	    double dPhi = (0.5-G4UniformRand())*2. *  dmyPhi; // --- flat
+                printf("GeV=%f  mm=%f c_light=%f \n", GeV, mm, c_light);
 
-	    Phi += dPhi;
-	    double rpt = ptot*sin(Theta);
-	    double rpx=rpt*cos(Phi);
-	    double rpy=rpt*sin(Phi);
-	    std::cout << "G4LorentzVector px "<<rpx<< " py "<<rpy<<" pz "<<rpz;
-	    /*
-	    double rpt = sqrt(px*px + py*py);
-	    //double rphi = (0.5-G4UniformRand())*2. * 3.1415 / 2.;
-	    double rphi = (0.5-G4UniformRand())*2. * dCone;
+                if (itype == 1) {  // use only final stae particles , c_light=1 !!!
+                    /*
+                      K[1][N]=itype;   K[2][N]=iPDG;     K[4][N]=K4;      K[5][N]=K5;
+                      P[0][N]=px*GeV;  P[1][N]=py*GeV;   P[2][N]=pz*GeV;  P[3][N]=etot*GeV;  P[4][N]=mass*GeV;
+                      V[0][N]=Vx*mm;   V[1][N]=Vy*mm;    V[2][N]=Vz*mm;   V[3][N]=Vt*mm/c_light;
+                      N++;
+                    */
+                    //-- vector version --
+                    PyTrack ptrk;
+                    ptrk.K[0] = kp;
+                    ptrk.K[1] = itype;
+                    ptrk.K[2] = iPDG;
+                    ptrk.K[3] = parent;
+                    ptrk.K[4] = daughter1;
+                    ptrk.K[5] = daughter2;
 
-	    double rpt = sqrt(px*px + py*py);
-	    //double rphi = (0.5-G4UniformRand())*2. * 3.1415 / 2.;
-	    double rphi = (0.5-G4UniformRand())*2. * dCone;
 
-	    double rpx=rpt*cos(rphi);
-	    double rpy=rpt*sin(rphi);
-	    //double rpx  = (0.5-G4UniformRand())*2.*0.05 * px*GeV;
-	    //double rpy  = (0.5-G4UniformRand())*2.*0.1 * py*GeV;
-	    */
-	    
-	    //G4LorentzVector p(px*GeV+rpx,py*GeV+rpy,pz*GeV+rpz,etot*GeV);
-	    G4LorentzVector p(rpx*GeV,rpy*GeV,rpz*GeV,etot*GeV);
+                    double ptot = sqrt(px * px + py * py + pz * pz);
 
-	    G4LorentzVector v(Vx*mm,Vy*mm,Vz*mm,Vt*mm/c_light);
-	    std::cout << "G4LorentzVector p= " << p;
-	    ptrk.P=p;
-	    ptrk.V=v;
-	    pyEvt.push_back(ptrk);
-            
-	    N++;
-	  }		
-	  gif.clear();  gif.seekg(0);
-	}
-	
-      } else { //-- read pythia record ---
-	
-	for(int kp=0; kp<nparticles; kp++)	{
-	  
-	  //--- GEMC version of LUND ---
-	  double px, py, pz, etot, mass;
-	  int parent=0, daughter1=0, daughter2=0;
-	  // i,icharge,flag,PID,K(I,4),K(I,5) P(I,1),P(I,2),P(I,3),P(I,4),P(I,5)  V(I,1)*0.1,V(I,2)*0.1,VZoffSet*0.1
-	  int ip, icharge, itype, iPDG, K4, K5; //, pPDG=0;
-	  gif >> ip >> icharge >> itype >> iPDG >> K4 >> K5 >> px >> py >> pz >> etot >> mass >> Vx >> Vy >> Vz;
-	  printf("read: i=%3d Charge=%2d  Sts=%d  PDG=%5d  K4=%3d  K5=%3d    P=(%8.3f,%8.3f,%8.3f,%8.3f,%8.3f)    Vtx=(%f,%f,%f) \n"
-		 ,ip,icharge,itype,iPDG,K4,K5,px,py,pz,etot,mass,Vx,Vy,Vz);
-	  Vt=0;
-	  daughter1=K4; daughter2=K5;
-	  
-	  printf("GeV=%f  mm=%f c_light=%f \n",GeV,mm,c_light);
-	  
-	  if(itype == 1)   {  // use only final stae particles , c_light=1 !!!
-	    /*
-	      K[1][N]=itype;   K[2][N]=iPDG;     K[4][N]=K4;      K[5][N]=K5;
-	      P[0][N]=px*GeV;  P[1][N]=py*GeV;   P[2][N]=pz*GeV;  P[3][N]=etot*GeV;  P[4][N]=mass*GeV;
-	      V[0][N]=Vx*mm;   V[1][N]=Vy*mm;    V[2][N]=Vz*mm;   V[3][N]=Vt*mm/c_light; 
-	      N++;
-	    */
-	    //-- vector version --
-	    PyTrack ptrk;
-	    ptrk.K[0]=kp;  ptrk.K[1]=itype;  ptrk.K[2]=iPDG; ptrk.K[3]=parent; ptrk.K[4]=daughter1; ptrk.K[5]=daughter2;  
-	    G4LorentzVector p(px*GeV,py*GeV,pz*GeV,etot*GeV);
-	    G4LorentzVector v(Vx*mm,Vy*mm,Vz*mm,Vt*mm/c_light);
-	    std::cout << "G4LorentzVector p= " << p;
-	    ptrk.P=p;
-	    ptrk.V=v;
-	    pyEvt.push_back(ptrk);
-	    N++;
-	  }		
-	  //-------- end GEMC ------------
-	  
-	}  //-- pyhtia particles loop
-      } //-- if NEG npart / RNDM
+                    double Theta = acos(pz / ptot);
+
+                    double dTheta = (0.5 - G4UniformRand()) * 2. * dCone; // --- flat
+                    Theta += dTheta;
+
+
+                    //double rpz  = (0.5-G4UniformRand())*2.*0.05 * pz*GeV;
+                    double rpz = ptot * cos(Theta);
+
+                    double Phi = atan2(py, px);
+                    double dPhi = (0.5 - G4UniformRand()) * 2. * dmyPhi; // --- flat
+
+                    Phi += dPhi;
+                    double rpt = ptot * sin(Theta);
+                    double rpx = rpt * cos(Phi);
+                    double rpy = rpt * sin(Phi);
+                    std::cout << "G4LorentzVector px " << rpx << " py " << rpy << " pz " << rpz;
+                    /*
+                    double rpt = sqrt(px*px + py*py);
+                    //double rphi = (0.5-G4UniformRand())*2. * 3.1415 / 2.;
+                    double rphi = (0.5-G4UniformRand())*2. * dCone;
+
+                    double rpt = sqrt(px*px + py*py);
+                    //double rphi = (0.5-G4UniformRand())*2. * 3.1415 / 2.;
+                    double rphi = (0.5-G4UniformRand())*2. * dCone;
+
+                    double rpx=rpt*cos(rphi);
+                    double rpy=rpt*sin(rphi);
+                    //double rpx  = (0.5-G4UniformRand())*2.*0.05 * px*GeV;
+                    //double rpy  = (0.5-G4UniformRand())*2.*0.1 * py*GeV;
+                    */
+
+                    //G4LorentzVector p(px*GeV+rpx,py*GeV+rpy,pz*GeV+rpz,etot*GeV);
+                    G4LorentzVector p(rpx * GeV, rpy * GeV, rpz * GeV, etot * GeV);
+
+                    G4LorentzVector v(Vx * mm, Vy * mm, Vz * mm, Vt * mm / c_light);
+                    std::cout << "G4LorentzVector p= " << p;
+                    ptrk.P = p;
+                    ptrk.V = v;
+                    pyEvt.push_back(ptrk);
+
+                    N++;
+                }
+                gif.clear();
+                gif.seekg(0);
+            }
+
+        } else { //-- read pythia record ---
+
+            for (int kp = 0; kp < nparticles; kp++) {
+
+                //--- GEMC version of LUND ---
+                double px, py, pz, etot, mass;
+                int parent = 0, daughter1 = 0, daughter2 = 0;
+                // i,icharge,flag,PID,K(I,4),K(I,5) P(I,1),P(I,2),P(I,3),P(I,4),P(I,5)  V(I,1)*0.1,V(I,2)*0.1,VZoffSet*0.1
+                int ip, icharge, itype, iPDG, K4, K5; //, pPDG=0;
+                gif >> ip >> icharge >> itype >> iPDG >> K4 >> K5 >> px >> py >> pz >> etot >> mass >> Vx >> Vy >> Vz;
+                printf("read: i=%3d Charge=%2d  Sts=%d  PDG=%5d  K4=%3d  K5=%3d    P=(%8.3f,%8.3f,%8.3f,%8.3f,%8.3f)    Vtx=(%f,%f,%f) \n",
+                       ip, icharge, itype, iPDG, K4, K5, px, py, pz, etot, mass, Vx, Vy, Vz);
+                Vt = 0;
+                daughter1 = K4;
+                daughter2 = K5;
+
+                printf("GeV=%f  mm=%f c_light=%f \n", GeV, mm, c_light);
+
+                if (itype == 1) {  // use only final stae particles , c_light=1 !!!
+                    /*
+                      K[1][N]=itype;   K[2][N]=iPDG;     K[4][N]=K4;      K[5][N]=K5;
+                      P[0][N]=px*GeV;  P[1][N]=py*GeV;   P[2][N]=pz*GeV;  P[3][N]=etot*GeV;  P[4][N]=mass*GeV;
+                      V[0][N]=Vx*mm;   V[1][N]=Vy*mm;    V[2][N]=Vz*mm;   V[3][N]=Vt*mm/c_light;
+                      N++;
+                    */
+                    //-- vector version --
+                    PyTrack ptrk;
+                    ptrk.K[0] = kp;
+                    ptrk.K[1] = itype;
+                    ptrk.K[2] = iPDG;
+                    ptrk.K[3] = parent;
+                    ptrk.K[4] = daughter1;
+                    ptrk.K[5] = daughter2;
+                    G4LorentzVector p(px * GeV, py * GeV, pz * GeV, etot * GeV);
+                    G4LorentzVector v(Vx * mm, Vy * mm, Vz * mm, Vt * mm / c_light);
+                    std::cout << "G4LorentzVector p= " << p;
+                    ptrk.P = p;
+                    ptrk.V = v;
+                    pyEvt.push_back(ptrk);
+                    N++;
+                }
+                //-------- end GEMC ------------
+
+            }  //-- pyhtia particles loop
+        } //-- if NEG npart / RNDM
     } // end gformat
-    
+
     return this;
-    
+
 }

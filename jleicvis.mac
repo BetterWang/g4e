@@ -108,7 +108,7 @@
 
 /vis/viewer/set/cutawayMode intersection
 
-/vis/viewer/addCutawayPlane 0  20  0  cm  0. -2000 0
+/vis/viewer/addCutawayPlane 0  30  0  cm  0. -100 0
 #/vis/viewer/addCutawayPlane 0  1  0  cm  0. -0.1 0
 #/vis/viewer/addCutawayPlane 0  1  0  cm  0. -100. 1.
 #/vis/viewer/addCutawayPlane 0  1  0  cm  0. 100. 1.

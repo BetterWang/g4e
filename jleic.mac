@@ -172,11 +172,11 @@
 #===================================================================
 /plots/sethistName      hist_jleic.root
 #
-/generator/select particleGun
-/gun/particle proton
+#/generator/select particleGun
+#/gun/particle proton
 #--------------crossing angle 50mrad-------
-/gun/energy  200 GeV
-/gun/momentum   -9.995833854   0.    199.7500520
+#/gun/energy  200 GeV
+#/gun/momentum   -9.995833854   0.    199.7500520
 #/gun/energy  100 GeV
 #/gun/momentum   -4.9979169   0.       99.875 
 #/gun/momentum   -0.49979169   0.       9.9875 
@@ -189,7 +189,7 @@
 
 #
 # GEMC/BNL version
-#/generator/select pythiaAscii
+/generator/select pythiaAscii
 #/generator/pythiaAscii/verbose 1
 #/generator/pythiaAscii/open  pythia1pis.txt
 #/generator/pythiaAscii/open  /home/yulia/yulia/TestVTXhmc/build.newnewOK/pythiaBeautyDIS100.txt

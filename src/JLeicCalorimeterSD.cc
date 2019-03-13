@@ -208,7 +208,7 @@ JLeicCalorimeterSD::~JLeicCalorimeterSD()
   printf("JLeicCalorimeterSD():: Deleted dedx_fadc ...  \n");
 
   if (send_farmes_tcp) tcp_main(3);
-
+  fm->Close(); fm1->Close();
  delete fm; delete fm1; 
  printf("JLeicCalorimeterSD():: Done ...  \n");
    

@@ -118,6 +118,8 @@
 
 #define USE_FARFORWARD_GEM
 
+#define USE_FARFORWARD_VP
+
 //--------barrel------
 //#define  USE_VTX0 1   // for simple vtx geom
 //#define USE_VTX_E 1   // for vxt endcaps 
@@ -2218,7 +2220,7 @@ for (j=0; j<50; j++) {
  //====================================================================================
  //==                          GEM DETECTOR VOLUME  after  D2                      ==
  //====================================================================================
-#
+
 #ifdef USE_FARFORWARD_GEM
 
   fGEM_FARFORWD_SizeRin=0*cm;
@@ -2274,6 +2276,52 @@ for (j=0; j<50; j++) {
   }
  
 #endif
+
+#ifdef USE_FARFORWARD_VP
+
+//====================================================================================
+ //==                          VIRTUAL PLANES                                      ==
+ //====================================================================================
+
+  fFARFORWARD_VP_Rout=90*cm;
+  fFARFORWARD_VP_SizeZ=1*cm;
+  fFARFORWARD_VP_X=0.;
+  fFARFORWARD_VP_Z=0.;
+  fFARFORWARD_VP_angle=0.;
+//   float fSolid_ffqsSizeZ[100],  fSolid_ffqsRin[100],  fSolid_ffqsRout[100];
+//  float  fSolid_ffqsX[100], fSolid_ffqsY[100],fSolid_ffqsZ[100];
+
+   fSolid_FARFORWARD_VP= new G4Tubs("VP_FARFORWD_solid",0.,fFARFORWARD_VP_Rout, fFARFORWARD_VP_SizeZ/2.,0.,360*deg);                         
+  fLogic_FARFORWARD_VP = new G4LogicalVolume( fSolid_FARFORWARD_VP,  ffqsMaterial_G,  "VP_FARFORWD_logic");	
+
+  int myid;
+   for(int id=0;id<20;id++){ 
+     if(strcmp(fSolid_ffqsNAME[id],"iQDS1a")!=0) { continue; } 
+     else { myid=id;}  
+   }   
+ 
+   printf("found iBDS1a =%s  Z=%f dZ=%f \n",fSolid_ffqsNAME[myid],fSolid_ffqsZ[myid], fSolid_ffqsSizeZ[myid]);
+   fFARFORWARD_VP_Z=fSolid_ffqsZ[myid] *m -  fSolid_ffqsSizeZ[myid]/2*m -  fFARFORWARD_VP_SizeZ/2-2*cm; 
+   fFARFORWARD_VP_X=  fSolid_ffqsX[myid] *m +20*cm; 
+        
+   fPhysics_FARFORWARD_VP  = new G4PVPlacement(G4Transform3D(brm_hd[myid], G4ThreeVector( fFARFORWARD_VP_X,0,fFARFORWARD_VP_Z)), "VP_FARFORWD_physics_1",fLogic_FARFORWARD_VP, 		
+                                 fPhysicsWorld, false,	0 );
+
+   fFARFORWARD_VP_Z=fSolid_ffqsZ[myid] *m +  fSolid_ffqsSizeZ[myid]/2*m +  fFARFORWARD_VP_SizeZ/2+ 5*cm; 
+   fFARFORWARD_VP_X=  fSolid_ffqsX[myid] *m +20*cm;
+   fPhysics_FARFORWARD_VP  = new G4PVPlacement(G4Transform3D(brm_hd[myid], G4ThreeVector( fFARFORWARD_VP_X,0,fFARFORWARD_VP_Z)), "VP_FARFORWD_physics_2",fLogic_FARFORWARD_VP, 		
+                                 fPhysicsWorld, false,	0 );
+	
+	
+  vvpf1= new G4VisAttributes(G4Color(0.9,0.3,0.,1.));
+  vvpf1->SetLineWidth(1); vvpf1->SetForceSolid(true);
+  fLogic_FARFORWARD_VP->SetVisAttributes(vtpc1);
+  
+  // if ( fLogic_FARFORWARD_VP)   fLogic_FARFORWARD_VP->SetSensitiveDetector(fCalorimeterSD);
+  
+#endif
+  
+
 
 
 //=========================================================================
@@ -2848,6 +2896,14 @@ void  JLeicDetectorConstruction::CreateQuad(int j, char *ffqsNAME, float ffqsSiz
      //fZ1=ffqsZ1Di[j]; 
   // printf(" FFQs name %s, Z=%f, L=%f, R=%f \n",ffqnameDi[j], ffqsZ1Di[j],  ffqsSizeZDi[j], ffqsRoutDi[j]);
  
+   sprintf(fSolid_ffqsNAME[j],"%s",ffqsNAME);
+   fSolid_ffqsSizeZ[j]= ffqsSizeZDi;
+   fSolid_ffqsRin[j]=ffqsRinDi;
+   fSolid_ffqsRout[j]=ffqsRoutDi;
+   fSolid_ffqsX[j]=ffqsX;
+   fSolid_ffqsY[j]=ffqsY;
+   fSolid_ffqsZ[j]=ffqsZ;
+
 
     //--------------------Volumes ---------
     sprintf(abname,"Solid_QUADS_hd_v_%s",ffqsNAME);  
@@ -2863,7 +2919,7 @@ void  JLeicDetectorConstruction::CreateQuad(int j, char *ffqsNAME, float ffqsSiz
     sprintf(abname,"Solid_QUADS_hd_ir_%s",ffqsNAME); 
     fSolid_QUADS_hd_ir[j] = new G4Tubs(abname,  ffqsRinDi*cm, (ffqsRoutDi+0.005)*cm,(ffqsSizeZDi/2.)*m,0.,360*deg);                    
     sprintf(abname,"Logic_QUADS_hd_ir_%s",ffqsNAME);
-    fLogic_QUADS_hd_ir[j] = new G4LogicalVolume(fSolid_QUADS_hd_ir[j],   ffqsMaterial, abname);
+    fLogic_QUADS_hd_ir[j] = new G4LogicalVolume(fSolid_QUADS_hd_ir[j], ffqsMaterial, abname);
     sprintf(abname,"Physics_QUADS_hd_ir_%s",ffqsNAME);                                      
     fPhysics_QUADS_hd_ir[j] = new G4PVPlacement(0,G4ThreeVector(),abname,fLogic_QUADS_hd_ir[j], fPhysics_QUADS_hd_v[j], false,  0 );     
     fLogic_QUADS_hd_ir[j]->SetVisAttributes(vb1);

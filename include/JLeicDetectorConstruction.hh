@@ -388,6 +388,17 @@ private:
   G4Tubs*             fSolidGEM_FARFORWD_Lay;    //pointer to the solid  FARFORWD lay
   G4LogicalVolume*    fLogicGEM_FARFORWD_Lay;    //pointer to the logical FARFORWD  lay
   G4VPhysicalVolume*  fPhysicsGEM_FARFORWD_Lay;    //pointer to the physical FARFORWD  lay
+ //-----------------FARFORWARD VIRTUAL VOLUMES--------------------
+  G4VisAttributes *vvpf1; 
+	
+ 
+  G4double            fFARFORWARD_VP_Rout, fFARFORWARD_VP_angle;
+  G4double            fFARFORWARD_VP_SizeZ;
+  G4double            fFARFORWARD_VP_X,fFARFORWARD_VP_Z;
+ 
+  G4Tubs*             fSolid_FARFORWARD_VP;    //pointer to the solid  FARFORWD
+  G4LogicalVolume*    fLogic_FARFORWARD_VP;    //pointer to the logical FARFORWD
+  G4VPhysicalVolume*  fPhysics_FARFORWARD_VP;    //pointer to the physical FARFORWD
  //-----------------FORWARD Si D1  volume--------------------
    // ----- A----
  G4double            fSI_FORWDD1a_SizeRin;
@@ -571,6 +582,12 @@ private:
   G4PVPlacement *fPhysics_QUADS_hd_v[100],*fPhysics_QUADS_hd_ir[100],*fPhysics_QUADS_hd_m[100];
   G4FieldManager* fieldMgr_QUADS_hd[100];
    G4RotationMatrix brm_hd[100];
+
+  char  fSolid_ffqsNAME[100][256];
+  float fSolid_ffqsSizeZ[100],  fSolid_ffqsRin[100],  fSolid_ffqsRout[100];
+  float  fSolid_ffqsX[100], fSolid_ffqsY[100],fSolid_ffqsZ[100];
+
+
 //---------------- BEAM ASOLENOID -------------------------------------------
   G4Tubs *fSolid_ASOLENOID_hd_v[40], *fSolid_ASOLENOID_hd_ir[40],*fSolid_ASOLENOID_hd_m[40];  
   G4LogicalVolume *fLogic_ASOLENOID_hd_v[40],*fLogic_ASOLENOID_hd_ir[40],*fLogic_ASOLENOID_hd_m[40]; 

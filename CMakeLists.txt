@@ -1,6 +1,6 @@
 #----------------------------------------------------------------------------
 # Setup the project
-cmake_minimum_required(VERSION 2.6 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
 project(g4e)
 
 #----------------------------------------------------------------------------
@@ -14,6 +14,7 @@ if(WITH_GEANT4_UIVIS)
 else()
   find_package(Geant4 REQUIRED)
 endif()
+message(STATUS "g4e: Geant4_DIR: ${Geant4_DIR}")
 
 
 #----------------------------------------------------------------------------
@@ -47,10 +48,10 @@ if(EXISTS ${VGM_DIR})
     message(STATUS "jleic-geant: cmake VGM_DIR provided: ${VGM_DIR}")
 elseif(EXISTS $ENV{VGM_DIR})
     set(VGM_DIR $ENV{VGM_DIR})
-    message(STATUS "jleic-geant: VGM_DIR set from environemnt ${VGM_DIR}")
+    message(STATUS "g4e: VGM_DIR set from environemnt ${VGM_DIR}")
 else()
-    message(STATUS "jleic-geant: No cmake VGM_DIR nor env:VGM_DIR provided")
-    message(STATUS "jleic-geant: Build will try to locate VGMConfig.cmake or FindVGM.cmake")
+    message(STATUS "g4e: No cmake VGM_DIR nor env:VGM_DIR provided")
+    message(STATUS "g4e: Build will try to locate VGMConfig.cmake or FindVGM.cmake")
 endif()
 
 find_library(VGM_Geant4GM NAMES Geant4GM HINTS ${VGM_DIR} PATH_SUFFIXES lib lib64)
@@ -86,7 +87,7 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
-add_executable(JLEICgeant4 JLEICgeant4.cc ${sources} ${headers})
+add_executable(g4e JLEICgeant4.cc ${sources} ${headers})
 target_link_libraries(JLEICgeant4
         ${Geant4_LIBRARIES}
         ${HEPMC_LIBRARIES}

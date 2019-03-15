@@ -241,8 +241,8 @@
 #
 #--------------------------------------------------------------------
 /generator/select hepmcAscii
-#/generator/hepmcAscii/open /data/yulia/yulia-PCbackup/Herwig7/test/EIC_DIS.hepmc 
-/generator/hepmcAscii/open pythia8_CCdis.hepmc
+/generator/hepmcAscii/open /data/yulia/yulia-PCbackup/Herwig7/test/EIC_DIS.hepmc
+#/generator/hepmcAscii/open pythia8_CCdis.hepmc
 #---------old------------------
 #/generator/hepmcAscii/open   /home/yulia/work/Herwig6_HepMC/DATA/herwig6_P19000_Q10_N1e+05_e-p10x100.hepmc
 #/generator/hepmcAscii/open  /home/yulia/work/Herwig6_HepMC/DATA/herwig6_P19000_Q2_N1e+06_e-p10x100.hepmc

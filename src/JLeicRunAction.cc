@@ -63,13 +63,23 @@ static TH2F *hmatrixOccupCM[120];
  
 //////////////////////////////////////////////////////////////////////////////
 
-JLeicRunAction::JLeicRunAction(JLeicDetectorConstruction* DET):detector (DET),histName("histfile"),nbinStep(0),nbinEn(0),nbinTt(0),nbinTb(0),
-   nbinTsec(0),nbinTh(0),nbinThback(0),nbinR(0),nbinGamma(0),
-   nbinvertexz(0)
+JLeicRunAction::JLeicRunAction(JLeicDetectorConstruction* DET):
+        histName("histfile"),
+        detector (DET),
+        nbinStep(0),
+        nbinEn(0),
+        nbinTt(0),
+        nbinTb(0),
+        nbinTsec(0),
+        nbinTh(0),
+        nbinThback(0),
+        nbinR(0),
+        nbinGamma(0),
+        nbinvertexz(0)
 {
   runMessenger = new JLeicRunMessenger(this);
-  saveRndm = 1;  
-  //printf(" primary=%s\n",JLeicPrimaryGeneratorAction::GetPrimaryName().c_str());
+  saveRndm = 1;
+
 }
 
 ////////////////////////////////////////////////////////////////////////////

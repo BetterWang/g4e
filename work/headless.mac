@@ -1,0 +1,13 @@
+# This is headless configuration to process some file and exit
+# run it like '
+
+/control/execute jleic.mac
+
+/generator/select hepmcAscii
+/generator/hepmcAscii/open /home/romanov/eic/g4e/EIC_DIS.hepmc
+
+
+/run/initialize
+/run/beamOn 1000
+
+exit

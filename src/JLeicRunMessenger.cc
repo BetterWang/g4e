@@ -256,9 +256,10 @@ JLeicRunMessenger::~JLeicRunMessenger()
 
 void JLeicRunMessenger::SetNewValue(G4UIcommand* command,G4String newValues)
 {
-  if( command == sethistNameCmd)
-    runAction
-    ->SethistName(newValues) ;
+  if(command == sethistNameCmd) {
+    runAction->SethistName(newValues);
+  }
+
     
   if( command == setnbinStepCmd)
     runAction

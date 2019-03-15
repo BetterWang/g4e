@@ -158,16 +158,9 @@ namespace g4e
 
         ~RootOutput()
         {
-            printf("OK, save_hits_root ...  \n");
 
-            //EVENT_HITS->SetDirectory(fhits);
-            fhits->cd();
-            printf("JLeicCalorimeterSD():: OK, save_hits_root cd() ...  \n");
-            EVENT_VECT->Write();
-            printf("OK, save_hits_root Write() ...  \n");
-            //fhits->Close();
-            printf("OK, save_hits_root close() ...  \n");
-            printf("JLeicCalorimeterSD():: Close hits file ...  \n");
+
+
         }
 
         void AddHit(
@@ -311,6 +304,14 @@ namespace g4e
             printf("Fill hits tree ....ev=%d  Nhits=%d  Ntracks=%d \n", event_num, hit_size, track_size);
             EVENT_VECT->Fill();
 
+        }
+
+        void Close()
+        {
+            EVENT_VECT->SetDirectory(fhits);
+            EVENT_VECT->Write();
+            fhits->Close();
+            delete fhits;
         }
 
     private:

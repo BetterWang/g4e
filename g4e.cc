@@ -48,102 +48,123 @@
 #include "JLeicTrackingAction.hh"
 
 #ifdef G4VIS_USE
+
 #include "G4VisExecutive.hh"
+
 #endif
 
 #ifdef G4UI_USE
+
 #include "G4UIExecutive.hh"
+
 #endif
 
 //-- physics processes --
 #include "FTFP_BERT.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
- 
-int main(int argc,char** argv) 
+#include "clara.hh"
+
+/// Program Configuration provided by arguments
+struct ProgramArgConfig
+{
+    bool ShowGui = false;
+    std::vector<std::string> FileNames;
+};
+
+
+int main(int argc, char **argv)
 {
 
-  //choose the Random engine
+    using namespace clara;
 
-  CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine);
-  
-  //my Verbose output class
+    ProgramArgConfig config;
 
-  G4VSteppingVerbose::SetInstance(new JLeicSteppingVerbose);
-    
-  // Construct the default run manager
+    bool showHelp = false;
+    auto parser = Help( showHelp )
+            | Opt( config.ShowGui)
+                ["--gui"]["-g"]("Shows Geant4 GUI" )
 
-  G4RunManager * runManager = new G4RunManager;
+            | Arg( config.FileNames, "<your>.mac" )
+                ( "Runs Geant4 with this file" );
 
-  // set mandatory initialization classes
-
-  JLeicDetectorConstruction* detector;
-  detector = new JLeicDetectorConstruction;
-
-  // ALICEDetectorConstruction* detector;
-  // detector = new ALICEDetectorConstruction;
-
-  runManager->SetUserInitialization(detector);
-  runManager->SetUserInitialization(new JLeicPhysicsList(detector));
- 
-  // set user action classes
-
-  JLeicRunAction* runAction = new JLeicRunAction(detector); 
-  runManager->SetUserAction(runAction);
-
-  runManager->SetUserAction(new JLeicPrimaryGeneratorAction(detector,runAction));
+    parser.parse(Args(argc, argv));
 
 
-  JLeicEventAction* eventAction = new JLeicEventAction(runAction);
+    //choose the Random engine
+    CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine);
 
-  runManager->SetUserAction(eventAction);
+    //my Verbose output class
+    G4VSteppingVerbose::SetInstance(new JLeicSteppingVerbose);
 
-  JLeicSteppingAction* steppingAction = new JLeicSteppingAction(detector,
-                                                            eventAction, 
-                                                            runAction);
-  runManager->SetUserAction(steppingAction);
+    // Construct the default run manager
+    auto runManager = new G4RunManager;
 
+    auto detector = new JLeicDetectorConstruction();
 
-  runManager->SetUserAction( new JLeicTrackingAction );
+    // ALICEDetectorConstruction* detector;
+    // detector = new ALICEDetectorConstruction;
 
+    runManager->SetUserInitialization(detector);
+    runManager->SetUserInitialization(new JLeicPhysicsList(detector));
 
-  G4UImanager* UI = G4UImanager::GetUIpointer();  
+    // == - set user action classes - ==
 
-  if (argc!=1)   // batch mode  
+    // RUN action
+    auto runAction = new JLeicRunAction(detector);
+    runManager->SetUserAction(runAction);
+
+    // Primary Generator
+    auto pgAction = new JLeicPrimaryGeneratorAction(detector, runAction);
+    runManager->SetUserAction(pgAction);
+
+    // Event action
+    auto eventAction = new JLeicEventAction(runAction);
+    runManager->SetUserAction(eventAction);
+
+    // Stepping action
+    auto steppingAction = new JLeicSteppingAction(detector, eventAction, runAction);
+    runManager->SetUserAction(steppingAction);
+
+    // Tracking action
+    auto trackingAction = new JLeicTrackingAction();
+    runManager->SetUserAction(trackingAction);
+
+    G4UImanager *UI = G4UImanager::GetUIpointer();
+
+    if (!config.FileNames.empty())      // We have some user defined file
     {
-     G4String command = "/control/execute ";
-     G4String fileName = argv[1];
-     UI->ApplyCommand(command+fileName);
+        std::string fileName(argv[1]);
+        std::string command("/control/execute " + fileName);
+        UI->ApplyCommand(command);
     }
-    
-  else           //define visualization and UI terminal for interactive mode
-    { 
-#ifdef G4VIS_USE
-   G4VisManager* visManager = new G4VisExecutive;
-   visManager->Initialize();
-#endif    
-     
-#ifdef G4UI_USE
-      G4UIExecutive * ui = new G4UIExecutive(argc,argv);      
-#ifdef G4VIS_USE
-      //  UI->ApplyCommand("/control/execute vis.mac");     
-        UI->ApplyCommand("/control/execute jleicvis.mac");     
-      //  UI->ApplyCommand("/control/execute jleic.mac");     
-#endif
-      ui->SessionStart();
-      delete ui;
-#endif
-     
-#ifdef G4VIS_USE
-     delete visManager;
-#endif     
-    } 
- 
-  // job termination
-  // 
-  delete runManager;
 
-  return 0;
+    // We start visual mode if no files provided or if --gui flag is given
+    if(config.FileNames.empty() || config.ShowGui)
+    {
+#ifdef G4VIS_USE
+        auto visManager = new G4VisExecutive;
+        visManager->Initialize();
+#endif
+
+#ifdef G4UI_USE
+        auto *ui = new G4UIExecutive(argc, argv);
+    #ifdef G4VIS_USE
+            UI->ApplyCommand("/control/execute jleicvis.mac");
+    #endif
+        ui->SessionStart();
+        delete ui;
+#endif
+
+#ifdef G4VIS_USE
+        delete visManager;
+#endif
+    }
+
+    // job termination
+    //
+    delete runManager;
+
+    return 0;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

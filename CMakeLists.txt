@@ -16,6 +16,7 @@ else()
 endif()
 message(STATUS "g4e: Geant4_DIR: ${Geant4_DIR}")
 
+set (CMAKE_CXX_STANDARD 14)
 
 #----------------------------------------------------------------------------
 # Setup Geant4 include directories and compile definitions
@@ -87,7 +88,7 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
-add_executable(g4e JLEICgeant4.cc ${sources} ${headers} include/JLeicRootOutput.hh)
+add_executable(g4e g4e.cc ${sources} ${headers} include/JLeicRootOutput.hh)
 target_link_libraries(g4e
         ${Geant4_LIBRARIES}
         ${HEPMC_LIBRARIES}
@@ -99,7 +100,9 @@ target_link_libraries(g4e
         $ENV{ROOTSYS}/lib/libCore.so
         $ENV{ROOTSYS}/lib/libRIO.so
         $ENV{ROOTSYS}/lib/libHist.so
-        $ENV{ROOTSYS}/lib/libTree.so)
+        $ENV{ROOTSYS}/lib/libTree.so
+        -lstdc++fs
+        )
 #${HEPMC_FIO_LIBRARIES}
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we

@@ -1,3 +1,5 @@
+#include <memory>
+
 //
 // Created by romanov on 3/14/19.
 //
@@ -14,17 +16,90 @@ namespace g4e
 {
     class RootOutput {
 
-        struct Hit {
+        struct HitIo {
+            void BindToTree(TTree *tree)
+            {
+                tree->Branch("hit_count", &HitsCount, "hit_count/l");
+                tree->Branch("hit_id", &IdVect);
+                tree->Branch("hit_vol_name", &VolumeNameVect);
+                tree->Branch("hit_x", &XPosVect);
+                tree->Branch("hit_y", &YPosVect);
+                tree->Branch("hit_z", &ZPosVect);
+                tree->Branch("hit_i_rep", &IRepVect);
+                tree->Branch("hit_j_rep", &JRepVect);
+                tree->Branch("hit_e_loss", &ELossVect);
+            }
 
+            void Clear()
+            {
+                HitsCount = 0;
+                XPosVect.clear();
+                YPosVect.clear();
+                ZPosVect.clear();
+                ELossVect.clear();
+                IdVect.clear();
+                IRepVect.clear();
+                JRepVect.clear();
+                VolumeNameVect.clear();
+            }
 
+            uint64_t HitsCount;
+            std::vector <uint64_t> IdVect;
+            std::vector <double> XPosVect;
+            std::vector <double> YPosVect;
+            std::vector <double> ZPosVect;
+            std::vector <double> ELossVect;
+            std::vector <uint64_t> IRepVect;
+            std::vector <uint64_t> JRepVect;
+            std::vector <std::string> VolumeNameVect;
         };
 
-        struct Track {
+        struct TrackIo {
 
+            void BindToTree(TTree* tree)
+            {
+                tree->Branch("trk_count", &TrackCount, "trk_count/l");
+                tree->Branch("trk_id", &IdVect);
+                tree->Branch("trk_pdg", &PdgVect);
+                tree->Branch("trk_part_id", &ParticleIdVect);
+                tree->Branch("trk_vtx_x", &XVtxVect);
+                tree->Branch("trk_vtx_y", &YVtxVect);
+                tree->Branch("trk_vtx_z", &ZVtxVect);
+                tree->Branch("trk_vtx_dir_x", &XDirVtxVect);
+                tree->Branch("trk_vtx_dir_y", &YDirVtxVect);
+                tree->Branch("trk_vtx_dir_z", &ZDirVtxVect);
+                tree->Branch("trk_mom", &MomentumVect);
+            }
+
+            void Clear()
+            {
+                TrackCount = 0;
+                IdVect.clear();
+                ParticleIdVect.clear();
+                PdgVect.clear();
+                XVtxVect.clear();
+                YVtxVect.clear();
+                ZVtxVect.clear();
+                XDirVtxVect.clear();
+                YDirVtxVect.clear();
+                ZDirVtxVect.clear();
+                MomentumVect.clear();
+            }
+
+            size_t TrackCount;
+            std::vector <uint64_t> IdVect;
+            std::vector <uint64_t> ParticleIdVect;
+            std::vector <uint64_t> PdgVect;
+            std::vector <double> XVtxVect;
+            std::vector <double> YVtxVect;
+            std::vector <double> ZVtxVect;
+            std::vector <double> XDirVtxVect;
+            std::vector <double> YDirVtxVect;
+            std::vector <double> ZDirVtxVect;
+            std::vector <double> MomentumVect;
         };
 
-        struct VertexIo
-        {
+        struct VertexIo {
             void BindToTree(TTree *tree)
             {
                 tree->Branch("prime_vtx_count", &VertexCount, "prime_vtx_count/l");
@@ -78,7 +153,6 @@ namespace g4e
                 tree->Branch("prime_part_polariz_x", &PolXVect);
                 tree->Branch("prime_part_polariz_y", &PolYVect);
                 tree->Branch("prime_part_polariz_z", &PolZVect);
-
             }
 
             void Clear()
@@ -119,78 +193,60 @@ namespace g4e
         };
 
     public:
-        void Initialize(const std::string &fileName)
+        void Initialize(TFile *file)
+
         {
             printf("JLeicCalorimeterSD():: book Tree  for hitss \n");
             printf("JLeicCalorimeterSD():: SAVE Matrix file jleic_geant_hits.root \n");
-            fhits = new TFile(fileName.c_str(), "RECREATE");
 
             //--- Vector Branches -----
+            mRootFile = file;
+            mEventTree = new TTree("event", "a Tree with vect");
+            mEventTree->SetDirectory(file);
 
-            EVENT_VECT = new TTree("event", "a Tree with vect");
 
-            EVENT_VECT->Branch("event_num", &event_num, "event_num/I");
-            EVENT_VECT->Branch("hit_size", &hit_size, "hit_size/I");
-            EVENT_VECT->Branch("trackID", &trackID);
-            EVENT_VECT->Branch("DetectorName", &DetectorName);
-            EVENT_VECT->Branch("xpos", &xpos);
-            EVENT_VECT->Branch("ypos", &ypos);
-            EVENT_VECT->Branch("zpos", &zpos);
-            EVENT_VECT->Branch("ipos", &ipos);
-            EVENT_VECT->Branch("jpos", &jpos);
-            EVENT_VECT->Branch("dedx", &dedx);
+            mEventTree->Branch("event_id", &mEventId, "event_id/l");
 
-            EVENT_VECT->Branch("track_size", &track_size, "track_size/I");
-            EVENT_VECT->Branch("trkID", &trkID);
-            EVENT_VECT->Branch("trkPDG", &trkPDG);
-            EVENT_VECT->Branch("parID", &parID);
-            EVENT_VECT->Branch("xvtx", &xvtx);
-            EVENT_VECT->Branch("yvtx", &yvtx);
-            EVENT_VECT->Branch("zvtx", &zvtx);
-            EVENT_VECT->Branch("pxvtx", &pxvtx);
-            EVENT_VECT->Branch("pyvtx", &pyvtx);
-            EVENT_VECT->Branch("pzvtx", &pzvtx);
-            EVENT_VECT->Branch("trkMom", &trkMom);
-
-            mParticleIo.BindToTree(EVENT_VECT);
-            fVertexIo.BindToTree(EVENT_VECT);
+            mHitIo.BindToTree(mEventTree);          // Create branches for hits
+            mTrackIo.BindToTree(mEventTree);        // Create branches for tracks
+            mParticleIo.BindToTree(mEventTree);     // Create branches for primary particles
+            mPrimeVertexIo.BindToTree(mEventTree);  // Create branches for primary vertexes
         }
 
-        ~RootOutput()
+        void ClearForNewEvent()
         {
-
-
-
+            mHitIo.Clear();
+            mTrackIo.Clear();
+            mParticleIo.Clear();
+            mPrimeVertexIo.Clear();
         }
 
         void AddHit(
+                uint64_t aTrackId,
                 double aX,
                 double aY,
                 double aZ,
-                double adedx,
-                int aTrackId,
-                int aipos,
-                int ajpos,
-                const std::string &aDetectorName
+                double aELoss,
+                uint64_t aIRep,
+                uint64_t aJRep,
+                const std::string &aVolName
                 )
         {
-
-            xpos.push_back(aX);
-            ypos.push_back(aY);
-            zpos.push_back(aZ);
-            dedx.push_back(adedx);
-            trackID.push_back(aTrackId);
-            ipos.push_back(aipos);
-            jpos.push_back(ajpos);
-            DetectorName.push_back(aDetectorName);
-
-            hit_size = xpos.size();
+            mHitIo.XPosVect.push_back(aX);
+            mHitIo.YPosVect.push_back(aY);
+            mHitIo.ZPosVect.push_back(aZ);
+            mHitIo.ELossVect.push_back(aELoss);
+            mHitIo.IdVect.push_back(aTrackId);
+            mHitIo.IRepVect.push_back(aIRep);
+            mHitIo.JRepVect.push_back(aJRep);
+            mHitIo.VolumeNameVect.push_back(aVolName);
+            mHitIo.HitsCount = mHitIo.XPosVect.size();
         }
 
-        void UpdateTrack(
-                int aTrackId,
-                int aParentId,
-                int aTrackPdg,
+        void AddTrack(
+                uint64_t aTrackId,
+                uint64_t aParentId,
+                uint64_t aTrackPdg,
                 double aXVertex,
                 double aYVertex,
                 double aZVertex,
@@ -198,50 +254,24 @@ namespace g4e
                 double aYMom,
                 double aZMom,
                 double aMom
-                )
+        )
         {
             if(trk_index_by_id.count(aTrackId)) {
                 return;     // We already saved the track with this id. Nothing to do
             }
 
-            trkID.push_back(aTrackId);
-            parID.push_back(aParentId);
-            trkPDG.push_back(aTrackPdg);
-            xvtx.push_back(aXVertex);
-            yvtx.push_back(aYVertex);
-            zvtx.push_back(aZVertex);
-            pxvtx.push_back(aXMom);
-            pyvtx.push_back(aYMom);
-            pzvtx.push_back(aZMom);
-            trkMom.push_back(aMom);
-            trk_index_by_id[aTrackId] = track_size;
-            track_size = trkID.size();
-        }
-
-        void Clear()
-        {
-            hit_size = 0;
-            track_size = 0;
-
-            xpos.clear();
-            ypos.clear();
-            zpos.clear();
-            dedx.clear();
-            trackID.clear();
-            ipos.clear();
-            jpos.clear();
-            DetectorName.clear();
-
-            trkID.clear();
-            parID.clear();
-            trkPDG.clear();
-            xvtx.clear();
-            yvtx.clear();
-            zvtx.clear();
-            pxvtx.clear();
-            pyvtx.clear();
-            pzvtx.clear();
-            trkMom.clear();
+            mTrackIo.IdVect.push_back(aTrackId);
+            mTrackIo.ParticleIdVect.push_back(aParentId);
+            mTrackIo.PdgVect.push_back(aTrackPdg);
+            mTrackIo.XVtxVect.push_back(aXVertex);
+            mTrackIo.YVtxVect.push_back(aYVertex);
+            mTrackIo.ZVtxVect.push_back(aZVertex);
+            mTrackIo.XDirVtxVect.push_back(aXMom);
+            mTrackIo.YDirVtxVect.push_back(aYMom);
+            mTrackIo.ZDirVtxVect.push_back(aZMom);
+            mTrackIo.MomentumVect.push_back(aMom);
+            trk_index_by_id[aTrackId] = 1;
+            mTrackIo.TrackCount = mTrackIo.IdVect.size();
         }
 
         void AddPrimaryVertex(
@@ -254,14 +284,14 @@ namespace g4e
                 double aWeight
         )
         {
-            fVertexIo.IdVect.push_back(aId);
-            fVertexIo.ParticleCountVect.push_back(aParticleCount);
-            fVertexIo.XVect.push_back(aX);
-            fVertexIo.YVect.push_back(aY);
-            fVertexIo.ZVect.push_back(aZ);
-            fVertexIo.TimeVect.push_back(aTime);
-            fVertexIo.WeightVect.push_back(aWeight);
-            fVertexIo.VertexCount = fVertexIo.IdVect.size();
+            mPrimeVertexIo.IdVect.push_back(aId);
+            mPrimeVertexIo.ParticleCountVect.push_back(aParticleCount);
+            mPrimeVertexIo.XVect.push_back(aX);
+            mPrimeVertexIo.YVect.push_back(aY);
+            mPrimeVertexIo.ZVect.push_back(aZ);
+            mPrimeVertexIo.TimeVect.push_back(aTime);
+            mPrimeVertexIo.WeightVect.push_back(aWeight);
+            mPrimeVertexIo.VertexCount = mPrimeVertexIo.IdVect.size();
         }
 
         void AddPrimaryParticle (
@@ -297,54 +327,37 @@ namespace g4e
             mParticleIo.ParticleCount = mParticleIo.IdVect.size();
         }
 
-        void FillEvent(int eventId)
+        void FillEvent(uint64_t eventId)
         {
-            event_num = eventId;
+            mEventId = eventId;
 
-            printf("Fill hits tree ....ev=%d  Nhits=%d  Ntracks=%d \n", event_num, hit_size, track_size);
-            EVENT_VECT->Fill();
+            printf("Fill hits tree ....ev=%d  Nhits=%d  Ntracks=%d \n", mEventId, mHitIo.HitsCount, mTrackIo.TrackCount);
+            mEventTree->Fill();
 
         }
 
-        void Close()
+        void Write()
         {
-            EVENT_VECT->SetDirectory(fhits);
-            EVENT_VECT->Write();
-            fhits->Close();
-            delete fhits;
+            if(mRootFile)
+            {
+                mRootFile->cd();
+                mEventTree->SetDirectory(mRootFile);
+                mEventTree->Write();
+                mRootFile->Flush();
+            }
         }
 
     private:
 
-        TFile *fhits;
+        TFile *mRootFile;
+        TTree *mEventTree;
+        uint64_t mEventId;
 
-        TTree *EVENT_VECT;
-
-        int event_num;
-        size_t hit_size;
-        std::vector <double> xpos;
-        std::vector <double> ypos;
-        std::vector <double> zpos;
-        std::vector <double> dedx;
-        std::vector <int> trackID;
-        std::vector <int> ipos;
-        std::vector <int> jpos;
-        std::vector <std::string> DetectorName;
-
-        size_t track_size;
-        std::vector <int> trkID;
-        std::vector <int> parID;
-        std::vector <int> trkPDG;
-        std::vector <double> xvtx;
-        std::vector <double> yvtx;
-        std::vector <double> zvtx;
-        std::vector <double> pxvtx;
-        std::vector <double> pyvtx;
-        std::vector <double> pzvtx;
-        std::vector <double> trkMom;
         std::map<uint64_t, size_t> trk_index_by_id; // Track vector indexes by track id
 
-        VertexIo fVertexIo;
+        HitIo mHitIo;
+        TrackIo mTrackIo;
+        VertexIo mPrimeVertexIo;
         ParticleIo mParticleIo;
     };
 }

@@ -104,7 +104,8 @@ JLeicCalorimeterSD::JLeicCalorimeterSD(G4String name, JLeicDetectorConstruction 
     }
 
     if (save_hits_root) {
-        fRootOut.Initialize("root_output.jleic.root");
+        mHitsFile = new TFile("root_output.jleic.root", "RECREATE");
+        mRootEventsOut.Initialize(mHitsFile);
     }
 
 
@@ -147,6 +148,14 @@ JLeicCalorimeterSD::JLeicCalorimeterSD(G4String name, JLeicDetectorConstruction 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
 JLeicCalorimeterSD::~JLeicCalorimeterSD() {
+
+    if(mHitsFile)
+    {
+        mRootEventsOut.Write();
+        mHitsFile->Close();
+    }
+
+
     delete[] HitID;
     if (save_frames_root) {
         for (int in = 0; in < 12; in++) { delete hmatrix1[in]; }
@@ -161,7 +170,6 @@ JLeicCalorimeterSD::~JLeicCalorimeterSD() {
 
     if (send_farmes_tcp) tcp_main(3);
 
-    fRootOut.Close();
 
     if(fm)
     {
@@ -229,7 +237,7 @@ void JLeicCalorimeterSD::Initialize(G4HCofThisEvent *) {
 
 
     if (save_hits_root) {
-        fRootOut.Clear();
+        mRootEventsOut.ClearForNewEvent();
     }
 
 
@@ -426,46 +434,38 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
     //	 ,edep/keV,ADC,stepl/um,copyIDx_pre,copyIDy_pre,xstep,ystep,zstep,xinp/um,yinp/um,zinp/um,xend/um,yend/um,zend/um,xloc/um,yloc/um,zloc/um, aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName().c_str());
 
 
-
-
     //--- save hits ------
     if (save_hits_root) {
         if (jDebug > 6)
-            printf("New Hit:: trkID=%d XYZloc (%f,%f,%f) dEdx=%f \n", aStep->GetTrack()->GetTrackID(), xloc, yloc, zloc,
+            printf("New Hit:: IdVect=%d XYZloc (%f,%f,%f) dEdx=%f \n", aStep->GetTrack()->GetTrackID(), xloc, yloc, zloc,
                    edep / keV);
 
         int curTrackID = aStep->GetTrack()->GetTrackID();
-
-        //----------------------------  fill Vectors -------------------------
-        //-- fill hits --
-
         std::string volumeName = theTouchable->GetVolume()->GetName().c_str();
-
-        fRootOut.AddHit(
-               xstep / mm,      /* double aX,*/
-               ystep / mm,      /* double aY,*/
-               zstep / mm,      /* double aZ,*/
-               edep / keV,      /* double adedx,*/
-               curTrackID,      /* int aTrackId,*/
+        mRootEventsOut.AddHit(
+                curTrackID,      /* int aTrackId,*/
+                xstep / mm,      /* double aX,*/
+                ystep / mm,      /* double aY,*/
+                zstep / mm,      /* double aZ,*/
+                edep / GeV,      /* double adedx,*/
                copyIDx_pre,     /* int aipos,*/
                copyIDy_pre,     /* int ajpos,*/
                volumeName       /* string &aDName*/
                );
 
         //-- fill tracks --
-        fRootOut.UpdateTrack(
+        mRootEventsOut.AddTrack(
                 curTrackID,                           /* int aTrackId,*/
                 ParrentID,                            /* int aParentId,*/
                 PDG,                                  /* int aTrackPdg,*/
                 vertex.x() / mm,                      /* double aXVertex,*/
                 vertex.y() / mm,                      /* double aYVertex,*/
                 vertex.z() / mm,                      /* double aZVertex,*/
-                vertexMom.x() * momentum.mag() / GeV, /* double aXMom,*/
-                vertexMom.y() * momentum.mag() / GeV, /* double aYMom,*/
-                vertexMom.z() * momentum.mag() / GeV, /* double aZMom,*/
-                momentum.mag()                        /* double aMom*/
-
-                );
+                vertexMom.x(),                        /* double aXMom,*/
+                vertexMom.y(),                        /* double aYMom,*/
+                vertexMom.z(),                        /* double aZMom,*/
+                momentum.mag() / GeV                  /* double aMom*/
+        );
 
     } //  if (save_hits_root)
 
@@ -571,7 +571,7 @@ void JLeicCalorimeterSD::EndOfEvent(G4HCofThisEvent *HCE) {
             auto primeVtx = evt->GetPrimaryVertex(primeVtxIndex);
 
             // Add primary vertex to root output
-            fRootOut.AddPrimaryVertex(
+            mRootEventsOut.AddPrimaryVertex(
                     (size_t) primeVtxIndex,                    /* size_t aVtxIndex, */
                     (size_t) primeVtx->GetNumberOfParticle(),  /* size_t aParticleCount, */
                     primeVtx->GetX0(),                         /* double aX, */
@@ -584,7 +584,7 @@ void JLeicCalorimeterSD::EndOfEvent(G4HCofThisEvent *HCE) {
             const G4int partCount = primeVtx->GetNumberOfParticle();
             for(G4int partIndex = 0; partIndex < partCount; partIndex++) {
                 auto particle = primeVtx->GetPrimary(partIndex);
-                fRootOut.AddPrimaryParticle(
+                mRootEventsOut.AddPrimaryParticle(
                          particleId,                             /*size_t aId */
                          (size_t)primeVtxIndex,                  /*size_t aPrimeVtxId */
                          (size_t)particle->GetPDGcode(),         /*size_t aPDGCode */
@@ -602,13 +602,10 @@ void JLeicCalorimeterSD::EndOfEvent(G4HCofThisEvent *HCE) {
                         );
 
                 particleId++;
-;
-
             }
         }
 
-
-        fRootOut.FillEvent(evt->GetEventID());
+        mRootEventsOut.FillEvent((uint64_t)evt->GetEventID());
     }
 
 

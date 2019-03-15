@@ -58,39 +58,48 @@
 
 class JLeicCalorimeterSD : public G4VSensitiveDetector
 {
-  public:
-  
-      JLeicCalorimeterSD(G4String, JLeicDetectorConstruction* );
-  ~JLeicCalorimeterSD() ;
+public:
 
-      void Initialize(G4HCofThisEvent*);
-      G4bool ProcessHits(G4Step*,G4TouchableHistory*);
-      void EndOfEvent(G4HCofThisEvent*);
-      void clear();
-      void PrintAll();
-      void hits_reset();
+    JLeicCalorimeterSD(G4String, JLeicDetectorConstruction *);
 
-  private:
-  
-  //G4RunManager* fRM; //=G4RunManager::GetRunManager();
-  JLeicRunAction* runaction; // = fRM->runAction
+    ~JLeicCalorimeterSD() override;
 
-  JLeicCalorHitsCollection*  CalCollection;      
-  JLeicDetectorConstruction* Detector;
-  G4int*                   HitID;
-  G4double dEslice[100];
-  TH2F *hmatrix1[120],*hmatrix2;
-  TH1F *dedx_fadc;
-  int nevent;
-  G4int ntr , ntr1, ntr2, ntr3;
-  int N_bin,char_sh; 
-  TH2F  *hist_charge[45+1];
-  TFile* fm,*fm1;
+    void Initialize(G4HCofThisEvent *) override;
 
- //----- EVENT STRUCTURE -----
-  g4e::RootOutput fRootOut;
-  
-  //---------------------------
+    G4bool ProcessHits(G4Step *, G4TouchableHistory *) override;
+
+    void EndOfEvent(G4HCofThisEvent *) override;
+
+    void clear() override;
+
+    void PrintAll() override;
+
+    void hits_reset();
+
+private:
+
+    //G4RunManager* fRM; //=G4RunManager::GetRunManager();
+    JLeicRunAction *runaction; // = fRM->runAction
+
+    JLeicCalorHitsCollection *CalCollection;
+    JLeicDetectorConstruction *Detector;
+    G4int *HitID;
+    G4double dEslice[100];
+    TH2F *hmatrix1[120], *hmatrix2;
+    TH1F *dedx_fadc;
+    int nevent;
+    G4int ntr, ntr1, ntr2, ntr3;
+    int N_bin, char_sh;
+    TH2F *hist_charge[45 + 1];
+    TFile *fm, *fm1;
+
+
+    //----- EVENT STRUCTURE -----
+    g4e::RootOutput mRootEventsOut;
+    TFile * mHitsFile = nullptr;
+
+    //---------------------------
 };
+
 #endif
 

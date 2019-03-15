@@ -77,7 +77,7 @@ void PythiaInterface::PyMC2G4(const PythiaAsciiReader* py,
   for(int ip=0; ip<Np; ip++) {  // loop for particles ...
 
     // check world boundary
-    //G4LorentzVector xvtx(py->V[0][ip],py->V[1][ip],py->V[2][ip],py->V[3][ip]);
+    //G4LorentzVector XVtxVect(py->V[0][ip],py->V[1][ip],py->V[2][ip],py->V[3][ip]);
     G4LorentzVector xvtx(py->pyEvt.at(ip).V);
 
     if (! CheckVertexInsideWorld(xvtx.vect())) { printf("PyMC2G4: vtx outside world ip=%d\n",ip); continue;}

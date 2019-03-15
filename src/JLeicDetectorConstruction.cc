@@ -2715,7 +2715,7 @@ G4FieldManager *JLeicDetectorConstruction::SetDipoleMagField(G4double fx, G4doub
     fieldMgr->SetMaximumEpsilonStep(maxEps);
     fieldMgr->SetDeltaOneStep(0.5 * um); // 0.5 micrometer
     return fieldMgr;
-//  new G4PVPlacement(0, G4ThreeVector(0,0,zpos*cm), lMagField, "Magnet",fLogicWorld, false, 0);
+//  new G4PVPlacement(0, G4ThreeVector(0,0,ZPosVect*cm), lMagField, "Magnet",fLogicWorld, false, 0);
 }
 ///////////////////////////////////////////////////////////////////////////////
 //

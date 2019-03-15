@@ -38,9 +38,12 @@
 #include "G4VSensitiveDetector.hh"
 #include "globals.hh"
 
-#include "JLeicDetectorConstruction.hh"
 #include "G4HCofThisEvent.hh"
 #include "G4Step.hh"
+
+#include "JLeicDetectorConstruction.hh"
+#include "JLeicRootOutput.hh"
+
 //class JLeicDetectorConstruction;
 //class G4HCofThisEvent;
 //class G4Step;
@@ -82,36 +85,10 @@ class JLeicCalorimeterSD : public G4VSensitiveDetector
   G4int ntr , ntr1, ntr2, ntr3;
   int N_bin,char_sh; 
   TH2F  *hist_charge[45+1];
-  TFile* fm,*fm1, *fhits;
+  TFile* fm,*fm1;
 
  //----- EVENT STRUCTURE -----
-  
-  TTree *EVENT_VECT;
-
-  int event_num;
-  int hit_size;
-  std::vector <double> xpos;  
-  std::vector <double> ypos;  
-  std::vector <double> zpos;  
-  std::vector <double> dedx;  
-  std::vector <int> trackID;  
-  std::vector <int> trackNUM; 
-  std::vector <int> planeID;  
-  std::vector <std::string> DetectorName;
-  std::vector <int> ipos;     
-  std::vector <int> jpos;     
-
-  int track_size;
-  std::vector <int> trkID;     
-  std::vector <int> parID;     
-  std::vector <int> trkPDG;    
-  std::vector <double> xvtx;   
-  std::vector <double> yvtx;   
-  std::vector <double> zvtx;   
-  std::vector <double> pxvtx;   
-  std::vector <double> pyvtx;   
-  std::vector <double> pzvtx;   
-  std::vector <double> trkMom; 
+  g4e::RootOutput fRootOut;
   
   //---------------------------
 };

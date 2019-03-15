@@ -87,8 +87,8 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
-add_executable(g4e JLEICgeant4.cc ${sources} ${headers})
-target_link_libraries(JLEICgeant4
+add_executable(g4e JLEICgeant4.cc ${sources} ${headers} include/JLeicRootOutput.hh)
+target_link_libraries(g4e
         ${Geant4_LIBRARIES}
         ${HEPMC_LIBRARIES}
         ${VGM_Geant4GM}
@@ -106,7 +106,7 @@ target_link_libraries(JLEICgeant4
 # build JLEICgeant4. This is so that we can run the executable directly because it
 # relies on these scripts being in the current working directory.
 #
-set(JLEICgeant4_SCRIPTS
+set(g4e_SCRIPTS
        jleic.mac
        jleicvis.mac
   )
@@ -122,5 +122,5 @@ endforeach()
 #----------------------------------------------------------------------------
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
 #
-install(TARGETS JLEICgeant4 DESTINATION bin)
+install(TARGETS g4e DESTINATION bin)
 

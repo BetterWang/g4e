@@ -21,6 +21,7 @@ namespace g4e
             {
                 tree->Branch("hit_count", &HitsCount, "hit_count/l");
                 tree->Branch("hit_id", &IdVect);
+                tree->Branch("hit_trk_id", &TrackIdVect);
                 tree->Branch("hit_vol_name", &VolumeNameVect);
                 tree->Branch("hit_x", &XPosVect);
                 tree->Branch("hit_y", &YPosVect);
@@ -38,6 +39,7 @@ namespace g4e
                 ZPosVect.clear();
                 ELossVect.clear();
                 IdVect.clear();
+                TrackIdVect.clear();
                 IRepVect.clear();
                 JRepVect.clear();
                 VolumeNameVect.clear();
@@ -45,6 +47,7 @@ namespace g4e
 
             uint64_t HitsCount;
             std::vector <uint64_t> IdVect;
+            std::vector <uint64_t> TrackIdVect;
             std::vector <double> XPosVect;
             std::vector <double> YPosVect;
             std::vector <double> ZPosVect;
@@ -222,6 +225,7 @@ namespace g4e
         }
 
         void AddHit(
+                uint64_t aHitId,
                 uint64_t aTrackId,
                 double aX,
                 double aY,
@@ -232,11 +236,12 @@ namespace g4e
                 const std::string &aVolName
                 )
         {
+            mHitIo.IdVect.push_back(aHitId);
             mHitIo.XPosVect.push_back(aX);
             mHitIo.YPosVect.push_back(aY);
             mHitIo.ZPosVect.push_back(aZ);
             mHitIo.ELossVect.push_back(aELoss);
-            mHitIo.IdVect.push_back(aTrackId);
+
             mHitIo.IRepVect.push_back(aIRep);
             mHitIo.JRepVect.push_back(aJRep);
             mHitIo.VolumeNameVect.push_back(aVolName);

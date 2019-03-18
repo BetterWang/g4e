@@ -241,7 +241,8 @@
 #
 #--------------------------------------------------------------------
 /generator/select hepmcAscii
-/generator/hepmcAscii/open /home/romanov/eic/g4e/EIC_DIS.hepmc
+#/generator/hepmcAscii/open /home/romanov/eic/g4e/EIC_DIS.hepmc
+/generator/hepmcAscii/open /scratch/romanov/EIC_DIS.hepmc
 #/generator/hepmcAscii/open pythia8_CCdis.hepmc
 #---------old------------------
 #/generator/hepmcAscii/open   /home/yulia/work/Herwig6_HepMC/DATA/herwig6_P19000_Q10_N1e+05_e-p10x100.hepmc
@@ -254,5 +255,5 @@
 #/generator/hepmcAscii/verbose 1
 
 
-# /run/beamOn 1
+/run/beamOn 1000
 exit

@@ -16,7 +16,7 @@ else()
 endif()
 message(STATUS "g4e: Geant4_DIR: ${Geant4_DIR}")
 
-set (CMAKE_CXX_STANDARD 14)
+set (CMAKE_CXX_STANDARD 11)
 
 #----------------------------------------------------------------------------
 # Setup Geant4 include directories and compile definitions
@@ -101,7 +101,6 @@ target_link_libraries(g4e
         $ENV{ROOTSYS}/lib/libRIO.so
         $ENV{ROOTSYS}/lib/libHist.so
         $ENV{ROOTSYS}/lib/libTree.so
-        -lstdc++fs
         )
 #${HEPMC_FIO_LIBRARIES}
 #----------------------------------------------------------------------------

@@ -102,14 +102,14 @@ namespace g4e
         struct VertexIo {
             void BindToTree(TTree *tree)
             {
-                tree->Branch("prime_vtx_count", &VertexCount, "prime_vtx_count/l");
-                tree->Branch("prime_vtx_id", &IdVect);
-                tree->Branch("prime_vtx_particle_count", &ParticleCountVect);
-                tree->Branch("prime_vtx_x", &XVect);
-                tree->Branch("prime_vtx_y", &YVect);
-                tree->Branch("prime_vtx_z", &ZVect);
-                tree->Branch("prime_vtx_time", &TimeVect);
-                tree->Branch("prime_vtx_weight", &WeightVect);
+                tree->Branch("o_vtx_count", &VertexCount, "o_vtx_count/l");
+                tree->Branch("o_vtx_id", &IdVect);
+                tree->Branch("o_vtx_part_count", &ParticleCountVect);
+                tree->Branch("o_vtx_x", &XVect);
+                tree->Branch("o_vtx_y", &YVect);
+                tree->Branch("o_vtx_z", &ZVect);
+                tree->Branch("o_vtx_time", &TimeVect);
+                tree->Branch("o_vtx_weight", &WeightVect);
             }
 
             void Clear()
@@ -138,21 +138,21 @@ namespace g4e
 
             void BindToTree(TTree *tree)
             {
-                tree->Branch("prime_part_count",     &ParticleCount, "prime_part_count/l");
-                tree->Branch("prime_part_id",        &IdVect);
-                tree->Branch("prime_part_vtx_id",    &PrimeVtxIdVect);
-                tree->Branch("prime_part_pdg",       &PDGCodeVect);
-                tree->Branch("prime_part_trk_id",    &TrackIdVect);
-                tree->Branch("prime_part_charge",    &ChargeVect);
-                tree->Branch("prime_part_dir_x",     &MomDirXVect);
-                tree->Branch("prime_part_dir_y",     &MomDirYVect);
-                tree->Branch("prime_part_dir_z",     &MomDirZVect);
-                tree->Branch("prime_part_tot_mom",   &TotalMomentumVect);
-                tree->Branch("prime_part_tot_e",     &TotalEnergyVect);
-                tree->Branch("prime_part_time",      &ProperTimeVect);
-                tree->Branch("prime_part_polariz_x", &PolXVect);
-                tree->Branch("prime_part_polariz_y", &PolYVect);
-                tree->Branch("prime_part_polariz_z", &PolZVect);
+                tree->Branch("o_part_count",     &ParticleCount, "o_part_count/l");
+                tree->Branch("o_part_id",        &IdVect);
+                tree->Branch("o_part_vtx_id",    &PrimeVtxIdVect);
+                tree->Branch("o_part_pdg",       &PDGCodeVect);
+                tree->Branch("o_part_trk_id",    &TrackIdVect);
+                tree->Branch("o_part_charge",    &ChargeVect);
+                tree->Branch("o_part_dir_x",     &MomDirXVect);
+                tree->Branch("o_part_dir_y",     &MomDirYVect);
+                tree->Branch("o_part_dir_z",     &MomDirZVect);
+                tree->Branch("o_part_tot_mom",   &TotalMomentumVect);
+                tree->Branch("o_part_tot_e",     &TotalEnergyVect);
+                tree->Branch("o_part_time",      &ProperTimeVect);
+                tree->Branch("o_part_polariz_x", &PolXVect);
+                tree->Branch("o_part_polariz_y", &PolYVect);
+                tree->Branch("o_part_polariz_z", &PolZVect);
             }
 
             void Clear()

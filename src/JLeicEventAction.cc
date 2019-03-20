@@ -101,7 +101,10 @@ void JLeicEventAction::BeginOfEventAction(const G4Event *evt) {
 void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
     G4HCofThisEvent *HCE = evt->GetHCofThisEvent();
     auto vertex = evt->GetPrimaryVertex(0);
-    G4cout << "vertex particles: " << vertex->GetNumberOfParticle() << G4endl;
+    if(vertex) {
+        G4cout << "vertex particles: " << vertex->GetNumberOfParticle() << G4endl;
+    }
+
     JLeicCalorHitsCollection *CHC = 0;
     if (HCE)
         CHC = (JLeicCalorHitsCollection *) (HCE->GetHC(calorimeterCollID));

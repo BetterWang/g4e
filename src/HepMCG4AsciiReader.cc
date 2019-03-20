@@ -35,37 +35,43 @@
 #include <iostream>
 #include <fstream>
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 HepMCG4AsciiReader::HepMCG4AsciiReader()
-  :  filename("xxx.dat"), verbose(0)
+        : filename(), verbose(0)
 {
-  asciiInput= new HepMC::IO_GenEvent(filename.c_str(), std::ios::in);
+    asciiInput = new HepMC::IO_GenEvent(filename.c_str(), std::ios::in);
 
-  messenger= new HepMCG4AsciiReaderMessenger(this);
+    messenger = new HepMCG4AsciiReaderMessenger(this);
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
 HepMCG4AsciiReader::~HepMCG4AsciiReader()
 {
-  delete asciiInput;
-  delete messenger;
+    delete asciiInput;
+    delete messenger;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
 void HepMCG4AsciiReader::Initialize()
 {
-  delete asciiInput;
+    delete asciiInput;
 
-  asciiInput= new HepMC::IO_GenEvent(filename.c_str(), std::ios::in);
+    // Test that file exists. The {braces} to auto close infile
+    {
+        std::ifstream infile(filename);
+        if(!infile.good()) throw std::runtime_error("HepMCG4AsciiReader:: Can't open input file. It doesn't exists or this proc have no rights/access");
+    }
+
+    asciiInput = new HepMC::IO_GenEvent(filename.c_str(), std::ios::in);
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-HepMC::GenEvent* HepMCG4AsciiReader::GenerateHepMCEvent()
+
+HepMC::GenEvent *HepMCG4AsciiReader::GenerateHepMCEvent()
 {
-  HepMC::GenEvent* evt= asciiInput-> read_next_event();
-  if(!evt) return 0; // no more event
+    HepMC::GenEvent *evt = asciiInput->read_next_event();
 
-  if(verbose>0) evt-> print();
+    if (evt && verbose > 0) {
+        evt->print();
+    }
 
-  return evt;
+    return evt;
 }

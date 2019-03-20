@@ -207,7 +207,6 @@ namespace g4e
             mEventTree = new TTree("events", "a Tree with vect");
             mEventTree->SetDirectory(file);
 
-
             mEventTree->Branch("event_id", &mEventId, "event_id/l");
 
             mHitIo.BindToTree(mEventTree);          // Create branches for hits

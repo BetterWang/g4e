@@ -8,6 +8,6 @@
 
 
 /run/initialize
-/run/beamOn 10
+/run/beamOn 10000
 
 exit

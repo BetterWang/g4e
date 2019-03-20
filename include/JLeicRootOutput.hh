@@ -204,7 +204,7 @@ namespace g4e
 
             //--- Vector Branches -----
             mRootFile = file;
-            mEventTree = new TTree("event", "a Tree with vect");
+            mEventTree = new TTree("events", "a Tree with vect");
             mEventTree->SetDirectory(file);
 
 
@@ -241,7 +241,7 @@ namespace g4e
             mHitIo.YPosVect.push_back(aY);
             mHitIo.ZPosVect.push_back(aZ);
             mHitIo.ELossVect.push_back(aELoss);
-
+            mHitIo.TrackIdVect.push_back(aTrackId);
             mHitIo.IRepVect.push_back(aIRep);
             mHitIo.JRepVect.push_back(aJRep);
             mHitIo.VolumeNameVect.push_back(aVolName);

@@ -221,6 +221,8 @@ namespace g4e
             mTrackIo.Clear();
             mParticleIo.Clear();
             mPrimeVertexIo.Clear();
+
+            trk_index_by_id.clear();
         }
 
         void AddHit(

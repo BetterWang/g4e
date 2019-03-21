@@ -255,5 +255,5 @@
 #/generator/hepmcAscii/verbose 1
 
 
-/run/beamOn 1000
+/run/beamOn 3000
 exit

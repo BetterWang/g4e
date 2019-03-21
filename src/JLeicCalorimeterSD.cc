@@ -101,7 +101,7 @@ JLeicCalorimeterSD::JLeicCalorimeterSD(G4String name, JLeicDetectorConstruction 
     }
 
     if (save_hits_root) {
-        mHitsFile = new TFile("root_output.jleic.root", "RECREATE");
+        mHitsFile = new TFile("g4e_output.root", "RECREATE");
         mRootEventsOut.Initialize(mHitsFile);
     }
 
@@ -444,15 +444,15 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
         int curTrackID = aStep->GetTrack()->GetTrackID();
         std::string volumeName = theTouchable->GetVolume()->GetName().c_str();
         mRootEventsOut.AddHit(
-                mHitsCount,
-                curTrackID,      /* int aTrackId,*/
-                xstep / mm,      /* double aX,*/
-                ystep / mm,      /* double aY,*/
-                zstep / mm,      /* double aZ,*/
-                edep / GeV,      /* double adedx,*/
-               copyIDx_pre,     /* int aipos,*/
-               copyIDy_pre,     /* int ajpos,*/
-               volumeName       /* string &aDName*/
+                 mHitsCount,  /* aHitId */
+                 curTrackID,  /* aTrackId */
+                 xstep / mm,  /* aX */
+                 ystep / mm,  /* aY */
+                 zstep / mm,  /* aZ */
+                 edep / GeV,  /* aELoss */
+                copyIDx_pre,  /* aIRep */
+                copyIDy_pre,  /* aJRep */
+                volumeName    /* aVolNam */
                );
         mHitsCount++;
 

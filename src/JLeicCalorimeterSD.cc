@@ -24,10 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: JLeicCalorimeterSD.cc,v 1.4 2006-06-29 16:38:33 gunter Exp $
-// GEANT4 tag $Name: geant4-09-04-patch-01 $
 //
-// 
 #include <stdio.h>
 #include "G4UserRunAction.hh"
 
@@ -245,6 +242,8 @@ void JLeicCalorimeterSD::Initialize(G4HCofThisEvent *) {
     //printf("JLeicCalorimeterSD()::Initialize 2\n");
     if (use_depfet) for (int ii = 0; ii < (NumRow * NumCol); ii++) FRAME[ii] = 0; //-- 8000;  //-- reset pedestals
     if (use_fdc) dedx_fadc->Reset(" ");
+
+    mHitsCount = 0;
     printf("JLeicCalorimeterSD()::Initialize exit\n");
 }
 
@@ -252,6 +251,8 @@ void JLeicCalorimeterSD::Initialize(G4HCofThisEvent *) {
 
 G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
     if (jDebug > 2) printf("--> JLeicCalorimeterSD::ProcessHits() Enter\n");
+
+
 
     //  const G4TouchableHandle touchablepre[128];
     G4double edep = aStep->GetTotalEnergyDeposit();
@@ -443,6 +444,7 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
         int curTrackID = aStep->GetTrack()->GetTrackID();
         std::string volumeName = theTouchable->GetVolume()->GetName().c_str();
         mRootEventsOut.AddHit(
+                mHitsCount,
                 curTrackID,      /* int aTrackId,*/
                 xstep / mm,      /* double aX,*/
                 ystep / mm,      /* double aY,*/
@@ -452,6 +454,7 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
                copyIDy_pre,     /* int ajpos,*/
                volumeName       /* string &aDName*/
                );
+        mHitsCount++;
 
         //-- fill tracks --
         mRootEventsOut.AddTrack(
@@ -610,6 +613,9 @@ void JLeicCalorimeterSD::EndOfEvent(G4HCofThisEvent *HCE) {
 
 
     if (send_farmes_tcp) tcp_main(2);
+
+    // Total hits/steps per event. Set it back to 0
+    mHitsCount = 0;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....

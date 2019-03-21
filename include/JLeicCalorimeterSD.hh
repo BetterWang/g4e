@@ -93,6 +93,8 @@ private:
     TH2F *hist_charge[45 + 1];
     TFile *fm, *fm1;
 
+    uint_fast64_t mHitsCount = 0;
+
 
     //----- EVENT STRUCTURE -----
     g4e::RootOutput mRootEventsOut;

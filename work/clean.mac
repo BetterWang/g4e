@@ -1,0 +1,65 @@
+#
+#  Macro file 'jleic.mac'
+#  100 GeV init file
+
+#------------------------------------------------------------------------
+# Macro file for the initialization phase
+#------------------------------------------------------------------------
+
+/control/verbose 2
+/run/verbose 2
+/geometry/navigator/verbose 0
+  #
+  # jleic2019 is 100 GeV design
+  #
+/XTRdetector/setup  jleic2019
+
+
+  # these commands do not change energy cuts???
+  #
+  # Set XTR model (default: transpM). Name list consits:
+  # gammaR, gammaM, regR, regM, strawR, transpR, transpM
+  #
+  # R - XTR dE/dx models, M - XTR flux after radiator models
+  #
+/emphyslist/setXTRModel  transpM
+  #/emphyslist/setXTRModel  transpR
+  #/emphyslist/setXTRModel  gammaM
+  #/emphyslist/setXTRModel  gammaR
+  #/emphyslist/setXTRModel  strawR
+  #/emphyslist/setXTRModel  regM
+  #/emphyslist/setXTRModel  regR
+  #
+  #/emphyslist/eMinEnergy 100.
+  #/emphyslist/gMinEnergy 100.
+  #
+  #
+  #/run/particle/applyCuts
+  #
+  # set cuts in XTR radiator
+  #
+/emphyslist/setGammaCut     0.11
+/emphyslist/setElectronCut  0.12
+/emphyslist/setPositronCut  0.13
+/emphyslist/setRadiatorCuts 0.14
+  #
+  # set cuts in XTR detector
+  #
+/emphyslist/setGammaCut    0.020
+/emphyslist/setElectronCut 0.020
+/emphyslist/setPositronCut 0.020
+  #
+/emphyslist/setDetectorCuts 0.020
+
+/generator/select hepmcAscii
+
+#/generator/hepmcAscii/open /home/eicuser/g4e_sample_data/herwig7_eic_dis.hepmc
+/generator/hepmcAscii/open /home/romanov/eic/g4e/EIC_DIS.hepmc
+
+
+/run/initialize
+/run/beamOn 4000
+
+
+
+

@@ -146,8 +146,10 @@ JLeicCalorimeterSD::JLeicCalorimeterSD(G4String name, JLeicDetectorConstruction 
 
 JLeicCalorimeterSD::~JLeicCalorimeterSD() {
 
+
     if(mHitsFile)
     {
+        mHitsFile->cd();
         mRootEventsOut.Write();
         mHitsFile->Close();
     }
@@ -167,23 +169,7 @@ JLeicCalorimeterSD::~JLeicCalorimeterSD() {
 
     if (send_farmes_tcp) tcp_main(3);
 
-
-    if(fm)
-    {
-        fm->Close();
-        delete fm;
-    }
-
-    if(fm1)
-    {
-        fm1->Close();
-        delete fm1;
-    }
-
-
     printf("JLeicCalorimeterSD():: Done ...  \n");
-
-
 }
 
 

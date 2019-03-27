@@ -69,6 +69,7 @@ struct ProgramArgConfig
 {
     bool ShowGui = false;
     std::vector<std::string> FileNames;
+    std::string HepMcInFile;
 };
 
 
@@ -83,7 +84,7 @@ int main(int argc, char **argv)
     auto parser = Help( showHelp )
             | Opt( config.ShowGui)
                 ["--gui"]["-g"]("Shows Geant4 GUI" )
-
+            | Opt(config.HepMcInFile,"Process hepmc files") ["--hepmc-in"]
             | Arg( config.FileNames, "<your>.mac" )
                 ( "Runs Geant4 with this file" );
 
@@ -166,5 +167,3 @@ int main(int argc, char **argv)
 
     return 0;
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

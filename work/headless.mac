@@ -3,12 +3,11 @@
 
 /control/execute jleic.mac
 
-
 /generator/select hepmcAscii
 /generator/hepmcAscii/open /home/romanov/eic/g4e/EIC_DIS.hepmc
 
 
 /run/initialize
-/run/beamOn 100
+/run/beamOn 2000
 
 exit

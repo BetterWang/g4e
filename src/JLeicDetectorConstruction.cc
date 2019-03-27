@@ -99,8 +99,8 @@
 //------- subdetector-volumes H-encap ----- 
 #define USE_H_dRICH
 #define USE_H_EMCAL
-//#define USE_H_ENDCAP_HCAL
-//#define USE_H_ENDCAP_HCAL_D
+#define USE_H_ENDCAP_HCAL
+#define USE_H_ENDCAP_HCAL_D
 //--------E-encap------
 #define USE_E_ENDCAP
 //#define USE_E_ENDCAP_HCAL
@@ -567,7 +567,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
      // G4double fHCAL_HCAP_SizeRo[2]={fHCALbSizeRout,fHCALbSizeRout };
  G4double fHCAL_HCAP_SizeRi=0*cm ;
  G4double fHCAL_HCAP_SizeRo=fHCALbSizeRout;
- G4double  fHCAL_HCAP_SizeZ=150*cm;
+ G4double  fHCAL_HCAP_SizeZ=195*cm;
  G4double  fHCAL_HCAP_Zshift=5*cm;
  // G4double  fHCAL_HCAP_Zcone[2]= {fENDCAP_H_SizeZshift+ fENDCAP_H_SizeZ/2+fHCAL_HCAP_Zshift,fENDCAP_H_SizeZshift+ fENDCAP_H_SizeZ/2+fHCAL_HCAP_SizeZ + fHCAL_HCAP_Zshift} ;
 
@@ -2138,16 +2138,21 @@ sprintf(abname,"Phys_CTD_Straw_layer_Wall");
         fLogic_SI_FORWDD1b_Lay->SetVisAttributes(vsiff);
     }
 
+#endif
 
+#ifdef USE_H_ENDCAP_HCAL
 
     //------------------------------------------------------------------
-    // Ecal module  Dipole1
+    // Ecal module  AFTER !!!   Dipole1 
     //-------------------------------------------------------------------
 
     double fEcalLength_D1 = 40. * cm;
     double fEcalWidth_D1 = 4. * cm;
     G4double gap_D1 = 0.01 * mm;
-
+    G4double angle_D1=0.05;
+    G4RotationMatrix brm_emd1;
+     brm_emd1.rotateY(angle_D1 * rad);
+ 
 
     // fEMCALeMaterial= fMat->GetMaterial("DSBCe");
     fEMCALeMaterial = fMat->GetMaterial("PbWO4");
@@ -2161,17 +2166,19 @@ sprintf(abname,"Phys_CTD_Straw_layer_Wall");
 
     // Crystals
 
-    x0 = 0 * cm;
+    x0 =0*cm;
     y0 = 0 * cm;
-    R0 = 5. * cm;
+    R0 = 7. * cm;
     y_C = 0;
-    x_C;
+    x_C= 0*cm;
     k = -1;
-    z = fSI_FORWDD1b_SizeZ / 2 - fEcalLength_D1 / 2;
+    float x_C_shift= -35.*cm;
+    //    z = fSI_FORWDD1b_SizeZ / 2 - fEcalLength_D1 / 2;
+    z = fHCAL_HCAP_SizeZ/ 2 - fEcalLength_D1 / 2;
 //============  For sectors =====
     for (j = 0; j < 50; j++) {
         y_C -= fEcalWidth + gap_D1;
-        x_C = (fEcalWidth + gap_D1) * 0.5;
+        x_C = (fEcalWidth + gap_D1) * 0.5 ;
 
         for (i = 0; i < 50; i++) {
             float R = sqrt(x_C * x_C + y_C * y_C);
@@ -2186,22 +2193,25 @@ sprintf(abname,"Phys_CTD_Straw_layer_Wall");
                 k++;
                 sprintf(abname, "EMCAL_D1_%d", k);
 
-                new G4PVPlacement(0, G4ThreeVector(x_C, y_C, z), abname, fLogic_EMCAL_D1,
-                                  fPhysics_SI_FORWDD1b, false, k);
-                k++;
-                sprintf(abname, "EMCAL_D1_%d", k);
-                new G4PVPlacement(0, G4ThreeVector(-x_C, y_C, z), abname, fLogic_EMCAL_D1,
-                                  fPhysics_SI_FORWDD1b, false, k);
+		//               new G4PVPlacement(0, G4ThreeVector(x_C, y_C, z), abname, fLogic_EMCAL_D1,
+		//                fPhysics_SI_FORWDD1b, false, k);
+                new G4PVPlacement(G4Transform3D(brm_emd1, G4ThreeVector(x_C+x_C_shift, y_C, z)), abname, fLogic_EMCAL_D1,
+                                  fPhysics_HCAP_HCAL, false, k);
 
                 k++;
                 sprintf(abname, "EMCAL_D1_%d", k);
-                new G4PVPlacement(0, G4ThreeVector(x_C, -y_C, z), abname, fLogic_EMCAL_D1,
-                                  fPhysics_SI_FORWDD1b, false, k);
+		new G4PVPlacement(G4Transform3D(brm_emd1, G4ThreeVector(-x_C+x_C_shift, y_C, z)), abname, fLogic_EMCAL_D1,
+                                  fPhysics_HCAP_HCAL, false, k);
 
                 k++;
                 sprintf(abname, "EMCAL_D1_%d", k);
-                new G4PVPlacement(0, G4ThreeVector(-x_C, -y_C, z), abname, fLogic_EMCAL_D1,
-                                  fPhysics_SI_FORWDD1b, false, k);
+		 new G4PVPlacement(G4Transform3D(brm_emd1, G4ThreeVector(x_C+x_C_shift, -y_C, z)), abname, fLogic_EMCAL_D1,
+                                  fPhysics_HCAP_HCAL, false, k);
+
+                k++;
+                sprintf(abname, "EMCAL_D1_%d", k);
+		new G4PVPlacement(G4Transform3D(brm_emd1, G4ThreeVector(-x_C+x_C_shift, -y_C, z)), abname, fLogic_EMCAL_D1,
+                                  fPhysics_HCAP_HCAL, false, k);
             }
             x_C += fEcalWidth + gap_D1;
 
@@ -2408,7 +2418,7 @@ sprintf(abname,"Phys_CTD_Straw_layer_Wall");
     vvpf1->SetForceSolid(true);
     fLogic_FARFORWARD_VP->SetVisAttributes(vtpc1);
 
-    // if ( fLogic_FARFORWARD_VP)   fLogic_FARFORWARD_VP->SetSensitiveDetector(fCalorimeterSD);
+    //  if ( fLogic_FARFORWARD_VP)   fLogic_FARFORWARD_VP->SetSensitiveDetector(fCalorimeterSD);
 
 #endif
 

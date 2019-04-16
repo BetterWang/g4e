@@ -27,7 +27,14 @@
 //  JLeicDetectorConstruction.cc, v1  -- JF--- 2019-02-19------
 //
 // 
+   typedef struct {
+      double Dx;
+      double Dy;
+      double Dz;
+      double Rin;
+    } LayParam;
 
+#include "vector"
 #include "JLeicDetectorConstruction.hh"
 //#include "JLeicDetectorMessenger.hh"
 #include "JLeicCalorimeterSD.hh"
@@ -78,7 +85,7 @@
 #define USE_VERTEX
 //#define  USE_VTX0 1   // for simple vtx geom
 #define USE_VTX_B
-#define  USE_VTX_ENDCAP    // for vxt endcaps ladders
+//#define  USE_VTX_ENDCAP    // for vxt endcaps ladders
 //#define  USE_VTX_DISKS    // for vxt disks along beampipe
 
 //#define USE_VTX_E 1   // for vxt endcaps 
@@ -318,8 +325,8 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     //==                          Solenoid  magnetic field                             ==
     //===================================================================================
     fSolenoidSizeRin = 0.0 * cm;
-    fSolenoidSizeRout = 160. * cm;
-    fSolenoidSizeZ = 400. * cm;
+    fSolenoidSizeRout = 144. * cm;
+    fSolenoidSizeZ = 355.8 * cm;
     fWorldVTXshift = 40. * cm;
 
     printf("fSolenoidSizeZ=%f", fSolenoidSizeZ);
@@ -679,7 +686,10 @@ G4VisAttributes* vhcal1= new G4VisAttributes(G4Color(0.6,0,0.6,1));
     //==                          CTD DETECTOR VOLUME                                  ==
     //===================================================================================
     fCTDSizeRin = 21 * cm;
-    fCTDSizeRout = 95 * cm;
+    // for new magnet  
+    //   fCTDSizeRout = 95 * cm;
+    // for CLEO and BABAR DIRC
+    fCTDSizeRout = 82 * cm;
     fCTDSizeZ = fSolenoidSizeZ - 60 * cm;
 
     fSolidCTD = new G4Tubs("CTD", fCTDSizeRin, fCTDSizeRout, fCTDSizeZ / 2., 0., 360 * deg);
@@ -842,7 +852,7 @@ G4VisAttributes* vhcal1= new G4VisAttributes(G4Color(0.6,0,0.6,1));
 //==== space for TRD =============================
 //===================================================================================
     double f_H_TRDSizeZ = 40 * cm;
-    G4int i, j, lay = 0;
+    G4int i, j = 0;
 
 //===================================================================================
 //                         EMCAL Hadron endcap
@@ -959,7 +969,8 @@ G4VisAttributes* vhcal1= new G4VisAttributes(G4Color(0.6,0,0.6,1));
 #ifdef USE_E_MRICH
 
     fMRICHSizeRin = 12 * cm;
-    fMRICHSizeRout = 120 * cm;
+    // for new magnet     fMRICHSizeRout = 120 * cm;
+    fMRICHSizeRout = 82 * cm;
     fMRICHSizeZ = 15 * cm;
     fMRICH_Z = fENDCAP_E_SizeZ / 2 - fMRICHSizeZ / 2 - 2 * cm;
     fSolid_E_MRICH = new G4Tubs("E_CAP_MRICH_Solid", fMRICHSizeRin, fMRICHSizeRout, fMRICHSizeZ / 2., 0., 360 * deg);
@@ -997,20 +1008,17 @@ G4VisAttributes* vhcal1= new G4VisAttributes(G4Color(0.6,0,0.6,1));
     for (j = 0; j < 10; j++) {
         y_mrich -= (MRICHWidth + MRICHgap);
         x_mrich = (MRICHWidth + MRICHgap) * 0.5;
-        printf("MRICH0:: x_mrich =%f,  y_mrich=%f\n", x_mrich, y_mrich);
+	// printf("MRICH0:: x_mrich =%f,  y_mrich=%f\n", x_mrich, y_mrich);
         for (i = 0; i < 10; i++) {
             double MRICH_R = sqrt(x_mrich * x_mrich + y_mrich * y_mrich);
 
-            printf("MRICH1::kmrich=%d  j=%d i =%d x=%f, y=%f  MRICH_R=%f MRICH_R0=%f \n ", kmrich, j, i, x_mrich,
-                   y_mrich, MRICH_R, MRICH_R0);
+	    //       printf("MRICH1::kmrich=%d  j=%d i =%d x=%f, y=%f  MRICH_R=%f MRICH_R0=%f \n ", kmrich, j, i, x_mrich,
+            //       y_mrich, MRICH_R, MRICH_R0);
 
 
             if (MRICH_R < (fMRICHSizeRout - MRICHWidth - MRICHgap) && MRICH_R > MRICH_R0) {
 
-                printf("MRICH2::kmrich=%d  j=%d i =%d x=%f, y=%f  MRICH_R=%f MRICH_R0=%f \n ", kmrich, j, i, x_mrich,
-                       y_mrich, MRICH_R, MRICH_R0);
-
-
+  
                 kmrich++;
                 sprintf(abname, "MRICH_ph_%d", kmrich);
                 new G4PVPlacement(0, G4ThreeVector(x_mrich, y_mrich, 0.), abname, mLogicMRICH,
@@ -1029,6 +1037,9 @@ G4VisAttributes* vhcal1= new G4VisAttributes(G4Color(0.6,0,0.6,1));
                 sprintf(abname, "MRICH_ph_%d", kmrich);
                 new G4PVPlacement(0, G4ThreeVector(-x_mrich, -y_mrich, 0.), abname, mLogicMRICH,
                                   fPhysics_E_MRICH, false, kmrich);
+              printf("MRICH2::kmrich=%d  j=%d i =%d x=%f, y=%f  MRICH_R=%f MRICH_R0=%f \n ", kmrich, j, i, x_mrich,
+                       y_mrich, MRICH_R, MRICH_R0);
+
             }
             x_mrich += (MRICHWidth + MRICHgap);
 
@@ -1045,7 +1056,8 @@ G4VisAttributes* vhcal1= new G4VisAttributes(G4Color(0.6,0,0.6,1));
 #ifdef USE_E_EMCAL
 
     fEMCALeSizeRin = 12 * cm;
-    fEMCALeSizeRout = 130 * cm;
+       fEMCALeSizeRout = 150 * cm;
+    //  fEMCALeSizeRout = 60 * cm;
     fEMCALeSizeZ = 40 * cm;
     double my_z = -fENDCAP_E_SizeZ / 2 + fEMCALeSizeZ / 2;
     fSolidEMCALe = new G4Tubs("E_CAP_EMCAL_Solid", fEMCALeSizeRin, fEMCALeSizeRout, fEMCALeSizeZ / 2., 0., 360 * deg);
@@ -1061,11 +1073,12 @@ G4VisAttributes* vhcal1= new G4VisAttributes(G4Color(0.6,0,0.6,1));
 
 
     //------------------------------------------------------------------
-    // Ecal module
+    // Ecal module Crystals 
     //-------------------------------------------------------------------
 
-    double fEcalLength = 40. * cm;
-    double fEcalWidth = 4. * cm;
+    double fEcalLength = 30. * cm;
+    double fEcalRout1= 82*cm ;
+    double fEcalWidth = 2. * cm;
     G4double gap = 0.01 * mm;
 
 
@@ -1086,6 +1099,7 @@ G4VisAttributes* vhcal1= new G4VisAttributes(G4Color(0.6,0,0.6,1));
     G4double R0 = 15. * cm;
     G4double y_C = 0;
     G4double x_C;
+    G4double z_C =fEMCALeSizeZ/2-fEcalLength/2;
     G4int k = -1;
 
 //============  For sectors =====
@@ -1099,27 +1113,97 @@ G4VisAttributes* vhcal1= new G4VisAttributes(G4Color(0.6,0,0.6,1));
             //   printf("EMCALLL::k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ",k, j,i, x_C,y_C, R, R0);
 
 
-            if (R < fEMCALeSizeRout - fEcalWidth + gap && R > R0) {
-                // printf("EMCALLL::k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ",k, j,i, x_C,y_C, R, R0);
-
-
+            if (R < fEcalRout1 - fEcalWidth + gap && R > R0) {
+ 
                 k++;
                 sprintf(abname, "E_CAP_EMCAL_ph_%d", k);
-                new G4PVPlacement(0, G4ThreeVector(x_C, y_C, 0.), abname, fLogicCal,
+                new G4PVPlacement(0, G4ThreeVector(x_C, y_C, z_C), abname, fLogicCal,
                                   fPhysicsEMCALe, false, k);
                 k++;
                 sprintf(abname, "E_CAP_EMCAL_ph_%d", k);
-                new G4PVPlacement(0, G4ThreeVector(-x_C, y_C, 0.), abname, fLogicCal,
+                new G4PVPlacement(0, G4ThreeVector(-x_C, y_C, z_C ), abname, fLogicCal,
                                   fPhysicsEMCALe, false, k);
 
                 k++;
                 sprintf(abname, "E_CAP_EMCAL_ph_%d", k);
-                new G4PVPlacement(0, G4ThreeVector(x_C, -y_C, 0.), abname, fLogicCal,
+                new G4PVPlacement(0, G4ThreeVector(x_C, -y_C,  z_C), abname, fLogicCal,
                                   fPhysicsEMCALe, false, k);
 
                 k++;
                 sprintf(abname, "E_CAP_EMCAL_ph_%d", k);
-                new G4PVPlacement(0, G4ThreeVector(-x_C, -y_C, 0.), abname, fLogicCal,
+                new G4PVPlacement(0, G4ThreeVector(-x_C, -y_C,  z_C), abname, fLogicCal,
+                                  fPhysicsEMCALe, false, k);
+                 printf("EMCAL_E::k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ",k, j,i, x_C,y_C, R, R0);
+
+          }
+            x_C += fEcalWidth + gap;
+
+        }
+    }
+
+    //------------------------------------------------------------------
+    // Ecal module GLASS 
+    //-------------------------------------------------------------------
+
+    fEcalLength = 40. * cm;
+    double fEcalRout2= fEMCALeSizeRout;
+
+    fEcalWidth = 4. * cm;
+    gap = 0.01 * mm;
+
+
+    fEMCALeMaterial= fMat->GetMaterial("DSBCe");
+    //   fEMCALeMaterial = fMat->GetMaterial("PbWO4");
+    G4Box *solidCGlass = new G4Box("Ecal_GLASS", fEcalWidth * 0.5, fEcalWidth * 0.5, fEcalLength * 0.5);
+    G4LogicalVolume *fLogicCalGlass = new G4LogicalVolume(solidCGlass, fEMCALeMaterial, "Ecal_GLASS");
+
+      vemcal2 = new G4VisAttributes(G4Color(0.3, 0.4, 1., 0.5));
+     vemcal2->SetLineWidth(1);
+     vemcal2->SetForceSolid(true);
+    fLogicCalGlass->SetVisAttributes(vemcal2);
+
+    // GLASS
+
+    x0 = 0 * cm;
+    y0 = 0 * cm;
+    R0 = fEcalRout1;
+     y_C = 0;
+     x_C=0.;
+     z_C =fEMCALeSizeZ/2-fEcalLength/2;
+     k = -1;
+
+//============  For sectors =====
+    for (j = 0; j < 50; j++) {
+        y_C -= fEcalWidth + gap;
+        x_C = (fEcalWidth + gap) * 0.5;
+
+        for (i = 0; i < 50; i++) {
+            double R = sqrt(x_C * x_C + y_C * y_C);
+
+            //   printf("EMCALLL::k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ",k, j,i, x_C,y_C, R, R0);
+
+
+            if (R <  fEMCALeSizeRout  - fEcalWidth + gap && R > R0) {
+                printf("EMCAL_E::GLASS k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ",k, j,i, x_C,y_C, R, R0);
+
+
+                k++;
+                sprintf(abname, "E_CAP_EMCAL_ph_GLASS%d", k);
+                new G4PVPlacement(0, G4ThreeVector(x_C, y_C, z_C), abname, fLogicCalGlass,
+                                  fPhysicsEMCALe, false, k);
+                k++;
+                sprintf(abname, "E_CAP_EMCAL_ph_GLASS%d", k);
+                new G4PVPlacement(0, G4ThreeVector(-x_C, y_C, z_C ), abname, fLogicCalGlass,
+                                  fPhysicsEMCALe, false, k);
+
+                k++;
+                sprintf(abname, "E_CAP_EMCAL_ph_GLASS%d", k);
+                new G4PVPlacement(0, G4ThreeVector(x_C, -y_C,  z_C), abname, fLogicCalGlass,
+                                  fPhysicsEMCALe, false, k);
+
+                k++;
+                sprintf(abname, "E_CAP_EMCAL_ph_GLASS%d", k);
+                new G4PVPlacement(0, G4ThreeVector(-x_C, -y_C,  z_C), abname, fLogicCalGlass,
                                   fPhysicsEMCALe, false, k);
             }
             x_C += fEcalWidth + gap;
@@ -1358,7 +1442,7 @@ G4VisAttributes* vhcal1= new G4VisAttributes(G4Color(0.6,0,0.6,1));
     //--------------------------------------------------
 //===================================================================================
 
-    G4RotationMatrix rm[10][20], rm1[10][20], rm2[10][20];
+    G4RotationMatrix rm[10][40], rm1[10][40], rm2[10][40];
     deltaphi1 = 0;
     deltaphi = 30. * deg;
     phi = 0;
@@ -1368,208 +1452,177 @@ G4VisAttributes* vhcal1= new G4VisAttributes(G4Color(0.6,0,0.6,1));
     deltashi = -7. * deg;
     //phi=26.*deg; x=0; y=0; z=fAbsorberZ;
     //phi=0.*deg; x=0; y=0; z=fAbsorberZ;
-    G4double fAbsorberDX = 10 * cm;
+    G4double fAbsorberDZ = 10 * cm;
     G4double fAbsorberDY = 2 * cm;
+    
     int FDIV = 0;
 
     fVTXZ = fStartZ + fRadThick + 2 * cm;  //-- Si at dist. 2cm
-    int NLAYBARR = 6;
+    // int NLAYBARR = 1;
+    double dR; 
+    double myL;
+    
+ 
+    std::vector <LayParam> Lays;
+    LayParam Lay;
+    // Lay 0
+    Lay.Dx=0.050 * mm; Lay.Dy=2*cm; Lay.Dz=10*cm; Lay.Rin=3.5 * cm; Lays.push_back(Lay);  
+    // Lay 1
+    Lay.Dx=0.050 * mm; Lay.Dy=2*cm; Lay.Dz=11*cm; Lay.Rin=4.5 * cm; Lays.push_back(Lay);
+    // Lay 2
+    Lay.Dx=0.050 * mm; Lay.Dy=4*cm; Lay.Dz=18*cm; Lay.Rin=6.5 * cm; Lays.push_back(Lay);
+    // Lay 3
+    Lay.Dx=0.050 * mm; Lay.Dy=4*cm; Lay.Dz=24*cm; Lay.Rin=10.5 * cm; Lays.push_back(Lay);
+    // Lay 4
+    Lay.Dx=0.050 * mm; Lay.Dy=4*cm; Lay.Dz=36*cm; Lay.Rin=13.5 * cm; Lays.push_back(Lay);
+    // Lay 5
+    Lay.Dx=0.050 * mm; Lay.Dy=4*cm; Lay.Dz=48*cm; Lay.Rin=15.5 * cm; Lays.push_back(Lay);
 
+    if( Lays.size()>10) {printf("Nlayers in VERTEX >10 !!! \n"); exit(1); }
 
-    for (int lay = 0; lay < NLAYBARR; lay++) {
-        //for (int lay=0;lay<1;lay++) {
-        printf("Layer loop:: %d\n", lay);
-        if (lay == 0) {
-            NUM = 12;
-            fAbsorberDX = 10 * cm;
-            fAbsorberDY = 2 * cm;
-            fVTXThickness = 0.050 * mm;
-            deltaphi = 30. * deg;
-            Rx[lay] = (0.35 + 0.005) * cm;
-            Ry[lay] = Rx[lay];
+    for (int lay = 0; lay < Lays.size(); lay++) {
 
-        } else if (lay == 1) {
-            NUM = 14;
-            fAbsorberDX = 11 * cm;
-            fAbsorberDY = 2 * cm;
-            fVTXThickness = 0.050 * mm;
-            deltaphi = 26. * deg;
-            Rx[lay] = (0.35 + 0.1 + 0.005) * cm;
-            Ry[lay] = Rx[lay];
-        } else if (lay == 2) {
-            NUM = 12;
-            fAbsorberDX = 18 * cm;
-            fAbsorberDY = 4 * cm;
-            fVTXThickness = 0.300 * mm;
+      printf("VERTEX-B:: Layer loop:: %d\n", lay);
+      fAbsorberDZ = Lays[lay].Dz;
+      fAbsorberDY = Lays[lay].Dy;
+      fVTXThickness = Lays[lay].Dx;
+      dR =  Lays[lay].Rin;
 
-            deltaphi = 30. * deg;
-            Rx[lay] = (0.35 + 0.3 + 0.005) * cm;
-            Ry[lay] = Rx[lay];
-        } else if (lay == 3) {
-            NUM = 12;
-            fAbsorberDX = 24 * cm;
-            fAbsorberDY = 6 * cm;
-            fVTXThickness = 0.300 * mm;
-            deltaphi = 30. * deg;
-            Rx[lay] = (0.35 + 0.7 + 0.005) * cm;
-            Ry[lay] = Rx[lay];
-        } else if (lay == 4) {
-            NUM = 18;
-            fAbsorberDX = 36 * cm;
-            fAbsorberDY = 6 * cm;
-            fVTXThickness = 0.300 * mm;
-            deltaphi = 20. * deg;
-            Rx[lay] = (0.35 + 1.1 + 0.005) * cm;
-            Ry[lay] = Rx[lay];
-        } else if (lay == 5) {
-            NUM = 20;
-            fAbsorberDX = 40 * cm;
-            fAbsorberDY = 6 * cm;
-            fVTXThickness = 0.300 * mm;
-            deltaphi = 18. * deg;
-            Rx[lay] = (0.35 + 1.4 + 0.005) * cm;
-            Ry[lay] = Rx[lay];
-        } else if (lay == 6) {
-            NUM = 24;
-            fAbsorberDX = 48 * cm;
-            fAbsorberDY = 6 * cm;
-            deltaphi = 15. * deg;
-            Rx[lay] = (0.35 + 1.6 + 0.005) * cm;
-            Ry[lay] = Rx[lay];
+      myL = 2*3.1415*dR;
+      NUM = myL/fAbsorberDY; 
 
-        } else {
-            NUM = 14;
-            fAbsorberDX = 12 * cm;
-            fAbsorberDY = 6 * cm;
-            fVTXThickness = 0.300 * mm;
-            deltaphi = 26. * deg;
-            Rx[lay] = (0.35 + 2.0 + 0.005) * cm;
-            Ry[lay] = Rx[lay];
+      for(int i=0;i<2; i++){ 
+	double LN = fAbsorberDY * NUM;
+	double LN1 = fAbsorberDY * (NUM+1+i);
+	printf("VERTEX-B:: LN= Orig NUM=%d\n",NUM);
+	if (LN/LN1>0.8) NUM=NUM+1;
+	printf("VERTEX-B:: LN=%f, LN1=%f  delenie=%f NUM=%d \n",LN,LN1,LN/LN1,NUM);
+      }
+      deltaphi = 2*3.1415926/NUM  ;
+ 
+ 
+      sprintf(abname, "Solid_VTX_ladder%d", lay);
+      fSolidAbsorberBarrel[lay] = new G4Box(abname, fVTXThickness / 2.,   fAbsorberDY / 2.,fAbsorberDZ / 2.  );
+      
+      sprintf(abname, "Logic_VTX_ladder_%d", lay);
+      fLogicAbsorberBarrel[lay] = new G4LogicalVolume(fSolidAbsorberBarrel[lay], fAbsorberMaterial,
+						      abname);
+      
+      G4VisAttributes *vs1;
+      if (lay == 0 || lay == 1) { vs1 = new G4VisAttributes(G4Color(0.0, 0.2, 0.8, 2.0)); }
+      else if (lay == 2) { vs1 = new G4VisAttributes(G4Color(0.0, 0.2, 0.8, 0.7)); }
+      else {
+	//vs1= new G4VisAttributes(G4Color(1.0-0.1*lay, 1.0, 0.0+0.1*lay,0.1));
+	//	 vs1= new G4VisAttributes(G4Color(1.0-0.1*lay, 1.0, 0.0+0.1*lay,0.1));
+	vs1 = new G4VisAttributes(G4Color(0.0 + 0.1 * double(lay - 3), 1., 1. - 0.1 * double(lay - 3), 1.0));
+      }
+      // vs1->SetForceWireframe(true);
+      vs1->SetForceSolid(true);
+      fLogicAbsorberBarrel[lay]->SetVisAttributes(vs1);
+      
+      if( NUM>40) {printf("VERTEX-B:: Nladders in VERTEX >40 lay=%f !!! \n",lay); exit(1); }
 
-        }
-
-
-        sprintf(abname, "Solid_VTX_ladder%d", lay);
-        fSolidAbsorberBarrel[lay] = new G4Box(abname,
-                                              fAbsorberDX / 2., fAbsorberDY / 2.,
-                //10.*mm,10.*mm,
-                                              fVTXThickness / 2.);
-
-        sprintf(abname, "Logic_VTX_ladder_%d", lay);
-        fLogicAbsorberBarrel[lay] = new G4LogicalVolume(fSolidAbsorberBarrel[lay], fAbsorberMaterial,
-                                                        abname);
-
-        G4VisAttributes *vs1;
-        if (lay == 0 || lay == 1) { vs1 = new G4VisAttributes(G4Color(0.0, 0.2, 0.8, 2.0)); }
-        else if (lay == 2) { vs1 = new G4VisAttributes(G4Color(0.0, 0.2, 0.8, 0.7)); }
-        else {
-            //vs1= new G4VisAttributes(G4Color(1.0-0.1*lay, 1.0, 0.0+0.1*lay,0.1));
-            //	 vs1= new G4VisAttributes(G4Color(1.0-0.1*lay, 1.0, 0.0+0.1*lay,0.1));
-            vs1 = new G4VisAttributes(G4Color(0.0 + 0.1 * double(lay - 3), 1., 1. - 0.1 * double(lay - 3), 1.0));
-        }
-        // vs1->SetForceWireframe(true);
-        vs1->SetForceSolid(true);
-        fLogicAbsorberBarrel[lay]->SetVisAttributes(vs1);
-
-
-        printf(" %d Rx=%f  Ry=%f deltaphi=%f \n", lay, Rx[lay], Ry[lay], deltaphi);
-
-        for (int ia = 0; ia < NUM; ia++) {
-            //for (int ia=0;ia<1;ia++) {
-            printf("Module  loop:: %d\n", ia);
-
-            phi = (ia * (deltaphi));
-            x = -Rx[lay] * cos(phi) * cm;
-            y = -Ry[lay] * sin(phi) * cm;
-            rm[lay][ia].rotateX(-(deltaphi * ia + deltashi));
-            rm[lay][ia].rotateY(90 * deg);
-            //WORKIN	rm[lay][ia].rotateX(-(deltaphi*ia+deltashi));
-            //WORKING      rm[lay][ia].rotateY(90*deg);
-
-            printf(" %d %d x=%f  y=%f  \n", lay, ia, x, y);
-            sprintf(abname, "VTX_ladder%d_%d", lay, ia);
-            fPhysicsAbsorber = new G4PVPlacement(G4Transform3D(rm[lay][ia], G4ThreeVector(x, y, z)),
-                                                 abname, fLogicAbsorberBarrel[lay],
-                                                 fPhysicsVTX, false, 0.);
-            //rm.rotateX(+(deltaphi*ia+deltashi));
-            //   rm.rotateY(-90*deg);
-            //  rm.rotateX(0);
-        }
-        //-------------------------------------------------------------------------
-        //                          VTX  slices and pixels
-        //-------------------------------------------------------------------------
-        G4Box *pxdBox_slice[10];
-        G4Box *pxdBox_pixel[10];
-        G4double PixelDX, PixelDY;
-        if (lay < 2) {
-            PixelDX = fAbsorberDX / 10.; //2000.*um;
-            PixelDY = fAbsorberDY / 50.; //2000.*um;
-        } else {
-            PixelDX = fAbsorberDX / 50.; //2000.*um;
+      
+      for (int ia = 0; ia < NUM; ia++) {
+	//for (int ia=0;ia<1;ia++) {
+	printf("VERTEX-B:: lay=%d  NUM=%d, dR=%f deltaphi=%f %f \n",lay, NUM,  dR, deltaphi,deltashi);
+	printf("VERTEX-B:: Module  loop:: %d\n", ia);
+	
+	phi = (ia * (deltaphi));
+	x = - dR * cos(phi) ;
+	y = - dR * sin(phi) ;
+	rm[lay][ia].rotateZ(deltaphi * ia);
+	rm[lay][ia].rotateZ(deltashi);
+	//          rm[lay][ia].rotateY(90 * deg);
+	//          rm[lay][ia].rotateX(-(deltaphi * ia + deltashi));
+	// rm[lay][ia].rotateY(90 * deg);
+	//WORKIN	rm[lay][ia].rotateX(-(deltaphi*ia+deltashi));
+	//WORKING      rm[lay][ia].rotateY(90*deg);
+	
+	printf("VERTEX-B::  %d %d x=%f  y=%f  \n", lay, ia, x, y);
+	sprintf(abname, "VTX_ladder%d_%d", lay, ia);
+	fPhysicsAbsorber = new G4PVPlacement(G4Transform3D(rm[lay][ia], G4ThreeVector(x, y, z)),
+					     abname, fLogicAbsorberBarrel[lay],
+					     fPhysicsVTX, false, 0.);
+	//rm.rotateX(+(deltaphi*ia+deltashi));
+	//   rm.rotateY(-90*deg);
+	//  rm.rotateX(0);
+      }
+      //-------------------------------------------------------------------------
+      //                          VTX  slices and pixels
+      //-------------------------------------------------------------------------
+      G4Box *pxdBox_slice[10];
+      G4Box *pxdBox_pixel[10];
+      G4double PixelDX, PixelDY;
+      if (lay < 2) {
+	PixelDX = fAbsorberDZ / 10.; //2000.*um;
+	PixelDY = fAbsorberDY / 50.; //2000.*um;
+      } else {
+	PixelDX = fAbsorberDZ / 50.; //2000.*um;
             PixelDY = fAbsorberDY / 10.; //2000.*um;
-
-        }
-        //G4double PixelDX=20.*um;
-        //G4double PixelDY=20.*um;
-        //G4double PixelDX=24.*um;
-        //G4double PixelDY=24.*um;
-        G4double PixelDZ = fVTXThickness; // 0.450*mm
-
+	    
+      }
+      //G4double PixelDX=20.*um;
+      //G4double PixelDY=20.*um;
+      //G4double PixelDX=24.*um;
+      //G4double PixelDY=24.*um;
+      G4double PixelDZ = fVTXThickness; // 0.450*mm
+      
         if (FDIV >= 1) {
-            printf("SetUpVertex16():: construct slices %d \n", lay);
-
-            sprintf(abname, "pxdSlice_%d", lay);
-            pxdBox_slice[lay] = new G4Box(abname,
-                                          PixelDX / 2,                   //gD->GetPixelDX(),
-                                          fAbsorberDY / 2., // 10.*mm,  //gD->GetHalfMPXWaferDY(),
-                                          fVTXThickness / 2.);    //gD->GetHalfMPXWaferDZ());
-
-            pxdSlice_log[lay] = new G4LogicalVolume(pxdBox_slice[lay], fAbsorberMaterial, abname, 0, 0, 0);
-
-            G4VisAttributes *pixelVisAtt = new G4VisAttributes(G4Color(0, 1, 1, 1));
-            pixelVisAtt->SetLineWidth(1);
-            pixelVisAtt->SetForceWireframe(true);
-            pxdSlice_log[lay]->SetVisAttributes(pixelVisAtt);
-
-
-            // divide in slices
-            sprintf(abname, "pxdSlice_%d", lay);
-            G4PVDivision *sliceDiv = new G4PVDivision(abname,
-                                                      pxdSlice_log[lay],
-                                                      fLogicAbsorberBarrel[lay],
-                                                      kXAxis,
-                                                      PixelDX,
+	  printf("SetUpVertex16():: construct slices %d \n", lay);
+	  
+	  sprintf(abname, "pxdSlice_%d", lay);
+	  pxdBox_slice[lay] = new G4Box(abname,
+					PixelDX / 2,                   //gD->GetPixelDX(),
+					fAbsorberDY / 2., // 10.*mm,  //gD->GetHalfMPXWaferDY(),
+					fVTXThickness / 2.);    //gD->GetHalfMPXWaferDZ());
+	  
+	  pxdSlice_log[lay] = new G4LogicalVolume(pxdBox_slice[lay], fAbsorberMaterial, abname, 0, 0, 0);
+	  
+	  G4VisAttributes *pixelVisAtt = new G4VisAttributes(G4Color(0, 1, 1, 1));
+	  pixelVisAtt->SetLineWidth(1);
+	  pixelVisAtt->SetForceWireframe(true);
+	  pxdSlice_log[lay]->SetVisAttributes(pixelVisAtt);
+	  
+	  
+	  // divide in slices
+	  sprintf(abname, "pxdSlice_%d", lay);
+	  G4PVDivision *sliceDiv = new G4PVDivision(abname,
+						    pxdSlice_log[lay],
+						    fLogicAbsorberBarrel[lay],
+						    kXAxis,
+						    PixelDX,
                                                       0);
-            printf("SetUpVertex16():: construct done\n");
+	  printf("SetUpVertex16():: construct done\n");
+	  
+	  
+	  if (FDIV >= 2) {
+	    printf("SetUpVertex16():: construct pixels \n");
+	    if (lay < 2) { sprintf(abname, "pxdPixel"); }
+	    else {
+	      sprintf(abname, "svdPixel");
+	    }
+	    
+	    //sprintf(abname,"pxdPixel_%d",lay);
+	    pxdBox_pixel[lay] = new G4Box(abname,
+					  PixelDX / 2,
+					  PixelDY / 2.,
+					  PixelDZ / 2.);
+	    pxdPixel_log[lay] = new G4LogicalVolume(pxdBox_pixel[lay], fAbsorberMaterial, abname, 0, 0, 0);
+	    pxdPixel_log[lay]->SetVisAttributes(pixelVisAtt);
 
-
-            if (FDIV >= 2) {
-                printf("SetUpVertex16():: construct pixels \n");
-                if (lay < 2) { sprintf(abname, "pxdPixel"); }
-                else {
-                    sprintf(abname, "svdPixel");
-                }
-
-                //sprintf(abname,"pxdPixel_%d",lay);
-                pxdBox_pixel[lay] = new G4Box(abname,
-                                              PixelDX / 2,
-                                              PixelDY / 2.,
-                                              PixelDZ / 2.);
-                pxdPixel_log[lay] = new G4LogicalVolume(pxdBox_pixel[lay], fAbsorberMaterial, abname, 0, 0, 0);
-                pxdPixel_log[lay]->SetVisAttributes(pixelVisAtt);
-
-                // divide in pixels
-                G4PVDivision *pixelDiv = new G4PVDivision(abname,
-                                                          pxdPixel_log[lay],
-                                                          pxdSlice_log[lay],
-                                                          kYAxis,
-                                                          PixelDY,
-                                                          0);
-            } //-- end if pixel division
+	    // divide in pixels
+	    G4PVDivision *pixelDiv = new G4PVDivision(abname,
+						      pxdPixel_log[lay],
+						      pxdSlice_log[lay],
+						      kYAxis,
+						      PixelDY,
+						      0);
+	  } //-- end if pixel division
         } //-- end if slices division
 
         //	 };  // -- end loop over modules
-
+	
     }; // --- end loop over layers
 
 #endif
@@ -1784,8 +1837,8 @@ G4VisAttributes* vhcal1= new G4VisAttributes(G4Color(0.6,0,0.6,1));
  G4double CTD_Str_in=0.3, CTD_Str_out=0.31;
  G4VisAttributes* vstr2[100];
 
- fCTD_Straw_SizeZ=200*cm;
- fCTD_Straw_layers=20;
+ fCTD_Straw_SizeZ=300*cm;
+ fCTD_Straw_layers=60;
 
  fCTD_Straw_Material=Air;
 
@@ -1837,11 +1890,12 @@ sprintf(abname,"Phys_CTD_Straw_layer_Wall");
 
        // ------- layers of Straw in CTD
     int counter=0;
+    int mystr=-1;
     for (int lay=0;lay<fCTD_Straw_layers;lay++) {
 
  	//	RxF_Straw[lay]=fCTDSizeRin;
 	//     printf("Straw X=%f\n",	RxF_Straw[lay]);
-       RxF_Straw[lay]=fCTDSizeRin+30.+(CTD_Straw_Rout*2*lay)+lay*CTD_Straw_Rout; // position of first layer
+       RxF_Straw[lay]=fCTDSizeRin+5.+(CTD_Straw_Rout*2*lay)+lay*CTD_Straw_Rout; // position of first layer
 	RyF_Straw[lay]=RxF_Straw[lay]+CTD_Straw_Rout/2;
 	RzF_Straw[lay]=0*cm;
 
@@ -1856,7 +1910,7 @@ sprintf(abname,"Phys_CTD_Straw_layer_Wall");
 
 	Sphi= (CTD_Straw_Rout*2/RxF_Straw[lay]);
 	Stheta=0*deg;
-
+   
 	for (int ia=0;ia<NUMFs[lay];ia++) {
 
           phi_s=(ia*(Sphi));
@@ -1865,8 +1919,8 @@ sprintf(abname,"Phys_CTD_Straw_layer_Wall");
 	  Sz= 2*RzF_Straw[lay];
 	   rm1s.rotateX(Stheta);
 	   rm1s.rotateZ(0+(Sphi*(ia+1)));
-
-	   printf("Straw X=%f (%f,%f,%f \n",	RxF_Straw[lay],Sx,Sy,Sz);
+	   mystr++;
+	   printf("Straw %d %d X=%f (%f,%f,%f \n", counter,	mystr, RxF_Straw[lay],Sx,Sy,Sz);
 
 
 	  //       G4VisAttributes* vstr= new G4VisAttributes(G4Color(1,0,1,0.2));
@@ -1903,9 +1957,11 @@ sprintf(abname,"Phys_CTD_Straw_layer_Wall");
 	  */
 
  	}
-        vstr2[lay]= new G4VisAttributes(G4Color(1.0-0.1*lay, 1.0, 0.0+0.1*lay,1));
-        vstr2[lay]->SetLineWidth(1); vstr2[lay]->SetForceSolid(true);
-	fLogicCTD_Straw_Barrel->SetVisAttributes(vstr2[lay]);
+	//      vstr2[lay]= new G4VisAttributes(G4Color(1.0-0.01*lay, 1.0, 0.0+0.01*lay,1));
+	//       G4VisAttributes *vtpc = new G4VisAttributes(G4Color(1.0 - 0.1 * ia, 1.0, 0.0 + 0.1 * ia, 1));
+       G4VisAttributes *vtpc= new G4VisAttributes(G4Color(1.0-0.01*lay, 1.0, 0.0+0.01*lay,1));
+        vtpc->SetLineWidth(1); vtpc->SetForceSolid(true);
+	fLogicCTD_Straw_Barrel->SetVisAttributes(vtpc);
        }
 
 
@@ -2800,7 +2856,7 @@ void JLeicDetectorConstruction::Read_Di_File() {
     float ffqsX;
     float ffqsTheta;
     float ffqsPhi;
-
+    int iqmax_i;
     printf("read Di file\n");
     // sprintf(fname,"ion_ir_06feb19.txt");
     sprintf(fname, "i_ir.txt");
@@ -2830,12 +2886,13 @@ void JLeicDetectorConstruction::Read_Di_File() {
                qFIELDx, qFIELDy, qFIELQn, qFIELQs, qFIELSek, qFIELSol, ffqsX, ffqsY, ffqsZ, ffqsTheta, ffqsPhi);
 
         // ----------- create volumes for QUADRUPOLE----------
-        if (strcmp(ffqtype, "QUADRUPOLE") == 0) {
+	if (strcmp(ffqtype, "QUADRUPOLE") == 0) {
             printf(" found QUAD %s iq=%d \n", ffqtype, iq);
             CreateQuad(iq, ffqnameDi, ffqsSizeZDi, ffqsRinDiG, ffqsRinDi, ffqsRoutDi, qFIELDx, qFIELDy, qFIELQn,
                        qFIELQs, qFIELSek, qFIELSol, ffqsX, ffqsY, ffqsZ, ffqsTheta, ffqsPhi);
-            iq++;
+            iq++; iqmax_i=iq;
         }
+	
         // ----------- create volumes for kickers and rbend----------
         if ((strcmp(ffqtype, "KICKER") == 0) || (strcmp(ffqtype, "RBEND") == 0)) {
             printf(" found KICKER %s \n", ffqtype);
@@ -2950,7 +3007,7 @@ void JLeicDetectorConstruction::Read_dE_File() {
         }
         // ----------- create volumes for solenoid  ----------
         if ((strcmp(ffqtype, "SOLENOID") == 0) &&
-            ((strcmp(ffqnameDi, "iASDS") == 0) || (strcmp(ffqnameDi, "iASUS") == 0))) {
+            ((strcmp(ffqnameDi, "eASDS") == 0) || (strcmp(ffqnameDi, "eASUS") == 0))) {
             printf("Read_dE found SOLENOID %s \n", ffqtype);
 
             CreateASolenoid(is, ffqnameDi, ffqsSizeZDi, ffqsRinDiG, ffqsRinDi, ffqsRoutDi, qFIELDx, qFIELDy, qFIELQn,

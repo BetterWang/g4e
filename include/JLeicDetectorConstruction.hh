@@ -270,9 +270,9 @@ private:
     G4VPhysicalVolume *fPhysics_ENDCAP_E;    //pointer to the physical ENDCAP-E  volume
 
 //-------------endcap-E  HCAL vol -------------------
-    // G4double           fEMCALbSizeRin;
-    // G4double           fEMCALbSizeRout;
-    // G4double           fEMCALbSizeZ;
+    // G4double           cb_EMCAL_GVol_RIn;
+    // G4double           cb_EMCAL_GVol_ROut;
+    // G4double           cb_EMCAL_GVol_SizeZ;
 
     //  G4Polycone*        fSolid_ECAP_HCAL;    //pointer to the solid ECAP_HCAL volume
     G4Tubs *fSolid_ECAP_HCAL;    //pointer to the solid ECAP_HCAL volume
@@ -317,9 +317,9 @@ private:
     G4VPhysicalVolume *fPhysicsHendcap;  //pointer to the physical
 
     //--------------H-endcap HCAL vol -------------------
-    // G4double           fEMCALbSizeRin;
-    // G4double           fEMCALbSizeRout;
-    // G4double           fEMCALbSizeZ;
+    // G4double           cb_EMCAL_GVol_RIn;
+    // G4double           cb_EMCAL_GVol_ROut;
+    // G4double           cb_EMCAL_GVol_SizeZ;
 
     //  G4Polycone*        fSolid_HCAP_HCAL;    //pointer to the solid HCAP_HCAL volume
     G4Tubs *fSolid_HCAP_HCAL;    //pointer to the solid HCAP_HCAL volume
@@ -334,31 +334,33 @@ private:
 
 
     //----------------VTX volume -------------------
-    G4double fVTXSizeRin;
-    G4double fVTXSizeRout;
-    G4double fVTXSizeZ;
-    G4Tubs *fSolidVTX;    //pointer to the solid VTX volume
-    G4LogicalVolume *fLogicVTX;    //pointer to the logical VTX volume
-    G4VPhysicalVolume *fPhysicsVTX;    //pointer to the physical VTX volume
+    G4double cb_VTX_GVol_RIn;
+    G4double cb_VTX_GVol_ROut;
+    G4double cb_VTX_GVol_SizeZ;
+    G4Tubs *cb_VTX_GVol_Solid;    //pointer to the solid VTX volume
+    G4LogicalVolume *cb_VTX_GVol_Logic;    //pointer to the logical VTX volume
+    G4VPhysicalVolume *cb_VTX_GVol_Phys;    //pointer to the physical VTX volume
 
     //----------------CTD  volume -------------------
-    G4double fCTDSizeRin;
-    G4double fCTDSizeRout;
-    G4double fCTDSizeZ;
-    G4Tubs *fSolidCTD;    //pointer to the solid CTD  volume
-    G4LogicalVolume *fLogicCTD;    //pointer to the logical CTD  volume
-    G4VPhysicalVolume *fPhysicsCTD;    //pointer to the physical CTD  volume
+    G4double cb_CTD_GVol_RIn;
+    G4double cb_CTD_GVol_ROut;
+    G4double cb_CTD_GVol_SizeZ;
+    G4Tubs *cb_CTD_GVol_Solid;    //pointer to the solid CTD  volume
+    G4LogicalVolume *cb_CTD_GVol_Logic;    //pointer to the logical CTD  volume
+    G4VPhysicalVolume *cb_CTD_GVol_Phys;    //pointer to the physical CTD  volume
 
 
+    //*************************************************************
     //-----------------EMCAL barrel volume--------------------
-    G4double fEMCALbSizeRin;
-    G4double fEMCALbSizeRout;
-    G4double fEMCALbSizeZ;
-    // G4Tubs*            fSolidEMCALb;    //pointer to the solid  EMCAL barrel volume
-    G4Polycone *fSolidEMCALb;    //pointer to the solid  EMCAL barrel volume
-    G4LogicalVolume *fLogicEMCALb;    //pointer to the logical EMCAL barrel volume
-    G4VPhysicalVolume *fPhysicsEMCALb;    //pointer to the physical EMCAL barrel volume
+    G4double cb_EMCAL_GVol_RIn;
+    G4double cb_EMCAL_GVol_ROut;
+    G4double cb_EMCAL_GVol_SizeZ;
+    // G4Tubs*            cb_EMCAL_GVol_Solid;    //pointer to the solid  EMCAL barrel volume
+    G4Polycone *cb_EMCAL_GVol_Solid;    //pointer to the solid  EMCAL barrel volume
+    G4LogicalVolume *cb_EMCAL_GVol_Logic;    //pointer to the logical EMCAL barrel volume
+    G4VPhysicalVolume *cb_EMCAL_GVol_Phys;    //pointer to the physical EMCAL barrel volume
 
+    //--------------EMCAL barrel detector----------------------
 
     G4double fEMCALSizeRin;
     G4double fEMCALSizeRout;
@@ -369,7 +371,7 @@ private:
     G4LogicalVolume *fLogicEMCALbd;    //pointer to the logical World
     G4VPhysicalVolume *fPhysicsEMCALbd;    //pointer to the physical World
 
-
+    //*************************************************************
     //--------------HCAL barrel volume  -------------------
     G4double fHCALbSizeRin;
     G4double fHCALbSizeRout;
@@ -396,18 +398,27 @@ private:
     G4Tubs *ce_GEM_GVol_Solid;    //pointer to the solid  GEM E-endcap  volume
     G4LogicalVolume *ce_GEM_GVol_Logic;    //pointer to the logical GEM E-endcap volume
     G4VPhysicalVolume *ce_GEM_GVol_Phys;    //pointer to the physical GEM E-endcap volume
-
-
+     //--------------- ENDCAP-E GEM  detector ------------------
+    G4double fGEMlay_E_SizeRin[20];
+    G4double fGEMlay_E_SizeRout[20];
+    G4double fGEMlay_E_SizeZ[20];
+    G4double fGEMlay_E_Z[20];
+    G4Material *fGEM_E_Material;
+    G4Tubs *fSolidGEMlay_E[20];    //pointer to the solid World
+    G4LogicalVolume *fLogicGEMlay_E[20];    //pointer to the logical World
+    G4VPhysicalVolume *fPhysicsGEMlay_E[20];    //pointer to the physical World
+    //--------------------------------------------------------------
 
     //-----------------ENDCAP-H GEM  volume--------------------
 
-    G4double fGEM_H_SizeRin;
-    G4double fGEM_H_SizeRout;
-    G4double fGEM_H_SizeZ;
-    G4double fGEM_H_Z;
-    G4Tubs *fSolidGEM_H;    //pointer to the solid  GEM H-endcap  volume
-    G4LogicalVolume *fLogicGEM_H;    //pointer to the logical GEM H-endcap volume
-    G4VPhysicalVolume *fPhysicsGEM_H;    //pointer to the physical GEM H-endcap volume
+    G4double ci_GEM_GVol_RIn;
+    G4double ci_GEM_GVol_ROut;
+    G4double ci_GEM_GVol_SizeZ;
+    G4double ci_GEM_GVol_PosZ;
+    G4double ci_GEM_GVol_ShiftZ;
+    G4Tubs *ci_GEM_GVol_Solid;    //pointer to the solid  GEM H-endcap  volume
+    G4LogicalVolume *ci_GEM_GVol_Logic;    //pointer to the logical GEM H-endcap volume
+    G4VPhysicalVolume *ci_GEM_GVol_Phys;    //pointer to the physical GEM H-endcap volume
     //-------------------------------------
     //-----------------FARFORWARD GEM  volume--------------------
 
@@ -576,17 +587,7 @@ private:
     //--------------------------------------------------------------
 
 
-    //-------------------GEM Endcap E  detector ------------------
-    G4double fGEMlay_E_SizeRin[20];
-    G4double fGEMlay_E_SizeRout[20];
-    G4double fGEMlay_E_SizeZ[20];
-    G4double fGEMlay_E_Z[20];
-    G4Material *fGEM_E_Material;
-    G4Tubs *fSolidGEMlay_E[20];    //pointer to the solid World
-    G4LogicalVolume *fLogicGEMlay_E[20];    //pointer to the logical World
-    G4VPhysicalVolume *fPhysicsGEMlay_E[20];    //pointer to the physical World
-    //--------------------------------------------------------------
-    //-------------------GEM Endcap H  detector ------------------
+      //-------------------GEM Endcap H  detector ------------------
     G4double fGEMlay_H_SizeRin[20];
     G4double fGEMlay_H_SizeRout[20];
     G4double fGEMlay_H_SizeZ[20];

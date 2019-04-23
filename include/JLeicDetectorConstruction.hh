@@ -388,13 +388,14 @@ private:
 
     //-----------------ENDCAP-E GEM  volume--------------------
 
-    G4double fGEM_E_SizeRin;
-    G4double fGEM_E_SizeRout;
-    G4double fGEM_E_SizeZ;
-    G4double fGEM_E_Z;
-    G4Tubs *fSolidGEM_E;    //pointer to the solid  GEM E-endcap  volume
-    G4LogicalVolume *fLogicGEM_E;    //pointer to the logical GEM E-endcap volume
-    G4VPhysicalVolume *fPhysicsGEM_E;    //pointer to the physical GEM E-endcap volume
+    G4double ce_GEM_GVol_RIn;
+    G4double ce_GEM_GVol_ROut;
+    G4double ce_GEM_GVol_SizeZ;
+    G4double ce_GEM_GVol_PosZ;
+    G4double ce_GEM_GVol_ShiftZ;
+    G4Tubs *ce_GEM_GVol_Solid;    //pointer to the solid  GEM E-endcap  volume
+    G4LogicalVolume *ce_GEM_GVol_Logic;    //pointer to the logical GEM E-endcap volume
+    G4VPhysicalVolume *ce_GEM_GVol_Phys;    //pointer to the physical GEM E-endcap volume
 
 
 

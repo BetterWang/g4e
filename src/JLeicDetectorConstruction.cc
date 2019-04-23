@@ -789,21 +789,21 @@ G4VisAttributes* vhcal1= new G4VisAttributes(G4Color(0.6,0,0.6,1));
     //===================================================================================
     //==                          GEM DETECTOR VOLUME     CAP-barrel- Electron side    ==
     //===================================================================================
-    fGEM_E_SizeRin = 0 * cm;
-    fGEM_E_SizeRout = 65 * cm + 50 * cm;
-    fGEM_E_SizeZ = 30 * cm;
-    double fGEM_E_Zshift = 0 * cm;
-    fGEM_E_Z = -fSolenoidSizeZ / 2 + fGEM_E_SizeZ / 2;
-    // fGEM_E_Z= -fSolenoidSizeZ/2+abs(fWorldVTXshift)- fGEM_E_SizeZ +5*cm;  // --- need to find out why this 5 cm are needed
-    fSolidGEM_E = new G4Tubs("GEM_E", fGEM_E_SizeRin, fGEM_E_SizeRout, fGEM_E_SizeZ / 2., 0., 360 * deg);
+    ce_GEM_GVol_RIn = 0 * cm;
+    ce_GEM_GVol_ROut = 65 * cm + 50 * cm;
+    ce_GEM_GVol_SizeZ = 30 * cm;
+    ce_GEM_GVol_ShiftZ = 0 * cm;
+    ce_GEM_GVol_PosZ = -fSolenoidSizeZ / 2 + ce_GEM_GVol_SizeZ / 2;
+    // ce_GEM_GVol_PosZ= -fSolenoidSizeZ/2+abs(fWorldVTXshift)- ce_GEM_GVol_SizeZ +5*cm;  // --- need to find out why this 5 cm are needed
+    ce_GEM_GVol_Solid = new G4Tubs("ce_GEM_GVol_Solid", ce_GEM_GVol_RIn, ce_GEM_GVol_ROut, ce_GEM_GVol_SizeZ / 2., 0., 360 * deg);
 
-    fLogicGEM_E = new G4LogicalVolume(fSolidGEM_E, fWorldMaterial, "GEM_E");
+    ce_GEM_GVol_Logic = new G4LogicalVolume(ce_GEM_GVol_Solid, fWorldMaterial, "ce_GEM_GVol_Logic");
 
-    fPhysicsGEM_E = new G4PVPlacement(0, G4ThreeVector(0, 0, fGEM_E_Z), "GEM_E", fLogicGEM_E,
+    ce_GEM_GVol_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, ce_GEM_GVol_PosZ), "ce_GEM_GVol_Phys", ce_GEM_GVol_Logic,
                                       fPhysicsSolenoid, false, 0);
 
     //===================================================================================
-#endif // end GEMb
+#endif // end USE_GEMb
 
 
 #endif  // end BARREL
@@ -2026,11 +2026,11 @@ sprintf(abname,"Phys_CTD_Straw_layer_Wall");
 
     for (int lay = 0; lay < 8; lay++) {
 
-        fGEMlay_E_SizeRin[lay] = fGEM_E_SizeRin + 1 * cm + (double(lay) * 0.5) * cm;
-        fGEMlay_E_SizeRout[lay] = fGEM_E_SizeRout - 25 * cm + (double(lay) * 2.) * cm;;
+        fGEMlay_E_SizeRin[lay] = ce_GEM_GVol_RIn + 1 * cm + (double(lay) * 0.5) * cm;
+        fGEMlay_E_SizeRout[lay] = ce_GEM_GVol_ROut - 25 * cm + (double(lay) * 2.) * cm;;
 
-        //      fGEMlay_E_Z[lay]=-fGEM_E_Z/2+(double(lay)*5.)*cm;
-        fGEMlay_E_Z[lay] = fGEM_E_SizeZ / 2 - 5 * cm - (double(lay) * 3.) * cm;
+        //      fGEMlay_E_Z[lay]=-ce_GEM_GVol_PosZ/2+(double(lay)*5.)*cm;
+        fGEMlay_E_Z[lay] = ce_GEM_GVol_SizeZ / 2 - 5 * cm - (double(lay) * 3.) * cm;
         fGEMlay_E_SizeZ[lay] = 1 * cm;
 
         sprintf(abname, "Solid_GEM_E_layer%d", lay);
@@ -2049,7 +2049,7 @@ sprintf(abname,"Phys_CTD_Straw_layer_Wall");
         sprintf(abname, "GEM_E_layer_%d", lay);
         fPhysicsGEMlay_E[lay] = new G4PVPlacement(0, G4ThreeVector(0, 0, fGEMlay_E_Z[lay]),
                                                   abname, fLogicGEMlay_E[lay],
-                                                  fPhysicsGEM_E, false, 0);
+                                                  ce_GEM_GVol_Phys, false, 0);
 
         if (fLogicGEMlay_E[lay]) fLogicGEMlay_E[lay]->SetSensitiveDetector(fCalorimeterSD);
 

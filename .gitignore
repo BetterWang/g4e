@@ -131,3 +131,13 @@ fabric.properties
 cmake-build-debug/
 
 \.idea/encodings\.xml
+
+\.#jleicvis\.mac
+
+src/JLeicDetectorConstruction\.cc\.Apr13
+
+work/#jleicvis\.mac#
+
+work/i_ir\.txt\.old
+
+work/jleic-g4\.C~

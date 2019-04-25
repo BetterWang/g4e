@@ -139,11 +139,11 @@ public:
 
     void PrintGeometryParameters();
 
-    G4Material *GetWorldMaterial() { return fWorldMaterial; };
+    G4Material *GetWorldMaterial() { return World_Material; };
 
-    G4double GetWorldSizeZ() { return fWorldSizeZ; };
+    G4double GetWorldSizeZ() { return World_SizeZ; };
 
-    G4double GetWorldSizeR() { return fWorldSizeR; };
+    G4double GetWorldSizeR() { return World_SizeR; };
 
     G4double GetAbsorberZpos() { return fAbsorberZ; };
 
@@ -153,7 +153,7 @@ public:
 
     G4double GetAbsorberRadius() { return fAbsorberRadius; };
 
-    const G4VPhysicalVolume *GetphysiWorld() { return fPhysicsWorld; };
+    const G4VPhysicalVolume *GetphysiWorld() { return World_Phys; };
 
     const G4VPhysicalVolume *GetAbsorber() { return fPhysicsAbsorber; };
 
@@ -234,55 +234,216 @@ private:
     //G4double           zstartAbs , zendAbs;
     //G4String           fSetUp;
     // World
+    //=========================================================================
     //--------------World -------------------
-    G4Box *fSolidWorld;    //pointer to the solid World
-    G4LogicalVolume *fLogicWorld;    //pointer to the logical World
-    G4VPhysicalVolume *fPhysicsWorld;    //pointer to the physical World
-    G4Material *fWorldMaterial;
-    G4double fWorldSizeR;
-    G4double fWorldSizeZ;
-    G4double fWorldVTXshift;
-    //--------------solenoid -------------------
-    G4double fSolenoidSizeRin;
-    G4double fSolenoidSizeRout;
-    G4double fSolenoidSizeZ;
-    G4Tubs *fSolidSolenoid;      //pointer to the solid
-    G4LogicalVolume *fLogicSolenoid;    //pointer to the logical
-    G4VPhysicalVolume *fPhysicsSolenoid;  //pointer to the physical
+    // =========================================================================
+    G4Box *World_Solid;    //pointer to the solid World
+    G4LogicalVolume *World_Logic;    //pointer to the logical World
+    G4VPhysicalVolume *World_Phys;    //pointer to the physical World
+    G4Material *World_Material;
+    G4double World_SizeR;
+    G4double World_SizeZ;
+    G4double World_ShiftVTX;
+    //--------------Solenoid BARREL  -------------------
+    G4double Solenoid_RIn;
+    G4double Solenoid_ROut;
+    G4double Solenoid_SizeZ;
+    G4double Solenoid_Field_Strength;
+    G4double Solenoid_AlphaB;
+    G4VisAttributes *attr_Solenoid;
+    G4Tubs *Solenoid_Solid;      //pointer to the solid
+    G4LogicalVolume *Solenoid_Logic;    //pointer to the logical
+    G4VPhysicalVolume *Solenoid_Phys;  //pointer to the physical
 
-//-----------------ENDCAP-H  volume--------------------
-    G4double fENDCAP_H_SizeRin;
-    G4double fENDCAP_H_SizeRout;
-    G4double fENDCAP_H_SizeZ;
-    G4double fENDCAP_H_Z;
-    G4Tubs *fSolid_ENDCAP_H;    //pointer to the solid  ENDCAP-H volume
-    G4LogicalVolume *fLogic_ENDCAP_H;    //pointer to the logical  ENDCAP-H  volume
-    G4VPhysicalVolume *fPhysics_ENDCAP_H;    //pointer to the physical ENDCAP-H  volume
+//-----------------Hadron ENDCAP  volume--------------------
+    G4double ci_ENDCAP_GVol_RIn;
+    G4double ci_ENDCAP_GVol_ROut;
+    G4double ci_ENDCAP_GVol_SizeZ;
+    G4double ci_ENDCAP_GVol_ShiftZ ;
+    G4double ci_ENDCAP_GVol_PosX ;
+    G4double ci_ENDCAP_GVol_PosZ;
+    //    G4double fENDCAP_H_Z;
+    G4VisAttributes *attr_ci_ENDCAP_GVol;
+    G4Tubs *ci_ENDCAP_GVol_Solid;    //pointer to the solid  ENDCAP-H volume
+    G4LogicalVolume *ci_ENDCAP_GVol_Logic;    //pointer to the logical  ENDCAP-H  volume
+    G4VPhysicalVolume *ci_ENDCAP_GVol_Phys;    //pointer to the physical ENDCAP-H  volume
 
 //-----------------ENDCAP-E  volume--------------------
-    G4double fENDCAP_E_SizeRin;
-    G4double fENDCAP_E_SizeRout;
-    G4double fENDCAP_E_SizeZ;
-    G4double fENDCAP_E_Z;
+    G4double ce_ENDCAP_GVol_RIn;
+    G4double ce_ENDCAP_GVol_ROut;
+    G4double ce_ENDCAP_GVol_SizeZ;
+    G4double ce_ENDCAP_GVol_PosZ;
+    G4VisAttributes *attr_ce_ENDCAP_GVol;
+    G4Tubs *ce_ENDCAP_GVol_Solid;    //pointer to the solid  ENDCAP-E volume
+    G4LogicalVolume *ce_ENDCAP_GVol_Logic;    //pointer to the logical ENDCAP-E  volume
+    G4VPhysicalVolume *ce_ENDCAP_GVol_Phys;    //pointer to the physical ENDCAP-E  volume
+    // =========================================================================
 
-    G4Tubs *fSolid_ENDCAP_E;    //pointer to the solid  ENDCAP-E volume
-    G4LogicalVolume *fLogic_ENDCAP_E;    //pointer to the logical ENDCAP-E  volume
-    G4VPhysicalVolume *fPhysics_ENDCAP_E;    //pointer to the physical ENDCAP-E  volume
 
-//-------------endcap-E  HCAL vol -------------------
-    // G4double           cb_EMCAL_GVol_RIn;
-    // G4double           cb_EMCAL_GVol_ROut;
-    // G4double           cb_EMCAL_GVol_SizeZ;
+    // =========================================================================
+    // --------------- START DETECTOR VOLUMES ----------------------------------
+    // =========================================================================
 
-    //  G4Polycone*        fSolid_ECAP_HCAL;    //pointer to the solid ECAP_HCAL volume
-    G4Tubs *fSolid_ECAP_HCAL;    //pointer to the solid ECAP_HCAL volume
-    G4LogicalVolume *fLogic_ECAP_HCAL;    //pointer to the logicalECAP_HCAL  volume
-    G4VPhysicalVolume *fPhysics_ECAP_HCAL;    //pointer to the physical EMCAL barrel volume
 
-    G4Tubs *fSolid_ECAP_HCAL_D;    //pointer to the solid ECAP_HCAL volume
-    G4LogicalVolume *fLogic_ECAP_HCAL_D;    //pointer to the logicalECAP_HCAL  volume
-    G4VPhysicalVolume *fPhysics_ECAP_HCAL_D;    //pointer to the physical EMCAL barrel volume
-//-----------------E-endcap MRICH  -------------------
+    // =========================================================================
+    // ---------------  BARREL -------------------------------------------------
+    // =========================================================================
+
+    //*************************************************************
+    //----------------VTX volume -------------------
+    G4double cb_VTX_GVol_RIn;
+    G4double cb_VTX_GVol_ROut;
+    G4double cb_VTX_GVol_SizeZ;
+    G4Tubs *cb_VTX_GVol_Solid;    //pointer to the solid VTX volume
+    G4LogicalVolume *cb_VTX_GVol_Logic;    //pointer to the logical VTX volume
+    G4VPhysicalVolume *cb_VTX_GVol_Phys;    //pointer to the physical VTX volume
+    //*************************************************************
+    //----------------CTD  volume -------------------
+    G4double cb_CTD_GVol_RIn;
+    G4double cb_CTD_GVol_ROut;
+    G4double cb_CTD_GVol_SizeZ;
+    G4Tubs *cb_CTD_GVol_Solid;    //pointer to the solid CTD  volume
+    G4LogicalVolume *cb_CTD_GVol_Logic;    //pointer to the logical CTD  volume
+    G4VPhysicalVolume *cb_CTD_GVol_Phys;    //pointer to the physical CTD  volume
+
+//-------------------CTD_Si barrel detector ------------------
+    G4double cb_CTD_detSi_RIn;
+    G4double cb_CTD_detSi_ROut;
+    G4double cb_CTD_detSi_SizeZ;
+    G4double cb_CTD_detSi_Steps;
+    G4int cb_CTD_detSi_Layers;
+    G4Material *cb_CTD_detSi_Material;
+    G4VisAttributes *attr_cb_CTD_det;
+    G4double cb_CTD_detSi_lay_Rin[100];
+    G4double cb_CTD_detSi_lay_Rout[100];
+    G4Tubs *cb_CTD_detSi_Solid[100];    //pointer to the solid World
+    G4LogicalVolume *cb_CTD_detSi_Logic[100];    //pointer to the logical World
+    G4VPhysicalVolume *cb_CTD_detSi_Phys[100];    //pointer to the physical World
+    //-------------------CTD_Straw barrel detector ------------------
+    G4double cb_CTD_detStraw_RIn;
+    G4double cb_CTD_detStraw_ROut;
+    G4double cb_CTD_detStraw_SizeZ;
+    G4double cb_CTD_detStraw_Steps;
+    G4Material *cb_CTD_detStraw_Material;
+    G4int cb_CTD_detStraw_Layers;
+    G4double cb_CTD_Straws_RIn;
+    G4double cb_CTD_Straws_ROut;
+    G4VisAttributes* attr_cb_CTD_Straws;
+    G4Tubs *cb_CTD_Straws_Solid;    //pointer to the solid World
+    G4LogicalVolume *cb_CTD_Straws_Logic;    //pointer to the logical World
+    G4VPhysicalVolume *cb_CTD_Straws_Phys;    //pointer to the physical World
+
+    G4Material *cb_CTD_Straws_Wall_Material;
+    G4Tubs *cb_CTD_Straws_Wall_Solid;    //pointer to the solid World
+    G4LogicalVolume *cb_CTD_Straws_Wall_Logic;    //pointer to the logical World
+    G4VPhysicalVolume *cb_CTD_Straws_Wall_Phys;    //pointer to the physical World
+
+    G4VisAttributes* attr_cb_CTD_Straws_Gas;
+    G4Material *cb_CTD_Straws_Gas_Material;
+    G4Tubs *cb_CTD_Straws_Gas_Solid;    //pointer to the solid World
+    G4LogicalVolume *cb_CTD_Straws_Gas_Logic;    //pointer to the logical World
+    G4VPhysicalVolume *cb_CTD_Straws_Gas_Phys;    //pointer to the physical World
+
+    //*************************************************************
+    //-----------------EMCAL barrel volume--------------------
+    G4double cb_EMCAL_GVol_RIn;
+    G4double cb_EMCAL_GVol_ROut;
+    G4double cb_EMCAL_GVol_SizeZ;
+    // G4Tubs*            cb_EMCAL_GVol_Solid;    //pointer to the solid  EMCAL barrel volume
+    G4Polycone *cb_EMCAL_GVol_Solid;    //pointer to the solid  EMCAL barrel volume
+    G4LogicalVolume *cb_EMCAL_GVol_Logic;    //pointer to the logical EMCAL barrel volume
+    G4VPhysicalVolume *cb_EMCAL_GVol_Phys;    //pointer to the physical EMCAL barrel volume
+
+    //--------------EMCAL barrel detector----------------------
+
+    G4double cb_EMCAL_det_RIn;
+    G4double cb_EMCAL_det_ROut;
+    G4double cb_EMCAL_det_SizeZ;
+    G4Material *cb_EMCAL_det_Material;
+    // G4Tubs*            cb_EMCAL_det_Solid;    //pointer to the solid World
+    G4Polycone *cb_EMCAL_det_Solid;    //pointer to the solid World
+    G4LogicalVolume *cb_EMCAL_det_Logic;    //pointer to the logical World
+    G4VPhysicalVolume *cb_EMCAL_det_Phys;    //pointer to the physical World
+
+    //*************************************************************
+    //--------------HCAL barrel volume  -------------------
+    G4double cb_HCAL_GVol_RIn;
+    G4double cb_HCAL_GVol_ROut;
+    G4double cb_HCAL_GVol_SizeZ;
+    G4Tubs *cb_HCAL_GVol_Solid;      //pointer to the solid
+    G4LogicalVolume *cb_HCAL_GVol_Logic;    //pointer to the logical
+    G4VPhysicalVolume *cb_HCAL_GVol_Phys;  //pointer to the physical
+    G4VisAttributes *attr_cb_HCAL_GVol;
+
+    G4double cb_HCAL_det_RIn;
+    G4double cb_HCAL_det_ROut;
+    G4double cb_HCAL_det_SizeZ;
+    G4double cb_HCAL_det_Thickness;
+    G4Material *cb_HCAL_det_Material;
+    G4Tubs *cb_HCAL_det_Solid;      //pointer to the solid
+    G4LogicalVolume *cb_HCAL_det_Logic;    //pointer to the logical
+    G4VPhysicalVolume *cb_HCAL_det_Phys;  //pointer to the physical
+
+
+    //***************** Included into BARREL***********************
+    //-----------------ENDCAP-E GEM  volume--------------------
+
+    G4double ce_GEM_GVol_RIn;
+    G4double ce_GEM_GVol_ROut;
+    G4double ce_GEM_GVol_SizeZ;
+    G4double ce_GEM_GVol_PosZ;
+    G4double ce_GEM_GVol_ShiftZ;
+    G4Tubs *ce_GEM_GVol_Solid;    //pointer to the solid  GEM E-endcap  volume
+    G4LogicalVolume *ce_GEM_GVol_Logic;    //pointer to the logical GEM E-endcap volume
+    G4VPhysicalVolume *ce_GEM_GVol_Phys;    //pointer to the physical GEM E-endcap volume
+    //--------------- ENDCAP-E GEM  detector ------------------
+    G4double fGEMlay_E_SizeRin[20];
+    G4double fGEMlay_E_SizeRout[20];
+    G4double fGEMlay_E_SizeZ[20];
+    G4double fGEMlay_E_Z[20];
+    G4Material *fGEM_E_Material;
+    G4Tubs *fSolidGEMlay_E[20];    //pointer to the solid World
+    G4LogicalVolume *fLogicGEMlay_E[20];    //pointer to the logical World
+    G4VPhysicalVolume *fPhysicsGEMlay_E[20];    //pointer to the physical World
+
+    //*************************************************************
+    //-----------------ENDCAP-H GEM  volume--------------------
+
+    G4double ci_GEM_GVol_RIn;
+    G4double ci_GEM_GVol_ROut;
+    G4double ci_GEM_GVol_SizeZ;
+    G4double ci_GEM_GVol_PosZ;
+    G4double ci_GEM_GVol_ShiftZ;
+    G4Tubs *ci_GEM_GVol_Solid;    //pointer to the solid  GEM H-endcap  volume
+    G4LogicalVolume *ci_GEM_GVol_Logic;    //pointer to the logical GEM H-endcap volume
+    G4VPhysicalVolume *ci_GEM_GVol_Phys;    //pointer to the physical GEM H-endcap volume
+    //--------------------------------------------------------------
+
+
+    // =========================================================================
+    // ---------------  ENDCAP-E -------------------------------------------------
+    // =========================================================================
+
+
+    //------------- ENDCAP-E HCAL -------------------
+    G4double ce_HCAL_GVol_RIn;
+    G4double ce_HCAL_GVol_ROut;
+    G4double  ce_HCAL_GVol_SizeZ;
+    G4double  ce_HCAL_GVol_ShiftZ;
+
+
+    //  G4Polycone*        ce_HCAL_GVol_Solid;    //pointer to the solid ECAP_HCAL volume
+
+    G4Tubs *ce_HCAL_GVol_Solid;    //pointer to the solid ECAP_HCAL volume
+    G4LogicalVolume *ce_HCAL_GVol_Logic;    //pointer to the logicalECAP_HCAL  volume
+    G4VPhysicalVolume *ce_HCAL_GVol_Phys;    //pointer to the physical EMCAL barrel volume
+
+    G4Tubs *ce_HCAL_det_Solid;    //pointer to the solid ECAP_HCAL volume
+    G4LogicalVolume *ce_HCAL_det_Logic;    //pointer to the logicalECAP_HCAL  volume
+    G4VPhysicalVolume *ce_HCAL_det_Phys;    //pointer to the physical EMCAL barrel volume
+
+
+    //----------------- ENDCAP-E  MRICH  -------------------
     G4double fMRICHSizeRin;
     G4double fMRICHSizeRout;
     G4double fMRICHSizeZ;
@@ -299,127 +460,46 @@ private:
 
     G4Box *mSolidMRICH;
     G4LogicalVolume *mLogicMRICH;
+    // =========================================================================
+    // ---------------------------------------------------------------------------
+    // =========================================================================
 
-    //--------------HCAL -------------------
-    G4double fHCALSizeRin;
-    G4double fHCALSizeRout;
-    G4double fHCALSizeZ;
-    G4Tubs *fSolidHCAL;      //pointer to the solid
-    G4LogicalVolume *fLogicHCAL;    //pointer to the logical
-    G4VPhysicalVolume *fPhysicsHCAL;  //pointer to the physical
 
-    //--------------H-endcap -------------------
-    G4double fHendcapSizeRin;
-    G4double fHendcapSizeRout;
-    G4double fHendcapSizeZ;
-    G4Tubs *fSolidHendcap;      //pointer to the solid
-    G4LogicalVolume *fLogicHendcap;    //pointer to the logical
-    G4VPhysicalVolume *fPhysicsHendcap;  //pointer to the physical
+
+    // =========================================================================
+    // ---------------  ENDCAP-H -------------------------------------------------
+    // =========================================================================
 
     //--------------H-endcap HCAL vol -------------------
     // G4double           cb_EMCAL_GVol_RIn;
     // G4double           cb_EMCAL_GVol_ROut;
     // G4double           cb_EMCAL_GVol_SizeZ;
 
-    //  G4Polycone*        fSolid_HCAP_HCAL;    //pointer to the solid HCAP_HCAL volume
-    G4Tubs *fSolid_HCAP_HCAL;    //pointer to the solid HCAP_HCAL volume
-    G4LogicalVolume *fLogic_HCAP_HCAL;    //pointer to the logicalHCAP_HCAL  volume
-    G4VPhysicalVolume *fPhysics_HCAP_HCAL;    //pointer to the physical EMCAL barrel volume
-
-    G4Tubs *fSolid_HCAP_HCAL_D;    //pointer to the solid HCAP_HCAL volume
-    G4LogicalVolume *fLogic_HCAP_HCAL_D;    //pointer to the logicalHCAP_HCAL  volume
-    G4VPhysicalVolume *fPhysics_HCAP_HCAL_D;    //pointer to the physical EMCAL barrel volume
-
-
-
-
-    //----------------VTX volume -------------------
-    G4double cb_VTX_GVol_RIn;
-    G4double cb_VTX_GVol_ROut;
-    G4double cb_VTX_GVol_SizeZ;
-    G4Tubs *cb_VTX_GVol_Solid;    //pointer to the solid VTX volume
-    G4LogicalVolume *cb_VTX_GVol_Logic;    //pointer to the logical VTX volume
-    G4VPhysicalVolume *cb_VTX_GVol_Phys;    //pointer to the physical VTX volume
-
-    //----------------CTD  volume -------------------
-    G4double cb_CTD_GVol_RIn;
-    G4double cb_CTD_GVol_ROut;
-    G4double cb_CTD_GVol_SizeZ;
-    G4Tubs *cb_CTD_GVol_Solid;    //pointer to the solid CTD  volume
-    G4LogicalVolume *cb_CTD_GVol_Logic;    //pointer to the logical CTD  volume
-    G4VPhysicalVolume *cb_CTD_GVol_Phys;    //pointer to the physical CTD  volume
+    //  G4Polycone*        ci_HCAL_GVol_Solid;    //pointer to the solid HCAP_HCAL volume
+    G4double ci_HCAL_GVol_RIn;
+    G4double ci_HCAL_GVol_ROut;
+    G4double  ci_HCAL_GVol_SizeZ;
+    G4double  ci_HCAL_GVol_ShiftZ;
+    G4VisAttributes* attr_ci_HCAL_GVol;
+    G4Tubs *ci_HCAL_GVol_Solid;    //pointer to the solid HCAP_HCAL volume
+    G4LogicalVolume *ci_HCAL_GVol_Logic;    //pointer to the logicalHCAP_HCAL  volume
+    G4VPhysicalVolume *ci_HCAL_GVol_Phys;    //pointer to the physical EMCAL barrel volume
+    //---------------H-endcap HCAL det iron-------------------
+    G4double ci_HCAL_det_RIn;
+    G4double ci_HCAL_det_ROut;
+    G4double  ci_HCAL_det_SizeZ;
+    G4double  ci_HCAL_det_GapZ;
+    G4double  ci_HCAL_det_PosZ;
+    int ci_HCAL_Nlay;
+    G4Material *ci_HCAL_det_Material;
+    G4Tubs *ci_HCAL_det_Solid;    //pointer to the solid HCAP_HCAL volume
+    G4LogicalVolume *ci_HCAL_det_Logic;    //pointer to the logicalHCAP_HCAL  volume
+    G4VPhysicalVolume *ci_HCAL_det_Phys;    //pointer to the physical EMCAL barrel volume
 
 
-    //*************************************************************
-    //-----------------EMCAL barrel volume--------------------
-    G4double cb_EMCAL_GVol_RIn;
-    G4double cb_EMCAL_GVol_ROut;
-    G4double cb_EMCAL_GVol_SizeZ;
-    // G4Tubs*            cb_EMCAL_GVol_Solid;    //pointer to the solid  EMCAL barrel volume
-    G4Polycone *cb_EMCAL_GVol_Solid;    //pointer to the solid  EMCAL barrel volume
-    G4LogicalVolume *cb_EMCAL_GVol_Logic;    //pointer to the logical EMCAL barrel volume
-    G4VPhysicalVolume *cb_EMCAL_GVol_Phys;    //pointer to the physical EMCAL barrel volume
 
-    //--------------EMCAL barrel detector----------------------
-
-    G4double fEMCALSizeRin;
-    G4double fEMCALSizeRout;
-    G4double fEMCALSizeZ;
-    G4Material *fEMCALMaterial;
-    // G4Tubs*            fSolidEMCALbd;    //pointer to the solid World
-    G4Polycone *fSolidEMCALbd;    //pointer to the solid World
-    G4LogicalVolume *fLogicEMCALbd;    //pointer to the logical World
-    G4VPhysicalVolume *fPhysicsEMCALbd;    //pointer to the physical World
-
-    //*************************************************************
-    //--------------HCAL barrel volume  -------------------
-    G4double fHCALbSizeRin;
-    G4double fHCALbSizeRout;
-    G4double fHCALbSizeZ;
-    G4Tubs *fSolidHCALb;      //pointer to the solid
-    G4LogicalVolume *fLogicHCALb;    //pointer to the logical
-    G4VPhysicalVolume *fPhysicsHCALb;  //pointer to the physical
-
-    G4double fHCALbdet_SizeRin;
-    G4double fHCALbdet_SizeRout;
-    G4double fHCALbdet_SizeZ;
-    G4Material *fHCALbMaterial;
-    G4Tubs *fSolidHCALbdet;      //pointer to the solid
-    G4LogicalVolume *fLogicHCALbdet;    //pointer to the logical
-    G4VPhysicalVolume *fPhysicsHCALbdet;  //pointer to the physical
-
-    //-----------------ENDCAP-E GEM  volume--------------------
-
-    G4double ce_GEM_GVol_RIn;
-    G4double ce_GEM_GVol_ROut;
-    G4double ce_GEM_GVol_SizeZ;
-    G4double ce_GEM_GVol_PosZ;
-    G4double ce_GEM_GVol_ShiftZ;
-    G4Tubs *ce_GEM_GVol_Solid;    //pointer to the solid  GEM E-endcap  volume
-    G4LogicalVolume *ce_GEM_GVol_Logic;    //pointer to the logical GEM E-endcap volume
-    G4VPhysicalVolume *ce_GEM_GVol_Phys;    //pointer to the physical GEM E-endcap volume
-     //--------------- ENDCAP-E GEM  detector ------------------
-    G4double fGEMlay_E_SizeRin[20];
-    G4double fGEMlay_E_SizeRout[20];
-    G4double fGEMlay_E_SizeZ[20];
-    G4double fGEMlay_E_Z[20];
-    G4Material *fGEM_E_Material;
-    G4Tubs *fSolidGEMlay_E[20];    //pointer to the solid World
-    G4LogicalVolume *fLogicGEMlay_E[20];    //pointer to the logical World
-    G4VPhysicalVolume *fPhysicsGEMlay_E[20];    //pointer to the physical World
-    //--------------------------------------------------------------
-
-    //-----------------ENDCAP-H GEM  volume--------------------
-
-    G4double ci_GEM_GVol_RIn;
-    G4double ci_GEM_GVol_ROut;
-    G4double ci_GEM_GVol_SizeZ;
-    G4double ci_GEM_GVol_PosZ;
-    G4double ci_GEM_GVol_ShiftZ;
-    G4Tubs *ci_GEM_GVol_Solid;    //pointer to the solid  GEM H-endcap  volume
-    G4LogicalVolume *ci_GEM_GVol_Logic;    //pointer to the logical GEM H-endcap volume
-    G4VPhysicalVolume *ci_GEM_GVol_Phys;    //pointer to the physical GEM H-endcap volume
-    //-------------------------------------
+ //===========================================================
+     //-------------------------------------
     //-----------------FARFORWARD GEM  volume--------------------
 
     G4double fGEM_FARFORWD_SizeRin;
@@ -535,40 +615,6 @@ private:
     G4VPhysicalVolume *fPhysicsTPCBarrel[20];    //pointer to the physical World
 
 
-    //-------------------CTD_Si barrel detector ------------------
-    G4double fCTD_Si_SizeRin;
-    G4double fCTD_Si_SizeRout;
-    G4double fCTD_Si_SizeZ;
-    G4double fCTD_Si_steps;
-    G4Material *fCTD_Si_Material;
-    G4int fCTD_Si_layers;
-    G4double CTD_Si_Rin[100];
-    G4double CTD_Si_Rout[100];
-    G4Tubs *fSolidCTD_Si_Barrel[100];    //pointer to the solid World
-    G4LogicalVolume *fLogicCTD_Si_Barrel[100];    //pointer to the logical World
-    G4VPhysicalVolume *fPhysicsCTD_Si_Barrel[100];    //pointer to the physical World
-    //-------------------CTD_Straw barrel detector ------------------
-    G4double fCTD_Straw_SizeRin;
-    G4double fCTD_Straw_SizeRout;
-    G4double fCTD_Straw_SizeZ;
-    G4double fCTD_Straw_steps;
-    G4Material *fCTD_Straw_Material;
-    G4int fCTD_Straw_layers;
-    G4double CTD_Straw_Rin;
-    G4double CTD_Straw_Rout;
-    G4Tubs *fSolidCTD_Straw_Barrel;    //pointer to the solid World
-    G4LogicalVolume *fLogicCTD_Straw_Barrel;    //pointer to the logical World
-    G4VPhysicalVolume *fPhysicsCTD_Straw_Barrel;    //pointer to the physical World
-
-    G4Material *fCTD_Straw_Wall_Material;
-    G4Tubs *fSolidCTD_Straw_Wall_Barrel;    //pointer to the solid World
-    G4LogicalVolume *fLogicCTD_Straw_Wall_Barrel;    //pointer to the logical World
-    G4VPhysicalVolume *fPhysicsCTD_Straw_Wall_Barrel;    //pointer to the physical World
-
-    G4Material *fCTD_Straw_Gas_Material;
-    G4Tubs *fSolidCTD_Straw_Gas_Barrel;    //pointer to the solid World
-    G4LogicalVolume *fLogicCTD_Straw_Gas_Barrel;    //pointer to the logical World
-    G4VPhysicalVolume *fPhysicsCTD_Straw_Gas_Barrel;    //pointer to the physical World
 
     //-------------------VERTEX barrel detector ------------------
     G4Material *fVTXMaterial;

@@ -422,9 +422,9 @@ private:
 
     // =========================================================================
     // ---------------  ENDCAP-E -------------------------------------------------
+
+
     // =========================================================================
-
-
     //------------- ENDCAP-E HCAL -------------------
     G4double ce_HCAL_GVol_RIn;
     G4double ce_HCAL_GVol_ROut;
@@ -442,7 +442,45 @@ private:
     G4LogicalVolume *ce_HCAL_det_Logic;    //pointer to the logicalECAP_HCAL  volume
     G4VPhysicalVolume *ce_HCAL_det_Phys;    //pointer to the physical EMCAL barrel volume
 
+    // =========================================================================
+    //------------- ENDCAP-E EMCAL -------------------
 
+    G4double ce_EMCAL_GVol_RIn;
+    G4double ce_EMCAL_GVol_ROut;
+    G4double ce_EMCAL_GVol_SizeZ;
+    G4double ce_EMCAL_GVol_PosZ;
+    G4VisAttributes *attr_ce_EMCAL_GVol;
+    G4Tubs *ce_EMCAL_GVol_Solid;    //pointer to the solid World
+    G4LogicalVolume *ce_EMCAL_GVol_Logic;    //pointer to the logical World
+    G4VPhysicalVolume *ce_EMCAL_GVol_Phys;    //pointer to the physical World
+
+    //............... EMCAL Crystals modules ......................
+    double ce_EMCAL_detPWO_Thickness;
+    double ce_EMCAL_detPWO_Width;
+    double ce_EMCAL_detPWO_ROut;
+    G4double ce_EMCAL_detPWO_Gap ;
+    G4double ce_EMCAL_detPWO_InnerR;
+    G4double ce_EMCAL_detPWO_PosZ;
+
+    G4Material *ce_EMCAL_detPWO_Material;
+    G4VisAttributes *attr_ce_EMCAL_detPWO;
+    G4Box *ce_EMCAL_detPWO_Solid;
+    G4LogicalVolume *ce_EMCAL_detPWO_Logic;
+
+
+    //............... EMCAL Glass modules ......................
+    G4double ce_EMCAL_detGLASS_InnerR;
+    G4double ce_EMCAL_detGLASS_Thickness;
+    G4double ce_EMCAL_detGLASS_OuterR;
+    G4double ce_EMCAL_detGLASS_PosZ;
+    G4double ce_EMCAL_detGLASS_Width;
+    double ce_EMCAL_detGLASS_Gap ;
+
+    G4Material *ce_EMCAL_detGLASS_Material;
+    G4VisAttributes *attr_ce_EMCAL_detGLASS;
+    G4Box *ce_EMCAL_detGLASS_Solid;
+    G4LogicalVolume *ce_EMCAL_detGLASS_Logic;
+    // =========================================================================
     //----------------- ENDCAP-E  MRICH  -------------------
     G4double ce_MRICH_GVol_RIn;
     G4double ce_MRICH_GVol_ROut;
@@ -457,17 +495,12 @@ private:
     double ce_MRICH_mod_Thickness;
     double ce_MRICH_mod_Width;
     G4double ce_MRICH_mod_Gap;
-
     G4VisAttributes *attr_ce_MRICH_mod;
-
     G4Box *ce_MRICH_mod_Solid;
     G4LogicalVolume *ce_MRICH_mod_Logic;
 
     // =========================================================================
     // ---------------------------------------------------------------------------
-    // =========================================================================
-
-
 
     // =========================================================================
     // ---------------  ENDCAP-H -------------------------------------------------
@@ -490,9 +523,9 @@ private:
     //---------------H-endcap HCAL det iron-------------------
     G4double ci_HCAL_det_RIn;
     G4double ci_HCAL_det_ROut;
-    G4double  ci_HCAL_det_SizeZ;
-    G4double  ci_HCAL_det_GapZ;
-    G4double  ci_HCAL_det_PosZ;
+    G4double ci_HCAL_det_SizeZ;
+    G4double ci_HCAL_det_GapZ;
+    G4double ci_HCAL_det_PosZ;
     int ci_HCAL_Nlay;
     G4VisAttributes* attr_ci_HCAL_det;
     G4Material *ci_HCAL_det_Material;
@@ -585,15 +618,6 @@ private:
     G4LogicalVolume *fLogic_SI_FORWDD2_Lay;    //pointer to the logical FARFORWD
     G4VPhysicalVolume *fPhysics_SI_FORWDD2_Lay;    //pointer to the physical FARFORWD
 
-//-------------------------------------
-
-    G4double fEMCALeSizeRin;
-    G4double fEMCALeSizeRout;
-    G4double fEMCALeSizeZ;
-    G4Material *fEMCALeMaterial;
-    G4Tubs *fSolidEMCALe;    //pointer to the solid World
-    G4LogicalVolume *fLogicEMCALe;    //pointer to the logical World
-    G4VPhysicalVolume *fPhysicsEMCALe;    //pointer to the physical World
 
     //------------------ EMCAL HAdron endcap ------------------
     G4double fEMCAL_H_SizeRin;

@@ -297,6 +297,33 @@ private:
     G4Tubs *cb_VTX_GVol_Solid;    //pointer to the solid VTX volume
     G4LogicalVolume *cb_VTX_GVol_Logic;    //pointer to the logical VTX volume
     G4VPhysicalVolume *cb_VTX_GVol_Phys;    //pointer to the physical VTX volume
+    //--------------- VTX ladders geom-------
+     G4Box *cb_VTX_ladder_Solid[10]; //pointer to the solid Absorber
+    G4LogicalVolume *cb_VTX_ladder_Logic[10]; //pointer to the logical Absorber
+    typedef struct {
+        double Dx;
+        double Dy;
+        double Dz;
+        double Rin;
+    } cb_VTX_ladder_LayParam;
+    G4double cb_VTX_ladder_DZ ;
+    G4double cb_VTX_ladder_DY ;
+    G4double cb_VTX_ladder_Thickness;
+
+    G4VisAttributes *attr_cb_VTX_ladder;
+    G4Material *cb_VTX_ladder_Material;
+    int NUM;
+    G4double cb_VTX_ladder_deltaphi;
+    G4double cb_VTX_ladder_deltashi;
+
+    //===================================================================================
+
+    //-- slices and pixels
+
+    G4LogicalVolume *pxdSlice_log[10]; //pointer to the logical slice
+    G4LogicalVolume *pxdPixel_log[10]; //pointer to the logical pixel
+
+
     //*************************************************************
     //----------------CTD  volume -------------------
     G4double cb_CTD_GVol_RIn;
@@ -370,6 +397,7 @@ private:
     G4double cb_HCAL_GVol_RIn;
     G4double cb_HCAL_GVol_ROut;
     G4double cb_HCAL_GVol_SizeZ;
+
     G4Tubs *cb_HCAL_GVol_Solid;      //pointer to the solid
     G4LogicalVolume *cb_HCAL_GVol_Logic;    //pointer to the logical
     G4VPhysicalVolume *cb_HCAL_GVol_Phys;  //pointer to the physical
@@ -380,6 +408,7 @@ private:
     G4double cb_HCAL_det_SizeZ;
     G4double cb_HCAL_det_Thickness;
     G4Material *cb_HCAL_det_Material;
+    G4VisAttributes *attr_cb_HCAL_det;
     G4Tubs *cb_HCAL_det_Solid;      //pointer to the solid
     G4LogicalVolume *cb_HCAL_det_Logic;    //pointer to the logical
     G4VPhysicalVolume *cb_HCAL_det_Phys;  //pointer to the physical
@@ -397,14 +426,15 @@ private:
     G4LogicalVolume *ce_GEM_GVol_Logic;    //pointer to the logical GEM E-endcap volume
     G4VPhysicalVolume *ce_GEM_GVol_Phys;    //pointer to the physical GEM E-endcap volume
     //--------------- ENDCAP-E GEM  detector ------------------
-    G4double fGEMlay_E_SizeRin[20];
-    G4double fGEMlay_E_SizeRout[20];
-    G4double fGEMlay_E_SizeZ[20];
-    G4double fGEMlay_E_Z[20];
-    G4Material *fGEM_E_Material;
-    G4Tubs *fSolidGEMlay_E[20];    //pointer to the solid World
-    G4LogicalVolume *fLogicGEMlay_E[20];    //pointer to the logical World
-    G4VPhysicalVolume *fPhysicsGEMlay_E[20];    //pointer to the physical World
+    G4double ce_GEM_lay_RIn[20];
+    G4double ce_GEM_lay_ROut[20];
+    G4double ce_GEM_lay_SizeZ[20];
+    G4double ce_GEM_lay_PosZ[20];
+    G4Material *ce_GEM_lay_Material;
+    G4VisAttributes *attr_ce_GEM_lay;
+    G4Tubs *ce_GEM_lay_Solid[20];    //pointer to the solid World
+    G4LogicalVolume *ce_GEM_lay_Logic[20];    //pointer to the logical World
+    G4VPhysicalVolume *ce_GEM_lay_Phys[20];    //pointer to the physical World
 
     //*************************************************************
     //-----------------ENDCAP-H GEM  volume--------------------
@@ -417,6 +447,16 @@ private:
     G4Tubs *ci_GEM_GVol_Solid;    //pointer to the solid  GEM H-endcap  volume
     G4LogicalVolume *ci_GEM_GVol_Logic;    //pointer to the logical GEM H-endcap volume
     G4VPhysicalVolume *ci_GEM_GVol_Phys;    //pointer to the physical GEM H-endcap volume
+    //-------------------ENDCAP-H GEM detector ------------------
+    G4double ci_GEM_lay_RIn[20];
+    G4double ci_GEM_lay_ROut[20];
+    G4double ci_GEM_lay_SizeZ[20];
+    G4double ci_GEM_lay_PosZ[20];
+    G4Material *ci_GEM_lay_Material;
+    G4VisAttributes *attr_ci_GEM_lay;
+    G4Tubs *ci_GEM_lay_Solid[20];    //pointer to the solid World
+    G4LogicalVolume *ci_GEM_lay_Logic[20];    //pointer to the logical World
+    G4VPhysicalVolume *ci_GEM_lay_Phys[20];    //pointer to the physical World
     //--------------------------------------------------------------
 
 
@@ -584,53 +624,28 @@ private:
     //===========================================================
     //===========================================================
     //-------------------------------------
-    //-----------------FARFORWARD GEM  volume--------------------
+    //-----------------FARFORWARD  AREA-------------------
     //===========================================================
     //===========================================================
-
-    G4double fGEM_FARFORWD_SizeRin;
-    G4double fGEM_FARFORWD_SizeRout;
-    G4double fGEM_FARFORWD_SizeZ;
-    G4double fGEM_FARFORWD_Z, fGEM_FARFORWD_X;
-    G4double fGEM_FARFORWD_Lay_SizeRin;
-    G4double fGEM_FARFORWD_Lay_SizeRout;
-    G4double fGEM_FARFORWD_Lay_SizeZ;
-
-    G4Tubs *fSolidGEM_FARFORWD;    //pointer to the solid  FARFORWD
-    G4LogicalVolume *fLogicGEM_FARFORWD;    //pointer to the logical FARFORWD
-    G4VPhysicalVolume *fPhysicsGEM_FARFORWD;    //pointer to the physical FARFORWD
-
-    G4Tubs *fSolidGEM_FARFORWD_Lay;    //pointer to the solid  FARFORWD lay
-    G4LogicalVolume *fLogicGEM_FARFORWD_Lay;    //pointer to the logical FARFORWD  lay
-    G4VPhysicalVolume *fPhysicsGEM_FARFORWD_Lay;    //pointer to the physical FARFORWD  lay
-    //-----------------FARFORWARD VIRTUAL VOLUMES--------------------
-    G4VisAttributes *vvpf1;
-
-
-    G4double fFARFORWARD_VP_Rout, fFARFORWARD_VP_angle;
-    G4double fFARFORWARD_VP_SizeZ;
-    G4double fFARFORWARD_VP_X, fFARFORWARD_VP_Z;
-
-    G4Tubs *fSolid_FARFORWARD_VP;    //pointer to the solid  FARFORWD
-    G4LogicalVolume *fLogic_FARFORWARD_VP;    //pointer to the logical FARFORWD
-    G4VPhysicalVolume *fPhysics_FARFORWARD_VP;    //pointer to the physical FARFORWD
-    //-----------------FORWARD Si D1  volume--------------------
+   //-----------------FORWARD D1  volume--------------------
     // ----- A----
-    G4double fSI_FORWDD1a_SizeRin;
-    G4double fSI_FORWDD1a_SizeRout;
-    G4double fSI_FORWDD1a_SizeZ;
+    G4double fi_D1A_GVol_RIn;
+    G4double fi_D1A_GVol_ROut;
+    G4double fi_D1A_GVol_SizeZ;
+    G4VisAttributes* attr_fi_D1A_GVol;
+    G4Tubs *fi_D1A_GVol_Solid;    //pointer to the solid  FARFORWD
+    G4LogicalVolume *fi_D1A_GVol_Logic;    //pointer to the logical FARFORWD
+    G4VPhysicalVolume *fi_D1A_GVol_Phys;    //pointer to the physical FARFORWD
 
-    G4Tubs *fSolid_SI_FORWDD1a;    //pointer to the solid  FARFORWD
-    G4LogicalVolume *fLogic_SI_FORWDD1a;    //pointer to the logical FARFORWD
-    G4VPhysicalVolume *fPhysics_SI_FORWDD1a;    //pointer to the physical FARFORWD
-
-    G4double fSI_FORWDD1a_SizeRin_Lay;
-    G4double fSI_FORWDD1a_SizeRout_Lay;
-    G4double fSI_FORWDD1a_SizeZ_Lay;
-
-    G4Tubs *fSolid_SI_FORWDD1a_Lay;    //pointer to the solid  FARFORWD
-    G4LogicalVolume *fLogic_SI_FORWDD1a_Lay;    //pointer to the logical FARFORWD
-    G4VPhysicalVolume *fPhysics_SI_FORWDD1a_Lay;    //pointer to the physical FARFORWD
+    G4double fi_D1A_lay_RIn;
+    G4double fi_D1A_lay_ROut;
+    G4double fi_D1A_lay_SizeZ;
+    int f1_D1A_NLAY;
+    G4Material *fi_D1A_lay_Material;
+    G4VisAttributes* attr_fi_D1A_lay;
+    G4Tubs *f1_D1A_lay_Solid;    //pointer to the solid  FARFORWD
+    G4LogicalVolume *f1_D1A_Lay_Logic;    //pointer to the logical FARFORWD
+    G4VPhysicalVolume *f1_D1A_lay_Phys;    //pointer to the physical FARFORWD
 
     // ----- B----
     G4double fSI_FORWDD1b_SizeRin;
@@ -668,6 +683,40 @@ private:
     G4VPhysicalVolume *fPhysics_SI_FORWDD2_Lay;    //pointer to the physical FARFORWD
 
 
+    //===========================================================
+    //===========================================================
+    //-------------------------------------
+    //-----------------FARFORWARD GEM  volume--------------------
+    //===========================================================
+    //===========================================================
+
+    G4double fGEM_FARFORWD_SizeRin;
+    G4double fGEM_FARFORWD_SizeRout;
+    G4double fGEM_FARFORWD_SizeZ;
+    G4double fGEM_FARFORWD_Z, fGEM_FARFORWD_X;
+    G4double fGEM_FARFORWD_Lay_SizeRin;
+    G4double fGEM_FARFORWD_Lay_SizeRout;
+    G4double fGEM_FARFORWD_Lay_SizeZ;
+
+    G4Tubs *fSolidGEM_FARFORWD;    //pointer to the solid  FARFORWD
+    G4LogicalVolume *fLogicGEM_FARFORWD;    //pointer to the logical FARFORWD
+    G4VPhysicalVolume *fPhysicsGEM_FARFORWD;    //pointer to the physical FARFORWD
+
+    G4Tubs *fSolidGEM_FARFORWD_Lay;    //pointer to the solid  FARFORWD lay
+    G4LogicalVolume *fLogicGEM_FARFORWD_Lay;    //pointer to the logical FARFORWD  lay
+    G4VPhysicalVolume *fPhysicsGEM_FARFORWD_Lay;    //pointer to the physical FARFORWD  lay
+    //-----------------FARFORWARD VIRTUAL VOLUMES--------------------
+    G4VisAttributes *vvpf1;
+
+
+    G4double fFARFORWARD_VP_Rout, fFARFORWARD_VP_angle;
+    G4double fFARFORWARD_VP_SizeZ;
+    G4double fFARFORWARD_VP_X, fFARFORWARD_VP_Z;
+
+    G4Tubs *fSolid_FARFORWARD_VP;    //pointer to the solid  FARFORWD
+    G4LogicalVolume *fLogic_FARFORWARD_VP;    //pointer to the logical FARFORWD
+    G4VPhysicalVolume *fPhysics_FARFORWARD_VP;    //pointer to the physical FARFORWD
+
 
 
     //-------------------TPC barrel detector ------------------
@@ -701,17 +750,6 @@ private:
 
     //--------------------------------------------------------------
 
-
-      //-------------------GEM Endcap H  detector ------------------
-    G4double fGEMlay_H_SizeRin[20];
-    G4double fGEMlay_H_SizeRout[20];
-    G4double fGEMlay_H_SizeZ[20];
-    G4double fGEMlay_H_Z[20];
-    G4Material *fGEM_H_Material;
-    G4Tubs *fSolidGEMlay_H[20];    //pointer to the solid World
-    G4LogicalVolume *fLogicGEMlay_H[20];    //pointer to the logical World
-    G4VPhysicalVolume *fPhysicsGEMlay_H[20];    //pointer to the physical World
-    //--------------------------------------------------------------
 
     //----------------BEAM  elements ----------------------------------------------
     /*
@@ -862,6 +900,8 @@ private:
 
     G4double fStartR;
     G4double fStartZ;
+    G4LogicalVolume *fLogicAbsorber;    //pointer to the logical Absorber
+    G4VPhysicalVolume *fPhysicsAbsorber;    //pointer to the physical Absorber
 
     //G4int fModuleNumber;   // the number of Rad-Det modules
 
@@ -875,16 +915,6 @@ private:
     G4double fGapZ;
     G4double fElectrodeZ;
 
-    G4LogicalVolume *fLogicAbsorber;    //pointer to the logical Absorber
-    G4VPhysicalVolume *fPhysicsAbsorber;    //pointer to the physical Absorber
-    G4Box *fSolidAbsorberBarrel[10]; //pointer to the solid Absorber
-    G4LogicalVolume *fLogicAbsorberBarrel[10]; //pointer to the logical Absorber
-
-
-    //-- slices and pixels
-
-    G4LogicalVolume *pxdSlice_log[10]; //pointer to the logical slice
-    G4LogicalVolume *pxdPixel_log[10]; //pointer to the logical pixel
 
     //----
     G4UniformMagField *fMagField;      //pointer to the magnetic field

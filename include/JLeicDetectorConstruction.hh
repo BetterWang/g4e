@@ -421,7 +421,10 @@ private:
 
 
     // =========================================================================
+    // =========================================================================
     // ---------------  ENDCAP-E -------------------------------------------------
+    // =========================================================================
+    // =========================================================================
 
 
     // =========================================================================
@@ -500,13 +503,17 @@ private:
     G4LogicalVolume *ce_MRICH_mod_Logic;
 
     // =========================================================================
-    // ---------------------------------------------------------------------------
 
+
+
+    // =========================================================================
     // =========================================================================
     // ---------------  ENDCAP-H -------------------------------------------------
     // =========================================================================
-
-    //--------------H-endcap HCAL vol -------------------
+    // =========================================================================
+    //
+    // =========================================================================
+    //--------------ENDCAP-H  HCAL vol -------------------
     // G4double           cb_EMCAL_GVol_RIn;
     // G4double           cb_EMCAL_GVol_ROut;
     // G4double           cb_EMCAL_GVol_SizeZ;
@@ -520,10 +527,10 @@ private:
     G4Tubs *ci_HCAL_GVol_Solid;    //pointer to the solid HCAP_HCAL volume
     G4LogicalVolume *ci_HCAL_GVol_Logic;    //pointer to the logicalHCAP_HCAL  volume
     G4VPhysicalVolume *ci_HCAL_GVol_Phys;    //pointer to the physical EMCAL barrel volume
-    //---------------H-endcap HCAL det iron-------------------
+    //---------------ENDCAP-H HCAL det iron-------------------
     G4double ci_HCAL_det_RIn;
     G4double ci_HCAL_det_ROut;
-    G4double ci_HCAL_det_SizeZ;
+    G4double ci_HCAL_det_ThicknessZ;
     G4double ci_HCAL_det_GapZ;
     G4double ci_HCAL_det_PosZ;
     int ci_HCAL_Nlay;
@@ -532,12 +539,54 @@ private:
     G4Tubs *ci_HCAL_det_Solid;    //pointer to the solid HCAP_HCAL volume
     G4LogicalVolume *ci_HCAL_det_Logic;    //pointer to the logicalHCAP_HCAL  volume
     G4VPhysicalVolume *ci_HCAL_det_Phys;    //pointer to the physical EMCAL barrel volume
+    // =========================================================================
+    //------------------ ENDCAP-H EMCAL vol ------------------
+    G4double ci_EMCAL_GVol_RIn;
+    G4double ci_EMCAL_GVol_ROut;
+    G4double ci_EMCAL_GVol_ThicknessZ;
+    double ci_EMCAL_GVol_PosZ;
+    G4Material *ci_EMCAL_GVol_Material;
+    G4VisAttributes *attr_ci_EMCAL_GVol;
+    G4Tubs *ci_EMCAL_GVol_Solid;    //pointer to the solid World
+    G4LogicalVolume *ci_EMCAL_GVol_Logic;    //pointer to the logical World
+    G4VPhysicalVolume *ci_EMCAL_GVol_Phys;    //pointer to the physical World
+    //  ------------ENDCAP-H  EMCAL modules -----
+    double ci_EMCAL_det_Length ;
+    double ci_EMCAL_det_Width ;
+    G4double ci_EMCAL_det_Gap ;
+    G4double ci_EMCAL_det_Rin1 ;
+    G4double ci_EMCAL_det_Rin2 ;
+
+    G4Material *ci_EMCAL_det_Material ;
+    G4VisAttributes *attr_ci_EMCAL_det;
+    G4Box *ci_EMCAL_det_Solid ;
+    G4LogicalVolume *ci_EMCAL_det_Logic ;
+
+    // =========================================================================
+    //--------------ENDCAP-H  TRD vol -------------------
+
+    double ci_TRD_ThicknessZ ;
+
+    // =========================================================================
+    //--------------ENDCAP-H  HCAL vol -------------------
+    double ci_DRICH_GVol_RIn ;
+    double ci_DRICH_GVol_ROut ;
+    double ci_DRICH_GVol_ThicknessZ ;
+
+    double ci_DRICH_GVol_PosZ ;
+    G4VisAttributes* attr_ci_DRICH_GVol;
+
+    G4Tubs *ci_DRICH_GVol_Solid;
+    G4LogicalVolume *ci_DRICH_GVol_Logic;
+    G4PVPlacement *ci_DRICH_GVol_Phys;
 
 
-
- //===========================================================
-     //-------------------------------------
+    //===========================================================
+    //===========================================================
+    //-------------------------------------
     //-----------------FARFORWARD GEM  volume--------------------
+    //===========================================================
+    //===========================================================
 
     G4double fGEM_FARFORWD_SizeRin;
     G4double fGEM_FARFORWD_SizeRout;
@@ -619,14 +668,6 @@ private:
     G4VPhysicalVolume *fPhysics_SI_FORWDD2_Lay;    //pointer to the physical FARFORWD
 
 
-    //------------------ EMCAL HAdron endcap ------------------
-    G4double fEMCAL_H_SizeRin;
-    G4double fEMCAL_H_SizeRout;
-    G4double fEMCAL_H_SizeZ;
-    G4Material *fEMCAL_H_Material;
-    G4Tubs *fSolidEMCAL_H;    //pointer to the solid World
-    G4LogicalVolume *fLogicEMCAL_H;    //pointer to the logical World
-    G4VPhysicalVolume *fPhysicsEMCAL_H;    //pointer to the physical World
 
 
     //-------------------TPC barrel detector ------------------

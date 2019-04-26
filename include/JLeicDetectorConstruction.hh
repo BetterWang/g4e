@@ -444,22 +444,25 @@ private:
 
 
     //----------------- ENDCAP-E  MRICH  -------------------
-    G4double fMRICHSizeRin;
-    G4double fMRICHSizeRout;
-    G4double fMRICHSizeZ;
-    G4double fMRICH_Z;
-
-    G4Tubs *fSolid_E_MRICH;    //pointer to the solid  e-endcap MRICH volume
-    G4LogicalVolume *fLogic_E_MRICH;    //pointer to the logical  e-endcap MRICH volume
-    G4VPhysicalVolume *fPhysics_E_MRICH;    //pointer to the physical  e-endcap MRICH volume
+    G4double ce_MRICH_GVol_RIn;
+    G4double ce_MRICH_GVol_ROut;
+    G4double ce_MRICH_GVol_SizeZ;
+    G4double ce_MRICH_GVol_PosZ;
+    G4double ce_MRICH_GVol_InnerR;
+    G4VisAttributes* attr_ce_MRICH_GVol;
+    G4Tubs *ce_MRICH_GVol_Solid;    //pointer to the solid  e-endcap MRICH volume
+    G4LogicalVolume *ce_MRICH_GVol_Logic;    //pointer to the logical  e-endcap MRICH volume
+    G4VPhysicalVolume *ce_MRICH_GVol_Phys;    //pointer to the physical  e-endcap MRICH volume
     //............... MRICH modules ......................
-    double MRICHLength;
-    double MRICHWidth;
-    G4double MRICHgap;
-    G4VisAttributes *vmrich1, *vmrich2;
+    double ce_MRICH_mod_Thickness;
+    double ce_MRICH_mod_Width;
+    G4double ce_MRICH_mod_Gap;
 
-    G4Box *mSolidMRICH;
-    G4LogicalVolume *mLogicMRICH;
+    G4VisAttributes *attr_ce_MRICH_mod;
+
+    G4Box *ce_MRICH_mod_Solid;
+    G4LogicalVolume *ce_MRICH_mod_Logic;
+
     // =========================================================================
     // ---------------------------------------------------------------------------
     // =========================================================================
@@ -491,6 +494,7 @@ private:
     G4double  ci_HCAL_det_GapZ;
     G4double  ci_HCAL_det_PosZ;
     int ci_HCAL_Nlay;
+    G4VisAttributes* attr_ci_HCAL_det;
     G4Material *ci_HCAL_det_Material;
     G4Tubs *ci_HCAL_det_Solid;    //pointer to the solid HCAP_HCAL volume
     G4LogicalVolume *ci_HCAL_det_Logic;    //pointer to the logicalHCAP_HCAL  volume

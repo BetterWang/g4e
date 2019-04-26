@@ -482,87 +482,6 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 
 #endif // end HCALbdet
 #endif // end HCALb
-//===================================================================================
-
-
-
-    //===================================================================================
-    //==                          ELECTRON-ENDCAP    HCAL   DETECTOR VOLUME              ==
-    //===================================================================================
-#ifdef USE_E_ENDCAP_HCAL
-                                                                                                                            // G4double ce_HCAL_GVol_RIn[2]={60*cm, 70*cm } ;
-     //  G4double ce_HCAL_GVol_RIn[2]={0*cm, 0*cm } ;
-     // G4double ce_HCAL_GVol_ROut[2]={cb_HCAL_GVol_ROut,cb_HCAL_GVol_ROut };
- ce_HCAL_GVol_RIn=0*cm ;
- ce_HCAL_GVol_ROut= cb_HCAL_GVol_ROut;
- ce_HCAL_GVol_SizeZ=100*cm;
- ce_HCAL_GVol_ShiftZ=5*cm;
- // G4double  fHCAL_ECAP_Zcone[2]= {ci_ENDCAP_GVol_PosZ+ ci_ENDCAP_GVol_SizeZ/2+ce_HCAL_GVol_ShiftZ,ci_ENDCAP_GVol_PosZ+ ci_ENDCAP_GVol_SizeZ/2+ce_HCAL_GVol_SizeZ + ce_HCAL_GVol_ShiftZ} ;
-
-
-
- // printf("ECAP_HCAL_det_sol::2  in= %lf %lf  out= %lf %lf z=%lf\n",ce_HCAL_GVol_RIn[0],ce_HCAL_GVol_RIn[1],ce_HCAL_GVol_ROut[0], ce_HCAL_GVol_ROut[1], ce_HCAL_GVol_SizeZ);
-
-   //cb_HCAL_det_Material = fMat->GetMaterial("StainlessSteel");
- //   ce_HCAL_GVol_Solid = new G4Polycone("ce_HCAL_GVol_Solid",0.*deg,360.*deg,2,fHCAL_ECAP_Zcone, ce_HCAL_GVol_RIn, ce_HCAL_GVol_ROut);
- ce_HCAL_GVol_Solid  = new G4Tubs("ce_HCAL_GVol_Solid", ce_HCAL_GVol_RIn, ce_HCAL_GVol_ROut, ce_HCAL_GVol_SizeZ/2.,0.,360*deg);
-    ce_HCAL_GVol_Logic = new G4LogicalVolume(ce_HCAL_GVol_Solid,  World_Material,  "ce_HCAL_GVol_Logic");
-    //  ce_HCAL_GVol_Phys = new G4PVPlacement(0, G4ThreeVector(0,0,0), "ECAP_HCAL_vol_phys",ce_HCAL_GVol_Logic,
-    //					  World_Phys, false,	0 );
-
-   ce_HCAL_GVol_Phys = new G4PVPlacement(0, G4ThreeVector(0,0,ce_ENDCAP_GVol_PosZ- ce_ENDCAP_GVol_SizeZ/2-ce_HCAL_GVol_ShiftZ-ce_HCAL_GVol_SizeZ/2.), "ce_HCAL_GVol_Phys",ce_HCAL_GVol_Logic,
-					  World_Phys, false,	0 );
-
-   vtpc1= new G4VisAttributes(G4Color(0.3,0,3.,0.1));
-   vtpc1->SetLineWidth(1); vtpc1->SetForceSolid(false);
-     ce_HCAL_GVol_Logic->SetVisAttributes(vtpc1);
-  //  cb_HCAL_GVol_Logic->SetVisAttributes(G4VisAttributes::Invisible);
-#endif // end HCALb
-    //---------------------------- ELECTRON-ENDCAP ----HCAL IRON--------------------------------------
-#ifdef USE_E_ENDCAP_HCAL
-                                                                                                                            #ifdef USE_E_ENDCAP_HCAL_D
-
-  G4double fHCAL_ECAP_DET_SizeRi= 30*cm ;
-  G4double fHCAL_ECAP_DET_SizeRo=ce_HCAL_GVol_ROut -1*cm;
- G4double  fHCAL_ECAP_DET_SizeZ=2*cm;
- G4double  fHCAL_ECAP_DET_Zgap=2*cm;
- G4double  fHCAL_ECAP_DET_Z;
- cb_HCAL_det_Material= fMat->GetMaterial("IronAll");
-  printf("ECAP_HCAL_det_sol::1 %f %f ,%f\n",fHCAL_ECAP_DET_SizeRi, fHCAL_ECAP_DET_SizeRo, fHCAL_ECAP_DET_SizeZ);
-
- sprintf(abname,"ECAP_HCAL_det_sol");
- ce_HCAL_det_Solid  = new G4Tubs(abname, fHCAL_ECAP_DET_SizeRi, fHCAL_ECAP_DET_SizeRo, fHCAL_ECAP_DET_SizeZ/2.,0.,360*deg);
-
- sprintf(abname,"ECAP_HCAL_det_log");
- ce_HCAL_det_Logic = new G4LogicalVolume(ce_HCAL_det_Solid,   World_Material,abname);
-
- G4VisAttributes* vehcal1= new G4VisAttributes(G4Color(0.6,0,0.6,1));
- vehcal1->SetLineWidth(1); vehcal1->SetForceSolid(true);
- ce_HCAL_det_Logic->SetVisAttributes(vehcal1);
-
-  int ehlay=0;
-  int NLAY_ECAP_HCAL=20;
-  for (ehlay=0;ehlay<NLAY_ECAP_HCAL;ehlay++){
-    fHCAL_ECAP_DET_Z= ce_HCAL_GVol_SizeZ/2   -(ehlay+1)*fHCAL_ECAP_DET_SizeZ -(ehlay+1)*5*cm;
-    printf("ECAP_HCAL_det_sol::2 %f %f ,%f\n", fHCAL_ECAP_DET_Z,abs(fHCAL_ECAP_DET_Z- fHCAL_ECAP_DET_SizeZ),ce_HCAL_GVol_SizeZ/2);
-
-    if( ( abs (fHCAL_ECAP_DET_Z- fHCAL_ECAP_DET_SizeZ)) > ce_HCAL_GVol_SizeZ/2) continue;
-    //   fHCAL_ECAP_DET_Z=-ce_HCAL_GVol_SizeZ/2+ehlay*fHCAL_ECAP_DET_SizeZ+fHCAL_ECAP_DET_Zgap*ehlay;
-    // fHCAL_ECAP_DET_Z= ehlay*fHCAL_ECAP_DET_SizeZ+fHCAL_ECAP_DET_Zgap*ehlay;
-     sprintf(abname,"ECAP_HCAL_det_phys_%d",ehlay);
-    ce_HCAL_det_Phys = new G4PVPlacement(0, G4ThreeVector(0,0, fHCAL_ECAP_DET_Z), abname,ce_HCAL_det_Logic,
-				           ce_HCAL_GVol_Phys,  false, ehlay);
-   }
-
-
-#endif // end HCAL --- ELECTRON-ENDCAP
-#endif // end HCAL--- ELECTRON-ENDCAP
-
-    //===================================================================================
-
-
-
-
 
     //===================================================================================
     //==                          HADRON-ENDCAP    HCAL   DETECTOR VOLUME              ==
@@ -614,9 +533,9 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
  sprintf(abname,"ci_HCAL_det_Logic");
  ci_HCAL_det_Logic = new G4LogicalVolume(ci_HCAL_det_Solid,   World_Material,abname);
 
-G4VisAttributes* vhcal1= new G4VisAttributes(G4Color(0.6,0,0.6,1));
- vhcal1->SetLineWidth(1); vhcal1->SetForceSolid(true);
- ci_HCAL_det_Logic->SetVisAttributes(vhcal1);
+ attr_ci_HCAL_det= new G4VisAttributes(G4Color(0.6,0,0.6,1));
+ attr_ci_HCAL_det->SetLineWidth(1); attr_ci_HCAL_det->SetForceSolid(true);
+ ci_HCAL_det_Logic->SetVisAttributes(attr_ci_HCAL_det);
 
   int hhlay=0;
 
@@ -964,37 +883,37 @@ G4VisAttributes* vhcal1= new G4VisAttributes(G4Color(0.6,0,0.6,1));
 
 #ifdef USE_E_MRICH
 
-    fMRICHSizeRin = 12 * cm;
-    // for new magnet     fMRICHSizeRout = 120 * cm;
-    fMRICHSizeRout = 82 * cm;
-    fMRICHSizeZ = 15 * cm;
-    fMRICH_Z = ce_ENDCAP_GVol_SizeZ / 2 - fMRICHSizeZ / 2 - 2 * cm;
-    fSolid_E_MRICH = new G4Tubs("E_CAP_MRICH_Solid", fMRICHSizeRin, fMRICHSizeRout, fMRICHSizeZ / 2., 0., 360 * deg);
-    fLogic_E_MRICH = new G4LogicalVolume(fSolid_E_MRICH, World_Material, "E_CAP_MRICH_Logic");
-    vmrich1 = new G4VisAttributes(G4Color(0.3, 0.5, 0.9, 0.9));
-    vmrich1->SetLineWidth(1);
-    vmrich1->SetForceSolid(false);
-    fLogic_E_MRICH->SetVisAttributes(vmrich1);
+    ce_MRICH_GVol_RIn = 12 * cm;
+    // for new magnet     ce_MRICH_GVol_ROut = 120 * cm;
+    ce_MRICH_GVol_ROut = 82 * cm;
+    ce_MRICH_GVol_SizeZ = 15 * cm;
+    ce_MRICH_GVol_PosZ = ce_ENDCAP_GVol_SizeZ / 2 - ce_MRICH_GVol_SizeZ / 2 - 2 * cm;
+    ce_MRICH_GVol_Solid = new G4Tubs("ce_MRICH_GVol_Solid", ce_MRICH_GVol_RIn, ce_MRICH_GVol_ROut, ce_MRICH_GVol_SizeZ / 2., 0., 360 * deg);
+    ce_MRICH_GVol_Logic = new G4LogicalVolume(ce_MRICH_GVol_Solid, World_Material, "ce_MRICH_GVol_Logic");
+    attr_ce_MRICH_GVol = new G4VisAttributes(G4Color(0.3, 0.5, 0.9, 0.9));
+    attr_ce_MRICH_GVol->SetLineWidth(1);
+    attr_ce_MRICH_GVol->SetForceSolid(false);
+    ce_MRICH_GVol_Logic->SetVisAttributes(attr_ce_MRICH_GVol);
 
-    fPhysics_E_MRICH = new G4PVPlacement(0, G4ThreeVector(0, 0, fMRICH_Z), "E_CAP_MRICH_Physics", fLogic_E_MRICH,
+    ce_MRICH_GVol_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, ce_MRICH_GVol_PosZ), "ce_MRICH_GVol_Phys", ce_MRICH_GVol_Logic,
                                          ce_ENDCAP_GVol_Phys, false, 0);
     //.................................................................................
     //                                MRICH modules
     //.................................................................................
 
-    MRICHLength = 10. * cm;
-    MRICHWidth = 10. * cm;
-    MRICHgap = 1 * cm;
+    ce_MRICH_mod_Thickness = 10. * cm;
+    ce_MRICH_mod_Width = 10. * cm;
+    ce_MRICH_mod_Gap = 1 * cm;
 
-    mSolidMRICH = new G4Box("MRICH_sol", MRICHWidth * 0.5, MRICHWidth * 0.5, MRICHLength * 0.5);
-    mLogicMRICH = new G4LogicalVolume(mSolidMRICH, World_Material, "MRICH_log");
+    ce_MRICH_mod_Solid = new G4Box("ce_MRICH_mod_Solid", ce_MRICH_mod_Width * 0.5, ce_MRICH_mod_Width * 0.5, ce_MRICH_mod_Thickness * 0.5);
+    ce_MRICH_mod_Logic = new G4LogicalVolume(ce_MRICH_mod_Solid, World_Material, "ce_MRICH_mod_Logic");
 
-    vmrich2 = new G4VisAttributes(G4Color(1, 0.6, 0.1, 0.8));
-    vmrich2->SetLineWidth(1);
-    vmrich2->SetForceSolid(true);
-    mLogicMRICH->SetVisAttributes(vmrich2);
+    attr_ce_MRICH_mod = new G4VisAttributes(G4Color(1, 0.6, 0.1, 0.8));
+    attr_ce_MRICH_mod->SetLineWidth(1);
+    attr_ce_MRICH_mod->SetForceSolid(true);
+    ce_MRICH_mod_Logic->SetVisAttributes(attr_ce_MRICH_mod);
 
-    G4double MRICH_R0 = 15. * cm;
+    G4double ce_MRICH_GVol_InnerR = 15. * cm;
     G4double MRICH_R;
     G4double y_mrich = 0.;
     G4double x_mrich = 0;
@@ -1002,42 +921,42 @@ G4VisAttributes* vhcal1= new G4VisAttributes(G4Color(0.6,0,0.6,1));
 
 //============  For MRICH sectors =====
     for (j = 0; j < 10; j++) {
-        y_mrich -= (MRICHWidth + MRICHgap);
-        x_mrich = (MRICHWidth + MRICHgap) * 0.5;
+        y_mrich -= (ce_MRICH_mod_Width + ce_MRICH_mod_Gap);
+        x_mrich = (ce_MRICH_mod_Width + ce_MRICH_mod_Gap) * 0.5;
 	// printf("MRICH0:: x_mrich =%f,  y_mrich=%f\n", x_mrich, y_mrich);
         for (i = 0; i < 10; i++) {
             double MRICH_R = sqrt(x_mrich * x_mrich + y_mrich * y_mrich);
 
-	    //       printf("MRICH1::kmrich=%d  j=%d i =%d x=%f, y=%f  MRICH_R=%f MRICH_R0=%f \n ", kmrich, j, i, x_mrich,
-            //       y_mrich, MRICH_R, MRICH_R0);
+	    //       printf("MRICH1::kmrich=%d  j=%d i =%d x=%f, y=%f  MRICH_R=%f ce_MRICH_GVol_InnerR=%f \n ", kmrich, j, i, x_mrich,
+            //       y_mrich, MRICH_R, ce_MRICH_GVol_InnerR);
 
 
-            if (MRICH_R < (fMRICHSizeRout - MRICHWidth - MRICHgap) && MRICH_R > MRICH_R0) {
+            if (MRICH_R < (ce_MRICH_GVol_ROut - ce_MRICH_mod_Width/2 - ce_MRICH_mod_Gap/2) && MRICH_R > ce_MRICH_GVol_InnerR) {
 
   
                 kmrich++;
-                sprintf(abname, "MRICH_ph_%d", kmrich);
-                new G4PVPlacement(0, G4ThreeVector(x_mrich, y_mrich, 0.), abname, mLogicMRICH,
-                                  fPhysics_E_MRICH, false, kmrich);
+                sprintf(abname, "ce_MRICH_mod_Phys_%d", kmrich);
+                new G4PVPlacement(0, G4ThreeVector(x_mrich, y_mrich, 0.), abname, ce_MRICH_mod_Logic,
+                                  ce_MRICH_GVol_Phys, false, kmrich);
                 kmrich++;
-                sprintf(abname, "MRICH_ph_%d", kmrich);
-                new G4PVPlacement(0, G4ThreeVector(-x_mrich, y_mrich, 0.), abname, mLogicMRICH,
-                                  fPhysics_E_MRICH, false, kmrich);
+                sprintf(abname, "ce_MRICH_mod_Phys_%d", kmrich);
+                new G4PVPlacement(0, G4ThreeVector(-x_mrich, y_mrich, 0.), abname, ce_MRICH_mod_Logic,
+                                  ce_MRICH_GVol_Phys, false, kmrich);
 
                 kmrich++;
-                sprintf(abname, "MRICH_ph_%d", kmrich);
-                new G4PVPlacement(0, G4ThreeVector(x_mrich, -y_mrich, 0.), abname, mLogicMRICH,
-                                  fPhysics_E_MRICH, false, kmrich);
+                sprintf(abname, "ce_MRICH_mod_Phys_%d", kmrich);
+                new G4PVPlacement(0, G4ThreeVector(x_mrich, -y_mrich, 0.), abname, ce_MRICH_mod_Logic,
+                                  ce_MRICH_GVol_Phys, false, kmrich);
 
                 kmrich++;
-                sprintf(abname, "MRICH_ph_%d", kmrich);
-                new G4PVPlacement(0, G4ThreeVector(-x_mrich, -y_mrich, 0.), abname, mLogicMRICH,
-                                  fPhysics_E_MRICH, false, kmrich);
-              printf("MRICH2::kmrich=%d  j=%d i =%d x=%f, y=%f  MRICH_R=%f MRICH_R0=%f \n ", kmrich, j, i, x_mrich,
-                       y_mrich, MRICH_R, MRICH_R0);
+                sprintf(abname, "ce_MRICH_mod_Phys_%d", kmrich);
+                new G4PVPlacement(0, G4ThreeVector(-x_mrich, -y_mrich, 0.), abname, ce_MRICH_mod_Logic,
+                                  ce_MRICH_GVol_Phys, false, kmrich);
+              printf("ce_MRICH::kmrich=%d  j=%d i =%d x=%f, y=%f  MRICH_R=%f ce_MRICH_GVol_InnerR=%f \n ", kmrich, j, i, x_mrich,
+                       y_mrich, MRICH_R, ce_MRICH_GVol_InnerR);
 
             }
-            x_mrich += (MRICHWidth + MRICHgap);
+            x_mrich += (ce_MRICH_mod_Width + ce_MRICH_mod_Gap);
 
         }
     }

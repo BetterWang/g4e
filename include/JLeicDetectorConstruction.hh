@@ -648,21 +648,40 @@ private:
     G4VPhysicalVolume *f1_D1A_lay_Phys;    //pointer to the physical FARFORWD
 
     // ----- B----
-    G4double fSI_FORWDD1b_SizeRin;
-    G4double fSI_FORWDD1b_SizeRout;
-    G4double fSI_FORWDD1b_SizeZ;
+    G4double fi_D1B_GVol_RIn;
+    G4double fi_D1B_GVol_ROut;
+    G4double fi_D1B_GVol_SizeZ;
+    G4Material *fi_D1B_GVol_Material;
+    G4VisAttributes* attr_fi_D1B_GVol;
 
-    G4Tubs *fSolid_SI_FORWDD1b;    //pointer to the solid  FARFORWD
-    G4LogicalVolume *fLogic_SI_FORWDD1b;    //pointer to the logical FARFORWD
-    G4VPhysicalVolume *fPhysics_SI_FORWDD1b;    //pointer to the physical FARFORWD
+    G4Tubs *fi_D1B_GVol_Solid;    //pointer to the solid  FARFORWD
+    G4LogicalVolume *fi_D1B_GVol_Logic;    //pointer to the logical FARFORWD
+    G4VPhysicalVolume *fi_D1B_GVol_Phys;    //pointer to the physical FARFORWD
 
-    G4double fSI_FORWDD1b_SizeRin_Lay;
-    G4double fSI_FORWDD1b_SizeRout_Lay;
-    G4double fSI_FORWDD1b_SizeZ_Lay;
+    G4double fi_D1B_lay_RIn;
+    G4double fi_D1B_lay_ROut;
+    G4double fi_D1B_lay_SizeZ;
+    G4Material *fi_D1B_lay_Material;
+    G4VisAttributes* attr_fi_D1B_lay;
 
-    G4Tubs *fSolid_SI_FORWDD1b_Lay;    //pointer to the solid  FARFORWD
-    G4LogicalVolume *fLogic_SI_FORWDD1b_Lay;    //pointer to the logical FARFORWD
-    G4VPhysicalVolume *fPhysics_SI_FORWDD1b_Lay;    //pointer to the physical FARFORWD
+    G4Tubs *fi_D1B_lay_Solid;    //pointer to the solid  FARFORWD
+    G4LogicalVolume *fi_D1B_lay_Logic;    //pointer to the logical FARFORWD
+    G4VPhysicalVolume *fi_D1B_lay_Phys;    //pointer to the physical FARFORWD
+
+    //----------------EMCAL D1 area---------------------
+
+    double fi_D1B_EMCAL_SizeZ;
+    double fi_D1B_EMCAL_Width;
+    G4double fi_D1B_EMCAL_Gap ;
+    G4double fi_D1B_EMCAL_Angle;
+    float fi_D1B_EMCAL_Shift;
+    G4RotationMatrix brm_fi_D1B_EMCAL;
+    G4Material *fi_D1B_EMCAL_Material;
+    G4VisAttributes* attr_fi_D1B_EMCAL;
+
+    G4Box *fi_D1B_EMCAL_Solid;
+    G4LogicalVolume *fi_D1B_EMCAL_Logic;
+
 
     //-----------------FORWARD Si D2  volume--------------------
     // ----- B----

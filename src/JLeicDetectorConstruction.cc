@@ -2031,52 +2031,52 @@ sprintf(abname,"cb_CTD_Straws_Wall_Phys");
             mydipole_id = id;
         };
     };
-    fSI_FORWDD1b_SizeRin = 0 * cm;
-    fSI_FORWDD1b_SizeRout = fSolid_BigDi_ffqsRinDi[mydipole_id] * cm;
-    fSI_FORWDD1b_SizeZ = fSolid_BigDi_ffqsSizeZDi[mydipole_id] * m;
+    fi_D1B_GVol_RIn = 0 * cm;
+    fi_D1B_GVol_ROut = fSolid_BigDi_ffqsRinDi[mydipole_id] * cm;
+    fi_D1B_GVol_SizeZ = fSolid_BigDi_ffqsSizeZDi[mydipole_id] * m;
 
 
-    fSolid_SI_FORWDD1b = new G4Tubs("SI_FORWDD1b_solid", fSI_FORWDD1b_SizeRin, fSI_FORWDD1b_SizeRout,
-                                    fSI_FORWDD1b_SizeZ / 2., 0., 360 * deg);
+    fi_D1B_GVol_Solid = new G4Tubs("fi_D1B_GVol_Solid", fi_D1B_GVol_RIn, fi_D1B_GVol_ROut,
+                                    fi_D1B_GVol_SizeZ / 2., 0., 360 * deg);
 
-    fLogic_SI_FORWDD1b = new G4LogicalVolume(fSolid_SI_FORWDD1b, World_Material, "SI_FORWDD1b_logic");
+    fi_D1B_GVol_Logic = new G4LogicalVolume(fi_D1B_GVol_Solid, World_Material, "fi_D1B_GVol_Logic");
 
     // ci_GEM_GVol_PosZ= Solenoid_SizeZ/2-abs(World_ShiftVTX)+ci_GEM_GVol_SizeZ-5*cm;   // --- need to find out why this 5 cm are needed
-    fPhysics_SI_FORWDD1b = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), "SI_FORWDD1b_physics", fLogic_SI_FORWDD1b,
+    fi_D1B_GVol_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), "fi_D1B_GVol_Phys", fi_D1B_GVol_Logic,
                                              fPhysics_BigDi_m[mydipole_id], false, 0);
 
-    vtpc1 = new G4VisAttributes(G4Color(0.3, 0, 3., 0.1));
-    vtpc1->SetLineWidth(1);
-    vtpc1->SetForceSolid(true);
-    fLogic_SI_FORWDD1b->SetVisAttributes(vtpc1);
+    attr_fi_D1B_GVol = new G4VisAttributes(G4Color(0.3, 0, 3., 0.1));
+    attr_fi_D1B_GVol->SetLineWidth(1);
+    attr_fi_D1B_GVol->SetForceSolid(true);
+    fi_D1B_GVol_Logic->SetVisAttributes(attr_fi_D1B_GVol);
 
     // ---------------------------------------------------------------------------
     //                     Si detectors
     // ---------------------------------------------------------------------------
-    fSI_FORWDD1b_SizeRin_Lay = 5 * cm;
-    fSI_FORWDD1b_SizeRout_Lay = fSI_FORWDD1b_SizeRout - 1 * cm;
-    fSI_FORWDD1b_SizeZ_Lay = 1 * cm;
+    fi_D1B_lay_RIn = 5 * cm;
+    fi_D1B_lay_ROut = fi_D1B_GVol_ROut - 1 * cm;
+    fi_D1B_lay_SizeZ = 1 * cm;
 
-    fi_D1A_lay_Material = fMat->GetMaterial("Ar10CO2");  //----   !!!!! ----
+    fi_D1B_lay_Material = fMat->GetMaterial("Ar10CO2");  //----   !!!!! ----
 
-    fSolid_SI_FORWDD1b_Lay = new G4Tubs("fSI_FORWDD1b_Lay_solid", fSI_FORWDD1b_SizeRin_Lay, fSI_FORWDD1b_SizeRout_Lay,
-                                        fSI_FORWDD1b_SizeZ_Lay / 2., 170., 330 * deg);
-    fLogic_SI_FORWDD1b_Lay = new G4LogicalVolume(fSolid_SI_FORWDD1b_Lay, fi_D1A_lay_Material, "fSI_FORWDD1b_Lay_logic");
+    fi_D1B_lay_Solid = new G4Tubs("fi_D1B_lay_Solid", fi_D1B_lay_RIn, fi_D1B_lay_ROut,
+                                        fi_D1B_lay_SizeZ / 2., 170., 330 * deg);
+    fi_D1B_lay_Logic = new G4LogicalVolume(fi_D1B_lay_Solid, fi_D1B_lay_Material, "fi_D1B_lay_Logic");
 
-    if (fLogic_SI_FORWDD1b_Lay) fLogic_SI_FORWDD1b_Lay->SetSensitiveDetector(fCalorimeterSD);
+    if (fi_D1B_lay_Logic) fi_D1B_lay_Logic->SetSensitiveDetector(fCalorimeterSD);
 
 
     ffsi_counter = 0;
     for (int fflay = 0; fflay < 5; fflay++) {
-        double Z = -fSI_FORWDD1b_SizeZ / 2 + (fflay + 1) * fSI_FORWDD1b_SizeZ_Lay / 2 + (fflay + 1) * 5 * cm;
-        fPhysics_SI_FORWDD1b_Lay = new G4PVPlacement(0, G4ThreeVector(0, 0, Z),
-                                                     "fSI_FORWDD1b_Lay__phys", fLogic_SI_FORWDD1b_Lay,
-                                                     fPhysics_SI_FORWDD1b, false, ffsi_counter);
+        double Z = -fi_D1B_GVol_SizeZ / 2 + (fflay + 1) * fi_D1B_lay_SizeZ / 2 + (fflay + 1) * 5 * cm;
+        fi_D1B_lay_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, Z),
+                                                     "fi_D1B_lay_Phys", fi_D1B_lay_Logic,
+                                                     fi_D1B_GVol_Phys, false, ffsi_counter);
         ffsi_counter++;
-        G4VisAttributes *vsiff = new G4VisAttributes(G4Color(0.8, 0.4 + 0.1 * fflay, 0.3, 1.));
-        vsiff->SetLineWidth(1);
-        vsiff->SetForceSolid(true);
-        fLogic_SI_FORWDD1b_Lay->SetVisAttributes(vsiff);
+        attr_fi_D1B_lay= new G4VisAttributes(G4Color(0.8, 0.4 + 0.1 * fflay, 0.3, 1.));
+        attr_fi_D1B_lay->SetLineWidth(1);
+        attr_fi_D1B_lay->SetForceSolid(true);
+        fi_D1B_lay_Logic->SetVisAttributes(attr_fi_D1B_lay);
     }
 
 #endif
@@ -2087,23 +2087,23 @@ sprintf(abname,"cb_CTD_Straws_Wall_Phys");
     // Ecal module  AFTER !!!   Dipole1 
     //-------------------------------------------------------------------
 
-    double fEcalLength_D1 = 40. * cm;
-    double fEcalWidth_D1 = 4. * cm;
-    G4double gap_D1 = 0.01 * mm;
-    G4double angle_D1=0.05;
-    G4RotationMatrix brm_emd1;
-     brm_emd1.rotateY(angle_D1 * rad);
- 
+    fi_D1B_EMCAL_SizeZ = 40. * cm;
+    fi_D1B_EMCAL_Width = 4. * cm;
+    fi_D1B_EMCAL_Gap = 0.01 * mm;
+    fi_D1B_EMCAL_Angle=0.05;
+
+     brm_fi_D1B_EMCAL.rotateY(fi_D1B_EMCAL_Angle * rad);
+    fi_D1B_EMCAL_Shift= -35.*cm;
 
     // ce_EMCAL_det_Material= fMat->GetMaterial("DSBCe");
-    ci_EMCAL_det_Material = fMat->GetMaterial("PbWO4");
-    G4Box *fSolid_EMCAL_D1 = new G4Box("EMCAL_D1_sol", fEcalWidth_D1 * 0.5, fEcalWidth_D1 * 0.5, fEcalLength_D1 / 2.);
-    G4LogicalVolume *fLogic_EMCAL_D1 = new G4LogicalVolume(fSolid_EMCAL_D1, ci_EMCAL_det_Material, "EMCAL_D1_log");
+    fi_D1B_EMCAL_Material = fMat->GetMaterial("PbWO4");
+    fi_D1B_EMCAL_Solid= new G4Box("fi_D1B_EMCAL_Solid", fi_D1B_EMCAL_Width * 0.5, fi_D1B_EMCAL_Width * 0.5, fi_D1B_EMCAL_SizeZ / 2.);
+    fi_D1B_EMCAL_Logic = new G4LogicalVolume(fi_D1B_EMCAL_Solid,fi_D1B_EMCAL_Material, "fi_D1B_EMCAL_Logic");
 
-    attr_ce_EMCAL_detGLASS = new G4VisAttributes(G4Color(0.1, 1.0, 0.9, 0.5));
-    attr_ce_EMCAL_detGLASS->SetLineWidth(1);
-    attr_ce_EMCAL_detGLASS->SetForceSolid(true);
-    fLogic_EMCAL_D1->SetVisAttributes(attr_ce_EMCAL_detGLASS);
+    attr_fi_D1B_EMCAL = new G4VisAttributes(G4Color(0.1, 1.0, 0.9, 0.5));
+    attr_fi_D1B_EMCAL->SetLineWidth(1);
+    attr_fi_D1B_EMCAL->SetForceSolid(true);
+    fi_D1B_EMCAL_Logic->SetVisAttributes(attr_fi_D1B_EMCAL);
 
     // Crystals
 
@@ -2113,13 +2113,13 @@ sprintf(abname,"cb_CTD_Straws_Wall_Phys");
     y_C = 0;
     x_C= 0*cm;
     k = -1;
-    float x_C_shift= -35.*cm;
-    //    z = fSI_FORWDD1b_SizeZ / 2 - fEcalLength_D1 / 2;
-    z = ci_HCAL_GVol_SizeZ/ 2 - fEcalLength_D1 / 2;
+
+    //    z = fi_D1B_GVol_SizeZ / 2 - fi_D1B_EMCAL_SizeZ / 2;
+    z = ci_HCAL_GVol_SizeZ/ 2 - fi_D1B_EMCAL_SizeZ / 2;
 //============  For sectors =====
     for (j = 0; j < 50; j++) {
-        y_C -= ce_EMCAL_detPWO_Width + gap_D1;
-        x_C = (ce_EMCAL_detPWO_Width + gap_D1) * 0.5 ;
+        y_C -= fi_D1B_EMCAL_Width + fi_D1B_EMCAL_Gap;
+        x_C = (fi_D1B_EMCAL_Width + fi_D1B_EMCAL_Gap) * 0.5 ;
 
         for (i = 0; i < 50; i++) {
             float R = sqrt(x_C * x_C + y_C * y_C);
@@ -2127,34 +2127,34 @@ sprintf(abname,"cb_CTD_Straws_Wall_Phys");
             // printf("found D1b= EMCAL D1::k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ",k, j,i, x_C,y_C, R, R0);
 
 
-            if (R < fSI_FORWDD1b_SizeRout - ce_EMCAL_detPWO_Width + gap_D1 && R > R0) {
+            if (R < fi_D1B_GVol_ROut - fi_D1B_EMCAL_Width + fi_D1B_EMCAL_Gap && R > R0) {
                 //  printf("found D1b= EMCAL D1::k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ",k, j,i, x_C,y_C, R, R0);
 
 
                 k++;
-                sprintf(abname, "EMCAL_D1_%d", k);
+                sprintf(abname, "fi_D1B_EMCAL_Phys_%d", k);
 
-		//               new G4PVPlacement(0, G4ThreeVector(x_C, y_C, z), abname, fLogic_EMCAL_D1,
-		//                fPhysics_SI_FORWDD1b, false, k);
-                new G4PVPlacement(G4Transform3D(brm_emd1, G4ThreeVector(x_C+x_C_shift, y_C, z)), abname, fLogic_EMCAL_D1,
+		//               new G4PVPlacement(0, G4ThreeVector(x_C, y_C, z), abname, fi_D1B_EMCAL_Logic,
+		//                fi_D1B_GVol_Phys, false, k);
+                new G4PVPlacement(G4Transform3D(brm_fi_D1B_EMCAL, G4ThreeVector(x_C+fi_D1B_EMCAL_Shift, y_C, z)), abname, fi_D1B_EMCAL_Logic,
                                   ci_HCAL_GVol_Phys, false, k);
 
                 k++;
-                sprintf(abname, "EMCAL_D1_%d", k);
-		new G4PVPlacement(G4Transform3D(brm_emd1, G4ThreeVector(-x_C+x_C_shift, y_C, z)), abname, fLogic_EMCAL_D1,
+                sprintf(abname, "fi_D1B_EMCAL_Phys_%d", k);
+		new G4PVPlacement(G4Transform3D(brm_fi_D1B_EMCAL, G4ThreeVector(-x_C+fi_D1B_EMCAL_Shift, y_C, z)), abname, fi_D1B_EMCAL_Logic,
                                   ci_HCAL_GVol_Phys, false, k);
 
                 k++;
-                sprintf(abname, "EMCAL_D1_%d", k);
-		 new G4PVPlacement(G4Transform3D(brm_emd1, G4ThreeVector(x_C+x_C_shift, -y_C, z)), abname, fLogic_EMCAL_D1,
+                sprintf(abname, "fi_D1B_EMCAL_Phys_%d", k);
+		 new G4PVPlacement(G4Transform3D(brm_fi_D1B_EMCAL, G4ThreeVector(x_C+fi_D1B_EMCAL_Shift, -y_C, z)), abname, fi_D1B_EMCAL_Logic,
                                   ci_HCAL_GVol_Phys, false, k);
 
                 k++;
-                sprintf(abname, "EMCAL_D1_%d", k);
-		new G4PVPlacement(G4Transform3D(brm_emd1, G4ThreeVector(-x_C+x_C_shift, -y_C, z)), abname, fLogic_EMCAL_D1,
+                sprintf(abname, "fi_D1B_EMCAL_Phys_%d", k);
+		new G4PVPlacement(G4Transform3D(brm_fi_D1B_EMCAL, G4ThreeVector(-x_C+fi_D1B_EMCAL_Shift, -y_C, z)), abname, fi_D1B_EMCAL_Logic,
                                   ci_HCAL_GVol_Phys, false, k);
             }
-            x_C += ce_EMCAL_detPWO_Width + gap_D1;
+            x_C += fi_D1B_EMCAL_Width + fi_D1B_EMCAL_Gap;
 
         }
     }

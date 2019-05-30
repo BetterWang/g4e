@@ -9,6 +9,8 @@
 /vis/drawVolume
 /vis/viewer/flush
 
+#/persistency/gdml/write jleic.gdml
+
 # Use this open statement to create an OpenGL view:
 ### This works  ->   
 /vis/open OGL 600x600-0+0
@@ -109,8 +111,8 @@
 /vis/viewer/set/cutawayMode intersection
 
 #/vis/viewer/addCutawayPlane 0  30  0  cm  0. -100 0
-/vis/viewer/addCutawayPlane 0  1  0  cm  0. -0.1 0
-#/vis/viewer/addCutawayPlane 0  1  0  cm  0. -100. 1.
+#/vis/viewer/addCutawayPlane 0  1  0  cm  0. -0.1 0
+/vis/viewer/addCutawayPlane 0  1  0  cm  0. -100. 1.
 #/vis/viewer/addCutawayPlane 0  1  0  cm  0. 100. 1.
 # XY 
 #/vis/viewer/addCutawayPlane  1  0  0  cm   0  0  -0.001

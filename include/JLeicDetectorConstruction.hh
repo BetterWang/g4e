@@ -300,6 +300,7 @@ private:
     //--------------- VTX ladders geom-------
      G4Box *cb_VTX_ladder_Solid[10]; //pointer to the solid Absorber
     G4LogicalVolume *cb_VTX_ladder_Logic[10]; //pointer to the logical Absorber
+     G4VPhysicalVolume *cb_VTX_ladder_Phys[10]; //pointer to the logical Absorber
     typedef struct {
         double Dx;
         double Dy;
@@ -372,9 +373,34 @@ private:
     G4VPhysicalVolume *cb_CTD_Straws_Gas_Phys;    //pointer to the physical World
 
     //*************************************************************
+  //----------------DIRC  volume -------------------
+    G4double cb_DIRC_GVol_RIn;
+    G4double cb_DIRC_GVol_ROut;
+    G4double cb_DIRC_GVol_SizeZ;
+    G4Tubs *cb_DIRC_GVol_Solid;    //pointer to the solid DIRC  volume
+    G4VisAttributes* attr_cb_DIRC_GVol;
+    G4LogicalVolume *cb_DIRC_GVol_Logic;    //pointer to the logical DIRC  volume
+    G4VPhysicalVolume *cb_DIRC_GVol_Phys;    //pointer to the physical DIRC  volume
+   //--------------DIRC bars detector----------------------
+
+    G4double cb_DIRC_bars_RIn;
+    G4double cb_DIRC_bars_ROut;
+    G4double cb_DIRC_bars_DZ;
+    G4double cb_DIRC_bars_DY;
+    G4double cb_DIRC_bars_DX;
+    G4double cb_DIRC_bars_deltaphi;
+
+    G4Material *cb_DIRC_bars_Material;
+    G4VisAttributes* attr_cb_DIRC_bars;
+    // G4Tubs*            cb_DIRC_bars_Solid;    //pointer to the solid World
+    G4Box *cb_DIRC_bars_Solid;    //pointer to the solid World
+    G4LogicalVolume *cb_DIRC_bars_Logic;    //pointer to the logical World
+    G4VPhysicalVolume *cb_DIRC_bars_Phys;    //pointer to the physical World
+   //*************************************************************
     //-----------------EMCAL barrel volume--------------------
     G4double cb_EMCAL_GVol_RIn;
     G4double cb_EMCAL_GVol_ROut;
+    G4double cb_EMCAL_GVol_Thickness;
     G4double cb_EMCAL_GVol_SizeZ;
     // G4Tubs*            cb_EMCAL_GVol_Solid;    //pointer to the solid  EMCAL barrel volume
     G4Polycone *cb_EMCAL_GVol_Solid;    //pointer to the solid  EMCAL barrel volume
@@ -675,7 +701,7 @@ private:
     G4double fi_D1B_EMCAL_Gap ;
     G4double fi_D1B_EMCAL_Angle;
     float fi_D1B_EMCAL_Shift;
-    G4RotationMatrix brm_fi_D1B_EMCAL;
+    G4RotationMatrix rotm_fi_D1B_EMCAL;
     G4Material *fi_D1B_EMCAL_Material;
     G4VisAttributes* attr_fi_D1B_EMCAL;
 
@@ -683,23 +709,24 @@ private:
     G4LogicalVolume *fi_D1B_EMCAL_Logic;
 
 
-    //-----------------FORWARD Si D2  volume--------------------
-    // ----- B----
-    G4double fSI_FORWDD2_SizeRin;
-    G4double fSI_FORWDD2_SizeRout;
-    G4double fSI_FORWDD2_SizeZ;
-
-    G4Tubs *fSolid_SI_FORWDD2;    //pointer to the solid  FARFORWD
-    G4LogicalVolume *fLogic_SI_FORWDD2;    //pointer to the logical FARFORWD
-    G4VPhysicalVolume *fPhysics_SI_FORWDD2;    //pointer to the physical FARFORWD
-
-    G4double fSI_FORWDD2_SizeRin_Lay;
-    G4double fSI_FORWDD2_SizeRout_Lay;
-    G4double fSI_FORWDD2_SizeZ_Lay;
-
-    G4Tubs *fSolid_SI_FORWDD2_Lay;    //pointer to the solid  FARFORWD
-    G4LogicalVolume *fLogic_SI_FORWDD2_Lay;    //pointer to the logical FARFORWD
-    G4VPhysicalVolume *fPhysics_SI_FORWDD2_Lay;    //pointer to the physical FARFORWD
+    //-----------------FORWARD TRD inside D2  volume--------------------
+    //
+    G4double ffi_D2_GVol_RIn;
+    G4double ffi_D2_GVol_ROut;
+    G4double ffi_D2_GVol_SizeZ;
+    G4VisAttributes* attr_ffi_D2_GVol;
+    G4Tubs *ffi_D2_GVol_Solid;    //pointer to the solid  FARFORWD
+    G4LogicalVolume *ffi_D2_GVol_Logic;    //pointer to the logical FARFORWD
+    G4VPhysicalVolume *ffi_D2_GVol_Phys;    //pointer to the physical FARFORWD
+    //-------------- Si layers---------------
+    G4double ffi_D2_TRK_Lay_RIn;
+    G4double ffi_D2_TRK_Lay_ROut;
+    G4double ffi_D2_TRK_Lay_SizeZ;
+    G4Material *ffi_D2_TRK_Lay_Material;
+    G4VisAttributes *attr_ffi_D2_TRK_Lay;
+    G4Tubs *ffi_D2_TRK_Lay_Solid;    //pointer to the solid  FARFORWD
+    G4LogicalVolume *ffi_D2_TRK_Lay_Logic;    //pointer to the logical FARFORWD
+    G4VPhysicalVolume *ffi_D2_TRK_Lay_Phys;    //pointer to the physical FARFORWD
 
 
     //===========================================================
@@ -709,21 +736,29 @@ private:
     //===========================================================
     //===========================================================
 
-    G4double fGEM_FARFORWD_SizeRin;
-    G4double fGEM_FARFORWD_SizeRout;
-    G4double fGEM_FARFORWD_SizeZ;
-    G4double fGEM_FARFORWD_Z, fGEM_FARFORWD_X;
-    G4double fGEM_FARFORWD_Lay_SizeRin;
-    G4double fGEM_FARFORWD_Lay_SizeRout;
-    G4double fGEM_FARFORWD_Lay_SizeZ;
+    G4double ffi_D2AFTER_GVol_RIn;
+    G4double ffi_D2AFTER_GVol_ROut;
+    G4double ffi_D2AFTER_GVol_SizeZ;
+    G4double ffi_D2AFTER_GVol_PosZ, ffi_D2AFTER_GVol_PosX;
+    G4VisAttributes *attr_ffi_D2AFTER_GVol;
+    G4Tubs *ffi_D2AFTER_GVol_Solid;    //pointer to the solid  FARFORWD
+    G4LogicalVolume *ffi_D2AFTER_GVol_Logic;    //pointer to the logical FARFORWD
+    G4VPhysicalVolume *ffi_D2AFTER_GVol_Phys;    //pointer to the physical FARFORWD
 
-    G4Tubs *fSolidGEM_FARFORWD;    //pointer to the solid  FARFORWD
-    G4LogicalVolume *fLogicGEM_FARFORWD;    //pointer to the logical FARFORWD
-    G4VPhysicalVolume *fPhysicsGEM_FARFORWD;    //pointer to the physical FARFORWD
 
-    G4Tubs *fSolidGEM_FARFORWD_Lay;    //pointer to the solid  FARFORWD lay
-    G4LogicalVolume *fLogicGEM_FARFORWD_Lay;    //pointer to the logical FARFORWD  lay
-    G4VPhysicalVolume *fPhysicsGEM_FARFORWD_Lay;    //pointer to the physical FARFORWD  lay
+    G4double ffi_D2AFTER_TRK_Lay_RIn;
+    G4double ffi_D2AFTER_TRK_Lay_ROut;
+    G4double ffi_D2AFTER_TRK_Lay_SizeZ;
+
+    G4Material *ffi_D2AFTER_TRK_Lay_Material;
+    G4VisAttributes *attr_ffi_D2AFTER_TRK_Lay;
+
+    G4Tubs *ffi_D2AFTER_TRK_Lay_Solid;    //pointer to the solid  FARFORWD lay
+    G4LogicalVolume *ffi_D2AFTER_TRK_Lay_Logic;    //pointer to the logical FARFORWD  lay
+    G4VPhysicalVolume *ffi_D2AFTER_TRK_Lay_Phys;    //pointer to the physical FARFORWD  lay
+
+
+
     //-----------------FARFORWARD VIRTUAL VOLUMES--------------------
     G4VisAttributes *vvpf1;
 

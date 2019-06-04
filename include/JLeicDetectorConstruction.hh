@@ -631,7 +631,25 @@ private:
     // =========================================================================
     //--------------ENDCAP-H  TRD vol -------------------
 
-    double ci_TRD_ThicknessZ ;
+     double ci_TRD_GVol_RIn ;
+     double ci_TRD_GVol_ROut ;
+     double ci_TRD_GVol_ThicknessZ ;
+     double ci_TRD_GVol_PosZ;
+     G4VisAttributes *attr_ci_TRD_GVol;
+     G4Tubs *ci_TRD_GVol_Solid;
+     G4LogicalVolume *ci_TRD_GVol_Logic;
+     G4PVPlacement *ci_TRD_GVol_Phys;
+  //------------- det -----------
+     double ci_TRD_det_RIn ;
+     double ci_TRD_det_ROut ;
+     double ci_TRD_det_ThicknessZ ;
+     double ci_TRD_det_PosZ;
+     G4Material *ci_TRD_det_Material ;
+     G4VisAttributes *attr_ci_TRD_det;
+     G4VisAttributes *attr_ci_TRD_rad;
+     G4Tubs *ci_TRD_det_Solid;
+     G4LogicalVolume *ci_TRD_det_Logic;
+     G4PVPlacement *ci_TRD_det_Phys;
 
     // =========================================================================
     //--------------ENDCAP-H  HCAL vol -------------------
@@ -934,7 +952,8 @@ private:
     G4LogicalVolume *fLogicRadRing;    // pointer to the logical R-slide
     G4VPhysicalVolume *fPhysicRadRing;   // pointer to the physical R-slide
 
-    G4Box *fSolidRadiator;
+  //   G4Box *fSolidRadiator;
+     G4Tubs *fSolidRadiator;
     G4LogicalVolume *fLogicRadiator;
     G4VPhysicalVolume *fPhysicsRadiator;
 

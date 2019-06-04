@@ -102,6 +102,8 @@
 #define USE_CI_ENDCAP
 //------- subdetector-volumes H-encap ----- 
 #define USE_CI_DRICH
+#define USE_CI_TRD
+#define USE_CI_TRD_D  // -detector and radiator
 #define USE_CI_EMCAL
 #define USE_CI_HCAL
 #define USE_CI_HCAL_D
@@ -115,12 +117,12 @@
 
 
 //--------FARFORWARD HADRON------
-#define USE_DIPOLE1_SI
-#define USE_FI_DIPOLE1_A
-#define USE_FI_DIPOLE1_B
-#define USE_FI_DIPOLE2
+//#define USE_DIPOLE1_SI
+//#define USE_FI_DIPOLE1_A
+//#define USE_FI_DIPOLE1_B
+//#define USE_FI_DIPOLE2
 
-#define USE_FARFORWARD_GEM
+//#define USE_FARFORWARD_GEM
 
 //#define USE_FARFORWARD_VP
 
@@ -289,36 +291,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 
     printf("CalorSD done\n");
 
-    //=========================================================================
-    //                   TR radiator envelope
-    //=========================================================================
-    printf("Radiator\n");
-    fRadThickness = 0.020 * mm;    // 16 um // ZEUS NIMA 323 (1992) 135-139, D=20um, dens.= 0.1 g/cm3
-    fGasGap = 0.600 * mm;    // for ZEUS  300-publication
-    fRadThick = .3 * cm - fGasGap + fDetGap;
-    fFoilNumber = fRadThick / (fRadThickness + fGasGap);
-    fRadZ = -1000 * cm;
-    foilGasRatio = fRadThickness / (fRadThickness + fGasGap);
-    fAbsorberThickness = 0.050 * mm;
-    fAbsorberRadius = 100. * mm;
-    fAbsorberZ = 136. * cm;
-    fDetGap = 0.01 * mm;
-    fModuleNumber = 1;
-
-    fSolidRadiator = new G4Box("Radiator", 1 * mm, 1 * mm, 0.5 * fRadThick);
-    fLogicRadiator = new G4LogicalVolume(fSolidRadiator, fRadiatorMat,
-                                         "Radiator");
-    fPhysicsRadiator = new G4PVPlacement(0,
-                                         G4ThreeVector(0, -60 * cm, fRadZ),
-                                         "Radiator", fLogicRadiator,
-                                         World_Phys, false, 0);
-
-    if (fRadRegion != 0) delete fRadRegion;
-    if (fRadRegion == 0) fRadRegion = new G4Region("XTRradiator");
-    fRadRegion->AddRootLogicalVolume(fLogicRadiator);
-
-    printf("Radiator done \n");
-
+ 
 #ifdef  USE_BARREL
     //===================================================================================
     //==                          Solenoid  magnetic field                             ==
@@ -789,11 +762,26 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 #endif // end USE_CI_DRICH
 
 //===================================================================================
-//==== space for TRD =============================
+//====    TRD =============================
 //===================================================================================
-   ci_TRD_ThicknessZ = 40 * cm;
- //   G4int i, j = 0;
+#ifdef USE_CI_TRD
 
+    ci_TRD_GVol_RIn = 20 * cm;
+    ci_TRD_GVol_ROut = 200 * cm;
+    ci_TRD_GVol_ThicknessZ = 40 * cm;
+    ci_TRD_GVol_PosZ = -ci_ENDCAP_GVol_SizeZ / 2 + ci_DRICH_GVol_ThicknessZ + ci_TRD_GVol_ThicknessZ/2.;
+    ci_TRD_GVol_Solid = new G4Tubs("ci_TRD_GVol_Solid", ci_TRD_GVol_RIn, ci_TRD_GVol_ROut, ci_TRD_GVol_ThicknessZ / 2., 0.,
+                               360 * deg);
+    ci_TRD_GVol_Logic = new G4LogicalVolume(ci_TRD_GVol_Solid, World_Material, "ci_TRD_GVol_Logic");
+    attr_ci_TRD_GVol = new G4VisAttributes(G4Color(0.3, 0.5, 0.9, 0.9));
+    attr_ci_TRD_GVol->SetLineWidth(1);
+    attr_ci_TRD_GVol->SetForceSolid(false);
+    ci_TRD_GVol_Logic->SetVisAttributes(attr_ci_TRD_GVol);
+
+    ci_TRD_GVol_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, ci_TRD_GVol_PosZ), "H_CAP_TRD_Physics", ci_TRD_GVol_Logic,
+                                        ci_ENDCAP_GVol_Phys, false, 0);
+
+#endif // end USE_CI_TRD 
 //===================================================================================
 //                         EMCAL Hadron endcap
 //===================================================================================
@@ -803,7 +791,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     ci_EMCAL_GVol_RIn = 20 * cm;
     ci_EMCAL_GVol_ROut = 200 * cm;
     ci_EMCAL_GVol_ThicknessZ = 40 * cm;
-    ci_EMCAL_GVol_PosZ = -ci_ENDCAP_GVol_SizeZ / 2 + ci_DRICH_GVol_ThicknessZ + ci_TRD_ThicknessZ + ci_EMCAL_GVol_ThicknessZ / 2;
+    ci_EMCAL_GVol_PosZ = -ci_ENDCAP_GVol_SizeZ / 2 + ci_DRICH_GVol_ThicknessZ + ci_TRD_GVol_ThicknessZ + ci_EMCAL_GVol_ThicknessZ / 2;
     ci_EMCAL_GVol_Solid = new G4Tubs("ci_EMCAL_GVol_Solid", ci_EMCAL_GVol_RIn, ci_EMCAL_GVol_ROut, ci_EMCAL_GVol_ThicknessZ / 2., 0.,
                                360 * deg);
     ci_EMCAL_GVol_Logic = new G4LogicalVolume(ci_EMCAL_GVol_Solid, World_Material, "ci_EMCAL_GVol_Logic");
@@ -2002,7 +1990,7 @@ sprintf(abname,"cb_CTD_Straws_Wall_Phys");
       */
       cb_DIRC_bars_deltaphi = 2*3.1415926/NUM  ;
  
-      cb_DIRC_bars_Material = fMat->GetMaterial("Ar10CO2");
+      cb_DIRC_bars_Material = fMat->GetMaterial("quartz");
       sprintf(abname, "cb_DIRC_bars_Solid");
       cb_DIRC_bars_Solid  = new G4Box(abname, cb_DIRC_bars_DX / 2.,   cb_DIRC_bars_DY / 2.,cb_DIRC_bars_DZ / 2.  );
       
@@ -2037,6 +2025,72 @@ sprintf(abname,"cb_CTD_Straws_Wall_Phys");
 
 #endif
 #endif
+
+
+//===================================================================================
+//====    TRD  detector and radiator =============================
+//===================================================================================
+#ifdef USE_CI_TRD
+#ifdef USE_CI_TRD_D
+
+   //=========================================================================
+    //                   TR radiator envelope
+    //=========================================================================
+    printf("Radiator\n");
+    fRadThickness = 0.020 * mm;    // 16 um // ZEUS NIMA 323 (1992) 135-139, D=20um, dens.= 0.1 g/cm3
+    fGasGap = 0.600 * mm;    // for ZEUS  300-publication
+    fRadThick = 10. * cm - fGasGap + fDetGap;
+    fFoilNumber = fRadThick / (fRadThickness + fGasGap);
+
+    fRadZ = -ci_TRD_GVol_ThicknessZ/2+ fRadThick/2 +2*cm;
+
+    foilGasRatio = fRadThickness / (fRadThickness + fGasGap);
+    fAbsorberThickness = 0.050 * mm;
+    fAbsorberRadius = 100. * mm;
+    fAbsorberZ = 136. * cm;
+    fDetGap = 0.01 * mm;
+    fModuleNumber = 1;
+
+    fSolidRadiator = new G4Tubs("Radiator", 50 * cm, 100 * cm, 0.5 * fRadThick,0.,360*deg);
+    fLogicRadiator = new G4LogicalVolume(fSolidRadiator, fRadiatorMat,
+                                         "Radiator");
+
+    attr_ci_TRD_rad = new G4VisAttributes(G4Color(0.8, 0.7, 0.6, 0.8));
+    attr_ci_TRD_rad->SetLineWidth(1);
+    attr_ci_TRD_rad->SetForceSolid(true);
+     fLogicRadiator ->SetVisAttributes(attr_ci_TRD_rad);
+
+    fPhysicsRadiator = new G4PVPlacement(0,
+                                         G4ThreeVector(0, 0, fRadZ),
+                                         "Radiator", fLogicRadiator,
+                                         ci_TRD_GVol_Phys, false, 0);
+
+    if (fRadRegion != 0) delete fRadRegion;
+    if (fRadRegion == 0) fRadRegion = new G4Region("XTRradiator");
+    fRadRegion->AddRootLogicalVolume(fLogicRadiator);
+
+    printf("Radiator done \n");
+    //-----------------------------------------------------------------
+    ci_TRD_det_RIn = 50 * cm;
+    ci_TRD_det_ROut = 100 * cm;
+    ci_TRD_det_ThicknessZ = 2.5 * cm;
+    ci_TRD_det_PosZ = fRadZ + fRadThick/2 +ci_TRD_det_ThicknessZ/2.;
+    ci_TRD_det_Material= fMat->GetMaterial("Xe20CO2");
+    ci_TRD_det_Solid = new G4Tubs("ci_TRD_det_Solid", ci_TRD_det_RIn, ci_TRD_det_ROut, ci_TRD_det_ThicknessZ / 2., 0.,
+                               360 * deg);
+    ci_TRD_det_Logic = new G4LogicalVolume(ci_TRD_det_Solid, ci_TRD_det_Material, "ci_TRD_det_Logic");
+    attr_ci_TRD_det = new G4VisAttributes(G4Color(0.8, 0.4, 0.3, 0.8));
+    attr_ci_TRD_det->SetLineWidth(1);
+    attr_ci_TRD_det->SetForceSolid(true);
+    ci_TRD_det_Logic->SetVisAttributes(attr_ci_TRD_det);
+
+    ci_TRD_det_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, ci_TRD_det_PosZ), "ci_TRD_det_Physics", ci_TRD_det_Logic,
+                                        ci_TRD_GVol_Phys, false, 0);
+
+#endif // end USE_CI_TRD det 
+#endif// end USE_CI_TRD 
+
+
 
 
     //*********************************************************************
@@ -2851,8 +2905,9 @@ void JLeicDetectorConstruction::Read_Di_File() {
     int iqmax_i;
     printf("read Di file\n");
     // sprintf(fname,"ion_ir_06feb19.txt");
-    // --- this is for tune!!    sprintf(fname, "i_ir.txt");
-   sprintf(fname, "ion_ir_01mar19_v2_origin.txt");
+    // --- this is for tune!!    
+     sprintf(fname, "i_ir.txt");
+    // sprintf(fname, "ion_ir_01mar19_v2_origin.txt");
     rc = fopen(fname, "r");
     if (rc == NULL) return;
 

@@ -48,7 +48,7 @@
 #include "G4UImanager.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4INCLGlobals.hh"
-
+int FIRST;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
 JLeicSteppingAction::JLeicSteppingAction(JLeicDetectorConstruction* DET,
@@ -84,15 +84,19 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step* aStep)
   */
 
   //--------------------------for TUNE-------------------------------------------------------------------------
-  if( strcmp(aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str(),"Physics_QUADS_hd_m_iQDS1a")==0){
+  if( 
+     //strcmp(aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str(),"World")==0 && 
+      strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(),"Physics_QUADS_hd_m_iQDS1a")==0 
+ 
+   ){
 
 
  char myftune[256];
  float my_or;
  // printf("read Di file\n");
- sprintf(myftune,"tune.txt");
- rc=fopen(myftune,"w");
- if (rc == NULL) return;
+ if(FIRST==0 ) {  sprintf(myftune,"tune.txt");
+   rc=fopen(myftune,"w");  if (rc == NULL) return; FIRST=1;
+ }
  //
  // (x+0.3529979921)^2+(px+200*tan(0.05299800449))^2+y^2+py^2 where x, px, y, py are at the entrance into iQDS1a
  //
@@ -105,12 +109,21 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step* aStep)
      +(aStep->GetTrack()->GetPosition().y()/1000.)*(aStep->GetTrack()->GetPosition().y()/1000.)
      +(200*aStep->GetTrack()->GetMomentumDirection().y())*(200*aStep->GetTrack()->GetMomentumDirection().y()); 
 
-   //   printf(" %f %f %f %f %f %f \n", aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), aStep->GetTrack()->GetPosition().z(),  aStep->GetTrack()->GetMomentumDirection().x(),aStep->GetTrack()->GetMomentumDirection().y(),aStep->GetTrack()->GetMomentumDirection().z());
+   //    runaction->FillHist2d(4, aStep->GetTrack()->GetPosition().x(),aStep->GetTrack()->GetPosition().y());
+
+   fprintf(rc,"SteppingAction:: iQDS1a %f %f %f %f %f %f ", aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), aStep->GetTrack()->GetPosition().z(),  aStep->GetTrack()->GetMomentumDirection().x(),aStep->GetTrack()->GetMomentumDirection().y(),aStep->GetTrack()->GetMomentumDirection().z());
       printf("SteppingAction:: %f \n", my_or );
-      fprintf(rc,"%f", my_or );
-      fclose(rc);
+      fprintf(rc,"%f\n", my_or );
+      //  fclose(rc);
      
-    }
+  }
+  //--------------------------for TUNE-------------------------------------------------------------------------
+  if( strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(),"Physics_DIPOLE_m_iBDS3")==0 ){ 
+ 
+  fprintf(rc,"SteppingAction:: iBDS3 %f %f %f %f %f %f \n", aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), aStep->GetTrack()->GetPosition().z(),  aStep->GetTrack()->GetMomentumDirection().x(),aStep->GetTrack()->GetMomentumDirection().y(),aStep->GetTrack()->GetMomentumDirection().z());
+
+  }
+
  //--------------------------end for TUNE-------------------------------------------------------------------------
 
   if(IDnow != IDold)

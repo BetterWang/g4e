@@ -49,6 +49,7 @@
 #include "rootlib.h"
 
 static TH1D *histo1,*histo2,*histo3,*histo4,*histo5,*histo6,*histo7,*histo8,*histo9,*histo10,*histo11,*histo12,*histo13,*histo14;
+//static TH2D* d2_pos_ffq1;
 const int NHIST=50;
 static TH1D* hist[NHIST];
 static TH1D* HLikelihood[NHIST];
@@ -212,7 +213,9 @@ void JLeicRunAction::bookHisto()
   d2_hist[1] = new TH2D("Hist2d1","dE/dx spectrum in slices ",50,emin,emax,40,-0.5,39.5); 
   d2_hist[2] = new TH2D("Hist2d2","dE/dx  vs energy PIXEL ",1000, 0., 1000.,1000, 0., 1000.); 
   d2_hist[3] = new TH2D("Hist2d3","dE/dx  vs energy STRIP",1000, 0., 1000.,1000, 0., 5000.); 
- for (int in=0;in<12;in++) {    
+  d2_hist[4] = new TH2D("Hist2d4"," d2_pos_ffq1 ",100,-500.,500.,100,-500.,500.); 
+
+for (int in=0;in<12;in++) {    
     sprintf(myname,"hmatrixOccup1_%d",in);
     hmatrixOccup[in]= new TH2F(myname,myname,NumCol,-0.5,NumCol-0.5,NumRow,-0.5,NumRow-0.5);
     sprintf(myname,"hmatrixOccupCM1_%d",in);

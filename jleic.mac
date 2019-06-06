@@ -170,18 +170,18 @@
 #===================================================================
 /plots/sethistName      hist_jleic.root
 #
-/generator/select particleGun
-/gun/particle proton
+#/generator/select particleGun
+#/gun/particle proton
 #--------------crossing angle 50mrad-------
-/gun/energy  200 GeV
+#/gun/energy  200 GeV
 #------------ 50 mrad ---
-/gun/momentum   -9.995833854   0.    199.7500520
+#/gun/momentum   -9.995833854   0.    199.7500520
 #-------------53 mrad-----
-/gun/momentum   -10.5950381303   0.    199.719165748
+#/gun/momentum   -10.5950381303   0.    199.719165748
 #--- origin /gun/position  -458.554187  0  9238.165900 mm
 #/gun/position  -458.554187  0  6988.165900 mm
 #/gun/position -349.824490 -2.097512 6990.769847 mm
-/gun/position -352.9979921  0. 6980.769847 mm
+#/gun/position -352.9979921  0. 6980.769847 mm
 #/gun/energy  100 GeV
 #/gun/momentum   -4.9979169   0.       99.875 
 #/gun/momentum   -0.49979169   0.       9.9875 
@@ -195,8 +195,8 @@
 
 #
 # GEMC/BNL version
-#/generator/select pythiaAscii
-#/generator/pythiaAscii/verbose 1
+/generator/select pythiaAscii
+/generator/pythiaAscii/verbose 1
 #/generator/pythiaAscii/open  pythia1pis.txt
 #/generator/pythiaAscii/open  /home/yulia/yulia/TestVTXhmc/build.newnewOK/pythiaBeautyDIS100.txt
 #/generator/pythiaAscii/open  pythia_e-p_10x50_Q2_100k_msel2_DIS.txt
@@ -228,7 +228,7 @@
 #------ for roman pots------
 #/generator/pythiaAscii/open  pythia_50GeV_50mrad.txt
 #/generator/pythiaAscii/open  pythia_100GeV_50mrad.txt
-#/generator/pythiaAscii/open  pythia_200GeV_50mrad.txt
+/generator/pythiaAscii/open  pythia_200GeV_50mrad.txt
 #----------electrons-----------
 #/generator/pythiaAscii/open  pythia_e_50GeV_90.txt
 #/generator/pythiaAscii/open  pythia_e_10GeV_90.txt

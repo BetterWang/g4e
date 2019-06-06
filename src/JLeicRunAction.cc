@@ -213,7 +213,21 @@ void JLeicRunAction::bookHisto()
   d2_hist[1] = new TH2D("Hist2d1","dE/dx spectrum in slices ",50,emin,emax,40,-0.5,39.5); 
   d2_hist[2] = new TH2D("Hist2d2","dE/dx  vs energy PIXEL ",1000, 0., 1000.,1000, 0., 1000.); 
   d2_hist[3] = new TH2D("Hist2d3","dE/dx  vs energy STRIP",1000, 0., 1000.,1000, 0., 5000.); 
-  d2_hist[4] = new TH2D("Hist2d4"," d2_pos_ffq1 ",100,-500.,500.,100,-500.,500.); 
+ 
+  // ---- position at the  entrance of dipole -----
+  d2_hist[4] = new TH2D("d2_pos_iBDS1a_in"," d2_pos_iBDS1a_in ",100,-1500.,1000.,100,-20.,20.); 
+  d2_hist[5] = new TH2D("d2_pos_iBDS1b_in"," d2_pos_iBDS1b_in ",100,-1500.,0.,100,-20.,20.); 
+  d2_hist[6] = new TH2D("d2_pos_iBDS2_in"," d2_pos_iBDS2_in ",100,-3500.,3500.,100,-20.,20.); 
+  d2_hist[7] = new TH2D("d2_pos_iBDS3_in"," d2_pos_iBDS3_in ",100,-3500.,3500.,100,-20.,20.); 
+
+  // ---- position at the entrance of quadr -----
+
+  d2_hist[8] = new TH2D("d2_pos_iQDS1a_in"," d2_pos_iQDS1a_in ",100,-500.,0.,100,-20.,20.); 
+  d2_hist[9] = new TH2D("d2_pos_iQDS1S_in"," d2_pos_iQDS1S_in ",100,-1500.,0.,100,-20.,20.); 
+  d2_hist[10] = new TH2D("d2_pos_iQDS1b_in"," d2_pos_iQDS1b_in ",100,-1500.,0.,100,-20.,20.); 
+  d2_hist[11] = new TH2D("d2_pos_iQDS2S_in"," d2_pos_iQDS2S_in ",100,-1500.,0.,100,-20.,20.); 
+  d2_hist[12] = new TH2D("d2_pos_iQDS2_in"," d2_pos_iQDS2_in ",100,-1500.,0.,100,-20.,20.); 
+  d2_hist[13] = new TH2D("d2_pos_iQDS3S_in"," d2_pos_iQDS3S_in ",100,-1500.,0.,100,-20.,20.); 
 
 for (int in=0;in<12;in++) {    
     sprintf(myname,"hmatrixOccup1_%d",in);

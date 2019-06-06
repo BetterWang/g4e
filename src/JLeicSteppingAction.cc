@@ -85,7 +85,7 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step* aStep)
 
   //--------------------------for TUNE-------------------------------------------------------------------------
   if( 
-     //strcmp(aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str(),"World")==0 && 
+     //      strcmp(aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str(),"World")==0 && 
       strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(),"Physics_QUADS_hd_m_iQDS1a")==0 
  
    ){
@@ -109,7 +109,7 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step* aStep)
      +(aStep->GetTrack()->GetPosition().y()/1000.)*(aStep->GetTrack()->GetPosition().y()/1000.)
      +(200*aStep->GetTrack()->GetMomentumDirection().y())*(200*aStep->GetTrack()->GetMomentumDirection().y()); 
 
-   //    runaction->FillHist2d(4, aStep->GetTrack()->GetPosition().x(),aStep->GetTrack()->GetPosition().y());
+   runaction->FillHist2d(8, aStep->GetTrack()->GetPosition().x(),aStep->GetTrack()->GetPosition().y(),1.);
 
    fprintf(rc,"SteppingAction:: iQDS1a %f %f %f %f %f %f ", aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), aStep->GetTrack()->GetPosition().z(),  aStep->GetTrack()->GetMomentumDirection().x(),aStep->GetTrack()->GetMomentumDirection().y(),aStep->GetTrack()->GetMomentumDirection().z());
       printf("SteppingAction:: %f \n", my_or );
@@ -118,11 +118,41 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step* aStep)
      
   }
   //--------------------------for TUNE-------------------------------------------------------------------------
+ //----------------------------- Quads -------------------------------
+  if( strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(),"Physics_QUADS_hd_m_iQDS1S")==0 ){ 
+       runaction->FillHist2d(9, aStep->GetTrack()->GetPosition().x(),aStep->GetTrack()->GetPosition().y(),1.);
+  }
+  if( strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(),"Physics_QUADS_hd_m_iQDS1b")==0 ){ 
+       runaction->FillHist2d(10, aStep->GetTrack()->GetPosition().x(),aStep->GetTrack()->GetPosition().y(),1.);
+  }
+   if( strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(),"Physics_QUADS_hd_m_iQDS2S")==0 ){ 
+       runaction->FillHist2d(11, aStep->GetTrack()->GetPosition().x(),aStep->GetTrack()->GetPosition().y(),1.);
+  }
+   if( strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(),"Physics_QUADS_hd_m_iQDS2")==0 ){ 
+       runaction->FillHist2d(12, aStep->GetTrack()->GetPosition().x(),aStep->GetTrack()->GetPosition().y(),1.);
+  }
+  if( strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(),"Physics_QUADS_hd_m_iQDS3S")==0 ){ 
+       runaction->FillHist2d(13, aStep->GetTrack()->GetPosition().x(),aStep->GetTrack()->GetPosition().y(),1.);
+  }
+
+
+//----------------------------- dipoles -------------------------------
   if( strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(),"Physics_DIPOLE_m_iBDS3")==0 ){ 
  
-  fprintf(rc,"SteppingAction:: iBDS3 %f %f %f %f %f %f \n", aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), aStep->GetTrack()->GetPosition().z(),  aStep->GetTrack()->GetMomentumDirection().x(),aStep->GetTrack()->GetMomentumDirection().y(),aStep->GetTrack()->GetMomentumDirection().z());
-
+      fprintf(rc,"SteppingAction:: iBDS3 %f %f %f %f %f %f \n", aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), aStep->GetTrack()->GetPosition().z(),  aStep->GetTrack()->GetMomentumDirection().x(),aStep->GetTrack()->GetMomentumDirection().y(),aStep->GetTrack()->GetMomentumDirection().z());
+       runaction->FillHist2d(7, aStep->GetTrack()->GetPosition().x(),aStep->GetTrack()->GetPosition().y(),1.);
   }
+  if( strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(),"Physics_DIPOLE_m_iBDS2")==0 ){ 
+       runaction->FillHist2d(6, aStep->GetTrack()->GetPosition().x(),aStep->GetTrack()->GetPosition().y(),1.);
+  }
+  if( strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(),"Physics_DIPOLE_m_iBDS1a")==0 ){ 
+       runaction->FillHist2d(4, aStep->GetTrack()->GetPosition().x(),aStep->GetTrack()->GetPosition().y(),1.);
+  }
+  if( strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(),"Physics_DIPOLE_m_iBDS1b")==0 ){ 
+       runaction->FillHist2d(5, aStep->GetTrack()->GetPosition().x(),aStep->GetTrack()->GetPosition().y(),1.);
+  }
+ 
+ 
 
  //--------------------------end for TUNE-------------------------------------------------------------------------
 

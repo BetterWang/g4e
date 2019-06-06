@@ -205,6 +205,23 @@ G4VPhysicalVolume *JLeicDetectorConstruction::ConstructDetectorXTR() {
     }
 }
 
+void JLeicDetectorConstruction::Create_cb_VTX(JLeicDetectorParameters &p)
+{
+    printf("Begin VERTEX volume \n");
+
+    cb_VTX_GVol_Solid = new G4Tubs("cb_VTX_GVol_Solid", p.cb_VTX.GVol_RIn, p.cb_VTX.GVol_ROut, p.cb_VTX.GVol_SizeZ / 2., 0., 360 * deg);
+    cb_VTX_GVol_Logic = new G4LogicalVolume(cb_VTX_GVol_Solid, World_Material, "cb_VTX_GVol_Logic");
+    cb_VTX_GVol_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, -World_ShiftVTX), "cb_VTX_GVol_Phys", cb_VTX_GVol_Logic,
+                                         Solenoid_Phys, false, 0);
+
+    // cb_VTX_GVol_Logic->SetVisAttributes(G4VisAttributes::Invisible);
+    G4VisAttributes *attr_cb_VTX = new G4VisAttributes(G4Color(0.1, 0, 1., 0.1));
+    attr_cb_VTX->SetLineWidth(1);
+    attr_cb_VTX->SetForceSolid(false);
+    cb_VTX_GVol_Logic->SetVisAttributes(attr_cb_VTX);
+}
+
+
 
 //==========================================================================================================
 //                              JLEIC 2018
@@ -552,21 +569,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     //===================================================================================
     //==                          VERTEX DETECTOR VOLUME                               ==
     //===================================================================================
-    printf("Begin VERTEX volume \n");
-    cb_VTX_GVol_RIn = 3.3 * cm;
-    cb_VTX_GVol_ROut = 20 * cm;
-    cb_VTX_GVol_SizeZ = 50 * cm;
-
-    cb_VTX_GVol_Solid = new G4Tubs("cb_VTX_GVol_Solid", cb_VTX_GVol_RIn, cb_VTX_GVol_ROut, cb_VTX_GVol_SizeZ / 2., 0., 360 * deg);
-    cb_VTX_GVol_Logic = new G4LogicalVolume(cb_VTX_GVol_Solid, World_Material, "cb_VTX_GVol_Logic");
-    cb_VTX_GVol_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, -World_ShiftVTX), "VTX1", cb_VTX_GVol_Logic,
-                                    Solenoid_Phys, false, 0);
-
-    // cb_VTX_GVol_Logic->SetVisAttributes(G4VisAttributes::Invisible);
-    G4VisAttributes *attr_cb_VTX = new G4VisAttributes(G4Color(0.1, 0, 1., 0.1));
-    attr_cb_VTX->SetLineWidth(1);
-    attr_cb_VTX->SetForceSolid(false);
-    cb_VTX_GVol_Logic->SetVisAttributes(attr_cb_VTX);
+    Create_cb_VTX(fParameters);
 
 //===================================================================================
 #endif  // end VERTEX
@@ -1377,7 +1380,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     std::vector <cb_VTX_ladder_LayParam> Lays;
     cb_VTX_ladder_LayParam Lay;
     // Lay 0
-    Lay.Dx=0.050 * mm; Lay.Dy=2*cm; Lay.Dz=10*cm; Lay.Rin=3.5 * cm; Lays.push_back(Lay);  
+    Lay.Dx=0.050 * mm; Lay.Dy=2*cm; Lay.Dz=10*cm; Lay.Rin=3.5 * cm; Lays.push_back(Lay);
     // Lay 1
     Lay.Dx=0.050 * mm; Lay.Dy=2*cm; Lay.Dz=11*cm; Lay.Rin=4.5 * cm; Lays.push_back(Lay);
     // Lay 2
@@ -1402,7 +1405,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
       myL = 2*3.1415*dR;
       NUM = myL/cb_VTX_ladder_DY;
 
-      for(int i=0;i<2; i++){ 
+      for(int i=0;i<2; i++){
 	double LN = cb_VTX_ladder_DY * NUM;
 	double LN1 = cb_VTX_ladder_DY * (NUM+1+i);
 	printf("cb_VTX_ladder:: LN= Orig NUM=%d\n",NUM);
@@ -1410,15 +1413,15 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 	printf("cb_VTX_ladder:: LN=%f, LN1=%f  delenie=%f NUM=%d \n",LN,LN1,LN/LN1,NUM);
       }
       cb_VTX_ladder_deltaphi = 2*3.1415926/NUM  ;
- 
- 
+
+
       sprintf(abname, "cb_VTX_ladder_Solid_%d", lay);
       cb_VTX_ladder_Solid[lay] = new G4Box(abname, cb_VTX_ladder_Thickness / 2.,   cb_VTX_ladder_DY / 2.,cb_VTX_ladder_DZ / 2.  );
-      
+
       sprintf(abname, "cb_VTX_ladder_Logic_%d", lay);
       cb_VTX_ladder_Logic[lay] = new G4LogicalVolume(cb_VTX_ladder_Solid[lay], cb_VTX_ladder_Material,
 						      abname);
-      
+
 
       if (lay == 0 || lay == 1) { attr_cb_VTX_ladder = new G4VisAttributes(G4Color(0.0, 0.2, 0.8, 2.0)); }
       else if (lay == 2) { attr_cb_VTX_ladder = new G4VisAttributes(G4Color(0.0, 0.2, 0.8, 0.7)); }
@@ -1427,15 +1430,15 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
       }
       attr_cb_VTX_ladder->SetForceSolid(true);
       cb_VTX_ladder_Logic[lay]->SetVisAttributes(attr_cb_VTX_ladder);
-      
+
       if( NUM>40) {printf("cb_VTX_ladder:: Nladders in VERTEX >40 lay=%f !!! \n",lay); exit(1); }
 
-      
+
       for (int ia = 0; ia < NUM; ia++) {
 	//for (int ia=0;ia<1;ia++) {
 	printf("cb_VTX_ladder:: lay=%d  NUM=%d, dR=%f cb_VTX_ladder_deltaphi=%f %f \n",lay, NUM,  dR, cb_VTX_ladder_deltaphi,cb_VTX_ladder_deltashi);
 	printf("cb_VTX_ladder:: Module  loop:: %d\n", ia);
-	
+
 	phi = (ia * (cb_VTX_ladder_deltaphi));
 	x = - dR * cos(phi) ;
 	y = - dR * sin(phi) ;
@@ -1460,31 +1463,31 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
       } else {
 	      PixelDX = cb_VTX_ladder_DZ / 50.; //2000.*um;
 	      PixelDY = cb_VTX_ladder_DY / 10.; //2000.*um;
-	    
+
       }
       //G4double PixelDX=20.*um;
       //G4double PixelDY=20.*um;
       //G4double PixelDX=24.*um;
       //G4double PixelDY=24.*um;
       G4double PixelDZ = cb_VTX_ladder_Thickness; // 0.450*mm
-      
+
         if (FDIV >= 1) {
 	  printf("cb_VTX_ladder_pxdSlice_:: construct slices %d \n", lay);
-	  
+
 	  sprintf(abname, "cb_VTX_ladder_pxdSlice_%d", lay);
 	  pxdBox_slice[lay] = new G4Box(abname,
 					PixelDX / 2,                   //gD->GetPixelDX(),
 					cb_VTX_ladder_DY / 2., // 10.*mm,  //gD->GetHalfMPXWaferDY(),
 					cb_VTX_ladder_Thickness / 2.);    //gD->GetHalfMPXWaferDZ());
-	  
+
 	  pxdSlice_log[lay] = new G4LogicalVolume(pxdBox_slice[lay], fAbsorberMaterial, abname, 0, 0, 0);
-	  
+
 	  G4VisAttributes *pixelVisAtt = new G4VisAttributes(G4Color(0, 1, 1, 1));
 	  pixelVisAtt->SetLineWidth(1);
 	  pixelVisAtt->SetForceWireframe(true);
 	  pxdSlice_log[lay]->SetVisAttributes(pixelVisAtt);
-	  
-	  
+
+
 	  // divide in slices
 	  sprintf(abname, "pxdSlice_%d", lay);
 	  G4PVDivision *sliceDiv = new G4PVDivision(abname,
@@ -1494,15 +1497,15 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 						    PixelDX,
                                                       0);
 	  printf("SetUpVertex16():: construct done\n");
-	  
-	  
+
+
 	  if (FDIV >= 2) {
 	    printf("SetUpVertex16():: construct pixels \n");
 	    if (lay < 2) { sprintf(abname, "pxdPixel"); }
 	    else {
 	      sprintf(abname, "svdPixel");
 	    }
-	    
+
 	    //sprintf(abname,"pxdPixel_%d",lay);
 	    pxdBox_pixel[lay] = new G4Box(abname,
 					  PixelDX / 2,
@@ -1522,7 +1525,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
         } //-- end if slices division
 
         //	 };  // -- end loop over modules
-	
+
     }; // --- end loop over layers
 
 #endif
@@ -2051,9 +2054,9 @@ sprintf(abname,"cb_CTD_Straws_Wall_Phys");
     fDetGap = 0.01 * mm;
     fModuleNumber = 1;
 
-    fSolidRadiator = new G4Tubs("Radiator", 50 * cm, 100 * cm, 0.5 * fRadThick,0.,360*deg);
+    fSolidRadiator = new G4Tubs("ci_TRD_Radiator_Solid", 50 * cm, 100 * cm, 0.5 * fRadThick,0.,360*deg);
     fLogicRadiator = new G4LogicalVolume(fSolidRadiator, fRadiatorMat,
-                                         "Radiator");
+                                         "ci_TRD_Radiator_Logic");
 
     attr_ci_TRD_rad = new G4VisAttributes(G4Color(0.8, 0.7, 0.6, 0.8));
     attr_ci_TRD_rad->SetLineWidth(1);
@@ -2062,7 +2065,7 @@ sprintf(abname,"cb_CTD_Straws_Wall_Phys");
 
     fPhysicsRadiator = new G4PVPlacement(0,
                                          G4ThreeVector(0, 0, fRadZ),
-                                         "Radiator", fLogicRadiator,
+                                         "ci_TRD_Radiator_Phys", fLogicRadiator,
                                          ci_TRD_GVol_Phys, false, 0);
 
     if (fRadRegion != 0) delete fRadRegion;

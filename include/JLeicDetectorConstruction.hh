@@ -32,34 +32,21 @@
 #ifndef JLeicDetectorConstruction_h
 #define JLeicDetectorConstruction_h 1
 
-#include "G4VUserDetectorConstruction.hh"
 #include "globals.hh"
-#include "G4ios.hh"
 
-//class G4Box;
+#include "G4VUserDetectorConstruction.hh"
+#include "G4ios.hh"
 #include "G4Box.hh"
 #include "G4Tubs.hh"
 #include "G4Cons.hh"
 #include "G4Polycone.hh"
 #include "G4Trap.hh"
 #include "G4Trd.hh"
-//class G4LogicalVolume;
 #include "G4LogicalVolume.hh"
 #include "G4PVPlacement.hh"
-//class G4VPhysicalVolume;
-//class G4Material;
 #include "G4Material.hh"
-//class G4Region;
 #include "G4Region.hh"
-//class G4UniformMagField;
 #include "G4UniformMagField.hh"
-//class JLeicDetectorMessenger;
-#include "JLeicDetectorMessenger.hh"
-
-class JLeicCalorimeterSD;
-//#include "JLeicCalorimeterSD.hh"
-//class JLeicMaterials;
-#include "JLeicMaterials.hh"
 
 //-- Quadrupole --
 #include "G4FieldManager.hh"
@@ -69,6 +56,15 @@ class JLeicCalorimeterSD;
 #include "G4ClassicalRK4.hh"
 #include "G4FieldManager.hh"
 
+
+#include "JLeicMaterials.hh"
+#include "JLeicDetectorMessenger.hh"
+#include "JLeicDetectorParameters.hh"
+
+// Central Barrel - Vertex
+#include "detectors/cb_VTX/cb_VTX.hh"
+
+class JLeicCalorimeterSD;
 
 class JLeicDetectorConstruction : public G4VUserDetectorConstruction {
 public:
@@ -212,7 +208,19 @@ private:
 
     void TestOld();
 
+    void Create_cb_VTX(JLeicDetectorParameters& parameters);
+
 private:
+
+// ----------------------------------------------
+//           R E F A C T O R I N G
+
+
+    JLeicDetectorParameters fParameters;
+    CentralBarrelVertex cb_VTX_Design;
+// ----------------------------------------------
+
+
 
     G4bool fWorldChanged;
     //G4Material*        fAbsorberMaterial;
@@ -291,9 +299,7 @@ private:
 
     //*************************************************************
     //----------------VTX volume -------------------
-    G4double cb_VTX_GVol_RIn;
-    G4double cb_VTX_GVol_ROut;
-    G4double cb_VTX_GVol_SizeZ;
+
     G4Tubs *cb_VTX_GVol_Solid;    //pointer to the solid VTX volume
     G4LogicalVolume *cb_VTX_GVol_Logic;    //pointer to the logical VTX volume
     G4VPhysicalVolume *cb_VTX_GVol_Phys;    //pointer to the physical VTX volume
@@ -301,21 +307,12 @@ private:
      G4Box *cb_VTX_ladder_Solid[10]; //pointer to the solid Absorber
     G4LogicalVolume *cb_VTX_ladder_Logic[10]; //pointer to the logical Absorber
      G4VPhysicalVolume *cb_VTX_ladder_Phys[10]; //pointer to the logical Absorber
-    typedef struct {
-        double Dx;
-        double Dy;
-        double Dz;
-        double Rin;
-    } cb_VTX_ladder_LayParam;
+
     G4double cb_VTX_ladder_DZ ;
     G4double cb_VTX_ladder_DY ;
     G4double cb_VTX_ladder_Thickness;
 
-    G4VisAttributes *attr_cb_VTX_ladder;
-    G4Material *cb_VTX_ladder_Material;
-    int NUM;
-    G4double cb_VTX_ladder_deltaphi;
-    G4double cb_VTX_ladder_deltashi;
+
 
     //===================================================================================
 

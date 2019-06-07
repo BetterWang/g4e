@@ -5,9 +5,11 @@
 #ifndef G4E_CB_VTX_HH
 #define G4E_CB_VTX_HH
 
+#include <G4PVDivision.hh>
 #include "G4RotationMatrix.hh"
 #include "G4Material.hh"
-//#include "G4VisAttributes.hh"
+#include "G4Color.hh"
+#include "G4VisAttributes.hh"
 
 #include "JLeicDetectorParameters.hh"
 
@@ -27,7 +29,11 @@ public:
 
     }
 
-    inline void Create(JLeicDetectorParameters& p) {
+    inline void Create(JLeicDetectorParameters& jleicParams, G4VPhysicalVolume *physicalVolume) {
+        static char abname[256];
+
+        auto p = jleicParams.cb_VTX;
+
         //--------------------------------------------------
         //----------vtx barrel ladder geometry--------------
         //--------------------------------------------------
@@ -70,13 +76,13 @@ public:
         for (int lay = 0; lay < Lays.size(); lay++) {
 
             printf("cb_VTX_ladder:: Layer loop:: %d\n", lay);
-            cb_VTX_ladder_DZ = Lays[lay].Dz;
-            cb_VTX_ladder_DY = Lays[lay].Dy;
-            cb_VTX_ladder_Thickness = Lays[lay].Dx;
+            double cb_VTX_ladder_DZ = Lays[lay].Dz;
+            double cb_VTX_ladder_DY = Lays[lay].Dy;
+            double cb_VTX_ladder_Thickness = Lays[lay].Dx;
             dR =  Lays[lay].Rin;
 
             myL = 2*3.1415*dR;
-            NUM = myL/cb_VTX_ladder_DY;
+            int NUM = myL/cb_VTX_ladder_DY;
 
             for(int i=0;i<2; i++){
                 double LN = cb_VTX_ladder_DY * NUM;
@@ -85,7 +91,8 @@ public:
                 if (LN/LN1>0.8) NUM=NUM+1;
                 printf("cb_VTX_ladder:: LN=%f, LN1=%f  delenie=%f NUM=%d \n",LN,LN1,LN/LN1,NUM);
             }
-            cb_VTX_ladder_deltaphi = 2*3.1415926/NUM  ;
+
+            double cb_VTX_ladder_deltaphi = 2*3.1415926/NUM  ;
 
 
             sprintf(abname, "cb_VTX_ladder_Solid_%d", lay);
@@ -109,20 +116,20 @@ public:
 
             for (int ia = 0; ia < NUM; ia++) {
                 //for (int ia=0;ia<1;ia++) {
-                printf("cb_VTX_ladder:: lay=%d  NUM=%d, dR=%f cb_VTX_ladder_deltaphi=%f %f \n",lay, NUM,  dR, cb_VTX_ladder_deltaphi,cb_VTX_ladder_deltashi);
+                printf("cb_VTX_ladder:: lay=%d  NUM=%d, dR=%f cb_VTX_ladder_deltaphi=%f %f \n",lay, NUM,  dR, cb_VTX_ladder_deltaphi,p.ladder_deltashi);
                 printf("cb_VTX_ladder:: Module  loop:: %d\n", ia);
 
                 phi = (ia * (cb_VTX_ladder_deltaphi));
                 x = - dR * cos(phi) ;
                 y = - dR * sin(phi) ;
                 rm[lay][ia].rotateZ(cb_VTX_ladder_deltaphi * ia);
-                rm[lay][ia].rotateZ(cb_VTX_ladder_deltashi);
+                rm[lay][ia].rotateZ(jleicParams.cb_VTX.ladder_deltashi);
 
                 printf("cb_VTX_ladder::  %d %d x=%f  y=%f  \n", lay, ia, x, y);
                 sprintf(abname, "cb_VTX_ladder_Phys_%d_%d", lay, ia);
                 cb_VTX_ladder_Phys[lay] = new G4PVPlacement(G4Transform3D(rm[lay][ia], G4ThreeVector(x, y, z)),
                                                             abname, cb_VTX_ladder_Logic[lay],
-                                                            cb_VTX_GVol_Phys, false, 0.);
+                                                            physicalVolume, false, 0.);
             }
             //-------------------------------------------------------------------------
             //                          VTX  slices and pixels
@@ -153,7 +160,7 @@ public:
                                               cb_VTX_ladder_DY / 2., // 10.*mm,  //gD->GetHalfMPXWaferDY(),
                                               cb_VTX_ladder_Thickness / 2.);    //gD->GetHalfMPXWaferDZ());
 
-                pxdSlice_log[lay] = new G4LogicalVolume(pxdBox_slice[lay], fAbsorberMaterial, abname, 0, 0, 0);
+                pxdSlice_log[lay] = new G4LogicalVolume(pxdBox_slice[lay], cb_VTX_ladder_Material, abname, 0, 0, 0);
 
                 G4VisAttributes *pixelVisAtt = new G4VisAttributes(G4Color(0, 1, 1, 1));
                 pixelVisAtt->SetLineWidth(1);
@@ -184,7 +191,7 @@ public:
                                                   PixelDX / 2,
                                                   PixelDY / 2.,
                                                   PixelDZ / 2.);
-                    pxdPixel_log[lay] = new G4LogicalVolume(pxdBox_pixel[lay], fAbsorberMaterial, abname, 0, 0, 0);
+                    pxdPixel_log[lay] = new G4LogicalVolume(pxdBox_pixel[lay], cb_VTX_ladder_Material, abname, 0, 0, 0);
                     pxdPixel_log[lay]->SetVisAttributes(pixelVisAtt);
 
                     // divide in pixels
@@ -209,6 +216,18 @@ private:
     JLeicMaterials *fMat;
     G4VisAttributes *attr_cb_VTX_ladder;
     G4Material *cb_VTX_ladder_Material;
+
+    //--------------- VTX ladders geom-------
+    G4Box *cb_VTX_ladder_Solid[10]; //pointer to the solid Absorber
+    G4LogicalVolume *cb_VTX_ladder_Logic[10]; //pointer to the logical Absorber
+    G4VPhysicalVolume *cb_VTX_ladder_Phys[10]; //pointer to the logical Absorber
+
+    //-- slices and pixels
+
+    G4LogicalVolume *pxdSlice_log[10]; //pointer to the logical slice
+    G4LogicalVolume *pxdPixel_log[10]; //pointer to the logical pixel
+
+
 
 };
 

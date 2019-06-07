@@ -205,9 +205,14 @@ G4VPhysicalVolume *JLeicDetectorConstruction::ConstructDetectorXTR() {
     }
 }
 
+
+//===================================================================================
+//==                          VTX DETECTOR VOLUME                                  ==
+//===================================================================================
+
 void JLeicDetectorConstruction::Create_cb_VTX(JLeicDetectorParameters &p)
 {
-    printf("Begin VERTEX volume \n");
+    printf("Begin cb_VERTEX volume \n");
 
     cb_VTX_GVol_Solid = new G4Tubs("cb_VTX_GVol_Solid", p.cb_VTX.GVol_RIn, p.cb_VTX.GVol_ROut, p.cb_VTX.GVol_SizeZ / 2., 0., 360 * deg);
     cb_VTX_GVol_Logic = new G4LogicalVolume(cb_VTX_GVol_Solid, World_Material, "cb_VTX_GVol_Logic");
@@ -220,7 +225,61 @@ void JLeicDetectorConstruction::Create_cb_VTX(JLeicDetectorParameters &p)
     attr_cb_VTX->SetForceSolid(false);
     cb_VTX_GVol_Logic->SetVisAttributes(attr_cb_VTX);
 }
+//===================================================================================
+//==                          CTD DETECTOR VOLUME                                  ==
+//===================================================================================
 
+void JLeicDetectorConstruction::Create_cb_CTD(JLeicDetectorParameters &p) {
+    printf("Begin cb_CTD volume \n");
+   p.cb_CTD.GVol_SizeZ= p.Solenoid_SizeZ - p.cb_CTD.GVol_SizeZcut;
+
+    cb_CTD_GVol_Solid = new G4Tubs("cb_CTD_GVol_Solid", p.cb_CTD.GVol_RIn, p.cb_CTD.GVol_ROut, p.cb_CTD.GVol_SizeZ / 2., 0., 360 * deg);
+    cb_CTD_GVol_Logic = new G4LogicalVolume(cb_CTD_GVol_Solid, World_Material, "cb_CTD_GVol_Logic");
+    cb_CTD_GVol_Phys = new G4PVPlacement(0, G4ThreeVector(), "cb_CTD_GVol_Phys", cb_CTD_GVol_Logic,
+                                         Solenoid_Phys, false, 0);
+
+// cb_CTD_GVol_Logic->SetVisAttributes(G4VisAttributes::Invisible);
+    G4VisAttributes *attr_cb_CTD = new G4VisAttributes(G4Color(0.1, 0, 1., 0.1));
+    attr_cb_CTD->SetLineWidth(1);
+    attr_cb_CTD->SetForceSolid(false);
+    cb_CTD_GVol_Logic->SetVisAttributes(attr_cb_CTD);
+}
+
+//===================================================================================
+//==                          EMCAL DETECTOR VOLUME                                  ==
+//===================================================================================
+
+void JLeicDetectorConstruction::Create_cb_EMCAL(JLeicDetectorParameters &p) {
+    printf("Begin cb_EMCAL  volume \n");
+
+     p.cb_EMCAL.GVol_ROut = p.Solenoid_ROut - p.cb_EMCAL.GVol_ROutshift;
+     p.cb_EMCAL.GVol_RIn = p.cb_EMCAL.GVol_ROut - p.cb_EMCAL.GVol_Thickness;
+    // cb_EMCAL_GVol_SizeZ=Solenoid_SizeZ -30*cm;
+
+    // working
+
+    //    G4double EMCALB_R_cone[4]={cb_EMCAL_GVol_RIn,  cb_EMCAL_GVol_ROut, cb_EMCAL_GVol_ROut, cb_EMCAL_GVol_RIn };
+    //  G4double cb_EMCAL_GVol_ConeZ[4]={ -Solenoid_SizeZ/2, -Solenoid_SizeZ/2+60*cm, Solenoid_SizeZ/2-60*cm, Solenoid_SizeZ/2};
+
+    p.cb_EMCAL.GVol_ConeROut = {p.cb_EMCAL.GVol_ROut, p.cb_EMCAL.GVol_ROut, p.cb_EMCAL.GVol_ROut, p.cb_EMCAL.GVol_ROut};
+    p.cb_EMCAL.GVol_ConeRIn= {p.cb_EMCAL.GVol_ROut - 1. * cm, p.cb_EMCAL.GVol_RIn, p.cb_EMCAL.GVol_RIn, p.cb_EMCAL.GVol_ROut - 1. * cm};
+    p.cb_EMCAL.GVol_ConeZ = {-fParameters.Solenoid_SizeZ / 2, -fParameters.Solenoid_SizeZ / 2 + 30 * cm, fParameters.Solenoid_SizeZ / 2 - 30 * cm,
+                                       fParameters.Solenoid_SizeZ / 2};
+
+    cb_EMCAL_GVol_Solid = new G4Polycone("cb_EMCAL_GVol_Solid", 0. * deg, 360. * deg, 4, p.cb_EMCAL.GVol_ConeZ, p.cb_EMCAL.GVol_ConeRIn,
+                                         p.cb_EMCAL.GVol_ConeROut);
+    cb_EMCAL_GVol_Logic = new G4LogicalVolume(cb_EMCAL_GVol_Solid, World_Material, "cb_EMCAL_GVol_Logic");
+    cb_EMCAL_GVol_Phys = new G4PVPlacement(0, G4ThreeVector(), "cb_EMCAL_GVol_Phys", cb_EMCAL_GVol_Logic,
+                                           Solenoid_Phys, false, 0);
+
+
+    G4VisAttributes *attr_cb_EMCAL = new G4VisAttributes(G4Color(0.3, 0.5, 0.9, 1.));
+    attr_cb_EMCAL->SetLineWidth(1);
+    attr_cb_EMCAL->SetForceSolid(false);
+    cb_EMCAL_GVol_Logic->SetVisAttributes(attr_cb_EMCAL);
+    // cb_EMCAL_GVol_Logic->SetVisAttributes(G4VisAttributes::Invisible);
+
+}
 
 
 //==========================================================================================================
@@ -313,19 +372,17 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     //===================================================================================
     //==                          Solenoid  magnetic field                             ==
     //===================================================================================
-    Solenoid_RIn = 0.0 * cm;
-    Solenoid_ROut = 144. * cm;
-    //   Solenoid_SizeZ = 355.8 * cm;
-    Solenoid_SizeZ = 400. * cm;
-    World_ShiftVTX = 40. * cm;
+     //   Solenoid_SizeZ = 355.8 * cm;
 
-    printf("Solenoid_SizeZ=%f", Solenoid_SizeZ);
 
-    Solenoid_Solid = new G4Tubs("Solenoid_Solid", Solenoid_RIn, Solenoid_ROut, Solenoid_SizeZ / 2., 0., 360 * deg);
+
+    printf("Solenoid_SizeZ=%f", fParameters.Solenoid_SizeZ);
+
+    Solenoid_Solid = new G4Tubs("Solenoid_Solid", fParameters.Solenoid_RIn, fParameters.Solenoid_ROut, fParameters.Solenoid_SizeZ / 2., 0., 360 * deg);
 
     Solenoid_Logic = new G4LogicalVolume(Solenoid_Solid, World_Material, "Solenoid_Logic");
 
-    Solenoid_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, World_ShiftVTX), "Solenoid_Phys", Solenoid_Logic,
+    Solenoid_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, fParameters.World_ShiftVTX), "Solenoid_Phys", Solenoid_Logic,
                                          World_Phys, false, 0);
 
     // G4VisAttributes* vsol= new G4VisAttributes(G4Color(0.1,0,1.,0.1));
@@ -362,7 +419,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 #ifdef USE_CB_HCAL
     cb_HCAL_GVol_RIn = Solenoid_ROut;
     cb_HCAL_GVol_ROut = Solenoid_ROut + 100. * cm;
-    cb_HCAL_GVol_SizeZ = Solenoid_SizeZ + ce_ENDCAP_GVol_SizeZ;
+    cb_HCAL_GVol_SizeZ = fParameters.Solenoid_SizeZ + ce_ENDCAP_GVol_SizeZ;
     //cb_HCAL_det_Material = fMat->GetMaterial("StainlessSteel");
     cb_HCAL_GVol_Solid = new G4Tubs("cb_HCAL_GVol_Solid", cb_HCAL_GVol_RIn, cb_HCAL_GVol_ROut, cb_HCAL_GVol_SizeZ / 2., 0., 360 * deg);
 
@@ -390,7 +447,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     ci_ENDCAP_GVol_SizeZ = 250 * cm;
     ci_ENDCAP_GVol_ShiftZ = 0. * cm;
     ci_ENDCAP_GVol_PosX = 0. * cm;
-    ci_ENDCAP_GVol_PosZ = Solenoid_SizeZ / 2. + World_ShiftVTX + ci_ENDCAP_GVol_ShiftZ + ci_ENDCAP_GVol_SizeZ / 2.;
+    ci_ENDCAP_GVol_PosZ = fParameters.Solenoid_SizeZ / 2. + World_ShiftVTX + ci_ENDCAP_GVol_ShiftZ + ci_ENDCAP_GVol_SizeZ / 2.;
 
     ci_ENDCAP_GVol_Solid = new G4Tubs("ci_ENDCAP_GVol_Solid", ci_ENDCAP_GVol_RIn, ci_ENDCAP_GVol_ROut, ci_ENDCAP_GVol_SizeZ / 2., 0., 360 * deg);
 
@@ -417,7 +474,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     ce_ENDCAP_GVol_RIn = 20 * cm;
     ce_ENDCAP_GVol_ROut = Solenoid_ROut;
     ce_ENDCAP_GVol_SizeZ = 60 * cm;
-    ce_ENDCAP_GVol_PosZ = -ce_ENDCAP_GVol_SizeZ / 2 - Solenoid_SizeZ / 2 + World_ShiftVTX;
+    ce_ENDCAP_GVol_PosZ = -ce_ENDCAP_GVol_SizeZ / 2 - fParameters.Solenoid_SizeZ / 2 + World_ShiftVTX;
 
     ce_ENDCAP_GVol_Solid = new G4Tubs("ce_ENDCAP_GVol_Solid", ce_ENDCAP_GVol_RIn, ce_ENDCAP_GVol_ROut, ce_ENDCAP_GVol_SizeZ / 2., 0.,
                                  360 * deg);
@@ -565,53 +622,58 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     //***********************************************************************************
     //***********************************************************************************
 
-#ifdef  USE_CB_VTX
+
     //===================================================================================
     //==                          VERTEX DETECTOR VOLUME                               ==
     //===================================================================================
-    Create_cb_VTX(fParameters);
 
-//===================================================================================
-#endif  // end VERTEX
+#ifdef  USE_CB_VTX
+   Create_cb_VTX(fParameters);
+
+
+  #ifdef  USE_CB_VTX_LADDERS
+   //----------vtx barrel ladder geometry--------------
+     cb_VTX_Design.Create(fParameters, cb_VTX_GVol_Phys);
+  #endif
+
+#endif  // end VTX
+
+    //===================================================================================
+    //==                         CTD DETECTOR VOLUME                                   ==
+    //===================================================================================
 
 #ifdef  USE_CB_CTD
 
-    //===================================================================================
-    //==                          CTD DETECTOR VOLUME                                  ==
-    //===================================================================================
-    cb_CTD_GVol_RIn = 21 * cm;
-    // for new magnet  
-    //   cb_CTD_GVol_ROut = 95 * cm;
-    // for CLEO and BABAR DIRC
-    cb_CTD_GVol_ROut = 80* cm;
-    cb_CTD_GVol_SizeZ = Solenoid_SizeZ - 60 * cm;
+    Create_cb_CTD(fParameters);
 
-    cb_CTD_GVol_Solid = new G4Tubs("cb_CTD_GVol_Solid", cb_CTD_GVol_RIn, cb_CTD_GVol_ROut, cb_CTD_GVol_SizeZ / 2., 0., 360 * deg);
-    cb_CTD_GVol_Logic = new G4LogicalVolume(cb_CTD_GVol_Solid, World_Material, "cb_CTD_GVol_Logic");
-    cb_CTD_GVol_Phys = new G4PVPlacement(0, G4ThreeVector(), "CTD", cb_CTD_GVol_Logic,
-                                    Solenoid_Phys, false, 0);
+   #ifdef USE_CB_CTD_Si
 
-    // cb_CTD_GVol_Logic->SetVisAttributes(G4VisAttributes::Invisible);
-    G4VisAttributes *attr_cb_CTD = new G4VisAttributes(G4Color(0.1, 0, 1., 0.1));
-    attr_cb_CTD->SetLineWidth(1);
-    attr_cb_CTD->SetForceSolid(false);
-    cb_CTD_GVol_Logic->SetVisAttributes(attr_cb_CTD);
 
-//===================================================================================
+
+    cb_CTD_Design.Create(fParameters, cb_CTD_GVol_Phys);
+   #endif
+
 #endif  // end CTD
+
+
+   //***********************************************************************************
+    //***********************************************************************************
+    //**                               BARREL VOLUMES                                  **
+    //***********************************************************************************
+    //***********************************************************************************
 
 #ifdef  USE_CB_DIRC
 
     //===================================================================================
     //==                          DIRC DETECTOR VOLUME                                  ==
     //===================================================================================
-    cb_DIRC_GVol_RIn =  cb_CTD_GVol_ROut +1 *cm;
+    cb_DIRC_GVol_RIn =  fParameters.cb_CTD.GVol_ROut +1 *cm;
     // for new magnet  
     //   cb_DIRC_GVol_ROut = 95 * cm;
     // for CLEO and BABAR DIRC
     cb_DIRC_GVol_ROut =  cb_DIRC_GVol_RIn + 10* cm;
     //   cb_DIRC_GVol_SizeZ = Solenoid_SizeZ;
-    cb_DIRC_GVol_SizeZ =  cb_CTD_GVol_SizeZ;
+    cb_DIRC_GVol_SizeZ =  fParameters.cb_CTD.GVol_SizeZ;
 
     cb_DIRC_GVol_Solid = new G4Tubs("cb_DIRC_GVol_Solid", cb_DIRC_GVol_RIn, cb_DIRC_GVol_ROut, cb_DIRC_GVol_SizeZ / 2., 0., 360 * deg);
     cb_DIRC_GVol_Logic = new G4LogicalVolume(cb_DIRC_GVol_Solid, World_Material, "cb_DIRC_GVol_Logic");
@@ -628,63 +690,6 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 #endif  // end DIRC
 
 
-#ifdef  USE_CB_EMCAL
-    //===================================================================================
-    //==                          EMCAL DETECTOR VOLUME                               ==
-    //===================================================================================
-    cb_EMCAL_GVol_ROut = Solenoid_ROut - 5 * cm;
-    cb_EMCAL_GVol_Thickness=40*cm; 
-    cb_EMCAL_GVol_RIn = cb_EMCAL_GVol_ROut - cb_EMCAL_GVol_Thickness;
-    // cb_EMCAL_GVol_SizeZ=Solenoid_SizeZ -30*cm;
-
-    // working
-
-    //    G4double EMCALB_R_cone[4]={cb_EMCAL_GVol_RIn,  cb_EMCAL_GVol_ROut, cb_EMCAL_GVol_ROut, cb_EMCAL_GVol_RIn };
-    //  G4double cb_EMCAL_GVol_ConeZ[4]={ -Solenoid_SizeZ/2, -Solenoid_SizeZ/2+60*cm, Solenoid_SizeZ/2-60*cm, Solenoid_SizeZ/2};
-
-    G4double cb_EMCAL_GVol_ConeROut[4] = {cb_EMCAL_GVol_ROut, cb_EMCAL_GVol_ROut, cb_EMCAL_GVol_ROut, cb_EMCAL_GVol_ROut};
-    G4double cb_EMCAL_GVol_ConeRIn[4] = {cb_EMCAL_GVol_ROut - 1. * cm, cb_EMCAL_GVol_RIn, cb_EMCAL_GVol_RIn, cb_EMCAL_GVol_ROut - 1. * cm};
-    G4double cb_EMCAL_GVol_ConeZ[4] = {-Solenoid_SizeZ / 2, -Solenoid_SizeZ / 2 + 30 * cm, Solenoid_SizeZ / 2 - 30 * cm,
-                                 Solenoid_SizeZ / 2};
-
-    cb_EMCAL_GVol_Solid = new G4Polycone("cb_EMCAL_GVol_Solid", 0. * deg, 360. * deg, 4, cb_EMCAL_GVol_ConeZ, cb_EMCAL_GVol_ConeRIn,
-                                  cb_EMCAL_GVol_ConeROut);
-    cb_EMCAL_GVol_Logic = new G4LogicalVolume(cb_EMCAL_GVol_Solid, World_Material, "cb_EMCAL_GVol_Logic");
-    cb_EMCAL_GVol_Phys = new G4PVPlacement(0, G4ThreeVector(), "cb_EMCAL_GVol_Phys", cb_EMCAL_GVol_Logic,
-                                       Solenoid_Phys, false, 0);
-
-
-    G4VisAttributes *attr_cb_EMCAL = new G4VisAttributes(G4Color(0.3, 0.5, 0.9, 1.));
-    attr_cb_EMCAL->SetLineWidth(1);
-    attr_cb_EMCAL->SetForceSolid(false);
-    cb_EMCAL_GVol_Logic->SetVisAttributes(attr_cb_EMCAL);
-    // cb_EMCAL_GVol_Logic->SetVisAttributes(G4VisAttributes::Invisible);
-//........................EMCAL Barrel detector----------------------------------------------
-
-    cb_EMCAL_det_Material = fMat->GetMaterial("PbWO4");
-    // fSolidEMCAL = new G4Tubs("EMCALbSol",  cb_EMCAL_GVol_RIn,cb_EMCAL_GVol_ROut,cb_EMCAL_GVol_SizeZ/2.,0.,360*deg);
-    cb_EMCAL_det_Solid = new G4Polycone("cb_EMCAL_det_Solid", 0. * deg, 360. * deg, 4, cb_EMCAL_GVol_ConeZ, cb_EMCAL_GVol_ConeRIn,
-                                   cb_EMCAL_GVol_ConeROut);
-
-    cb_EMCAL_det_Logic = new G4LogicalVolume(cb_EMCAL_det_Solid, cb_EMCAL_det_Material, "cb_EMCAL_det_Logic");
-
-    // G4VisAttributes* attr_cb_EMCAL= new G4VisAttributes(G4Color(0.3,0.5,0.9,0.9));
-    //  G4VisAttributes* attr_cb_EMCAL= new G4VisAttributes(G4Color(0.7,0.7,0.7,1.));
-    attr_cb_EMCAL->SetLineWidth(1);
-    attr_cb_EMCAL->SetForceSolid(true);
-    cb_EMCAL_det_Logic->SetVisAttributes(attr_cb_EMCAL);
-
-    //    fPhysicsEMCAL = new G4PVPlacement(0, G4ThreeVector(0,0,-40*cm), "EMCALbSolPhys",fLogicEMCAL,
-    //                               cb_EMCAL_GVol_Phys, false,     0 );
-
-    cb_EMCAL_det_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), "cb_EMCAL_det_Phys", cb_EMCAL_det_Logic,
-                                        cb_EMCAL_GVol_Phys, false, 0);
-
-//...............................detector----------------------------------------------
-
-
-#endif  // end EMCALb
-
 
 #ifdef USE_GEMb
     //====================================================================================
@@ -700,7 +705,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     ci_GEM_GVol_Logic = new G4LogicalVolume(ci_GEM_GVol_Solid, World_Material, "ci_GEM_GVol_Logic");
 
     // ci_GEM_GVol_PosZ= Solenoid_SizeZ/2-abs(World_ShiftVTX)+ci_GEM_GVol_SizeZ-5*cm;   // --- need to find out why this 5 cm are needed
-    ci_GEM_GVol_PosZ = Solenoid_SizeZ / 2 -
+    ci_GEM_GVol_PosZ = fParameters.Solenoid_SizeZ / 2 -
                ci_GEM_GVol_SizeZ / 2;   // --- need to find out why this 5 cm are needed
     ci_GEM_GVol_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, ci_GEM_GVol_PosZ), "ci_GEM_GVol_Phys", ci_GEM_GVol_Logic,
                                       Solenoid_Phys, false, 0);
@@ -712,7 +717,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     ce_GEM_GVol_ROut = 65 * cm + 50 * cm;
     ce_GEM_GVol_SizeZ = 30 * cm;
     ce_GEM_GVol_ShiftZ = 0 * cm;
-    ce_GEM_GVol_PosZ = -Solenoid_SizeZ / 2 + ce_GEM_GVol_SizeZ / 2;
+    ce_GEM_GVol_PosZ = -fParameters.Solenoid_SizeZ / 2 + ce_GEM_GVol_SizeZ / 2;
     // ce_GEM_GVol_PosZ= -Solenoid_SizeZ/2+abs(World_ShiftVTX)- ce_GEM_GVol_SizeZ +5*cm;  // --- need to find out why this 5 cm are needed
     ce_GEM_GVol_Solid = new G4Tubs("ce_GEM_GVol_Solid", ce_GEM_GVol_RIn, ce_GEM_GVol_ROut, ce_GEM_GVol_SizeZ / 2., 0., 360 * deg);
 
@@ -1061,7 +1066,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
                 sprintf(abname, "ce_EMCAL_detPWO_Phys_%d", k);
                 new G4PVPlacement(0, G4ThreeVector(-x_C, -y_C,  ce_EMCAL_detPWO_PosZ), abname, ce_EMCAL_detPWO_Logic,
                                   ce_EMCAL_GVol_Phys, false, k);
-                 printf("ce_EMCAL_detPWO::k=%d  j=%d i =%d x=%f, y=%f  R=%f ce_EMCAL_detPWO_InnerR=%f \n ",k, j,i, x_C,y_C, R, ce_EMCAL_detPWO_InnerR);
+               //  printf("ce_EMCAL_detPWO::k=%d  j=%d i =%d x=%f, y=%f  R=%f ce_EMCAL_detPWO_InnerR=%f \n ",k, j,i, x_C,y_C, R, ce_EMCAL_detPWO_InnerR);
 
           }
             x_C += ce_EMCAL_detPWO_Width + ce_EMCAL_detPWO_Gap;
@@ -1112,7 +1117,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 
 
             if (R <  ce_EMCAL_GVol_ROut  - ce_EMCAL_detGLASS_Width + ce_EMCAL_detGLASS_Gap && R > ce_EMCAL_detGLASS_InnerR) {
-                printf("ce_EMCAL_detGLASS::GLASS k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ",k, j,i, x_C,y_C, R, ce_EMCAL_detPWO_InnerR);
+               // printf("ce_EMCAL_detGLASS::GLASS k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ",k, j,i, x_C,y_C, R, ce_EMCAL_detPWO_InnerR);
 
 
                 k++;
@@ -1354,184 +1359,6 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 #endif
 
 
-//===================================================================================
-#ifdef  USE_CB_VTX_LADDERS
-    //--------------------------------------------------
-    //----------vtx barrel ladder geometry--------------
-    //--------------------------------------------------
-//===================================================================================
-
-    G4RotationMatrix rm[10][40];
-   // deltaphi1 = 0;
-    cb_VTX_ladder_deltaphi = 30. * deg;
-    cb_VTX_ladder_deltashi = -7. * deg;
-    G4double x, y, z;
-     z = 0 * cm;
-    //phi=26.*deg; x=0; y=0; z=fAbsorberZ;
-    //phi=0.*deg; x=0; y=0; z=fAbsorberZ;
-
-    int FDIV = 0;
-    double dR;
-    double myL;
-    double phi=0;
-
-    cb_VTX_ladder_Material = fMat->GetMaterial("Si");
-
-    std::vector <cb_VTX_ladder_LayParam> Lays;
-    cb_VTX_ladder_LayParam Lay;
-    // Lay 0
-    Lay.Dx=0.050 * mm; Lay.Dy=2*cm; Lay.Dz=10*cm; Lay.Rin=3.5 * cm; Lays.push_back(Lay);
-    // Lay 1
-    Lay.Dx=0.050 * mm; Lay.Dy=2*cm; Lay.Dz=11*cm; Lay.Rin=4.5 * cm; Lays.push_back(Lay);
-    // Lay 2
-    Lay.Dx=0.050 * mm; Lay.Dy=4*cm; Lay.Dz=18*cm; Lay.Rin=6.5 * cm; Lays.push_back(Lay);
-    // Lay 3
-    Lay.Dx=0.050 * mm; Lay.Dy=4*cm; Lay.Dz=24*cm; Lay.Rin=10.5 * cm; Lays.push_back(Lay);
-    // Lay 4
-    Lay.Dx=0.050 * mm; Lay.Dy=4*cm; Lay.Dz=36*cm; Lay.Rin=13.5 * cm; Lays.push_back(Lay);
-    // Lay 5
-    Lay.Dx=0.050 * mm; Lay.Dy=4*cm; Lay.Dz=48*cm; Lay.Rin=15.5 * cm; Lays.push_back(Lay);
-
-    if( Lays.size()>10) {printf("Nlayers in VERTEX >10 !!! \n"); exit(1); }
-
-    for (int lay = 0; lay < Lays.size(); lay++) {
-
-      printf("cb_VTX_ladder:: Layer loop:: %d\n", lay);
-      cb_VTX_ladder_DZ = Lays[lay].Dz;
-      cb_VTX_ladder_DY = Lays[lay].Dy;
-      cb_VTX_ladder_Thickness = Lays[lay].Dx;
-      dR =  Lays[lay].Rin;
-
-      myL = 2*3.1415*dR;
-      NUM = myL/cb_VTX_ladder_DY;
-
-      for(int i=0;i<2; i++){
-	double LN = cb_VTX_ladder_DY * NUM;
-	double LN1 = cb_VTX_ladder_DY * (NUM+1+i);
-	printf("cb_VTX_ladder:: LN= Orig NUM=%d\n",NUM);
-	if (LN/LN1>0.8) NUM=NUM+1;
-	printf("cb_VTX_ladder:: LN=%f, LN1=%f  delenie=%f NUM=%d \n",LN,LN1,LN/LN1,NUM);
-      }
-      cb_VTX_ladder_deltaphi = 2*3.1415926/NUM  ;
-
-
-      sprintf(abname, "cb_VTX_ladder_Solid_%d", lay);
-      cb_VTX_ladder_Solid[lay] = new G4Box(abname, cb_VTX_ladder_Thickness / 2.,   cb_VTX_ladder_DY / 2.,cb_VTX_ladder_DZ / 2.  );
-
-      sprintf(abname, "cb_VTX_ladder_Logic_%d", lay);
-      cb_VTX_ladder_Logic[lay] = new G4LogicalVolume(cb_VTX_ladder_Solid[lay], cb_VTX_ladder_Material,
-						      abname);
-
-
-      if (lay == 0 || lay == 1) { attr_cb_VTX_ladder = new G4VisAttributes(G4Color(0.0, 0.2, 0.8, 2.0)); }
-      else if (lay == 2) { attr_cb_VTX_ladder = new G4VisAttributes(G4Color(0.0, 0.2, 0.8, 0.7)); }
-      else {
-	  attr_cb_VTX_ladder = new G4VisAttributes(G4Color(0.0 + 0.1 * double(lay - 3), 1., 1. - 0.1 * double(lay - 3), 1.0));
-      }
-      attr_cb_VTX_ladder->SetForceSolid(true);
-      cb_VTX_ladder_Logic[lay]->SetVisAttributes(attr_cb_VTX_ladder);
-
-      if( NUM>40) {printf("cb_VTX_ladder:: Nladders in VERTEX >40 lay=%f !!! \n",lay); exit(1); }
-
-
-      for (int ia = 0; ia < NUM; ia++) {
-	//for (int ia=0;ia<1;ia++) {
-	printf("cb_VTX_ladder:: lay=%d  NUM=%d, dR=%f cb_VTX_ladder_deltaphi=%f %f \n",lay, NUM,  dR, cb_VTX_ladder_deltaphi,cb_VTX_ladder_deltashi);
-	printf("cb_VTX_ladder:: Module  loop:: %d\n", ia);
-
-	phi = (ia * (cb_VTX_ladder_deltaphi));
-	x = - dR * cos(phi) ;
-	y = - dR * sin(phi) ;
-	rm[lay][ia].rotateZ(cb_VTX_ladder_deltaphi * ia);
-	rm[lay][ia].rotateZ(cb_VTX_ladder_deltashi);
-
-	printf("cb_VTX_ladder::  %d %d x=%f  y=%f  \n", lay, ia, x, y);
-	sprintf(abname, "cb_VTX_ladder_Phys_%d_%d", lay, ia);
-	cb_VTX_ladder_Phys[lay] = new G4PVPlacement(G4Transform3D(rm[lay][ia], G4ThreeVector(x, y, z)),
-					     abname, cb_VTX_ladder_Logic[lay],
-					     cb_VTX_GVol_Phys, false, 0.);
-      }
-      //-------------------------------------------------------------------------
-      //                          VTX  slices and pixels
-      //-------------------------------------------------------------------------
-      G4Box *pxdBox_slice[10];
-      G4Box *pxdBox_pixel[10];
-      G4double PixelDX, PixelDY;
-      if (lay < 2) {
-	      PixelDX = cb_VTX_ladder_DZ / 10.; //2000.*um;
-	      PixelDY = cb_VTX_ladder_DY / 50.; //2000.*um;
-      } else {
-	      PixelDX = cb_VTX_ladder_DZ / 50.; //2000.*um;
-	      PixelDY = cb_VTX_ladder_DY / 10.; //2000.*um;
-
-      }
-      //G4double PixelDX=20.*um;
-      //G4double PixelDY=20.*um;
-      //G4double PixelDX=24.*um;
-      //G4double PixelDY=24.*um;
-      G4double PixelDZ = cb_VTX_ladder_Thickness; // 0.450*mm
-
-        if (FDIV >= 1) {
-	  printf("cb_VTX_ladder_pxdSlice_:: construct slices %d \n", lay);
-
-	  sprintf(abname, "cb_VTX_ladder_pxdSlice_%d", lay);
-	  pxdBox_slice[lay] = new G4Box(abname,
-					PixelDX / 2,                   //gD->GetPixelDX(),
-					cb_VTX_ladder_DY / 2., // 10.*mm,  //gD->GetHalfMPXWaferDY(),
-					cb_VTX_ladder_Thickness / 2.);    //gD->GetHalfMPXWaferDZ());
-
-	  pxdSlice_log[lay] = new G4LogicalVolume(pxdBox_slice[lay], fAbsorberMaterial, abname, 0, 0, 0);
-
-	  G4VisAttributes *pixelVisAtt = new G4VisAttributes(G4Color(0, 1, 1, 1));
-	  pixelVisAtt->SetLineWidth(1);
-	  pixelVisAtt->SetForceWireframe(true);
-	  pxdSlice_log[lay]->SetVisAttributes(pixelVisAtt);
-
-
-	  // divide in slices
-	  sprintf(abname, "pxdSlice_%d", lay);
-	  G4PVDivision *sliceDiv = new G4PVDivision(abname,
-						    pxdSlice_log[lay],
-						    cb_VTX_ladder_Logic[lay],
-						    kXAxis,
-						    PixelDX,
-                                                      0);
-	  printf("SetUpVertex16():: construct done\n");
-
-
-	  if (FDIV >= 2) {
-	    printf("SetUpVertex16():: construct pixels \n");
-	    if (lay < 2) { sprintf(abname, "pxdPixel"); }
-	    else {
-	      sprintf(abname, "svdPixel");
-	    }
-
-	    //sprintf(abname,"pxdPixel_%d",lay);
-	    pxdBox_pixel[lay] = new G4Box(abname,
-					  PixelDX / 2,
-					  PixelDY / 2.,
-					  PixelDZ / 2.);
-	    pxdPixel_log[lay] = new G4LogicalVolume(pxdBox_pixel[lay], fAbsorberMaterial, abname, 0, 0, 0);
-	    pxdPixel_log[lay]->SetVisAttributes(pixelVisAtt);
-
-	    // divide in pixels
-	    G4PVDivision *pixelDiv = new G4PVDivision(abname,
-						      pxdPixel_log[lay],
-						      pxdSlice_log[lay],
-						      kYAxis,
-						      PixelDY,
-						      0);
-	  } //-- end if pixel division
-        } //-- end if slices division
-
-        //	 };  // -- end loop over modules
-
-    }; // --- end loop over layers
-
-#endif
-
-
-
     /*--------------------------------------------------*/
     /*-----------VTX  End caps ladder geometry----------*/
     /*--------------------------------------------------*/
@@ -1679,201 +1506,11 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 
     //-----------------------------------------------------------------------
 
-
-
-
 #endif
 
     printf(" end of VERTEX volume \n");
 
-//============================   end VERTEX    =====================
 
-
-//===================================================================================
-//                           cb_CTD_Si  detector
-//===================================================================================
-#ifdef USE_CB_CTD_Si
-
-    cb_CTD_detSi_SizeZ = cb_CTD_GVol_SizeZ;
-    cb_CTD_detSi_Steps = 5.;
-    cb_CTD_detSi_Layers = 15;
-    cb_CTD_detSi_Material = fMat->GetMaterial("Si");
-    // ------- layers of Si in CTD
-    for (int ia = 0; ia < cb_CTD_detSi_Layers; ia++) {
-        cb_CTD_detSi_lay_Rin[ia] = cb_CTD_GVol_RIn + (cb_CTD_detSi_Steps * ia) * cm;
-        cb_CTD_detSi_lay_Rout[ia] = cb_CTD_GVol_RIn + (0.01 + cb_CTD_detSi_Steps * ia) * cm;
-	if(   cb_CTD_detSi_lay_Rout[ia] >  cb_CTD_GVol_ROut ) continue; 
-        printf("cb_CTD_detSi %d  Rout=%f \n", ia, cb_CTD_detSi_lay_Rout[ia]);
-
-        sprintf(abname, "cb_CTD_detSi_Solid_lay_%d", ia);
-        cb_CTD_detSi_Solid[ia] = new G4Tubs(abname, cb_CTD_detSi_lay_Rin[ia], cb_CTD_detSi_lay_Rout[ia], cb_CTD_detSi_SizeZ / 2., 0.,
-                                             360 * deg);
-
-        sprintf(abname, "cb_CTD_detSi_Logic_lay_%d", ia);
-        cb_CTD_detSi_Logic[ia] = new G4LogicalVolume(cb_CTD_detSi_Solid[ia],
-                                                      cb_CTD_detSi_Material, abname);
-
-        //   attr_cb_CTD_det    = new G4VisAttributes(G4Color(1,0,1,0.2));
-        attr_cb_CTD_det= new G4VisAttributes(G4Color(1.0 - 0.1 * ia, 1.0, 0.0 + 0.1 * ia, 1));
-        attr_cb_CTD_det->SetLineWidth(1);
-        attr_cb_CTD_det->SetForceSolid(true);
-        cb_CTD_detSi_Logic[ia]->SetVisAttributes(attr_cb_CTD_det);
-
-        sprintf(abname, "cb_CTD_detSi_Phys_lay_%d", ia);
-        cb_CTD_detSi_Phys[ia] = new G4PVPlacement(0, G4ThreeVector(),
-                                                      abname, cb_CTD_detSi_Logic[ia],
-                                                      cb_CTD_GVol_Phys, false, 0.);
-
-        if (cb_CTD_detSi_Logic[ia]) cb_CTD_detSi_Logic[ia]->SetSensitiveDetector(fCalorimeterSD);
-    }
-
-
-#endif
-//===================================================================================
-//                               cb_CTD_Straw detector
-//===================================================================================
-#ifdef USE_cb_CTD_Straw
-                                                                                                                            printf("begin STRAW volume \n");
- int NUMFs[100];
- G4double Stheta,Sphi,phi_s, Sx, Sy, Sz;;
- G4RotationMatrix rm1s;
- G4double  RxF_Straw[100],RyF_Straw[100],RzF_Straw[100];
-
-    G4VisAttributes* vstr2[100];
-
- cb_CTD_detStraw_SizeZ=300*cm;
- cb_CTD_detStraw_Layers=10;
-
- cb_CTD_detStraw_Material=Air;
-
- cb_CTD_Straws_RIn=0.3 *cm;
- cb_CTD_Straws_ROut=0.31 *cm;
-
- sprintf(abname,"cb_CTD_Straws_Solid");
- cb_CTD_Straws_Solid = new  G4Tubs(abname,0., cb_CTD_Straws_ROut,cb_CTD_detStraw_SizeZ/2.,0.,360*deg);
-
- sprintf(abname,"cb_CTD_Straws_Logic");
- cb_CTD_Straws_Logic = new G4LogicalVolume(cb_CTD_Straws_Solid,
-						   cb_CTD_detStraw_Material, abname);
- attr_cb_CTD_Straws= new G4VisAttributes(G4Color(0.5,0.5,0.5,1.));
- attr_cb_CTD_Straws->SetLineWidth(1); attr_cb_CTD_Straws->SetForceSolid(true);
- cb_CTD_Straws_Logic->SetVisAttributes(attr_cb_CTD_Straws);
-
- //-----Walls
- cb_CTD_Straws_Wall_Material=fMat->GetMaterial("Mylar");
- sprintf(abname,"cb_CTD_Straws_Wall_Solid");
- cb_CTD_Straws_Wall_Solid = new  G4Tubs(abname,0., cb_CTD_Straws_ROut,cb_CTD_detStraw_SizeZ/2.,0.,360*deg);
-
- sprintf(abname,"cb_CTD_Straws_Wall_Logic");
- cb_CTD_Straws_Wall_Logic = new G4LogicalVolume(cb_CTD_Straws_Wall_Solid,
-						   cb_CTD_Straws_Wall_Material, abname);
-sprintf(abname,"cb_CTD_Straws_Wall_Phys");
- cb_CTD_Straws_Wall_Phys = new G4PVPlacement(0, G4ThreeVector(0,0,0),
-                                                  cb_CTD_Straws_Wall_Logic, abname,
-                                                  cb_CTD_Straws_Logic, false,   0 );
- //-----Gas
- cb_CTD_Straws_Gas_Material=fMat->GetMaterial("Ar10CO2");
- sprintf(abname,"cb_CTD_Straws_Gas_Solid");
- cb_CTD_Straws_Gas_Solid = new  G4Tubs(abname,0., cb_CTD_Straws_RIn,cb_CTD_detStraw_SizeZ/2.,0.,360*deg);
-
- sprintf(abname,"cb_CTD_Straws_Gas_Logic");
- cb_CTD_Straws_Gas_Logic = new G4LogicalVolume(cb_CTD_Straws_Gas_Solid,
-						   cb_CTD_Straws_Gas_Material, abname);
-
-    attr_cb_CTD_Straws_Gas= new G4VisAttributes(G4Color(1.,0.5,0.,1.));
-    attr_cb_CTD_Straws_Gas->SetLineWidth(1); attr_cb_CTD_Straws_Gas->SetForceSolid(true);
-    cb_CTD_Straws_Gas_Logic->SetVisAttributes(attr_cb_CTD_Straws_Gas);
-
- sprintf(abname,"cb_CTD_Straws_Gas_Phys");
- cb_CTD_Straws_Gas_Phys = new G4PVPlacement(0, G4ThreeVector(0,0,0),
-                                                  cb_CTD_Straws_Gas_Logic, abname,
-                                                  cb_CTD_Straws_Wall_Logic, false,   0 );
-
-    if (cb_CTD_Straws_Gas_Logic)  cb_CTD_Straws_Gas_Logic->SetSensitiveDetector(fCalorimeterSD);
-
-
-       // ------- layers of Straw in CTD
-    int counter=0;
-    int mystr=-1;
-    for (int lay=0;lay<cb_CTD_detStraw_Layers;lay++) {
-
- 	//	RxF_Straw[lay]=cb_CTD_GVol_RIn;
-	//     printf("Straw X=%f\n",	RxF_Straw[lay]);
-       RxF_Straw[lay]=cb_CTD_GVol_RIn+5.+(cb_CTD_Straws_ROut*2*lay)+lay*cb_CTD_Straws_ROut; // position of first layer
-	RyF_Straw[lay]=RxF_Straw[lay]+cb_CTD_Straws_ROut/2;
-	RzF_Straw[lay]=0*cm;
-
-	// cb_CTD_Straws_ROut[lay]=cb_CTD_GVol_RIn+(0.01+cb_CTD_detStraw_Steps*lay)*cm;
-	//	if(lay==0) NUMFs[lay]=213;
-	//	if(lay==1) NUMFs[lay]=213;
-	NUMFs[lay]=213;
-        int j=2*3.1415*RxF_Straw[lay]/2/cb_CTD_Straws_ROut+1;
-        printf("NLAY=%d %d %f\n",lay, j ,2*3.1415*RxF_Straw[lay]/2/cb_CTD_Straws_ROut);
-	NUMFs[lay]=j;
-
-
-	Sphi= (cb_CTD_Straws_ROut*2/RxF_Straw[lay]);
-	Stheta=0*deg;
-
-	for (int ia=0;ia<NUMFs[lay];ia++) {
-
-          phi_s=(ia*(Sphi));
-	  Sx=- RxF_Straw[lay]*cos(phi_s);
-	  Sy=- RyF_Straw[lay]*sin(phi_s);
-	  Sz= 2*RzF_Straw[lay];
-	   rm1s.rotateX(Stheta);
-	   rm1s.rotateZ(0+(Sphi*(ia+1)));
-	   mystr++;
-	   printf("cb_CTD_Straws %d %d X=%f (%f,%f,%f \n", counter,	mystr, RxF_Straw[lay],Sx,Sy,Sz);
-
-
-	  //       G4VisAttributes* vstr= new G4VisAttributes(G4Color(1,0,1,0.2));
-
-	  //sprintf(abname,"Barrel_CTD_Straw_layer_%d_str_%d",lay,ia);
-	  sprintf(abname,"cb_CTD_Straws_Phys");
-	  cb_CTD_Straws_Phys = new G4PVPlacement(G4Transform3D(rm1s,G4ThreeVector(Sx,Sy,Sz)),
-						       abname,
-						       cb_CTD_Straws_Logic,
-						       cb_CTD_GVol_Phys,
-						       false,
-						       counter);
-	  counter++;
-	  /* ------------------------------------------------
-	    G4PVPlacement(  G4RotationMatrix*       pRot,
-	                    const G4ThreeVector&    tlate,
-	                    G4LogicalVolume*        pCurrentLogical,
-	                    const G4String&         pName,
-	                    G4LogicalVolume*   pMotherLogical,
-	                    G4bool             pMany,
-	                    G4int              pCopyNo,
-	                    G4bool             pSurfChk=false );
-	    -------------------------------------------------
-	    physiHoleSF = new G4PVPlacement(
-	                 rm3,
-	                 G4ThreeVector(x,y,z),
-	                 logicHoleSF,
-	                 "HoleSF",
-	                 logicZnScomp,
-	                 false,
-	                 counter);
-	    counter++;
-	    ------------------------------------------------
-	  */
-
- 	}
-	//      vstr2[lay]= new G4VisAttributes(G4Color(1.0-0.01*lay, 1.0, 0.0+0.01*lay,1));
-	//       G4VisAttributes *vtpc = new G4VisAttributes(G4Color(1.0 - 0.1 * ia, 1.0, 0.0 + 0.1 * ia, 1));
-	//
-        attr_cb_CTD_Straws = new G4VisAttributes(G4Color(1.0-0.01*lay, 1.0, 0.0+0.01*lay,1));
-        attr_cb_CTD_Straws->SetLineWidth(1); attr_cb_CTD_Straws->SetForceSolid(true);
-	    cb_CTD_Straws_Logic->SetVisAttributes(attr_cb_CTD_Straws);
-       }
-
-
-    printf("cb_CTD_Straws   number of Straws =%d\n",counter );
-
-
-#endif
 
 
 #ifdef USE_GEMb
@@ -1978,10 +1615,10 @@ sprintf(abname,"cb_CTD_Straws_Wall_Phys");
       cb_DIRC_bars_DY = 42. *cm;
       cb_DIRC_bars_DX = 1.7 *cm;
       //   dR =  cb_DIRC_GVol_RIn+3.*cm;
-      dR = 83.65*cm;
+      double dR = 83.65*cm;
 
-      myL = 2*3.1415*dR;
-      NUM = myL/cb_DIRC_bars_DY;
+      double myL = 2*3.1415*dR;
+      int NUM = myL/cb_DIRC_bars_DY;
 
       /*     for(int i=0;i<2; i++){ 
 	double LN = cb_DIRC_bars_DY * NUM;
@@ -2010,15 +1647,15 @@ sprintf(abname,"cb_CTD_Straws_Wall_Phys");
 	//for (int ia=0;ia<1;ia++) {
 	printf("cb_DIRC_bars:: la =%d NUM=%d, dR=%f cb_DIRC_bars_deltaphi=%f  \n", ia, NUM,  dR, cb_DIRC_bars_deltaphi);
 	
-	phi = (ia * (cb_DIRC_bars_deltaphi));
-	x = - dR * cos(phi) ;
-	y = - dR * sin(phi) ;
+	double phi = (ia * (cb_DIRC_bars_deltaphi));
+	double x = - dR * cos(phi) ;
+	double y = - dR * sin(phi) ;
 	rm_dirc[ia].rotateZ(cb_DIRC_bars_deltaphi * ia);
 	//	rm[lay][ia].rotateZ(cb_DIRC_bars_deltashi);
 
 	printf("cb_DIRC_bars::   %d x=%f  y=%f  \n",  ia, x, y);
 	sprintf(abname, "cb_DIRC_bars_Phys_%d", ia);
-		cb_DIRC_bars_Phys = new G4PVPlacement(G4Transform3D(rm_dirc[ia], G4ThreeVector(x, y, z)),
+		cb_DIRC_bars_Phys = new G4PVPlacement(G4Transform3D(rm_dirc[ia], G4ThreeVector(x, y, 0)),
 						     abname, cb_DIRC_bars_Logic,
 						      //	      Solenoid_Phys, false, 0.);
        				     cb_DIRC_GVol_Phys, false, 0.);
@@ -2269,7 +1906,7 @@ sprintf(abname,"cb_CTD_Straws_Wall_Phys");
     k = -1;
 
     //    z = fi_D1B_GVol_SizeZ / 2 - fi_D1B_EMCAL_SizeZ / 2;
-    z = ci_HCAL_GVol_SizeZ/ 2 - fi_D1B_EMCAL_SizeZ / 2;
+    double z = ci_HCAL_GVol_SizeZ/ 2 - fi_D1B_EMCAL_SizeZ / 2;
 //============  For sectors =====
     for (j = 0; j < 50; j++) {
         y_C -= fi_D1B_EMCAL_Width + fi_D1B_EMCAL_Gap;

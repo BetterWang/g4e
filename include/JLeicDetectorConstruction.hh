@@ -63,6 +63,10 @@
 
 // Central Barrel - Vertex
 #include "detectors/cb_VTX/cb_VTX.hh"
+// Central Barrel - Tracker
+#include "detectors/cb_CTD/cb_CTD.hh"
+// Central Barrel - EMCAL
+#include "detectors/cb_EMCAL/cb_EMCAL.hh"
 
 class JLeicCalorimeterSD;
 
@@ -209,6 +213,8 @@ private:
     void TestOld();
 
     void Create_cb_VTX(JLeicDetectorParameters& parameters);
+    void Create_cb_CTD(JLeicDetectorParameters& parameters);
+    void Create_cb_EMCAL(JLeicDetectorParameters& parameters);
 
 private:
 
@@ -217,7 +223,30 @@ private:
 
 
     JLeicDetectorParameters fParameters;
+
+    // Central Barrel Vertex cb_VTX
+    G4Tubs *cb_VTX_GVol_Solid;            //solid VTX volume
+    G4LogicalVolume *cb_VTX_GVol_Logic;   //logical VTX volume
+    G4VPhysicalVolume *cb_VTX_GVol_Phys;  //physical VTX volume
+
     CentralBarrelVertex cb_VTX_Design;
+
+    // Central Barrel Tracker cb_CTD
+    G4Tubs *cb_CTD_GVol_Solid;             //solid CTD  volume
+    G4LogicalVolume *cb_CTD_GVol_Logic;    //logical CTD  volume
+    G4VPhysicalVolume *cb_CTD_GVol_Phys;   //physical CTD  volume
+
+    CentralBarrelTracker cb_CTD_Design;
+
+    // Central Barrel EMCAL cb_EMCAL
+    // G4Tubs*            cb_EMCAL_GVol_Solid;    //pointer to the solid  EMCAL barrel volume
+    G4Polycone *cb_EMCAL_GVol_Solid;    //pointer to the solid  EMCAL barrel volume
+    G4LogicalVolume *cb_EMCAL_GVol_Logic;    //pointer to the logical EMCAL barrel volume
+    G4VPhysicalVolume *cb_EMCAL_GVol_Phys;    //pointer to the physical EMCAL barrel volume
+
+    CentralBarrelEMCAL cb_EMCAL_Design;
+
+
 // ----------------------------------------------
 
 
@@ -255,7 +284,7 @@ private:
     //--------------Solenoid BARREL  -------------------
     G4double Solenoid_RIn;
     G4double Solenoid_ROut;
-    G4double Solenoid_SizeZ;
+  //  G4double Solenoid_SizeZ;
     G4double Solenoid_Field_Strength;
     G4double Solenoid_AlphaB;
     G4VisAttributes *attr_Solenoid;
@@ -298,53 +327,12 @@ private:
     // =========================================================================
 
     //*************************************************************
-    //----------------VTX volume -------------------
-
-    G4Tubs *cb_VTX_GVol_Solid;    //pointer to the solid VTX volume
-    G4LogicalVolume *cb_VTX_GVol_Logic;    //pointer to the logical VTX volume
-    G4VPhysicalVolume *cb_VTX_GVol_Phys;    //pointer to the physical VTX volume
-    //--------------- VTX ladders geom-------
-     G4Box *cb_VTX_ladder_Solid[10]; //pointer to the solid Absorber
-    G4LogicalVolume *cb_VTX_ladder_Logic[10]; //pointer to the logical Absorber
-     G4VPhysicalVolume *cb_VTX_ladder_Phys[10]; //pointer to the logical Absorber
-
-    G4double cb_VTX_ladder_DZ ;
-    G4double cb_VTX_ladder_DY ;
-    G4double cb_VTX_ladder_Thickness;
-
-
-
-    //===================================================================================
-
-    //-- slices and pixels
-
-    G4LogicalVolume *pxdSlice_log[10]; //pointer to the logical slice
-    G4LogicalVolume *pxdPixel_log[10]; //pointer to the logical pixel
 
 
     //*************************************************************
     //----------------CTD  volume -------------------
-    G4double cb_CTD_GVol_RIn;
-    G4double cb_CTD_GVol_ROut;
-    G4double cb_CTD_GVol_SizeZ;
-    G4Tubs *cb_CTD_GVol_Solid;    //pointer to the solid CTD  volume
-    G4LogicalVolume *cb_CTD_GVol_Logic;    //pointer to the logical CTD  volume
-    G4VPhysicalVolume *cb_CTD_GVol_Phys;    //pointer to the physical CTD  volume
-
-//-------------------CTD_Si barrel detector ------------------
-    G4double cb_CTD_detSi_RIn;
-    G4double cb_CTD_detSi_ROut;
-    G4double cb_CTD_detSi_SizeZ;
-    G4double cb_CTD_detSi_Steps;
-    G4int cb_CTD_detSi_Layers;
-    G4Material *cb_CTD_detSi_Material;
-    G4VisAttributes *attr_cb_CTD_det;
-    G4double cb_CTD_detSi_lay_Rin[100];
-    G4double cb_CTD_detSi_lay_Rout[100];
-    G4Tubs *cb_CTD_detSi_Solid[100];    //pointer to the solid World
-    G4LogicalVolume *cb_CTD_detSi_Logic[100];    //pointer to the logical World
-    G4VPhysicalVolume *cb_CTD_detSi_Phys[100];    //pointer to the physical World
-    //-------------------CTD_Straw barrel detector ------------------
+ //-------------------CTD_Si barrel detector ------------------
+     //-------------------CTD_Straw barrel detector ------------------
     G4double cb_CTD_detStraw_RIn;
     G4double cb_CTD_detStraw_ROut;
     G4double cb_CTD_detStraw_SizeZ;
@@ -394,26 +382,6 @@ private:
     G4LogicalVolume *cb_DIRC_bars_Logic;    //pointer to the logical World
     G4VPhysicalVolume *cb_DIRC_bars_Phys;    //pointer to the physical World
    //*************************************************************
-    //-----------------EMCAL barrel volume--------------------
-    G4double cb_EMCAL_GVol_RIn;
-    G4double cb_EMCAL_GVol_ROut;
-    G4double cb_EMCAL_GVol_Thickness;
-    G4double cb_EMCAL_GVol_SizeZ;
-    // G4Tubs*            cb_EMCAL_GVol_Solid;    //pointer to the solid  EMCAL barrel volume
-    G4Polycone *cb_EMCAL_GVol_Solid;    //pointer to the solid  EMCAL barrel volume
-    G4LogicalVolume *cb_EMCAL_GVol_Logic;    //pointer to the logical EMCAL barrel volume
-    G4VPhysicalVolume *cb_EMCAL_GVol_Phys;    //pointer to the physical EMCAL barrel volume
-
-    //--------------EMCAL barrel detector----------------------
-
-    G4double cb_EMCAL_det_RIn;
-    G4double cb_EMCAL_det_ROut;
-    G4double cb_EMCAL_det_SizeZ;
-    G4Material *cb_EMCAL_det_Material;
-    // G4Tubs*            cb_EMCAL_det_Solid;    //pointer to the solid World
-    G4Polycone *cb_EMCAL_det_Solid;    //pointer to the solid World
-    G4LogicalVolume *cb_EMCAL_det_Logic;    //pointer to the logical World
-    G4VPhysicalVolume *cb_EMCAL_det_Phys;    //pointer to the physical World
 
     //*************************************************************
     //--------------HCAL barrel volume  -------------------

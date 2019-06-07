@@ -22,43 +22,30 @@ public:
 
     }
 
-    inline void Create(JLeicDetectorParameters& jleicParams, G4VPhysicalVolume *physicalVolume) {
+    inline void Create(JLeicDetectorParameters& jleicParams,
+            G4VPhysicalVolume *physicalVolume,
+            G4LogicalVolume *logicalVolume
+            ) {
         static char abname[256];
 
         auto p = jleicParams.cb_EMCAL;
-
         //........................EMCAL Barrel detector----------------------------------------------
 
+        // Setting material
         cb_EMCAL_det_Material = fMat->GetMaterial("PbWO4");
-        // fSolidEMCAL = new G4Tubs("EMCALbSol",  cb_EMCAL_GVol_RIn,cb_EMCAL_GVol_ROut,cb_EMCAL_GVol_SizeZ/2.,0.,360*deg);
-        cb_EMCAL_det_Solid = new G4Polycone("cb_EMCAL_det_Solid", 0. * deg, 360. * deg, 4, p.GVol_ConeZ, p.GVol_ConeRIn,
-                                            p.GVol_ConeROut);
+        logicalVolume->SetMaterial(cb_EMCAL_det_Material);
 
-        cb_EMCAL_det_Logic = new G4LogicalVolume(cb_EMCAL_det_Solid, cb_EMCAL_det_Material, "cb_EMCAL_det_Logic");
-
-        // G4VisAttributes* attr_cb_EMCAL= new G4VisAttributes(G4Color(0.3,0.5,0.9,0.9));
-        //  G4VisAttributes* attr_cb_EMCAL= new G4VisAttributes(G4Color(0.7,0.7,0.7,1.));
-        attr_cb_EMCAL->SetLineWidth(1);
-        attr_cb_EMCAL->SetForceSolid(true);
-        cb_EMCAL_det_Logic->SetVisAttributes(attr_cb_EMCAL);
-
+        // Visualising it differently
+        auto visualAttributes = new G4VisAttributes(G4Color(0.3, 0.5, 0.9, 1.));
+        visualAttributes->SetLineWidth(1);
+        visualAttributes->SetForceSolid(true);
+        logicalVolume->SetVisAttributes(visualAttributes);
         //    fPhysicsEMCAL = new G4PVPlacement(0, G4ThreeVector(0,0,-40*cm), "EMCALbSolPhys",fLogicEMCAL,
         //                               cb_EMCAL_GVol_Phys, false,     0 );
 
-        cb_EMCAL_det_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), "cb_EMCAL_det_Phys", cb_EMCAL_det_Logic,
-                                              physicalVolume, false, 0);
-
-//...............................detector----------------------------------------------
-
-        //--------------EMCAL barrel detector----------------------
-
-
     }
 
-    inline void CreateLadders() {
-
-    }
-private:
+ private:
 
     JLeicMaterials *fMat;
     G4double cb_EMCAL_det_RIn;

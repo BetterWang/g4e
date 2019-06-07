@@ -244,6 +244,35 @@ void JLeicDetectorConstruction::Create_cb_CTD(JLeicDetectorParameters &p) {
     attr_cb_CTD->SetForceSolid(false);
     cb_CTD_GVol_Logic->SetVisAttributes(attr_cb_CTD);
 }
+//===================================================================================
+//==                          DIRC DETECTOR VOLUME                                  ==
+//===================================================================================
+
+void JLeicDetectorConstruction::Create_cb_DIRC(JLeicDetectorParameters &p) {
+    printf("Begin cb_DIRC  volume \n");
+
+     p.cb_DIRC.GVol_RIn = p.cb_CTD.GVol_ROut + 1 * cm;
+    // for new magnet
+    //   cb_DIRC_GVol_ROut = 95 * cm;
+    // for CLEO and BABAR DIRC
+    p.cb_DIRC.GVol_ROut = p.cb_DIRC.GVol_RIn + 10 * cm;
+    //   cb_DIRC_GVol_SizeZ = Solenoid_SizeZ;
+    p.cb_DIRC.GVol_SizeZ = p.cb_CTD.GVol_SizeZ;
+
+    cb_DIRC_GVol_Solid = new G4Tubs("cb_DIRC_GVol_Solid", p.cb_DIRC.GVol_RIn, p.cb_DIRC.GVol_ROut, p.cb_DIRC.GVol_SizeZ / 2.,
+                                    0., 360 * deg);
+    cb_DIRC_GVol_Logic = new G4LogicalVolume(cb_DIRC_GVol_Solid, World_Material, "cb_DIRC_GVol_Logic");
+    cb_DIRC_GVol_Phys = new G4PVPlacement(0, G4ThreeVector(), "DIRC", cb_DIRC_GVol_Logic,
+                                          Solenoid_Phys, false, 0);
+
+    // cb_DIRC_GVol_Logic->SetVisAttributes(G4VisAttributes::Invisible);
+    G4VisAttributes *attr_cb_DIRC = new G4VisAttributes(G4Color(0.1, 0, 1., 0.1));
+    attr_cb_DIRC->SetLineWidth(1);
+    attr_cb_DIRC->SetForceSolid(false);
+    cb_DIRC_GVol_Logic->SetVisAttributes(attr_cb_DIRC);
+
+//===================================================================================
+}
 
 //===================================================================================
 //==                          EMCAL DETECTOR VOLUME                                  ==
@@ -261,13 +290,14 @@ void JLeicDetectorConstruction::Create_cb_EMCAL(JLeicDetectorParameters &p) {
     //    G4double EMCALB_R_cone[4]={cb_EMCAL_GVol_RIn,  cb_EMCAL_GVol_ROut, cb_EMCAL_GVol_ROut, cb_EMCAL_GVol_RIn };
     //  G4double cb_EMCAL_GVol_ConeZ[4]={ -Solenoid_SizeZ/2, -Solenoid_SizeZ/2+60*cm, Solenoid_SizeZ/2-60*cm, Solenoid_SizeZ/2};
 
-    p.cb_EMCAL.GVol_ConeROut = {p.cb_EMCAL.GVol_ROut, p.cb_EMCAL.GVol_ROut, p.cb_EMCAL.GVol_ROut, p.cb_EMCAL.GVol_ROut};
-    p.cb_EMCAL.GVol_ConeRIn= {p.cb_EMCAL.GVol_ROut - 1. * cm, p.cb_EMCAL.GVol_RIn, p.cb_EMCAL.GVol_RIn, p.cb_EMCAL.GVol_ROut - 1. * cm};
-    p.cb_EMCAL.GVol_ConeZ = {-fParameters.Solenoid_SizeZ / 2, -fParameters.Solenoid_SizeZ / 2 + 30 * cm, fParameters.Solenoid_SizeZ / 2 - 30 * cm,
+
+    double coneROut[4] = {p.cb_EMCAL.GVol_ROut, p.cb_EMCAL.GVol_ROut, p.cb_EMCAL.GVol_ROut, p.cb_EMCAL.GVol_ROut};
+    double coneRIn[4] = {p.cb_EMCAL.GVol_ROut - 1. * cm, p.cb_EMCAL.GVol_RIn, p.cb_EMCAL.GVol_RIn, p.cb_EMCAL.GVol_ROut - 1. * cm};
+    double coneZ[4] = {-fParameters.Solenoid_SizeZ / 2, -fParameters.Solenoid_SizeZ / 2 + 30 * cm, fParameters.Solenoid_SizeZ / 2 - 30 * cm,
                                        fParameters.Solenoid_SizeZ / 2};
 
-    cb_EMCAL_GVol_Solid = new G4Polycone("cb_EMCAL_GVol_Solid", 0. * deg, 360. * deg, 4, p.cb_EMCAL.GVol_ConeZ, p.cb_EMCAL.GVol_ConeRIn,
-                                         p.cb_EMCAL.GVol_ConeROut);
+    cb_EMCAL_GVol_Solid = new G4Polycone("cb_EMCAL_GVol_Solid", 0. * deg, 360. * deg, 4, coneZ, coneRIn,
+                                         coneROut);
     cb_EMCAL_GVol_Logic = new G4LogicalVolume(cb_EMCAL_GVol_Solid, World_Material, "cb_EMCAL_GVol_Logic");
     cb_EMCAL_GVol_Phys = new G4PVPlacement(0, G4ThreeVector(), "cb_EMCAL_GVol_Phys", cb_EMCAL_GVol_Logic,
                                            Solenoid_Phys, false, 0);
@@ -657,48 +687,15 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     //===================================================================================
 
 #ifdef  USE_CB_EMCAL
-
     Create_cb_EMCAL(fParameters);
-
-//    cb_CTD_Design.Create(fParameters, cb_CTD_GVol_Phys);
-
-
+    cb_EMCAL_Design.Create(fParameters, cb_EMCAL_GVol_Phys, cb_EMCAL_GVol_Logic);
 #endif  // end cb_EMCAL
-
-
-
-    //***********************************************************************************
-    //***********************************************************************************
-    //**                               BARREL VOLUMES                                  **
-    //***********************************************************************************
-    //***********************************************************************************
 
 #ifdef  USE_CB_DIRC
 
-    //===================================================================================
-    //==                          DIRC DETECTOR VOLUME                                  ==
-    //===================================================================================
-    cb_DIRC_GVol_RIn =  fParameters.cb_CTD.GVol_ROut +1 *cm;
-    // for new magnet  
-    //   cb_DIRC_GVol_ROut = 95 * cm;
-    // for CLEO and BABAR DIRC
-    cb_DIRC_GVol_ROut =  cb_DIRC_GVol_RIn + 10* cm;
-    //   cb_DIRC_GVol_SizeZ = Solenoid_SizeZ;
-    cb_DIRC_GVol_SizeZ =  fParameters.cb_CTD.GVol_SizeZ;
+    Create_cb_DIRC(fParameters);
 
-    cb_DIRC_GVol_Solid = new G4Tubs("cb_DIRC_GVol_Solid", cb_DIRC_GVol_RIn, cb_DIRC_GVol_ROut, cb_DIRC_GVol_SizeZ / 2., 0., 360 * deg);
-    cb_DIRC_GVol_Logic = new G4LogicalVolume(cb_DIRC_GVol_Solid, World_Material, "cb_DIRC_GVol_Logic");
-    cb_DIRC_GVol_Phys = new G4PVPlacement(0, G4ThreeVector(), "DIRC", cb_DIRC_GVol_Logic,
-                                    Solenoid_Phys, false, 0);
-
-    // cb_DIRC_GVol_Logic->SetVisAttributes(G4VisAttributes::Invisible);
-    G4VisAttributes *attr_cb_DIRC = new G4VisAttributes(G4Color(0.1, 0, 1., 0.1));
-    attr_cb_DIRC->SetLineWidth(1);
-    attr_cb_DIRC->SetForceSolid(false);
-    cb_DIRC_GVol_Logic->SetVisAttributes(attr_cb_DIRC);
-
-//===================================================================================
-#endif  // end DIRC
+    #endif  // end DIRC
 
 
 
@@ -1622,7 +1619,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 
  G4RotationMatrix rm_dirc[40];
       printf("CB_DIRC:: \n");
-      cb_DIRC_bars_DZ = cb_DIRC_GVol_SizeZ ;
+      cb_DIRC_bars_DZ = fParameters.cb_DIRC.GVol_SizeZ;
       cb_DIRC_bars_DY = 42. *cm;
       cb_DIRC_bars_DX = 1.7 *cm;
       //   dR =  cb_DIRC_GVol_RIn+3.*cm;

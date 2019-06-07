@@ -65,8 +65,10 @@
 #include "detectors/cb_VTX/cb_VTX.hh"
 // Central Barrel - Tracker
 #include "detectors/cb_CTD/cb_CTD.hh"
+#include "detectors/cb_DIRC/cb_DIRC.hh"
 // Central Barrel - EMCAL
 #include "detectors/cb_EMCAL/cb_EMCAL.hh"
+
 
 class JLeicCalorimeterSD;
 
@@ -214,6 +216,7 @@ private:
 
     void Create_cb_VTX(JLeicDetectorParameters& parameters);
     void Create_cb_CTD(JLeicDetectorParameters& parameters);
+    void Create_cb_DIRC(JLeicDetectorParameters& parameters);
     void Create_cb_EMCAL(JLeicDetectorParameters& parameters);
 
 private:
@@ -237,6 +240,16 @@ private:
     G4VPhysicalVolume *cb_CTD_GVol_Phys;   //physical CTD  volume
 
     CentralBarrelTracker cb_CTD_Design;
+
+    //----------------DIRC  volume -------------------
+    G4Tubs *cb_DIRC_GVol_Solid;    //pointer to the solid DIRC  volume
+    G4VisAttributes* attr_cb_DIRC_GVol;
+    G4LogicalVolume *cb_DIRC_GVol_Logic;    //pointer to the logical DIRC  volume
+    G4VPhysicalVolume *cb_DIRC_GVol_Phys;    //pointer to the physical DIRC  volume
+
+    CentralBarrelDIRC cb_DIRC_Design;
+
+
 
     // Central Barrel EMCAL cb_EMCAL
     // G4Tubs*            cb_EMCAL_GVol_Solid;    //pointer to the solid  EMCAL barrel volume
@@ -358,14 +371,6 @@ private:
     G4VPhysicalVolume *cb_CTD_Straws_Gas_Phys;    //pointer to the physical World
 
     //*************************************************************
-  //----------------DIRC  volume -------------------
-    G4double cb_DIRC_GVol_RIn;
-    G4double cb_DIRC_GVol_ROut;
-    G4double cb_DIRC_GVol_SizeZ;
-    G4Tubs *cb_DIRC_GVol_Solid;    //pointer to the solid DIRC  volume
-    G4VisAttributes* attr_cb_DIRC_GVol;
-    G4LogicalVolume *cb_DIRC_GVol_Logic;    //pointer to the logical DIRC  volume
-    G4VPhysicalVolume *cb_DIRC_GVol_Phys;    //pointer to the physical DIRC  volume
    //--------------DIRC bars detector----------------------
 
     G4double cb_DIRC_bars_RIn;

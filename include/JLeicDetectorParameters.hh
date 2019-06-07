@@ -42,10 +42,15 @@ struct JLeicDetectorParameters {
 
     } cb_CTD;
 
+    struct CentralBarrel_DIRC {
+
+        G4double GVol_RIn;
+        G4double GVol_ROut;
+        G4double GVol_SizeZ;
+
+    } cb_DIRC;
+
     struct CentralBarrel_EMCAL {
-        double GVol_ConeROut[4];
-        double GVol_ConeRIn[4];
-        double GVol_ConeZ[4];
         double GVol_RIn;
         double GVol_ROut;
         double GVol_ROutshift = 5*cm;

@@ -294,9 +294,8 @@ private:
     G4double World_SizeR;
     G4double World_SizeZ;
     G4double World_ShiftVTX;
+
     //--------------Solenoid BARREL  -------------------
-    G4double Solenoid_RIn;
-    G4double Solenoid_ROut;
   //  G4double Solenoid_SizeZ;
     G4double Solenoid_Field_Strength;
     G4double Solenoid_AlphaB;

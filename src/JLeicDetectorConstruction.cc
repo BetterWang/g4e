@@ -443,6 +443,8 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     Solenoid_Logic->SetVisAttributes(attr_Solenoid);
 
 #endif
+
+
     //===================================================================================
     //==                           HCAL  DETECTOR VOLUME  BARREL                       ==
     //===================================================================================

@@ -3,16 +3,31 @@
 cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
 project(g4e)
 
-#include(cmake/Modules/FindGeant4.cmake)
+include(cmake/print_functions.cmake)                 # Helpers to print fancy headers, file names, etc
+include(cmake/target_sources_local.cmake)            # Add relative source path independently of cmake version or policy
+set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules ${CMAKE_MODULE_PATH} )
 
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
 
-#----------------------------------------------------------------------------
-# Find Geant4 package, activating all available UI and Vis drivers by default
-# You can set WITH_GEANT4_UIVIS to OFF via the command line or ccmake/cmake-gui
-# to build a batch mode only executable
-#
+
+# -----------------------------------------------------------------
+print_grand_header("    F I N D   B A S I C   P A C K A G E S    ")
+# -----------------------------------------------------------------
+
+# Cern R O O T
+# ------------
+find_package(ROOT REQUIRED COMPONENTS Geom)
+if(${ROOT_VERSION} MATCHES "6.*")
+    message(STATUS "Found Cern.ROOT version: ${ROOT_VERSION}")
+else()
+    message(FATAL_ERROR "GenFit and other components require CERN.ROOT version > 6.00.00")
+endif()
+
+
+# G E A N T 4
+# -----------
+# Can set WITH_GEANT4_UIVIS to OFF via the command line or ccmake/cmake-gui
 option(WITH_GEANT4_UIVIS "Build example with Geant4 UI and Vis drivers" ON)
+
 if(WITH_GEANT4_UIVIS)
   find_package(Geant4 REQUIRED ui_all vis_all)
 else()
@@ -20,75 +35,77 @@ else()
 endif()
 message(STATUS "g4e: Geant4_DIR: ${Geant4_DIR}")
 
-set (CMAKE_CXX_STANDARD 11)
-
-#----------------------------------------------------------------------------
 # Setup Geant4 include directories and compile definitions
-#
 include(${Geant4_USE_FILE})
 
-##---- ROOT ---
+# >oO Debug:
+message(DEBUG "g4e: Geant4_LIBS  :${Geant4_LIBRARIES}" )
 
-Execute_process(
-    COMMAND root-config --cflags 
-    OUTPUT_VARIABLE rootflags
-    OUTPUT_STRIP_TRAILING_WHITESPACE)
 
-Execute_process(
-    COMMAND root-config --libs
-    OUTPUT_VARIABLE rootlibs
-    OUTPUT_STRIP_TRAILING_WHITESPACE)
+# V  G  M
+# --------
+# TODO move to FindVGM.cmake
 
-        EXECUTE_PROCESS(COMMAND root-config --cflags OUTPUT_VARIABLE ROOT_CXX_FLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${ROOT_CXX_FLAGS}")
-
-        EXECUTE_PROCESS(COMMAND root-config --libs OUTPUT_VARIABLE ROOT_LD_FLAGS OUTPUT_STRIP_TRAILING_WHITESPACE)
-        set(CMAKE_EXE_LINKER_FLAGS ${ROOT_LD_FLAGS})
-
-#----------------------------------------------------------------------------
-# Locate sources and headers for this project
-#
-
-if(EXISTS ${VGM_DIR})
-    message(STATUS "jleic-geant: cmake VGM_DIR provided: ${VGM_DIR}")
-elseif(EXISTS $ENV{VGM_DIR})
-    set(VGM_DIR $ENV{VGM_DIR})
-    message(STATUS "g4e: VGM_DIR set from environemnt ${VGM_DIR}")
+if(EXISTS ${VGM_DIRECTORY})
+    message(STATUS "jleic-geant: cmake VGM_DIRECTORY provided: ${VGM_DIRECTORY}")
+elseif(EXISTS $ENV{VGM_DIRECTORY})
+    set(VGM_DIRECTORY $ENV{VGM_DIRECTORY})
+    message(STATUS "g4e: VGM_DIRECTORY set from environemnt ${VGM_DIRECTORY}")
 else()
-    message(STATUS "g4e: No cmake VGM_DIR nor env:VGM_DIR provided")
+    message(STATUS "g4e: No cmake VGM_DIRECTORY nor env:VGM_DIRECTORY provided")
     message(STATUS "g4e: Build will try to locate VGMConfig.cmake or FindVGM.cmake")
 endif()
 
-find_library(VGM_Geant4GM NAMES Geant4GM HINTS ${VGM_DIR} PATH_SUFFIXES lib lib64)
-find_library(VGM_BaseVGM  NAMES BaseVGM  HINTS ${VGM_DIR} PATH_SUFFIXES lib lib64)
-find_library(VGM_RootGM   NAMES RootGM   HINTS ${VGM_DIR} PATH_SUFFIXES lib lib64)
-find_library(VGM_XmlVGM   NAMES XmlVGM   HINTS ${VGM_DIR} PATH_SUFFIXES lib lib64)
+find_library(VGM_Geant4GM NAMES Geant4GM HINTS ${VGM_DIRECTORY} PATH_SUFFIXES lib lib64)
+find_library(VGM_BaseVGM  NAMES BaseVGM  HINTS ${VGM_DIRECTORY} PATH_SUFFIXES lib lib64)
+find_library(VGM_RootGM   NAMES RootGM   HINTS ${VGM_DIRECTORY} PATH_SUFFIXES lib lib64)
+find_library(VGM_XmlVGM   NAMES XmlVGM   HINTS ${VGM_DIRECTORY} PATH_SUFFIXES lib lib64)
 
 message(STATUS "g4e: VGM_Geant4GM :${VGM_Geant4GM} ")
 message(STATUS "g4e: VGM_BaseVGM  :${VGM_BaseVGM}  ")
 message(STATUS "g4e: VGM_RootGM   :${VGM_RootGM}   ")
 message(STATUS "g4e: VGM_XmlVGM   :${VGM_XmlVGM}   ")
-message(STATUS "g4e: Geant4_LIBS  :${Geant4_LIBRARIES}" )
 
-IF(DEFINED ENV{HEPMC_DIR})
- SET(HEPMC_DIR $ENV{HEPMC_DIR})
-ELSE()
- set(HEPMC_DIR /home/yulia/EIC-soft/HepMC-2.06.09/install )
-ENDIF()
+find_library(CURL_LIBRARY
+        NAMES curl curllib libcurl_imp curllib_static
 
-#SET(HEPMC_INCLUDE_DIR  ${HEPMC_DIR}/include )
+        )
 
-find_package(HepMC REQUIRED)
+message("CURL_LIBRARY ${CURL_LIBRARY}")
+# H E P  M C
+# ----------
 
+find_package(HepMC REQUIRED)    # easy one =)
+
+message(STATUS "g4e: HEPMC_INCLUDE_DIR :${HEPMC_INCLUDE_DIR}")
+message(STATUS "g4e: HEPMC_INCLUDE_DIR :${HEPMC_INCLUDE_DIR}")
+message(STATUS "g4e: HEPMC_LIBRARY_DIR  :${HEPMC_LIBRARY_DIR}")
+message(STATUS "g4e: HEPMC_LIBRARIES  :${HEPMC_LIBRARIES}")
+
+
+# ---------------------------------------------------------------------
+print_grand_header("    G E N E R A L   C O N F I G U R A T I O N    ")
+# ---------------------------------------------------------------------
+
+# C++ standard to use (controlled with -DCPP_STANDARD flag)
+if(NOT DEFINED CMAKE_CXX_STANDARD)
+    SET(CMAKE_CXX_STANDARD 11)
+    message(STATUS "ejana: Setting default to ${CPP_STANDARD}")
+endif()
+message(STATUS "ejana: CMAKE_CXX_STANDARD: ${CMAKE_CXX_STANDARD}")
+
+# General include directories
 include_directories(
+        ${ROOT_INCLUDE_DIRS}
         ${PROJECT_SOURCE_DIR}/include
         ${PROJECT_SOURCE_DIR}/src/design
         ${Geant4_INCLUDE_DIR}
 		${HEPMC_INCLUDE_DIR}
-        ${VGM_DIR}/include
-        ${VGM_DIR}/test/include
+        ${VGM_DIRECTORY}/include
+        ${VGM_DIRECTORY}/test/include
 )
 
+# TODO this is terrible!
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 
@@ -110,6 +127,7 @@ target_link_libraries(g4e
         $ENV{ROOTSYS}/lib/libHist.so
         $ENV{ROOTSYS}/lib/libTree.so
         )
+
 #${HEPMC_FIO_LIBRARIES}
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we

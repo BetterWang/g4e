@@ -22,7 +22,7 @@
 # Geant4_LIBRARIES      Geant4 libraries to link against
 # GEANT4_LIBRARY_DIR    PATH to the library directory (used to find CLHEP in old Geant4 installation)
 
-#message(STATUS "Looking for GEANT4 ...")
+print_header(">>>>    G E A N T   4    <<<<")
 
 # Alternative paths which can be defined by user
 set(Geant4_DIR "" CACHE PATH "Directory where Geant4 is installed")

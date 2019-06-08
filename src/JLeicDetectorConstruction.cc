@@ -1788,7 +1788,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     fi_D1A_GVol_Logic->SetVisAttributes(attr_fi_D1A_GVol);
 
     // ---------------------------------------------------------------------------
-    //                     D1 tracking  detectors
+    //                     D1 tracking  all
     // ---------------------------------------------------------------------------
     fi_D1A_lay_RIn = 5 * cm;
     fi_D1A_lay_ROut = fi_D1A_GVol_ROut - 5 * cm;
@@ -1852,7 +1852,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     fi_D1B_GVol_Logic->SetVisAttributes(attr_fi_D1B_GVol);
 
     // ---------------------------------------------------------------------------
-    //                     Si detectors
+    //                     Si all
     // ---------------------------------------------------------------------------
     fi_D1B_lay_RIn = 5 * cm;
     fi_D1B_lay_ROut = fi_D1B_GVol_ROut - 1 * cm;
@@ -2006,7 +2006,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     ffi_D2_GVol_Logic->SetVisAttributes(attr_ffi_D2_GVol);
 
     // ---------------------------------------------------------------------------
-    //                     Tracking  detectors  D2
+    //                     Tracking  all  D2
      // ---------------------------------------------------------------------------
     ffi_D2_TRK_Lay_RIn = 0 * cm;
     ffi_D2_TRK_Lay_ROut = ffi_D2_GVol_ROut - 1 * cm;

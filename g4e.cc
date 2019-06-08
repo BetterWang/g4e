@@ -23,22 +23,15 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file electromagnetic/VertexEIC/VertexEIC.cc
-/// \brief Main program of the electromagnetic/VertexEIC example
-//
-//
-// $Id: VertexEIC.cc 73033 2013-08-15 09:24:45Z gcosmo $
-//
-//
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
 
 #include "G4RunManager.hh"
 #include "G4UImanager.hh"
 #include "Randomize.hh"
 
+#include "spdlog/spdlog.h"
+
 #include "JLeicDetectorConstruction.hh"
-// #include "ALICEDetectorConstruction.hh"
 #include "JLeicPhysicsList.hh"
 #include "JLeicPrimaryGeneratorAction.hh"
 #include "JLeicRunAction.hh"
@@ -78,8 +71,9 @@ int main(int argc, char **argv)
 
     using namespace clara;
 
-    ProgramArgConfig config;
+    spdlog::info("Initializing g4e, parsing arguments...");
 
+    ProgramArgConfig config;
     bool showHelp = false;
     auto parser = Help( showHelp )
             | Opt( config.ShowGui)

@@ -66,12 +66,6 @@ message(STATUS "g4e: VGM_BaseVGM  :${VGM_BaseVGM}  ")
 message(STATUS "g4e: VGM_RootGM   :${VGM_RootGM}   ")
 message(STATUS "g4e: VGM_XmlVGM   :${VGM_XmlVGM}   ")
 
-find_library(CURL_LIBRARY
-        NAMES curl curllib libcurl_imp curllib_static
-
-        )
-
-message("CURL_LIBRARY ${CURL_LIBRARY}")
 # H E P  M C
 # ----------
 
@@ -95,14 +89,18 @@ endif()
 message(STATUS "ejana: CMAKE_CXX_STANDARD: ${CMAKE_CXX_STANDARD}")
 
 # General include directories
+# TODO move to targets whatever is possible
 include_directories(
-        ${ROOT_INCLUDE_DIRS}
-        ${PROJECT_SOURCE_DIR}/include
-        ${PROJECT_SOURCE_DIR}/src/design
-        ${Geant4_INCLUDE_DIR}
-		${HEPMC_INCLUDE_DIR}
-        ${VGM_DIRECTORY}/include
-        ${VGM_DIRECTORY}/test/include
+        BEFORE
+            ${PROJECT_SOURCE_DIR}/include
+            ${PROJECT_SOURCE_DIR}/src/design
+        SYSTEM
+            ${ROOT_INCLUDE_DIRS}
+            ${PROJECT_SOURCE_DIR}/src/external/spdlog/include
+            ${Geant4_INCLUDE_DIR}
+            ${HEPMC_INCLUDE_DIR}
+            ${VGM_DIRECTORY}/include
+            ${VGM_DIRECTORY}/test/include
 )
 
 # TODO this is terrible!

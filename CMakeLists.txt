@@ -3,6 +3,10 @@
 cmake_minimum_required(VERSION 3.0 FATAL_ERROR)
 project(g4e)
 
+#include(cmake/Modules/FindGeant4.cmake)
+
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules)
+
 #----------------------------------------------------------------------------
 # Find Geant4 package, activating all available UI and Vis drivers by default
 # You can set WITH_GEANT4_UIVIS to OFF via the command line or ccmake/cmake-gui

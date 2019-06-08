@@ -418,13 +418,14 @@ G4int natoms;
   a = 207.20*g/mole;
   G4Element* elPb = new G4Element(name="Lead"    ,symbol="Pb", z=82., a);
 
-  density = 8.280*g/cm3;
+ //------------------ PWO EMCAL crystals ------------------------------
+   density = 8.280*g/cm3;
   G4Material* PbWO4= new G4Material(name="PbWO4", density, ncomponents=3);
   PbWO4->AddElement(elO , natoms=4);
   PbWO4->AddElement(elW , natoms=1);
   PbWO4->AddElement(elPb, natoms=1);
 
-
+  //------------------ GLASS EMCAL  ------------------------------------
   // a = 16.00*g/mole;    G4Element* elO  = new G4Element(name="Oxygen"  ,symbol="O" , z= 8., a);
   a = 137.33*g/mole;   G4Element* elBa = new G4Element(name="Barium" ,symbol="Ba",  z=56., a);
   a = 28.09*g/mole;   G4Element* elSi = new G4Element(name="Silicone"    ,symbol="Si", z=14., a);
@@ -434,8 +435,12 @@ G4int natoms;
   DSBCe->AddElement(elBa , natoms=1);
   DSBCe->AddElement(elSi, natoms=2);
 
-
-
+  //-------------- DIRC bars --------------------------------------------
+  density= 2.200*g/cm3;
+G4Material* SiO2 = new G4Material("quartz",density, ncomponents=2);
+SiO2->AddElement(elSi, natoms=1);
+SiO2->AddElement(elO , natoms=2);
+//-----------------------------------------------------------------------
 
 G4NistManager* man = G4NistManager::Instance();
   G4Element* C  = man->FindOrBuildElement("C");

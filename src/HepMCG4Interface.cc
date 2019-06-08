@@ -120,7 +120,8 @@ void HepMCG4Interface::HepMC2G4(const HepMC::GenEvent *hepmcevt, G4Event *g4even
             pos = (*vpitr)->momentum();
             G4LorentzVector p(pos.px(), pos.py(), pos.pz(), pos.e());
             G4PrimaryParticle *g4prim =
-                    new G4PrimaryParticle(pdgcode, p.x() * GeV, p.y() * GeV, p.z() * GeV);
+	      new G4PrimaryParticle(pdgcode, p.x() * GeV, p.y() * GeV, -p.z() * GeV); //- fsv for HERWIG6 only : pz = - pz !!!
+	    // fsv original !!! new G4PrimaryParticle(pdgcode, p.x() * GeV, p.y() * GeV, p.z() * GeV);
 
             g4vtx->SetPrimary(g4prim);
         }

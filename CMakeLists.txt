@@ -62,10 +62,12 @@ endif()
 find_library(VGM_Geant4GM NAMES Geant4GM HINTS ${VGM_DIR} PATH_SUFFIXES lib lib64)
 find_library(VGM_BaseVGM  NAMES BaseVGM  HINTS ${VGM_DIR} PATH_SUFFIXES lib lib64)
 find_library(VGM_RootGM   NAMES RootGM   HINTS ${VGM_DIR} PATH_SUFFIXES lib lib64)
+find_library(VGM_XmlVGM   NAMES XmlVGM   HINTS ${VGM_DIR} PATH_SUFFIXES lib lib64)
 
 message(STATUS "g4e: VGM_Geant4GM :${VGM_Geant4GM} ")
 message(STATUS "g4e: VGM_BaseVGM  :${VGM_BaseVGM}  ")
 message(STATUS "g4e: VGM_RootGM   :${VGM_RootGM}   ")
+message(STATUS "g4e: VGM_XmlVGM   :${VGM_XmlVGM}   ")
 message(STATUS "g4e: Geant4_LIBS  :${Geant4_LIBRARIES}" )
 
 IF(DEFINED ENV{HEPMC_DIR})
@@ -80,6 +82,7 @@ find_package(HepMC REQUIRED)
 
 include_directories(
         ${PROJECT_SOURCE_DIR}/include
+        ${PROJECT_SOURCE_DIR}/src/design
         ${Geant4_INCLUDE_DIR}
 		${HEPMC_INCLUDE_DIR}
         ${VGM_DIR}/include
@@ -99,6 +102,7 @@ target_link_libraries(g4e
         ${VGM_Geant4GM}
         ${VGM_BaseVGM}
         ${VGM_RootGM}
+        ${VGM_XmlVGM}
         # TODO replace for NORMAL root config
         $ENV{ROOTSYS}/lib/libGeom.so
         $ENV{ROOTSYS}/lib/libCore.so

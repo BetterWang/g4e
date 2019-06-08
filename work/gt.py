@@ -3,5 +3,5 @@ from string import *
 import commands
 import sys
 import os.path
-os.system("./JLEICgeant4 jleic.mac &> /dev/null ")
+os.system("./g4e jleic.mac &> /dev/null ")
 sys.exit()

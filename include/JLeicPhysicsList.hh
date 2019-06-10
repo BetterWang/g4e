@@ -84,7 +84,10 @@ public:
   void SetDetectorCuts();
 
   void SetMaxStep(G4double);
-  void SetXTRModel(G4String m) {fXTRModel = m; G4cout<<fXTRModel<<G4endl;}; 
+  void SetXTRModel(G4String model) {
+      fXTRModel = model;
+      G4cout<<fXTRModel<<G4endl;
+  };
 
 private:
 

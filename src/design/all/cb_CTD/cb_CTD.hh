@@ -17,18 +17,17 @@
 
 class CentralBarrelTracker {
 public:
-  explicit CentralBarrelTracker()
+    explicit CentralBarrelTracker()
     {
 
 
     }
+
     inline void Create(JLeicDetectorParameters& jleicParams, G4VPhysicalVolume *physicalVolume) {
         static char abname[256];
         auto p = jleicParams.cb_CTD;
 
-
-
-        double cb_CTD_detSi_SizeZ = p.GVol_SizeZ;
+        cb_CTD_detSi_SizeZ = p.GVol_SizeZ;
         printf("Create CTD  Size Z =%f \n ",cb_CTD_detSi_SizeZ);
         p.detSi_Steps = 5.;
         p.detSi_Layers = 15;
@@ -59,11 +58,8 @@ public:
                                                       abname, cb_CTD_detSi_Logic[ia],
                                                       physicalVolume, false, 0.);
 
-  //----> Should be worked out          if (cb_CTD_detSi_Logic[ia]) cb_CTD_detSi_Logic[ia]->SetSensitiveDetector(fCalorimeterSD);
+            //----> Should be worked out          if (cb_CTD_detSi_Logic[ia]) cb_CTD_detSi_Logic[ia]->SetSensitiveDetector(fCalorimeterSD);
         }
-
-
-
     }
 private:
     JLeicMaterials *fMat;

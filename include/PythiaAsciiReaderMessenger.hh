@@ -40,21 +40,22 @@ class G4UIcmdWithoutParameter;
 class G4UIcmdWithAString;
 class G4UIcmdWithAnInteger;
 
-class PythiaAsciiReaderMessenger : public G4UImessenger {
+class PythiaAsciiReaderMessenger : public G4UImessenger
+{
 public:
-  PythiaAsciiReaderMessenger(PythiaAsciiReader* agen);
-  ~PythiaAsciiReaderMessenger();
+    explicit PythiaAsciiReaderMessenger(PythiaAsciiReader *agen);
 
-  void SetNewValue(G4UIcommand* command, G4String newValues);
-  G4String GetCurrentValue(G4UIcommand* command);
+    ~PythiaAsciiReaderMessenger() override;
+
+    void SetNewValue(G4UIcommand *command, G4String newValues) override;
+
+    G4String GetCurrentValue(G4UIcommand *command) override;
 
 private:
-  PythiaAsciiReader* gen;
-
-  G4UIdirectory* dir;
-  G4UIcmdWithAnInteger* verbose;
-  G4UIcmdWithAString* open;
-
+    PythiaAsciiReader *gen;
+    G4UIdirectory *dir;
+    G4UIcmdWithAnInteger *verbose;
+    G4UIcmdWithAString *open;
 };
 
 #endif

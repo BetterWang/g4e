@@ -23,22 +23,16 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file electromagnetic/VertexEIC/VertexEIC.cc
-/// \brief Main program of the electromagnetic/VertexEIC example
-//
-//
-// $Id: VertexEIC.cc 73033 2013-08-15 09:24:45Z gcosmo $
-//
-//
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
 
 #include "G4RunManager.hh"
 #include "G4UImanager.hh"
 #include "Randomize.hh"
 
+#include "spdlog/spdlog.h"
+#include "spdlog/sinks/ostream_sink.h"
+
 #include "JLeicDetectorConstruction.hh"
-// #include "ALICEDetectorConstruction.hh"
 #include "JLeicPhysicsList.hh"
 #include "JLeicPrimaryGeneratorAction.hh"
 #include "JLeicRunAction.hh"
@@ -78,8 +72,17 @@ int main(int argc, char **argv)
 
     using namespace clara;
 
-    ProgramArgConfig config;
+    spdlog::info("Initializing g4e, parsing arguments...");
+    //auto stdout_sink = spdlog::sinks::stdout_sink_mt::instance();
+    //stdout_sink->set_level(spdlog::level::info);
 
+    auto osink = std::make_shared<spdlog::sinks::ostream_sink_mt> (G4cout);
+    spdlog::default_logger()->sinks().clear();
+    spdlog::default_logger()->sinks().push_back(osink);
+
+
+
+    ProgramArgConfig config;
     bool showHelp = false;
     auto parser = Help( showHelp )
             | Opt( config.ShowGui)

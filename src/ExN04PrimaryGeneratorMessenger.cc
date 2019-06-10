@@ -77,7 +77,7 @@ void JLeicPrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command,
     G4cout << "current generator type: "
             << primaryAction-> GetGeneratorName() << G4endl;
   }
-  printf("JLeicPrimaryGeneratorMessenger:: SetNewValue *s \n",newValues.c_str());
+  printf("JLeicPrimaryGeneratorMessenger:: SetNewValue %s \n",newValues.c_str());
 }
 
 

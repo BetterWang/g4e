@@ -37,7 +37,7 @@ public:
         //--------------------------------------------------
         //----------vtx barrel ladder geometry--------------
         //--------------------------------------------------
-//===================================================================================
+        //===================================================================================
 
         G4RotationMatrix rm[10][40];
         // deltaphi1 = 0;
@@ -73,7 +73,7 @@ public:
 
         if( Lays.size()>10) {printf("Nlayers in VERTEX >10 !!! \n"); exit(1); }
 
-        for (int lay = 0; lay < Lays.size(); lay++) {
+        for (uint lay = 0; lay < Lays.size(); lay++) {
 
             printf("cb_VTX_ladder:: Layer loop:: %d\n", lay);
             double cb_VTX_ladder_DZ = Lays[lay].Dz;
@@ -111,7 +111,10 @@ public:
             attr_cb_VTX_ladder->SetForceSolid(true);
             cb_VTX_ladder_Logic[lay]->SetVisAttributes(attr_cb_VTX_ladder);
 
-            if( NUM>40) {printf("cb_VTX_ladder:: Nladders in VERTEX >40 lay=%f !!! \n",lay); exit(1); }
+            if( NUM>40) {
+                printf("cb_VTX_ladder:: Nladders in VERTEX >40 lay=%f !!! \n",lay);
+                exit(1);
+            }
 
 
             for (int ia = 0; ia < NUM; ia++) {

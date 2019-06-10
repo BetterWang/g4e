@@ -6,14 +6,15 @@
 #define G4E_JLeicDetectorParameters_HH
 
 #include "G4SystemOfUnits.hh"
+#include "cb_Solenoid/cb_Solenoid.hh"
+
 
 struct JLeicDetectorParameters {
 
      double World_ShiftVTX = 40. * cm;
 
-    double Solenoid_SizeZ = 400. * cm;
-    double Solenoid_ROut = 144. * cm;
-    double Solenoid_RIn = 0.0 * cm;
+
+    cb_Solenoid_Parameters cb_Solenoid;
 
 
     /// Central Barrel Vertex definition

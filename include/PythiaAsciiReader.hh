@@ -40,49 +40,53 @@ class PythiaAsciiReaderMessenger;
 class PyTrack {
 
 public:
-  int K[6];   //-- size [6] to keep fortran numbers 1..5;  [0] is not used;
-  int Status; //-- particle status (1=final state)
-  int PDG;    //-- particle id
-  G4LorentzVector P;  //-- 4 momentum
-  G4LorentzVector V;  //-- Vertex and time
+    int K[6];   //-- size [6] to keep fortran numbers 1..5;  [0] is not used;
+    int Status; //-- particle status (1=final state)
+    int PDG;    //-- particle id
+    G4LorentzVector P;  //-- 4 momentum
+    G4LorentzVector V;  //-- Vertex and time
 
-  PyTrack() {
+    PyTrack() {
 
-  };
-  ~PyTrack() {};
+    };
+
+    ~PyTrack() {};
 };
 
 
 class PythiaAsciiReader : public PythiaInterface {
 protected:
-  G4String filename;
+    G4String filename;
 
-  G4int verbose;
-  PythiaAsciiReaderMessenger* messenger;
+    G4int verbose;
+    PythiaAsciiReaderMessenger *messenger;
 
-  virtual PythiaAsciiReader* GeneratePythiaEvent();
+    virtual PythiaAsciiReader *GeneratePythiaEvent();
 
 public:
-  PythiaAsciiReader();
-  ~PythiaAsciiReader();
+    PythiaAsciiReader();
 
-  // set/get methods
-  void SetFileName(G4String name);
-  G4String GetFileName() const;
+    ~PythiaAsciiReader();
 
-  void SetVerboseLevel(G4int i);
-  G4int GetVerboseLevel() const; 
+    // set/get methods
+    void SetFileName(G4String name);
 
-  // methods...
-  void Initialize();
+    G4String GetFileName() const;
+
+    void SetVerboseLevel(G4int i);
+
+    G4int GetVerboseLevel() const;
+
+    // methods...
+    void Initialize();
 
 
- // Generators Input Files : Pythia
-  std::ifstream  gif;                    ///< Generator Input File
-  G4String    gformat;                ///< Generator Format. Supported: LUND.
-  G4String    gfilename;              ///< Input Filename
-  
-  //------------------------   LUND/BNL information Pythia -------------------------------
+    // Generators Input Files : Pythia
+    std::ifstream gif;                    ///< Generator Input File
+    G4String gformat;                ///< Generator Format. Supported: LUND.
+    G4String gfilename;              ///< Input Filename
+
+    //------------------------   LUND/BNL information Pythia -------------------------------
     // LUND format:
     // Header (Event Info):
     // These are the original LUND variables, however after # particles, and except beam polarization, these can be user defined.
@@ -116,27 +120,27 @@ public:
     //              enddo
     //              VZoffSet = 0. ! offset -403.0 mm
 
-  int nparticles;
-  std::vector<double> lundUserDefined;   ///< user defined infos in the LUND header
-  
-  double    beamPol;                  ///< Beam Polarization as from the LUND format, it
-  double Vx, Vy, Vz, Vt;              ///< Randomized Beam Vertex coordinates
-  
-  G4String hd_msg;                    ///< Head Message Log
-  //G4ParticleTable* particleTable;   ///< Geant4 Particle Table 
-  // Primary Beam
-  //G4ParticleDefinition *Particle;   ///< Particle type
-  double mom,   dmom,    Mom;       ///< beam momentum, delta momentum, randomized momentum
-  double theta, dtheta,  Theta;     ///< theta, delta theta, randomized theta
-  double phi,   dphi,    Phi;       ///< phi, delta phi, randomized phi
+    int nparticles;
+    std::vector<double> lundUserDefined;   ///< user defined infos in the LUND header
 
-  /*
-  int N, K[6][4000];  //-- size [6] to keep fortran numbers 1..5;  [0] not used;
-  double P[5][4000];  //-- particle 3momentum [GeV/c], energy [GeV], mass [GeV/c^2]
-  double V[5][4000];  //-- vertex in [mm] , time og prod [mm/c] , life time [mm/c] (~ 3.33E-12 sec)
-  */
-  std::vector<PyTrack>  pyEvt;
-  int N;      // -- N particles
+    double beamPol;                  ///< Beam Polarization as from the LUND format, it
+    double Vx, Vy, Vz, Vt;              ///< Randomized Beam Vertex coordinates
+
+    G4String hd_msg;                    ///< Head Message Log
+    //G4ParticleTable* particleTable;   ///< Geant4 Particle Table
+    // Primary Beam
+    //G4ParticleDefinition *Particle;   ///< Particle type
+    double mom, dmom, Mom;       ///< beam momentum, delta momentum, randomized momentum
+    double theta, dtheta, Theta;     ///< theta, delta theta, randomized theta
+    double phi, dphi, Phi;       ///< phi, delta phi, randomized phi
+
+    /*
+    int N, K[6][4000];  //-- size [6] to keep fortran numbers 1..5;  [0] not used;
+    double P[5][4000];  //-- particle 3momentum [GeV/c], energy [GeV], mass [GeV/c^2]
+    double V[5][4000];  //-- vertex in [mm] , time og prod [mm/c] , life time [mm/c] (~ 3.33E-12 sec)
+    */
+    std::vector<PyTrack> pyEvt;
+    int N;      // -- N particles
 
 };
 
@@ -144,24 +148,20 @@ public:
 // inline functions
 // ====================================================================
 
-inline void PythiaAsciiReader::SetFileName(G4String name)
-{
-  filename= name;
+inline void PythiaAsciiReader::SetFileName(G4String name) {
+    filename = name;
 }
 
-inline G4String PythiaAsciiReader::GetFileName() const
-{
-  return filename;
+inline G4String PythiaAsciiReader::GetFileName() const {
+    return filename;
 }
 
-inline void PythiaAsciiReader::SetVerboseLevel(G4int i)
-{
-  verbose= i;
+inline void PythiaAsciiReader::SetVerboseLevel(G4int i) {
+    verbose = i;
 }
 
-inline G4int PythiaAsciiReader::GetVerboseLevel() const
-{
-  return verbose;
+inline G4int PythiaAsciiReader::GetVerboseLevel() const {
+    return verbose;
 }
 
 #endif

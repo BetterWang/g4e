@@ -22,12 +22,7 @@
 // * use  in  resulting  scientific  publications,  and indicate your *
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
-//
-/// \file eventgenerator/HepMC/HepMCEx01/src/PythiaAsciiReaderMessenger.cc
-/// \brief Implementation of the PythiaAsciiReaderMessenger class
-//
-// $Id: PythiaAsciiReaderMessenger.cc 77801 2013-11-28 13:33:20Z gcosmo $
-//
+
 #include "G4UIdirectory.hh"
 #include "G4UIcmdWithoutParameter.hh"
 #include "G4UIcmdWithAString.hh"
@@ -36,59 +31,52 @@
 #include "PythiaAsciiReader.hh"
 
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 PythiaAsciiReaderMessenger::PythiaAsciiReaderMessenger
-                             (PythiaAsciiReader* agen)
-  : gen(agen)
-{
-  dir= new G4UIdirectory("/generator/pythiaAscii/");
-  dir-> SetGuidance("Reading Pythia event from an Ascii file");
+        (PythiaAsciiReader *agen)
+        : gen(agen) {
+    dir = new G4UIdirectory("/generator/pythiaAscii/");
+    dir->SetGuidance("Reading Pythia event from an Ascii file");
 
-  verbose=
-    new G4UIcmdWithAnInteger("/generator/pythiaAscii/verbose", this);
-  verbose-> SetGuidance("Set verbose level");
-  verbose-> SetParameterName("verboseLevel", false, false);
-  verbose-> SetRange("verboseLevel>=0 && verboseLevel<=1");
+    verbose = new G4UIcmdWithAnInteger("/generator/pythiaAscii/verbose", this);
+    verbose->SetGuidance("Set verbose level");
+    verbose->SetParameterName("verboseLevel", false, false);
+    verbose->SetRange("verboseLevel>=0 && verboseLevel<=1");
 
-  open= new G4UIcmdWithAString("/generator/pythiaAscii/open", this);
-  open-> SetGuidance("(re)open data file (Pythia Ascii format)");
-  open-> SetParameterName("input ascii file", true, true);
+    open = new G4UIcmdWithAString("/generator/pythiaAscii/open", this);
+    open->SetGuidance("(re)open data file (Pythia Ascii format)");
+    open->SetParameterName("input ascii file", true, true);
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-PythiaAsciiReaderMessenger::~PythiaAsciiReaderMessenger()
-{
-  delete verbose;
-  delete open;
 
-  delete dir;
+PythiaAsciiReaderMessenger::~PythiaAsciiReaderMessenger() {
+    delete verbose;
+    delete open;
+    delete dir;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void PythiaAsciiReaderMessenger::SetNewValue(G4UIcommand* command,
-                                              G4String newValues)
-{
-  if (command==verbose) {
-    int level= verbose-> GetNewIntValue(newValues);
-    gen-> SetVerboseLevel(level);
-  } else if (command==open) {
-    gen-> SetFileName(newValues);
-    G4cout << "Pythia Ascii inputfile: "
-           << gen-> GetFileName() << G4endl;
-    gen-> Initialize();
-  }
+
+void PythiaAsciiReaderMessenger::SetNewValue(G4UIcommand *command,
+                                             G4String newValues) {
+    if (command == verbose) {
+        int level = verbose->GetNewIntValue(newValues);
+        gen->SetVerboseLevel(level);
+    } else if (command == open) {
+        gen->SetFileName(newValues);
+        G4cout << "Pythia Ascii inputfile: "
+               << gen->GetFileName() << G4endl;
+        gen->Initialize();
+    }
 }
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-G4String PythiaAsciiReaderMessenger::GetCurrentValue(G4UIcommand* command)
-{
-  G4String cv;
+G4String PythiaAsciiReaderMessenger::GetCurrentValue(G4UIcommand *command) {
+    G4String cv;
 
-  if (command == verbose) {
-    cv= verbose-> ConvertToString(gen-> GetVerboseLevel());
-  } else  if (command == open) {
-    cv= gen-> GetFileName();
-  }
-  return cv;
+    if (command == verbose) {
+        cv = verbose->ConvertToString(gen->GetVerboseLevel());
+    } else if (command == open) {
+        cv = gen->GetFileName();
+    }
+    return cv;
 }

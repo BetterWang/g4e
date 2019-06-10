@@ -93,7 +93,7 @@ message(STATUS "ejana: CMAKE_CXX_STANDARD: ${CMAKE_CXX_STANDARD}")
 include_directories(
         BEFORE
             ${PROJECT_SOURCE_DIR}/include
-            ${PROJECT_SOURCE_DIR}/src/design
+            ${PROJECT_SOURCE_DIR}/src/design/all
         SYSTEM
             ${ROOT_INCLUDE_DIRS}
             ${PROJECT_SOURCE_DIR}/src/external/spdlog/include

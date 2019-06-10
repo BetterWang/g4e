@@ -158,7 +158,8 @@ JLeicDetectorConstruction::JLeicDetectorConstruction()
           fRadiatorMat(0), fPipe(false), fPipeField(false),
 // fSolidAbsorber(0),    fLogicAbsorber(0),   fPhysicsAbsorber(0),
           cb_CTD_GVol_Phys(0),
-          fMagField(0), fCalorimeterSD(0), fRegGasDet(0), fRadRegion(0), fMat(0) {
+          fMagField(0), fCalorimeterSD(0), fRegGasDet(0), fRadRegion(0), fMat(0)
+          {
     fDetectorMessenger = new JLeicDetectorMessenger(this);
     fMat = new JLeicMaterials();
 }
@@ -259,11 +260,9 @@ void JLeicDetectorConstruction::Create_cb_DIRC(JLeicDetectorParameters &p) {
     //   cb_DIRC_GVol_SizeZ = Solenoid_SizeZ;
     p.cb_DIRC.GVol_SizeZ = p.cb_CTD.GVol_SizeZ;
 
-    cb_DIRC_GVol_Solid = new G4Tubs("cb_DIRC_GVol_Solid", p.cb_DIRC.GVol_RIn, p.cb_DIRC.GVol_ROut, p.cb_DIRC.GVol_SizeZ / 2.,
-                                    0., 360 * deg);
+    cb_DIRC_GVol_Solid = new G4Tubs("cb_DIRC_GVol_Solid", p.cb_DIRC.GVol_RIn, p.cb_DIRC.GVol_ROut, p.cb_DIRC.GVol_SizeZ / 2., 0., 360 * deg);
     cb_DIRC_GVol_Logic = new G4LogicalVolume(cb_DIRC_GVol_Solid, World_Material, "cb_DIRC_GVol_Logic");
-    cb_DIRC_GVol_Phys = new G4PVPlacement(0, G4ThreeVector(), "DIRC", cb_DIRC_GVol_Logic,
-                                          Solenoid_Phys, false, 0);
+    cb_DIRC_GVol_Phys = new G4PVPlacement(nullptr, G4ThreeVector(), "DIRC", cb_DIRC_GVol_Logic, Solenoid_Phys, false, 0);
 
     // cb_DIRC_GVol_Logic->SetVisAttributes(G4VisAttributes::Invisible);
     G4VisAttributes *attr_cb_DIRC = new G4VisAttributes(G4Color(0.1, 0, 1., 0.1));
@@ -399,48 +398,8 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 
  
 #ifdef  USE_BARREL
-    //===================================================================================
-    //==                          Solenoid  magnetic field                             ==
-    //===================================================================================
-     //   Solenoid_SizeZ = 355.8 * cm;
 
-
-
-    printf("Solenoid_SizeZ=%f", fParameters.Solenoid_SizeZ);
-
-    Solenoid_Solid = new G4Tubs("Solenoid_Solid", fParameters.Solenoid_RIn, fParameters.Solenoid_ROut, fParameters.Solenoid_SizeZ / 2., 0., 360 * deg);
-
-    Solenoid_Logic = new G4LogicalVolume(Solenoid_Solid, World_Material, "Solenoid_Logic");
-
-    Solenoid_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, fParameters.World_ShiftVTX), "Solenoid_Phys", Solenoid_Logic,
-                                         World_Phys, false, 0);
-
-    // G4VisAttributes* vsol= new G4VisAttributes(G4Color(0.1,0,1.,0.1));
-    //   vsol->SetLineWidth(1); vsol->SetForceSolid(true);
-    //   Solenoid_Logic->SetVisAttributes(attr_cb_VTX);
-
-    // G4double Solenoid_Field_Strength = 3.0*tesla;  // 0.01*tesla; // field strength in pipe
-    Solenoid_Field_Strength = -2.0 * tesla;  // 0.01*tesla; // field strength in pipe
-    Solenoid_AlphaB = 0. * degree;
-    //  fPipeField     =  true;   // field in helium pipe used?
-    fPipeField = true;   // field in helium pipe used?
-    if (fPipeField) {
-        G4cout << "Set Magnetic field = " << Solenoid_Field_Strength << G4endl << G4endl;
-        if (fMagField) delete fMagField; //delete the existing mag field
-
-        fMagField = new G4UniformMagField(G4ThreeVector(Solenoid_Field_Strength * std::sin(Solenoid_AlphaB),
-                                                        0., Solenoid_Field_Strength * std::cos(Solenoid_AlphaB)));
-
-        G4FieldManager *fieldMgr = new G4FieldManager(fMagField);
-        fieldMgr->SetDetectorField(fMagField);
-        fieldMgr->CreateChordFinder(fMagField);
-        Solenoid_Logic->SetFieldManager(fieldMgr, true);
-    } else
-        G4cout << "No Magnetic field " << G4endl << G4endl;
-    attr_Solenoid = new G4VisAttributes(G4Color(0.1, 0, 0.1, 0.4));
-    attr_Solenoid->SetLineWidth(1);
-    attr_Solenoid->SetForceSolid(false);
-    Solenoid_Logic->SetVisAttributes(attr_Solenoid);
+    cb_Solenoid.Create(fParameters.cb_Solenoid, fParameters.World_ShiftVTX, World_Material, World_Phys);
 
 #endif
 
@@ -515,6 +474,8 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 
     ce_ENDCAP_GVol_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, ce_ENDCAP_GVol_PosZ), "ce_ENDCAP_GVol_Phys", ce_ENDCAP_GVol_Logic,
                                           World_Phys, false, 0);
+
+
 
     attr_ce_ENDCAP_GVol = new G4VisAttributes(G4Color(0.3, 0, 3., 0.1));
     attr_ce_ENDCAP_GVol->SetLineWidth(1);

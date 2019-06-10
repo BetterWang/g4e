@@ -61,13 +61,12 @@
 #include "JLeicDetectorMessenger.hh"
 #include "JLeicDetectorParameters.hh"
 
-// Central Barrel - Vertex
-#include "detectors/cb_VTX/cb_VTX.hh"
-// Central Barrel - Tracker
-#include "detectors/cb_CTD/cb_CTD.hh"
-#include "detectors/cb_DIRC/cb_DIRC.hh"
-// Central Barrel - EMCAL
-#include "detectors/cb_EMCAL/cb_EMCAL.hh"
+#include "all/cb_Solenoid/cb_Solenoid.hh"   // Central Barrel - Solenoid
+#include "all/cb_VTX/cb_VTX.hh"             // Central Barrel - Vertex
+#include "all/cb_CTD/cb_CTD.hh"             // Central Barrel - Tracker
+#include "all/cb_DIRC/cb_DIRC.hh"           // Central Barrel - DIRC
+#include "all/cb_EMCAL/cb_EMCAL.hh"         // Central Barrel - EMCAL
+
 
 
 class JLeicCalorimeterSD;
@@ -259,6 +258,7 @@ private:
 
     CentralBarrelEMCAL cb_EMCAL_Design;
 
+    cb_Solenoid_Design cb_Solenoid;
 
 // ----------------------------------------------
 
@@ -294,15 +294,6 @@ private:
     G4double World_SizeR;
     G4double World_SizeZ;
     G4double World_ShiftVTX;
-
-    //--------------Solenoid BARREL  -------------------
-  //  G4double Solenoid_SizeZ;
-    G4double Solenoid_Field_Strength;
-    G4double Solenoid_AlphaB;
-    G4VisAttributes *attr_Solenoid;
-    G4Tubs *Solenoid_Solid;      //pointer to the solid
-    G4LogicalVolume *Solenoid_Logic;    //pointer to the logical
-    G4VPhysicalVolume *Solenoid_Phys;  //pointer to the physical
 
 //-----------------Hadron ENDCAP  volume--------------------
     G4double ci_ENDCAP_GVol_RIn;
@@ -951,15 +942,14 @@ private:
     G4double fMylarThick;
     G4double fPipeLength;
     G4bool fPipe;
-    G4bool fPipeField;
+
     G4double fRadZ;
     G4double fWindowZ;
     G4double fGapZ;
     G4double fElectrodeZ;
 
 
-    //----
-    G4UniformMagField *fMagField;      //pointer to the magnetic field
+
 
     // G4double fElectronCut, fGammaCut, fPositronCut;
 

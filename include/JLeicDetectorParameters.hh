@@ -35,7 +35,7 @@ struct JLeicDetectorParameters {
 
         double GVol_RIn  = 21 * cm;
         double GVol_ROut = 80* cm;
-      //  double GVol_SizeZ= Solenoid_SizeZ - 60 * cm;
+      //  double GVol_SizeZ= SizeZ - 60 * cm;
         double GVol_SizeZcut=  60 * cm;
         double GVol_SizeZ;
         double detSi_Steps = 5.;

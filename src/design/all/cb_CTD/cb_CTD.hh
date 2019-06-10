@@ -27,7 +27,7 @@ public:
         static char abname[256];
         auto p = jleicParams.cb_CTD;
 
-        double cb_CTD_detSi_SizeZ = p.GVol_SizeZ;
+        cb_CTD_detSi_SizeZ = p.GVol_SizeZ;
         printf("Create CTD  Size Z =%f \n ",cb_CTD_detSi_SizeZ);
         p.detSi_Steps = 5.;
         p.detSi_Layers = 15;

@@ -61,11 +61,11 @@
 #include "JLeicDetectorMessenger.hh"
 #include "JLeicDetectorParameters.hh"
 
-#include "all/cb_Solenoid/cb_Solenoid.hh"   // Central Barrel - Solenoid
-#include "all/cb_VTX/cb_VTX.hh"             // Central Barrel - Vertex
-#include "all/cb_CTD/cb_CTD.hh"             // Central Barrel - Tracker
-#include "all/cb_DIRC/cb_DIRC.hh"           // Central Barrel - DIRC
-#include "all/cb_EMCAL/cb_EMCAL.hh"         // Central Barrel - EMCAL
+#include "cb_Solenoid/cb_Solenoid.hh"   // Central Barrel - Solenoid
+#include "cb_VTX/cb_VTX.hh"             // Central Barrel - Vertex
+#include "cb_CTD/cb_CTD.hh"             // Central Barrel - Tracker
+#include "cb_DIRC/cb_DIRC.hh"           // Central Barrel - DIRC
+#include "cb_EMCAL/cb_EMCAL.hh"         // Central Barrel - EMCAL
 
 
 
@@ -102,7 +102,7 @@ public:
 
     void SetWorldSizeR(G4double);
 
-    void SetDetectorSetUp(G4String s) { fSetUp = s; };
+    void SetDetectorSetUp(G4String setUp) { fSetUp = setUp; };
 
 
     void SetMagField(G4double);

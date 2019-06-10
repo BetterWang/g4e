@@ -30,6 +30,7 @@
 #include "Randomize.hh"
 
 #include "spdlog/spdlog.h"
+#include "spdlog/sinks/ostream_sink.h"
 
 #include "JLeicDetectorConstruction.hh"
 #include "JLeicPhysicsList.hh"
@@ -72,6 +73,14 @@ int main(int argc, char **argv)
     using namespace clara;
 
     spdlog::info("Initializing g4e, parsing arguments...");
+    //auto stdout_sink = spdlog::sinks::stdout_sink_mt::instance();
+    //stdout_sink->set_level(spdlog::level::info);
+
+    auto osink = std::make_shared<spdlog::sinks::ostream_sink_mt> (G4cout);
+    spdlog::default_logger()->sinks().clear();
+    spdlog::default_logger()->sinks().push_back(osink);
+
+
 
     ProgramArgConfig config;
     bool showHelp = false;

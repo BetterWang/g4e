@@ -15,7 +15,7 @@ print_grand_header("    F I N D   B A S I C   P A C K A G E S    ")
 
 # Cern R O O T
 # ------------
-find_package(ROOT REQUIRED COMPONENTS Geom)
+find_package(ROOT REQUIRED COMPONENTS Geom Core RIO Hist Tree)
 if(${ROOT_VERSION} MATCHES "6.*")
     message(STATUS "Found Cern.ROOT version: ${ROOT_VERSION}")
 else()
@@ -103,6 +103,28 @@ include_directories(
             ${VGM_DIRECTORY}/test/include
 )
 
+# use, i.e. don't skip the full RPATH for the build tree
+SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
+
+# when building, don't use the install RPATH already
+# (but later on when installing)
+SET(CMAKE_BUILD_WITH_INSTALL_RPATH FALSE)
+
+SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+
+# add the automatically determined parts of the RPATH
+# which point to directories outside the build tree to the install RPATH
+SET(CMAKE_INSTALL_RPATH_USE_LINK_PATH TRUE)
+
+
+# the RPATH to be used when installing, but only if it's not a system directory
+LIST(FIND CMAKE_PLATFORM_IMPLICIT_LINK_DIRECTORIES "${CMAKE_INSTALL_PREFIX}/lib" isSystemDir)
+IF("${isSystemDir}" STREQUAL "-1")
+    SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+ENDIF("${isSystemDir}" STREQUAL "-1")
+
+
+
 # TODO this is terrible!
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
@@ -118,12 +140,7 @@ target_link_libraries(g4e
         ${VGM_BaseVGM}
         ${VGM_RootGM}
         ${VGM_XmlVGM}
-        # TODO replace for NORMAL root config
-        $ENV{ROOTSYS}/lib/libGeom.so
-        $ENV{ROOTSYS}/lib/libCore.so
-        $ENV{ROOTSYS}/lib/libRIO.so
-        $ENV{ROOTSYS}/lib/libHist.so
-        $ENV{ROOTSYS}/lib/libTree.so
+        ${ROOT_LIBRARIES}
         )
 
 #${HEPMC_FIO_LIBRARIES}

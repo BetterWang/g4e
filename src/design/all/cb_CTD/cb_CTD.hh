@@ -11,72 +11,90 @@
 #include "G4Material.hh"
 #include "G4Color.hh"
 #include "G4VisAttributes.hh"
+#include "G4SystemOfUnits.hh"
 
-#include "JLeicDetectorParameters.hh"
+#include "JLeicDetectorConfig.hh"
+
+/// Central Barrel Tracker definition
+/// short name: cb_CTD
+struct cb_CTD_Config {
+
+    double RIn  = 21 * cm;
+    double ROut = 80* cm;
+    double SizeZCut=  60 * cm;
+    double SizeZ;
+    double SiLayerGap = 5.* cm;
+    int    SiLayerCount = 15;
+};
 
 
-class CentralBarrelTracker {
+class cb_CTD_Design {
 public:
-    explicit CentralBarrelTracker()
-    {
+    inline void Construct(cb_CTD_Config cfg, G4Material* worldMaterial, G4VPhysicalVolume *motherVolume) {
+        printf("Begin cb_CTD volume \n");
 
+        ConstructionConfig=cfg;
 
+        Solid = new G4Tubs("cb_CTD_GVol_Solid", cfg.RIn, cfg.ROut, cfg.SizeZ / 2., 0., 360 * deg);
+        Logic = new G4LogicalVolume(Solid, worldMaterial, "cb_CTD_GVol_Logic");
+        Phys = new G4PVPlacement(0, G4ThreeVector(), "cb_CTD_GVol_Phys", Logic, motherVolume, false, 0);
+
+        // cb_CTD_GVol_Logic->SetVisAttributes(G4VisAttributes::Invisible);
+        G4VisAttributes *visAttr = new G4VisAttributes(G4Color(0.1, 0, 1., 0.1));
+        visAttr->SetLineWidth(1);
+        visAttr->SetForceSolid(false);
+        Logic->SetVisAttributes(visAttr);
     }
 
-    inline void Create(JLeicDetectorParameters& jleicParams, G4VPhysicalVolume *physicalVolume) {
+    inline void ConstructLadders() {
         static char abname[256];
-        auto p = jleicParams.cb_CTD;
+        auto cfg = ConstructionConfig;
 
-        cb_CTD_detSi_SizeZ = p.GVol_SizeZ;
-        printf("Create CTD  Size Z =%f \n ",cb_CTD_detSi_SizeZ);
-        p.detSi_Steps = 5.;
-        p.detSi_Layers = 15;
-        cb_CTD_detSi_Material =  G4Material::GetMaterial("Si");
+        printf("Create CTD  Size Z =%f \n ",cfg.SizeZ);
+
+        siMaterial =  G4Material::GetMaterial("Si");
         // ------- layers of Si in CTD
-        for (int ia = 0; ia < cb_CTD_detSi_Layers; ia++) {
-            cb_CTD_detSi_lay_Rin[ia] = p.GVol_RIn + (cb_CTD_detSi_Steps * ia) * cm;
-            cb_CTD_detSi_lay_Rout[ia] = p.GVol_RIn + (0.01 + cb_CTD_detSi_Steps * ia) * cm;
-            if(   cb_CTD_detSi_lay_Rout[ia] >  p.GVol_ROut ) continue;
-            printf("cb_CTD_detSi %d  Rout=%f \n", ia, cb_CTD_detSi_lay_Rout[ia]);
+        for (int ia = 0; ia < cfg.SiLayerCount; ia++) {
+            layerRIn[ia] = cfg.RIn + (cfg.SiLayerGap * ia);
+            layerROut[ia] = cfg.RIn + (0.01 + cfg.SiLayerGap * ia);
+            if(layerROut[ia] > cfg.ROut) continue;
 
+            printf("cb_CTD_detSi %d  Rout=%f \n", ia, layerROut[ia]);
             sprintf(abname, "cb_CTD_detSi_Solid_lay_%d", ia);
-            cb_CTD_detSi_Solid[ia] = new G4Tubs(abname, cb_CTD_detSi_lay_Rin[ia], cb_CTD_detSi_lay_Rout[ia], cb_CTD_detSi_SizeZ / 2., 0.,
-                                                360 * deg);
+            SiSolids[ia] = new G4Tubs(abname, layerRIn[ia], layerROut[ia], cfg.SizeZ / 2., 0., 360 * deg);
 
             sprintf(abname, "cb_CTD_detSi_Logic_lay_%d", ia);
-            cb_CTD_detSi_Logic[ia] = new G4LogicalVolume(cb_CTD_detSi_Solid[ia],
-                                                         cb_CTD_detSi_Material, abname);
+            SiLogics[ia] = new G4LogicalVolume(SiSolids[ia], siMaterial, abname);
 
-            //   attr_cb_CTD_det    = new G4VisAttributes(G4Color(1,0,1,0.2));
-            attr_cb_CTD_det= new G4VisAttributes(G4Color(1.0 - 0.1 * ia, 1.0, 0.0 + 0.1 * ia, 1));
-            attr_cb_CTD_det->SetLineWidth(1);
-            attr_cb_CTD_det->SetForceSolid(true);
-            cb_CTD_detSi_Logic[ia]->SetVisAttributes(attr_cb_CTD_det);
+            auto layerVisAttr= new G4VisAttributes(G4Color(1.0 - 0.1 * ia, 1.0, 0.0 + 0.1 * ia, 1));
+            layerVisAttr->SetLineWidth(1);
+            layerVisAttr->SetForceSolid(true);
+            SiLogics[ia]->SetVisAttributes(layerVisAttr);
 
             sprintf(abname, "cb_CTD_detSi_Phys_lay_%d", ia);
-            cb_CTD_detSi_Phys[ia] = new G4PVPlacement(0, G4ThreeVector(),
-                                                      abname, cb_CTD_detSi_Logic[ia],
-                                                      physicalVolume, false, 0.);
+            cb_CTD_detSi_Phys[ia] = new G4PVPlacement(nullptr, G4ThreeVector(),
+                                                      abname, SiLogics[ia],
+                                                      Phys, false, 0);
 
-            //----> Should be worked out          if (cb_CTD_detSi_Logic[ia]) cb_CTD_detSi_Logic[ia]->SetSensitiveDetector(fCalorimeterSD);
+            //----> Should be worked out          if (SiLogics[ia]) SiLogics[ia]->SetSensitiveDetector(fCalorimeterSD);
         }
     }
+
+    G4Tubs *Solid;      //pointer to the solid
+    G4LogicalVolume *Logic;    //pointer to the logical
+    G4VPhysicalVolume *Phys;  //pointer to the physical
+    G4UniformMagField *MagneticField;      //pointer to the magnetic field
+
+    /// Parameters that was used in the moment of construction
+    cb_CTD_Config ConstructionConfig;
+
 private:
-    JLeicMaterials *fMat;
-    G4int cb_CTD_detSi_Layers;
-    G4Material *cb_CTD_detSi_Material;
-    G4VisAttributes *attr_cb_CTD_det;
-    G4double cb_CTD_detSi_lay_Rin[100];
-    G4double cb_CTD_detSi_lay_Rout[100];
-    G4Tubs *cb_CTD_detSi_Solid[100];    //pointer to the solid World
-    G4LogicalVolume *cb_CTD_detSi_Logic[100];    //pointer to the logical World
+    G4Material *siMaterial;
+    G4double layerRIn[100];
+    G4double layerROut[100];
+    G4Tubs *SiSolids[100];    //pointer to the solid World
+    G4LogicalVolume *SiLogics[100];    //pointer to the logical World
     G4VPhysicalVolume *cb_CTD_detSi_Phys[100];    //pointer to the physical World
-
-    G4double cb_CTD_detSi_RIn;
-    G4double cb_CTD_detSi_ROut;
-    G4double cb_CTD_detSi_SizeZ;
-    G4double cb_CTD_detSi_Steps;
-
 };
 
 #endif //G4E_CB_CTD_HH

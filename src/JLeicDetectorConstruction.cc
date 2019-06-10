@@ -28,6 +28,7 @@
 //
 // 
 
+#include <spdlog/spdlog.h>
 #include "vector"
 #include "JLeicDetectorConstruction.hh"
 //#include "JLeicDetectorMessenger.hh"
@@ -151,8 +152,9 @@
 //
 
 JLeicDetectorConstruction::JLeicDetectorConstruction()
-        : fWorldChanged(false), fAbsorberMaterial(0), fGapMat(0), fSetUp("simpleALICE"),
-          World_Material(0), World_Solid(0), World_Logic(0), World_Phys(0),
+        :
+           fWorldChanged(false), fAbsorberMaterial(0), fGapMat(0), fSetUp("simpleALICE"),
+          World_Material(nullptr), World_Solid(0), World_Logic(0), World_Phys(0),
           fSolidRadSlice(0), fLogicRadSlice(0), fPhysicRadSlice(0),
           fSolidRadiator(0), fLogicRadiator(0), fPhysicsRadiator(0),
           fRadiatorMat(0), fPipe(false),
@@ -210,13 +212,13 @@ G4VPhysicalVolume *JLeicDetectorConstruction::ConstructDetectorXTR() {
 //==                          VTX DETECTOR VOLUME                                  ==
 //===================================================================================
 
-void JLeicDetectorConstruction::Create_cb_VTX(JLeicDetectorParameters &p)
+void JLeicDetectorConstruction::Create_cb_VTX(JLeicDetectorConfig &p)
 {
     printf("Begin cb_VERTEX volume \n");
 
     cb_VTX_GVol_Solid = new G4Tubs("cb_VTX_GVol_Solid", p.cb_VTX.GVol_RIn, p.cb_VTX.GVol_ROut, p.cb_VTX.GVol_SizeZ / 2., 0., 360 * deg);
     cb_VTX_GVol_Logic = new G4LogicalVolume(cb_VTX_GVol_Solid, World_Material, "cb_VTX_GVol_Logic");
-    cb_VTX_GVol_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, -World_ShiftVTX), "cb_VTX_GVol_Phys", cb_VTX_GVol_Logic,
+    cb_VTX_GVol_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, -fConfig.World.ShiftVTX), "cb_VTX_GVol_Phys", cb_VTX_GVol_Logic,
                                          cb_Solenoid.Phys, false, 0);
 
     // cb_VTX_GVol_Logic->SetVisAttributes(G4VisAttributes::Invisible);
@@ -225,39 +227,21 @@ void JLeicDetectorConstruction::Create_cb_VTX(JLeicDetectorParameters &p)
     attr_cb_VTX->SetForceSolid(false);
     cb_VTX_GVol_Logic->SetVisAttributes(attr_cb_VTX);
 }
-//===================================================================================
-//==                          CTD DETECTOR VOLUME                                  ==
-//===================================================================================
 
-void JLeicDetectorConstruction::Create_cb_CTD(JLeicDetectorParameters &p) {
-    printf("Begin cb_CTD volume \n");
-   p.cb_CTD.GVol_SizeZ= fParameters.cb_Solenoid.SizeZ - p.cb_CTD.GVol_SizeZcut;
-
-    cb_CTD_GVol_Solid = new G4Tubs("cb_CTD_GVol_Solid", p.cb_CTD.GVol_RIn, p.cb_CTD.GVol_ROut, p.cb_CTD.GVol_SizeZ / 2., 0., 360 * deg);
-    cb_CTD_GVol_Logic = new G4LogicalVolume(cb_CTD_GVol_Solid, World_Material, "cb_CTD_GVol_Logic");
-    cb_CTD_GVol_Phys = new G4PVPlacement(0, G4ThreeVector(), "cb_CTD_GVol_Phys", cb_CTD_GVol_Logic,
-                                         cb_Solenoid.Phys, false, 0);
-
-// cb_CTD_GVol_Logic->SetVisAttributes(G4VisAttributes::Invisible);
-    G4VisAttributes *attr_cb_CTD = new G4VisAttributes(G4Color(0.1, 0, 1., 0.1));
-    attr_cb_CTD->SetLineWidth(1);
-    attr_cb_CTD->SetForceSolid(false);
-    cb_CTD_GVol_Logic->SetVisAttributes(attr_cb_CTD);
-}
 //===================================================================================
 //==                          DIRC DETECTOR VOLUME                                  ==
 //===================================================================================
 
-void JLeicDetectorConstruction::Create_cb_DIRC(JLeicDetectorParameters &p) {
+void JLeicDetectorConstruction::Create_cb_DIRC(JLeicDetectorConfig &p) {
     printf("Begin cb_DIRC  volume \n");
 
-     p.cb_DIRC.GVol_RIn = p.cb_CTD.GVol_ROut + 1 * cm;
+     p.cb_DIRC.GVol_RIn = p.cb_CTD.ROut + 1 * cm;
     // for new magnet
     //   cb_DIRC_GVol_ROut = 95 * cm;
     // for CLEO and BABAR DIRC
     p.cb_DIRC.GVol_ROut = p.cb_DIRC.GVol_RIn + 10 * cm;
     //   cb_DIRC_GVol_SizeZ = SizeZ;
-    p.cb_DIRC.GVol_SizeZ = p.cb_CTD.GVol_SizeZ;
+    p.cb_DIRC.GVol_SizeZ = p.cb_CTD.SizeZ;
 
     cb_DIRC_GVol_Solid = new G4Tubs("cb_DIRC_GVol_Solid", p.cb_DIRC.GVol_RIn, p.cb_DIRC.GVol_ROut, p.cb_DIRC.GVol_SizeZ / 2., 0., 360 * deg);
     cb_DIRC_GVol_Logic = new G4LogicalVolume(cb_DIRC_GVol_Solid, World_Material, "cb_DIRC_GVol_Logic");
@@ -276,10 +260,10 @@ void JLeicDetectorConstruction::Create_cb_DIRC(JLeicDetectorParameters &p) {
 //==                          EMCAL DETECTOR VOLUME                                  ==
 //===================================================================================
 
-void JLeicDetectorConstruction::Create_cb_EMCAL(JLeicDetectorParameters &p) {
+void JLeicDetectorConstruction::Create_cb_EMCAL(JLeicDetectorConfig &p) {
     printf("Begin cb_EMCAL  volume \n");
 
-     p.cb_EMCAL.GVol_ROut = fParameters.cb_Solenoid.ROut - p.cb_EMCAL.GVol_ROutshift;
+     p.cb_EMCAL.GVol_ROut = fConfig.cb_Solenoid.ROut - p.cb_EMCAL.GVol_ROutshift;
      p.cb_EMCAL.GVol_RIn = p.cb_EMCAL.GVol_ROut - p.cb_EMCAL.GVol_Thickness;
     // cb_EMCAL_GVol_SizeZ=SizeZ -30*cm;
 
@@ -291,8 +275,8 @@ void JLeicDetectorConstruction::Create_cb_EMCAL(JLeicDetectorParameters &p) {
 
     double coneROut[4] = {p.cb_EMCAL.GVol_ROut, p.cb_EMCAL.GVol_ROut, p.cb_EMCAL.GVol_ROut, p.cb_EMCAL.GVol_ROut};
     double coneRIn[4] = {p.cb_EMCAL.GVol_ROut - 1. * cm, p.cb_EMCAL.GVol_RIn, p.cb_EMCAL.GVol_RIn, p.cb_EMCAL.GVol_ROut - 1. * cm};
-    double coneZ[4] = {-fParameters.cb_Solenoid.SizeZ / 2, -fParameters.cb_Solenoid.SizeZ / 2 + 30 * cm, fParameters.cb_Solenoid.SizeZ / 2 - 30 * cm,
-                       fParameters.cb_Solenoid.SizeZ / 2};
+    double coneZ[4] = {-fConfig.cb_Solenoid.SizeZ / 2, -fConfig.cb_Solenoid.SizeZ / 2 + 30 * cm, fConfig.cb_Solenoid.SizeZ / 2 - 30 * cm,
+                       fConfig.cb_Solenoid.SizeZ / 2};
 
     cb_EMCAL_GVol_Solid = new G4Polycone("cb_EMCAL_GVol_Solid", 0. * deg, 360. * deg, 4, coneZ, coneRIn,
                                          coneROut);
@@ -366,18 +350,26 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     //==                    create a world                                            ==
     //===================================================================================
 
-    World_SizeZ = 40000. * cm;
-    World_SizeR = 10000. * cm;
+
+    spdlog::flush_on(spdlog::level::info);
+    spdlog::info("fConfig.World.SizeR={}", fConfig.World.SizeR);
+    spdlog::info("fConfig.World.SizeZ={}", fConfig.World.SizeZ);
+
 
     // World_Material    = Air;
     World_Material = fMat->GetMaterial("G4_Galactic");
-    World_Solid = new G4Box("World_Solid", World_SizeR, World_SizeR, World_SizeZ / 2.);
-
+    World_Solid = new G4Box("World_Solid", fConfig.World.SizeR, fConfig.World.SizeR, fConfig.World.SizeZ / 2.);
     World_Logic = new G4LogicalVolume(World_Solid, World_Material, "World_Logic");
+    World_Phys = new G4PVPlacement(nullptr, G4ThreeVector(), "World_Phys", World_Logic, nullptr, false, 0);
 
-    World_Phys = new G4PVPlacement(0, G4ThreeVector(), "World_Phys",
-                                      World_Logic, 0, false, 0);
+    spdlog::info("World_Solid->GetCubicVolume() = {}", World_Solid->GetCubicVolume());
+    G4cout<<"World_Solid->GetCubicVolume() = "<<World_Solid->GetCubicVolume()<<std::endl;
+    G4cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  "<<fConfig.World.SizeR<<std::endl;
+    G4cout<<"!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  "<<fConfig.World.SizeZ<<std::endl;
 
+    printf("World_Solid->GetCubicVolume() %f ", World_Solid->GetCubicVolume());
+    printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!! SizeR %f ", fConfig.World.SizeR);
+    printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!! SizeZ %f ", fConfig.World.SizeZ);
 
     //=========================================================================
     //                    Sensitive
@@ -398,7 +390,9 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
  
 #ifdef  USE_BARREL
 
-    cb_Solenoid.Create(fParameters.cb_Solenoid, fParameters.World_ShiftVTX, World_Material, World_Phys);
+
+    fConfig.cb_Solenoid.ShiftZ = fConfig.World.ShiftVTX;
+    cb_Solenoid.Construct(fConfig.cb_Solenoid, World_Material, World_Phys);
 
 #endif
 
@@ -407,15 +401,15 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     //==                           HCAL  DETECTOR VOLUME  BARREL                       ==
     //===================================================================================
 #ifdef USE_CB_HCAL
-    cb_HCAL_GVol_RIn = fParameters.cb_Solenoid.ROut;
-    cb_HCAL_GVol_ROut = fParameters.cb_Solenoid.ROut + 100. * cm;
-    cb_HCAL_GVol_SizeZ = fParameters.cb_Solenoid.SizeZ + ce_ENDCAP_GVol_SizeZ;
+    cb_HCAL_GVol_RIn = fConfig.cb_Solenoid.ROut;
+    cb_HCAL_GVol_ROut = fConfig.cb_Solenoid.ROut + 100. * cm;
+    cb_HCAL_GVol_SizeZ = fConfig.cb_Solenoid.SizeZ + ce_ENDCAP_GVol_SizeZ;
     //cb_HCAL_det_Material = fMat->GetMaterial("StainlessSteel");
     cb_HCAL_GVol_Solid = new G4Tubs("cb_HCAL_GVol_Solid", cb_HCAL_GVol_RIn, cb_HCAL_GVol_ROut, cb_HCAL_GVol_SizeZ / 2., 0., 360 * deg);
 
     cb_HCAL_GVol_Logic = new G4LogicalVolume(cb_HCAL_GVol_Solid, World_Material, "cb_HCAL_GVol_Logic");
 
-    cb_HCAL_GVol_Phys = new G4PVPlacement(nullptr, G4ThreeVector(0, 0, World_ShiftVTX - ce_ENDCAP_GVol_SizeZ / 2), "cb_HCAL_GVol_Phys",
+    cb_HCAL_GVol_Phys = new G4PVPlacement(nullptr, G4ThreeVector(0, 0, fConfig.World.ShiftVTX - ce_ENDCAP_GVol_SizeZ / 2), "cb_HCAL_GVol_Phys",
                                           cb_HCAL_GVol_Logic,
                                           World_Phys, false, 0);
 
@@ -437,7 +431,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     ci_ENDCAP_GVol_SizeZ = 250 * cm;
     ci_ENDCAP_GVol_ShiftZ = 0. * cm;
     ci_ENDCAP_GVol_PosX = 0. * cm;
-    ci_ENDCAP_GVol_PosZ = fParameters.cb_Solenoid.SizeZ / 2. + World_ShiftVTX + ci_ENDCAP_GVol_ShiftZ + ci_ENDCAP_GVol_SizeZ / 2.;
+    ci_ENDCAP_GVol_PosZ = fConfig.cb_Solenoid.SizeZ / 2. + fConfig.World.ShiftVTX + ci_ENDCAP_GVol_ShiftZ + ci_ENDCAP_GVol_SizeZ / 2.;
 
     ci_ENDCAP_GVol_Solid = new G4Tubs("ci_ENDCAP_GVol_Solid", ci_ENDCAP_GVol_RIn, ci_ENDCAP_GVol_ROut, ci_ENDCAP_GVol_SizeZ / 2., 0., 360 * deg);
 
@@ -462,9 +456,9 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     //===================================================================================
 
     ce_ENDCAP_GVol_RIn = 20 * cm;
-    ce_ENDCAP_GVol_ROut = fParameters.cb_Solenoid.ROut;
+    ce_ENDCAP_GVol_ROut = fConfig.cb_Solenoid.ROut;
     ce_ENDCAP_GVol_SizeZ = 60 * cm;
-    ce_ENDCAP_GVol_PosZ = -ce_ENDCAP_GVol_SizeZ / 2 - fParameters.cb_Solenoid.SizeZ / 2 + World_ShiftVTX;
+    ce_ENDCAP_GVol_PosZ = -ce_ENDCAP_GVol_SizeZ / 2 - fConfig.cb_Solenoid.SizeZ / 2 + fConfig.World.ShiftVTX;
 
     ce_ENDCAP_GVol_Solid = new G4Tubs("ce_ENDCAP_GVol_Solid", ce_ENDCAP_GVol_RIn, ce_ENDCAP_GVol_ROut, ce_ENDCAP_GVol_SizeZ / 2., 0.,
                                  360 * deg);
@@ -620,12 +614,12 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     //===================================================================================
 
 #ifdef  USE_CB_VTX
-   Create_cb_VTX(fParameters);
+   Create_cb_VTX(fConfig);
 
 
   #ifdef  USE_CB_VTX_LADDERS
    //----------vtx barrel ladder geometry--------------
-     cb_VTX_Design.Create(fParameters, cb_VTX_GVol_Phys);
+     cb_VTX_Design.Create(fConfig, cb_VTX_GVol_Phys);
   #endif
 
 #endif  // end VTX
@@ -636,11 +630,18 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 
 #ifdef  USE_CB_CTD
 
-    Create_cb_CTD(fParameters);
+    fConfig.cb_CTD.SizeZ = fConfig.cb_Solenoid.SizeZ - fConfig.cb_CTD.SizeZCut;
+
+    cb_CTD.Construct(fConfig.cb_CTD, World_Material, cb_Solenoid.Phys);
+
+    //Create_cb_CTD(fConfig);
+
 
    #ifdef USE_CB_CTD_Si
 
-    cb_CTD_Design.Create(fParameters, cb_CTD_GVol_Phys);
+   cb_CTD.ConstructLadders();
+
+    //cb_CTD_Design.Create(fConfig, cb_CTD_GVol_Phys);
    #endif
 
 #endif  // end CTD
@@ -649,13 +650,13 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     //===================================================================================
 
 #ifdef  USE_CB_EMCAL
-    Create_cb_EMCAL(fParameters);
-    cb_EMCAL_Design.Create(fParameters, cb_EMCAL_GVol_Phys, cb_EMCAL_GVol_Logic);
+    Create_cb_EMCAL(fConfig);
+    cb_EMCAL_Design.Create(fConfig, cb_EMCAL_GVol_Phys, cb_EMCAL_GVol_Logic);
 #endif  // end cb_EMCAL
 
 #ifdef  USE_CB_DIRC
 
-    Create_cb_DIRC(fParameters);
+    Create_cb_DIRC(fConfig);
 
     #endif  // end DIRC
 
@@ -675,7 +676,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     ci_GEM_GVol_Logic = new G4LogicalVolume(ci_GEM_GVol_Solid, World_Material, "ci_GEM_GVol_Logic");
 
     // ci_GEM_GVol_PosZ= SizeZ/2-abs(World_ShiftVTX)+ci_GEM_GVol_SizeZ-5*cm;   // --- need to find out why this 5 cm are needed
-    ci_GEM_GVol_PosZ = fParameters.cb_Solenoid.SizeZ / 2 -
+    ci_GEM_GVol_PosZ = fConfig.cb_Solenoid.SizeZ / 2 -
                ci_GEM_GVol_SizeZ / 2;   // --- need to find out why this 5 cm are needed
     ci_GEM_GVol_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, ci_GEM_GVol_PosZ), "ci_GEM_GVol_Phys", ci_GEM_GVol_Logic,
                                          cb_Solenoid.Phys, false, 0);
@@ -687,7 +688,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     ce_GEM_GVol_ROut = 65 * cm + 50 * cm;
     ce_GEM_GVol_SizeZ = 30 * cm;
     ce_GEM_GVol_ShiftZ = 0 * cm;
-    ce_GEM_GVol_PosZ = -fParameters.cb_Solenoid.SizeZ / 2 + ce_GEM_GVol_SizeZ / 2;
+    ce_GEM_GVol_PosZ = -fConfig.cb_Solenoid.SizeZ / 2 + ce_GEM_GVol_SizeZ / 2;
     // ce_GEM_GVol_PosZ= -SizeZ/2+abs(World_ShiftVTX)- ce_GEM_GVol_SizeZ +5*cm;  // --- need to find out why this 5 cm are needed
     ce_GEM_GVol_Solid = new G4Tubs("ce_GEM_GVol_Solid", ce_GEM_GVol_RIn, ce_GEM_GVol_ROut, ce_GEM_GVol_SizeZ / 2., 0., 360 * deg);
 
@@ -1581,7 +1582,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 
  G4RotationMatrix rm_dirc[40];
       printf("CB_DIRC:: \n");
-      cb_DIRC_bars_DZ = fParameters.cb_DIRC.GVol_SizeZ;
+      cb_DIRC_bars_DZ = fConfig.cb_DIRC.GVol_SizeZ;
       cb_DIRC_bars_DY = 42. *cm;
       cb_DIRC_bars_DX = 1.7 *cm;
       //   dR =  cb_DIRC_GVol_RIn+3.*cm;
@@ -2191,8 +2192,8 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC09() {
 
 void JLeicDetectorConstruction::PrintGeometryParameters() {
     G4cout << "\n The  WORLD   is made of "
-           << World_SizeZ / mm << "mm of " << World_Material->GetName();
-    G4cout << ", the transverse size (R) of the world is " << World_SizeR / mm << " mm. " << G4endl;
+           << fConfig.World.SizeZ / mm << "mm of " << World_Material->GetName();
+    G4cout << ", the transverse size (R) of the world is " << fConfig.World.SizeR / mm << " mm. " << G4endl;
     G4cout << "WorldMaterial = " << World_Material->GetName() << G4endl;
     //  G4cout<<"fVTX_END_Z = "<<fVTX_END_Z/mm<<" mm"<<G4endl;
     G4cout << G4endl;
@@ -2310,7 +2311,7 @@ void JLeicDetectorConstruction::SetAbsorberRadius(G4double val) {
 
 void JLeicDetectorConstruction::SetWorldSizeZ(G4double val) {
     fWorldChanged = true;
-    World_SizeZ = val;
+    fConfig.World.SizeZ = val;
     // ComputeCalorParameters();
 }
 
@@ -2320,7 +2321,7 @@ void JLeicDetectorConstruction::SetWorldSizeZ(G4double val) {
 
 void JLeicDetectorConstruction::SetWorldSizeR(G4double val) {
     fWorldChanged = true;
-    World_SizeR = val;
+    fConfig.World.SizeR = val;
     // ComputeCalorParameters();
 }
 

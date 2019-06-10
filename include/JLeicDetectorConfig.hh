@@ -5,16 +5,21 @@
 #ifndef G4E_JLeicDetectorParameters_HH
 #define G4E_JLeicDetectorParameters_HH
 
-#include "G4SystemOfUnits.hh"
+#include "cb_CTD/cb_CTD.hh"
 #include "cb_Solenoid/cb_Solenoid.hh"
 
 
-struct JLeicDetectorParameters {
+struct JLeicDetectorConfig {
 
-     double World_ShiftVTX = 40. * cm;
+    struct WorldConfig {
+        double ShiftVTX = 40. * cm;
+        double SizeR = 10000. * cm;
+        double SizeZ = 20000. * cm;
+    } World;
 
 
-    cb_Solenoid_Parameters cb_Solenoid;
+
+    cb_Solenoid_Config cb_Solenoid;
 
 
     /// Central Barrel Vertex definition
@@ -29,19 +34,7 @@ struct JLeicDetectorParameters {
     } cb_VTX;
 
 
-    /// Central Barrel Tracker definition
-    /// short name: cb_CTD
-    struct CentralBarrel_Tracker {
-
-        double GVol_RIn  = 21 * cm;
-        double GVol_ROut = 80* cm;
-      //  double GVol_SizeZ= SizeZ - 60 * cm;
-        double GVol_SizeZcut=  60 * cm;
-        double GVol_SizeZ;
-        double detSi_Steps = 5.;
-        int    detSi_Layers = 15;
-
-    } cb_CTD;
+    cb_CTD_Config cb_CTD;
 
     struct CentralBarrel_DIRC {
 

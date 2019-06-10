@@ -46,10 +46,15 @@ message(DEBUG "g4e: Geant4_LIBS  :${Geant4_LIBRARIES}" )
 # --------
 # TODO move to FindVGM.cmake
 
+print_header(">>>>    V G M     <<<<" )
+
 if(EXISTS ${VGM_DIRECTORY})
     message(STATUS "jleic-geant: cmake VGM_DIRECTORY provided: ${VGM_DIRECTORY}")
 elseif(EXISTS $ENV{VGM_DIRECTORY})
     set(VGM_DIRECTORY $ENV{VGM_DIRECTORY})
+    message(STATUS "g4e: VGM_DIRECTORY set from environemnt ${VGM_DIRECTORY}")
+elseif(EXISTS $ENV{VGM_DIR})
+    set(VGM_DIRECTORY $ENV{VGM_DIR})
     message(STATUS "g4e: VGM_DIRECTORY set from environemnt ${VGM_DIRECTORY}")
 else()
     message(STATUS "g4e: No cmake VGM_DIRECTORY nor env:VGM_DIRECTORY provided")

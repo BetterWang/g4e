@@ -59,7 +59,7 @@
 
 #include "JLeicMaterials.hh"
 #include "JLeicDetectorMessenger.hh"
-#include "JLeicDetectorParameters.hh"
+#include "JLeicDetectorConfig.hh"
 
 #include "cb_Solenoid/cb_Solenoid.hh"   // Central Barrel - Solenoid
 #include "cb_VTX/cb_VTX.hh"             // Central Barrel - Vertex
@@ -142,9 +142,9 @@ public:
 
     G4Material *GetWorldMaterial() { return World_Material; };
 
-    G4double GetWorldSizeZ() { return World_SizeZ; };
+    G4double GetWorldSizeZ() { return fConfig.World.SizeZ; };
 
-    G4double GetWorldSizeR() { return World_SizeR; };
+    G4double GetWorldSizeR() { return fConfig.World.SizeR; };
 
     G4double GetAbsorberZpos() { return fAbsorberZ; };
 
@@ -213,10 +213,9 @@ private:
 
     void TestOld();
 
-    void Create_cb_VTX(JLeicDetectorParameters& parameters);
-    void Create_cb_CTD(JLeicDetectorParameters& parameters);
-    void Create_cb_DIRC(JLeicDetectorParameters& parameters);
-    void Create_cb_EMCAL(JLeicDetectorParameters& parameters);
+    void Create_cb_VTX(JLeicDetectorConfig& parameters);
+    void Create_cb_DIRC(JLeicDetectorConfig& parameters);
+    void Create_cb_EMCAL(JLeicDetectorConfig& parameters);
 
 private:
 
@@ -224,7 +223,7 @@ private:
 //           R E F A C T O R I N G
 
 
-    JLeicDetectorParameters fParameters;
+    JLeicDetectorConfig fConfig;
 
     // Central Barrel Vertex cb_VTX
     G4Tubs *cb_VTX_GVol_Solid;            //solid VTX volume
@@ -238,7 +237,7 @@ private:
     G4LogicalVolume *cb_CTD_GVol_Logic;    //logical CTD  volume
     G4VPhysicalVolume *cb_CTD_GVol_Phys;   //physical CTD  volume
 
-    CentralBarrelTracker cb_CTD_Design;
+    cb_CTD_Design cb_CTD;
 
     //----------------DIRC  volume -------------------
     G4Tubs *cb_DIRC_GVol_Solid;    //pointer to the solid DIRC  volume
@@ -291,9 +290,8 @@ private:
     G4LogicalVolume *World_Logic;    //pointer to the logical World
     G4VPhysicalVolume *World_Phys;    //pointer to the physical World
     G4Material *World_Material;
-    G4double World_SizeR;
-    G4double World_SizeZ;
-    G4double World_ShiftVTX;
+
+
 
 //-----------------Hadron ENDCAP  volume--------------------
     G4double ci_ENDCAP_GVol_RIn;

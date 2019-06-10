@@ -11,7 +11,7 @@
 #include "G4Color.hh"
 #include "G4VisAttributes.hh"
 
-#include "JLeicDetectorParameters.hh"
+#include "JLeicDetectorConfig.hh"
 
 typedef struct {
     double Dx;
@@ -29,7 +29,7 @@ public:
 
     }
 
-    inline void Create(JLeicDetectorParameters& jleicParams, G4VPhysicalVolume *physicalVolume) {
+    inline void Create(JLeicDetectorConfig& jleicParams, G4VPhysicalVolume *physicalVolume) {
         static char abname[256];
 
         auto p = jleicParams.cb_VTX;

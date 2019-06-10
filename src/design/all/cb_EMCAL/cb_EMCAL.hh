@@ -12,7 +12,7 @@
 #include "G4Color.hh"
 #include "G4VisAttributes.hh"
 
-#include "JLeicDetectorParameters.hh"
+#include "JLeicDetectorConfig.hh"
 class CentralBarrelEMCAL {
 public:
 
@@ -22,7 +22,7 @@ public:
 
     }
 
-    inline void Create(JLeicDetectorParameters& jleicParams,
+    inline void Create(JLeicDetectorConfig& jleicParams,
             G4VPhysicalVolume *physicalVolume,
             G4LogicalVolume *logicalVolume
             ) {

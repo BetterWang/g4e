@@ -10,28 +10,46 @@
 #include "G4Tubs.hh"
 #include "G4LogicalVolume.hh"
 #include "G4PVPlacement.hh"
+#include "G4UImessenger.hh"
 
-struct cb_Solenoid_Parameters
+struct cb_Solenoid_Config
 {
-    bool PipeField = true;                       // field in helium pipe used?
+    bool UseMagneticField = true;                       // field in helium pipe used?
     double FieldStrength = -2.0 * tesla;
     double AlphaB = 0. * degree;
     double SizeZ = 400. * cm;
     double ROut = 144. * cm;
     double RIn = 0.0 * cm;
+    double ShiftZ = 0.;
 };
+
+class cb_Solenoid_Messenger: G4UImessenger {
+public:
+    explicit cb_Solenoid_Messenger(cb_Solenoid_Config * parameters, G4UIdirectory *parentDirectory) {
+
+    }
+};
+
 
 class cb_Solenoid_Design {
 public:
 
-    void Create(const cb_Solenoid_Parameters &p, double shiftZ, G4Material *material, G4VPhysicalVolume *motherVolume)
+
+    explicit cb_Solenoid_Design()
     {
+    }
+
+
+    void Construct(cb_Solenoid_Config p, G4Material *material, G4VPhysicalVolume *motherVolume)
+    {
+        ConstructionConfig = p;
+
         printf("SizeZ=%f", p.SizeZ);
 
         // Global placement
         Solid = new G4Tubs("Solid", p.RIn, p.ROut, p.SizeZ / 2., 0., 360 * deg);
         Logic = new G4LogicalVolume(Solid, material, "Logic");
-        Phys = new G4PVPlacement(nullptr, G4ThreeVector(0, 0, shiftZ), "Phys", Logic, motherVolume, false, 0);
+        Phys = new G4PVPlacement(nullptr, G4ThreeVector(0, 0, p.ShiftZ), "Phys", Logic, motherVolume, false, 0);
 
         // Visual attributes
         VisAttributes = new G4VisAttributes(G4Color(0.1, 0, 0.1, 0.4));
@@ -39,7 +57,7 @@ public:
         VisAttributes->SetForceSolid(false);
         Logic->SetVisAttributes(VisAttributes);
 
-        if (p.PipeField) {
+        if (p.UseMagneticField) {
             G4cout << "Set Magnetic field = " << p.FieldStrength << G4endl << G4endl;
             CreateMagneticField(p);
         }
@@ -48,21 +66,19 @@ public:
         }
     }
 
-    void CreateMagneticField(const cb_Solenoid_Parameters &p)
+    void CreateMagneticField(const cb_Solenoid_Config &p)
     {
+        delete MagneticField;   //delete the existing mag field
 
+        auto direction = G4ThreeVector(p.FieldStrength * std::sin(p.AlphaB),
+                                       0.,
+                                       p.FieldStrength * std::cos(p.AlphaB));
+        MagneticField = new G4UniformMagField(direction);
 
-            delete fMagField;   //delete the existing mag field
-
-            auto direction = G4ThreeVector(p.FieldStrength * std::sin(p.AlphaB),
-                                           0.,
-                                           p.FieldStrength * std::cos(p.AlphaB));
-            fMagField = new G4UniformMagField(direction);
-
-            auto *fieldMgr = new G4FieldManager(fMagField);
-            fieldMgr->SetDetectorField(fMagField);
-            fieldMgr->CreateChordFinder(fMagField);
-            Logic->SetFieldManager(fieldMgr, true);
+        auto *fieldMgr = new G4FieldManager(MagneticField);
+        fieldMgr->SetDetectorField(MagneticField);
+        fieldMgr->CreateChordFinder(MagneticField);
+        Logic->SetFieldManager(fieldMgr, true);
 
     }
 
@@ -70,8 +86,10 @@ public:
     G4Tubs *Solid;      //pointer to the solid
     G4LogicalVolume *Logic;    //pointer to the logical
     G4VPhysicalVolume *Phys;  //pointer to the physical
-    //----
-    G4UniformMagField *fMagField;      //pointer to the magnetic field
+    G4UniformMagField *MagneticField;      //pointer to the magnetic field
+
+    /// Parameters that was used in the moment of construction
+    cb_Solenoid_Config ConstructionConfig;
 private:
 
 

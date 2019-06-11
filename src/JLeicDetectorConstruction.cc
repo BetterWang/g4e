@@ -116,7 +116,7 @@
 #define  USE_CE_EMCAL
 #define  USE_CE_MRICH
 
-
+#define  USE_FFE_CPOL
 //--------FARFORWARD HADRON------
 //#define USE_DIPOLE1_SI
 //#define USE_FI_DIPOLE1_A
@@ -354,23 +354,20 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     //==                           HCAL  DETECTOR VOLUME  BARREL                       ==
     //===================================================================================
 #ifdef USE_CB_HCAL
-    cb_HCAL_GVol_RIn = fConfig.cb_Solenoid.ROut;
-    cb_HCAL_GVol_ROut = fConfig.cb_Solenoid.ROut + 100. * cm;
-    cb_HCAL_GVol_SizeZ = fConfig.cb_Solenoid.SizeZ + ce_ENDCAP_GVol_SizeZ;
-    //cb_HCAL_det_Material = fMat->GetMaterial("StainlessSteel");
-    cb_HCAL_GVol_Solid = new G4Tubs("cb_HCAL_GVol_Solid", cb_HCAL_GVol_RIn, cb_HCAL_GVol_ROut, cb_HCAL_GVol_SizeZ / 2., 0., 360 * deg);
+    fConfig.cb_HCAL.RIn = fConfig.cb_Solenoid.ROut;
+    fConfig.cb_HCAL.ROut = fConfig.cb_Solenoid.ROut + fConfig.cb_HCAL.Thickness;
+    fConfig.cb_HCAL.SizeZ = fConfig.cb_Solenoid.SizeZ + ce_ENDCAP_GVol_SizeZ;
 
-    cb_HCAL_GVol_Logic = new G4LogicalVolume(cb_HCAL_GVol_Solid, World_Material, "cb_HCAL_GVol_Logic");
+  //  fConfig.cb_HCAL.ShiftZ = fConfig.World.ShiftVTX;
 
-    cb_HCAL_GVol_Phys = new G4PVPlacement(nullptr, G4ThreeVector(0, 0, fConfig.World.ShiftVTX - ce_ENDCAP_GVol_SizeZ / 2), "cb_HCAL_GVol_Phys",
-                                          cb_HCAL_GVol_Logic,
-                                          World_Phys, false, 0);
+    fConfig.cb_HCAL.ShiftZ = fConfig.World.ShiftVTX;
+    cb_HCAL.Construct(fConfig.cb_HCAL, World_Material, World_Phys);
 
-    attr_cb_HCAL_GVol = new G4VisAttributes(G4Color(0.3, 0, 3., 0.1));
-    attr_cb_HCAL_GVol->SetLineWidth(1);
-    attr_cb_HCAL_GVol->SetForceSolid(false);
-    cb_HCAL_GVol_Logic->SetVisAttributes(attr_cb_HCAL_GVol);
-     //  cb_HCAL_GVol_Logic->SetVisAttributes(G4VisAttributes::Invisible);
+    #ifdef USE_CB_HCAL_D
+    cb_HCAL.ConstructLayers();
+
+     #endif // end HCALbdet
+
 #endif // end HCALb
     //===================================================================================
 
@@ -380,7 +377,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     //==                           HADRON-ENDCAP                                       ==
     //===================================================================================
     ci_ENDCAP_GVol_RIn = 20. * cm;
-    ci_ENDCAP_GVol_ROut = cb_HCAL_GVol_ROut;
+    ci_ENDCAP_GVol_ROut = fConfig.cb_HCAL.ROut;
     ci_ENDCAP_GVol_SizeZ = 250 * cm;
     ci_ENDCAP_GVol_ShiftZ = 0. * cm;
     ci_ENDCAP_GVol_PosX = 0. * cm;
@@ -433,42 +430,6 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 
 //===================================================================================
 
-
-    //===================================================================================
-//-------------------------------------HCAL Iron detector barrel-----------------------
-    //===================================================================================
-#ifdef USE_CB_HCAL
-#ifdef USE_CB_HCAL_D
-    cb_HCAL_det_SizeZ = cb_HCAL_GVol_SizeZ;
-    cb_HCAL_det_Thickness = 2 * cm;
-
-    cb_HCAL_det_Material = fMat->GetMaterial("Iron");
-
-    int hlay = 0;
-    int NLAY_HCALb = 25;
-    for (hlay = 0; hlay < NLAY_HCALb; hlay++) {
-
-        cb_HCAL_det_RIn = cb_HCAL_GVol_RIn + hlay * 2 * cb_HCAL_det_Thickness;
-        cb_HCAL_det_ROut = cb_HCAL_det_RIn + cb_HCAL_det_Thickness;
-        if (cb_HCAL_det_RIn > cb_HCAL_GVol_ROut || cb_HCAL_det_ROut > cb_HCAL_GVol_ROut) continue;
-
-        sprintf(abname, "cb_HCAL_det_Solid_%d", hlay);
-        cb_HCAL_det_Solid = new G4Tubs(abname, cb_HCAL_det_RIn, cb_HCAL_det_ROut, cb_HCAL_det_SizeZ / 2., 0., 360 * deg);
-        sprintf(abname, "cb_HCAL_det_Logic_%d", hlay);
-        cb_HCAL_det_Logic = new G4LogicalVolume(cb_HCAL_det_Solid, World_Material, abname);
-        sprintf(abname, "cb_HCAL_det_Phys_%d", hlay);
-        cb_HCAL_det_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), abname, cb_HCAL_det_Logic,
-                                             cb_HCAL_GVol_Phys, false, hlay);
-        attr_cb_HCAL_det = new G4VisAttributes(G4Color(0.6, 0, 0.6, 1));
-        attr_cb_HCAL_det->SetLineWidth(1);
-        attr_cb_HCAL_det->SetForceSolid(true);
-        cb_HCAL_det_Logic->SetVisAttributes(attr_cb_HCAL_det);
-    }
-
-
-#endif // end HCALbdet
-#endif // end HCALb
-
     //===================================================================================
     //==                          HADRON-ENDCAP    HCAL   DETECTOR VOLUME              ==
     //===================================================================================
@@ -477,7 +438,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
      //  G4double ci_HCAL_GVol_RIn[2]={0*cm, 0*cm }
      // G4double ci_HCAL_GVol_ROut[2]={cb_HCAL_GVol_ROut,cb_HCAL_GVol_ROut };
  ci_HCAL_GVol_RIn=0*cm ;
- ci_HCAL_GVol_ROut=cb_HCAL_GVol_ROut;
+ ci_HCAL_GVol_ROut=fConfig.cb_HCAL.ROut;
  ci_HCAL_GVol_SizeZ=195*cm;
  ci_HCAL_GVol_ShiftZ=5*cm;
  // G4double  fHCAL_HCAP_Zcone[2]= {ci_ENDCAP_GVol_PosZ+ ci_ENDCAP_GVol_SizeZ/2+ci_HCAL_GVol_ShiftZ,ci_ENDCAP_GVol_PosZ+ ci_ENDCAP_GVol_SizeZ/2+ci_HCAL_GVol_SizeZ + ci_HCAL_GVol_ShiftZ} ;
@@ -541,11 +502,6 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 #endif // end HCAL
 #endif // end HCAL
 
-    //===================================================================================
-
-    //===================================================================================
-    //===================================================================================
-
 
     //***********************************************************************************
     //***********************************************************************************
@@ -555,14 +511,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 
 
 #ifdef  USE_BARREL_det
-    //***********************************************************************************
-    //***********************************************************************************
-    //**                               BARREL VOLUMES                                  **
-    //***********************************************************************************
-    //***********************************************************************************
-
-
-    //===================================================================================
+   //===================================================================================
     //==                          VERTEX DETECTOR VOLUME                               ==
     //===================================================================================
 
@@ -626,6 +575,8 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 #endif  // end cb_EMCAL
 
 
+//=================================================
+
 
 
 #ifdef USE_GEMb
@@ -668,6 +619,15 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 
 
 #endif  // end BARREL
+
+    //===================================================================================
+    //==                        Compton Polarimeter                                  ==
+    //===================================================================================
+#ifdef  USE_FFE_CPOL
+
+     ffe_CPOL.Construct(fConfig.ffe_CPOL, World_Material, World_Phys);
+#endif // end ffe_CPOL
+
 
 
 

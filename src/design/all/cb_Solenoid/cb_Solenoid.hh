@@ -11,6 +11,7 @@
 #include "G4LogicalVolume.hh"
 #include "G4PVPlacement.hh"
 #include "G4UImessenger.hh"
+#include "G4SystemOfUnits.hh"
 
 struct cb_Solenoid_Config
 {

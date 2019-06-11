@@ -5,11 +5,15 @@
 #ifndef G4E_JLeicDetectorParameters_HH
 #define G4E_JLeicDetectorParameters_HH
 
+#include "cb_Solenoid/cb_Solenoid.hh"
+
 #include "cb_VTX/cb_VTX.hh"
 #include "cb_CTD/cb_CTD.hh"
 #include "cb_DIRC/cb_DIRC.hh"
+#include "cb_HCAL/cb_HCAL.hh"
 
-#include "cb_Solenoid/cb_Solenoid.hh"
+
+#include "ffe_CPOL/ffe_CPOL.hh"
 
 
 struct JLeicDetectorConfig {
@@ -28,7 +32,9 @@ struct JLeicDetectorConfig {
     cb_CTD_Config  cb_CTD;
     cb_DIRC_Config cb_DIRC;
 
+    cb_HCAL_Config cb_HCAL;
 
+    ffe_CPOL_Config ffe_CPOL;
 
     struct CentralBarrel_EMCAL {
         double GVol_RIn;

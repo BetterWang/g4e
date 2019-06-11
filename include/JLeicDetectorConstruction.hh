@@ -66,7 +66,9 @@
 #include "cb_CTD/cb_CTD.hh"             // Central Barrel - Tracker
 #include "cb_DIRC/cb_DIRC.hh"           // Central Barrel - DIRC
 #include "cb_EMCAL/cb_EMCAL.hh"         // Central Barrel - EMCAL
+#include "cb_HCAL/cb_HCAL.hh"         // Central Barrel - HCAL
 
+#include "ffe_CPOL/ffe_CPOL.hh"         //  Far-forward electron direction ePolarimeter
 
 
 class JLeicCalorimeterSD;
@@ -200,8 +202,8 @@ private:
     G4VPhysicalVolume *SetUpJLEIC09();
 
 
-    void Create_cb_VTX(JLeicDetectorConfig& parameters);
-    void Create_cb_DIRC(JLeicDetectorConfig& parameters);
+ //   void Create_cb_VTX(JLeicDetectorConfig& parameters);
+ //   void Create_cb_DIRC(JLeicDetectorConfig& parameters);
     void Create_cb_EMCAL(JLeicDetectorConfig& parameters);
 
 private:
@@ -227,14 +229,21 @@ private:
     cb_CTD_Design cb_CTD;
 
     //----------------DIRC  volume -------------------
-    G4Tubs *cb_DIRC_GVol_Solid;    //pointer to the solid DIRC  volume
-    G4VisAttributes* attr_cb_DIRC_GVol;
-    G4LogicalVolume *cb_DIRC_GVol_Logic;    //pointer to the logical DIRC  volume
-    G4VPhysicalVolume *cb_DIRC_GVol_Phys;    //pointer to the physical DIRC  volume
+ //   G4Tubs *cb_DIRC_GVol_Solid;    //pointer to the solid DIRC  volume
+ //   G4VisAttributes* attr_cb_DIRC_GVol;
+ //   G4LogicalVolume *cb_DIRC_GVol_Logic;    //pointer to the logical DIRC  volume
+ //   G4VPhysicalVolume *cb_DIRC_GVol_Phys;    //pointer to the physical DIRC  volume
 
     cb_DIRC_Design cb_DIRC;
 
 
+    //----------------HCAL  volume -------------------
+
+    cb_HCAL_Design cb_HCAL;
+
+    //----------------FFe  CPOL volume -------------------
+
+    ffe_CPOL_Design ffe_CPOL;
 
 
     // Central Barrel EMCAL cb_EMCAL
@@ -347,28 +356,6 @@ private:
     G4VPhysicalVolume *cb_CTD_Straws_Gas_Phys;    //pointer to the physical World
 
     //*************************************************************
-
-    //*************************************************************
-    //--------------HCAL barrel volume  -------------------
-    G4double cb_HCAL_GVol_RIn;
-    G4double cb_HCAL_GVol_ROut;
-    G4double cb_HCAL_GVol_SizeZ;
-
-    G4Tubs *cb_HCAL_GVol_Solid;      //pointer to the solid
-    G4LogicalVolume *cb_HCAL_GVol_Logic;    //pointer to the logical
-    G4VPhysicalVolume *cb_HCAL_GVol_Phys;  //pointer to the physical
-    G4VisAttributes *attr_cb_HCAL_GVol;
-
-    G4double cb_HCAL_det_RIn;
-    G4double cb_HCAL_det_ROut;
-    G4double cb_HCAL_det_SizeZ;
-    G4double cb_HCAL_det_Thickness;
-    G4Material *cb_HCAL_det_Material;
-    G4VisAttributes *attr_cb_HCAL_det;
-    G4Tubs *cb_HCAL_det_Solid;      //pointer to the solid
-    G4LogicalVolume *cb_HCAL_det_Logic;    //pointer to the logical
-    G4VPhysicalVolume *cb_HCAL_det_Phys;  //pointer to the physical
-
 
     //***************** Included into BARREL***********************
     //-----------------ENDCAP-E GEM  volume--------------------

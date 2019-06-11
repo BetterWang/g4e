@@ -5,7 +5,10 @@
 #ifndef G4E_JLeicDetectorParameters_HH
 #define G4E_JLeicDetectorParameters_HH
 
+#include "cb_VTX/cb_VTX.hh"
 #include "cb_CTD/cb_CTD.hh"
+#include "cb_DIRC/cb_DIRC.hh"
+
 #include "cb_Solenoid/cb_Solenoid.hh"
 
 
@@ -21,28 +24,11 @@ struct JLeicDetectorConfig {
 
     cb_Solenoid_Config cb_Solenoid;
 
-
-    /// Central Barrel Vertex definition
-    /// short name: cb_VTX
-
-   struct CentralBarrel_Vertex {
-        double GVol_RIn = 3.3 * cm;     /// Inner radius
-        double GVol_ROut = 20 * cm;     /// Outer radius
-        double GVol_SizeZ = 50 * cm;    /// Guess what
-
-        double ladder_deltashi = -7. * deg;
-    } cb_VTX;
+    cb_VTX_Config  cb_VTX;
+    cb_CTD_Config  cb_CTD;
+    cb_DIRC_Config cb_DIRC;
 
 
-    cb_CTD_Config cb_CTD;
-
-    struct CentralBarrel_DIRC {
-
-        G4double GVol_RIn;
-        G4double GVol_ROut;
-        G4double GVol_SizeZ;
-
-    } cb_DIRC;
 
     struct CentralBarrel_EMCAL {
         double GVol_RIn;

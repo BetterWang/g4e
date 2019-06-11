@@ -83,7 +83,6 @@ public:
     G4Tubs *Solid;      //pointer to the solid
     G4LogicalVolume *Logic;    //pointer to the logical
     G4VPhysicalVolume *Phys;  //pointer to the physical
-    G4UniformMagField *MagneticField;      //pointer to the magnetic field
 
     /// Parameters that was used in the moment of construction
     cb_CTD_Config ConstructionConfig;

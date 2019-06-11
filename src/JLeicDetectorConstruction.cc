@@ -208,53 +208,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::ConstructDetectorXTR() {
 }
 
 
-//===================================================================================
-//==                          VTX DETECTOR VOLUME                                  ==
-//===================================================================================
 
-void JLeicDetectorConstruction::Create_cb_VTX(JLeicDetectorConfig &p)
-{
-    printf("Begin cb_VERTEX volume \n");
-
-    cb_VTX_GVol_Solid = new G4Tubs("cb_VTX_GVol_Solid", p.cb_VTX.GVol_RIn, p.cb_VTX.GVol_ROut, p.cb_VTX.GVol_SizeZ / 2., 0., 360 * deg);
-    cb_VTX_GVol_Logic = new G4LogicalVolume(cb_VTX_GVol_Solid, World_Material, "cb_VTX_GVol_Logic");
-    cb_VTX_GVol_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, -fConfig.World.ShiftVTX), "cb_VTX_GVol_Phys", cb_VTX_GVol_Logic,
-                                         cb_Solenoid.Phys, false, 0);
-
-    // cb_VTX_GVol_Logic->SetVisAttributes(G4VisAttributes::Invisible);
-    G4VisAttributes *attr_cb_VTX = new G4VisAttributes(G4Color(0.1, 0, 1., 0.1));
-    attr_cb_VTX->SetLineWidth(1);
-    attr_cb_VTX->SetForceSolid(false);
-    cb_VTX_GVol_Logic->SetVisAttributes(attr_cb_VTX);
-}
-
-//===================================================================================
-//==                          DIRC DETECTOR VOLUME                                  ==
-//===================================================================================
-
-void JLeicDetectorConstruction::Create_cb_DIRC(JLeicDetectorConfig &p) {
-    printf("Begin cb_DIRC  volume \n");
-
-     p.cb_DIRC.GVol_RIn = p.cb_CTD.ROut + 1 * cm;
-    // for new magnet
-    //   cb_DIRC_GVol_ROut = 95 * cm;
-    // for CLEO and BABAR DIRC
-    p.cb_DIRC.GVol_ROut = p.cb_DIRC.GVol_RIn + 10 * cm;
-    //   cb_DIRC_GVol_SizeZ = SizeZ;
-    p.cb_DIRC.GVol_SizeZ = p.cb_CTD.SizeZ;
-
-    cb_DIRC_GVol_Solid = new G4Tubs("cb_DIRC_GVol_Solid", p.cb_DIRC.GVol_RIn, p.cb_DIRC.GVol_ROut, p.cb_DIRC.GVol_SizeZ / 2., 0., 360 * deg);
-    cb_DIRC_GVol_Logic = new G4LogicalVolume(cb_DIRC_GVol_Solid, World_Material, "cb_DIRC_GVol_Logic");
-    cb_DIRC_GVol_Phys = new G4PVPlacement(nullptr, G4ThreeVector(), "DIRC", cb_DIRC_GVol_Logic, cb_Solenoid.Phys, false, 0);
-
-    // cb_DIRC_GVol_Logic->SetVisAttributes(G4VisAttributes::Invisible);
-    G4VisAttributes *attr_cb_DIRC = new G4VisAttributes(G4Color(0.1, 0, 1., 0.1));
-    attr_cb_DIRC->SetLineWidth(1);
-    attr_cb_DIRC->SetForceSolid(false);
-    cb_DIRC_GVol_Logic->SetVisAttributes(attr_cb_DIRC);
-
-//===================================================================================
-}
 
 //===================================================================================
 //==                          EMCAL DETECTOR VOLUME                                  ==
@@ -389,8 +343,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 
  
 #ifdef  USE_BARREL
-
-
+    //----------------------CREATE SOLENOID ------------------------
     fConfig.cb_Solenoid.ShiftZ = fConfig.World.ShiftVTX;
     cb_Solenoid.Construct(fConfig.cb_Solenoid, World_Material, World_Phys);
 
@@ -614,37 +567,55 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     //===================================================================================
 
 #ifdef  USE_CB_VTX
-   Create_cb_VTX(fConfig);
 
+    fConfig.cb_VTX.ShiftZ = fConfig.World.ShiftVTX;
+    cb_VTX.Construct(fConfig.cb_VTX, World_Material, cb_Solenoid.Phys);
 
   #ifdef  USE_CB_VTX_LADDERS
    //----------vtx barrel ladder geometry--------------
-     cb_VTX_Design.Create(fConfig, cb_VTX_GVol_Phys);
+     cb_VTX.ConstructLadders();
   #endif
 
 #endif  // end VTX
 
     //===================================================================================
-    //==                         CTD DETECTOR VOLUME                                   ==
+    //==                         CTD DETECTOR                                  ==
     //===================================================================================
-
 #ifdef  USE_CB_CTD
 
     fConfig.cb_CTD.SizeZ = fConfig.cb_Solenoid.SizeZ - fConfig.cb_CTD.SizeZCut;
 
     cb_CTD.Construct(fConfig.cb_CTD, World_Material, cb_Solenoid.Phys);
 
-    //Create_cb_CTD(fConfig);
-
-
-   #ifdef USE_CB_CTD_Si
-
-   cb_CTD.ConstructLadders();
-
-    //cb_CTD_Design.Create(fConfig, cb_CTD_GVol_Phys);
-   #endif
-
+    #ifdef USE_CB_CTD_Si
+    cb_CTD.ConstructLadders();
+    #endif
 #endif  // end CTD
+
+
+    //===================================================================================
+    //==                         RICH DETECTOR                                  ==
+    //===================================================================================
+#ifdef  USE_CB_DIRC
+
+    fConfig.cb_DIRC.RIn = fConfig.cb_CTD.ROut + 1 * cm;
+    // for new magnet
+    //   cb_DIRC_GVol_ROut = 95 * cm;
+    // for CLEO and BABAR DIRC
+    fConfig.cb_DIRC.ROut = fConfig.cb_DIRC.RIn + 10 * cm;
+    //   cb_DIRC_GVol_SizeZ = SizeZ;
+    fConfig.cb_DIRC.SizeZ = fConfig.cb_CTD.SizeZ;
+
+    cb_DIRC.Construct(fConfig.cb_DIRC, World_Material, cb_Solenoid.Phys);
+
+    #ifdef  USE_CB_DIRC_bars
+    cb_DIRC.ConstructBars();
+    #endif
+
+
+#endif  // end DIRC
+
+
     //===================================================================================
     //==                         EMCAL DETECTOR VOLUME                                   ==
     //===================================================================================
@@ -654,11 +625,6 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     cb_EMCAL_Design.Create(fConfig, cb_EMCAL_GVol_Phys, cb_EMCAL_GVol_Logic);
 #endif  // end cb_EMCAL
 
-#ifdef  USE_CB_DIRC
-
-    Create_cb_DIRC(fConfig);
-
-    #endif  // end DIRC
 
 
 
@@ -1570,68 +1536,6 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     }
 
     printf("END ce_GEM_lay_ \n");
-
-
-#endif
-#endif
-    //----------------------------------------------------------------------------------
-    //                                     DIRC
-    //----------------------------------------------------------------------------------
-#ifdef  USE_CB_DIRC
-#ifdef  USE_CB_DIRC_bars  
-
- G4RotationMatrix rm_dirc[40];
-      printf("CB_DIRC:: \n");
-      cb_DIRC_bars_DZ = fConfig.cb_DIRC.GVol_SizeZ;
-      cb_DIRC_bars_DY = 42. *cm;
-      cb_DIRC_bars_DX = 1.7 *cm;
-      //   dR =  cb_DIRC_GVol_RIn+3.*cm;
-      double dR = 83.65*cm;
-
-      double myL = 2*3.1415*dR;
-      int NUM = myL/cb_DIRC_bars_DY;
-
-      /*     for(int i=0;i<2; i++){ 
-	double LN = cb_DIRC_bars_DY * NUM;
-	double LN1 = cb_DIRC_bars_DY * (NUM+1+i);
-	printf("cb_DIRC_bars:: LN= Orig NUM=%d\n",NUM);
-	if (LN/LN1>0.8) NUM=NUM+1;
-	printf("cb_DIRC_bars:: LN=%f, LN1=%f  delenie=%f NUM=%d \n",LN,LN1,LN/LN1,NUM);
-      }
-      */
-      cb_DIRC_bars_deltaphi = 2*3.1415926/NUM  ;
- 
-      cb_DIRC_bars_Material = fMat->GetMaterial("quartz");
-      sprintf(abname, "cb_DIRC_bars_Solid");
-      cb_DIRC_bars_Solid  = new G4Box(abname, cb_DIRC_bars_DX / 2.,   cb_DIRC_bars_DY / 2.,cb_DIRC_bars_DZ / 2.  );
-      
-      sprintf(abname, "cb_DIRC_bars_Logic");
-      cb_DIRC_bars_Logic = new G4LogicalVolume(cb_DIRC_bars_Solid, cb_DIRC_bars_Material, abname);
-      
-
-      attr_cb_DIRC_bars = new G4VisAttributes(G4Color(0., 1., 0., 1.0)); 
-      attr_cb_DIRC_bars->SetForceSolid(true);
-      cb_DIRC_bars_Logic->SetVisAttributes(attr_cb_DIRC_bars);
-       
-           for (int ia = 0; ia < NUM; ia++) {
-      // for (int ia = 0; ia < 1; ia++) {
-	//for (int ia=0;ia<1;ia++) {
-	printf("cb_DIRC_bars:: la =%d NUM=%d, dR=%f cb_DIRC_bars_deltaphi=%f  \n", ia, NUM,  dR, cb_DIRC_bars_deltaphi);
-	
-	double phi = (ia * (cb_DIRC_bars_deltaphi));
-	double x = - dR * cos(phi) ;
-	double y = - dR * sin(phi) ;
-	rm_dirc[ia].rotateZ(cb_DIRC_bars_deltaphi * ia);
-	//	rm[lay][ia].rotateZ(cb_DIRC_bars_deltashi);
-
-	printf("cb_DIRC_bars::   %d x=%f  y=%f  \n",  ia, x, y);
-	sprintf(abname, "cb_DIRC_bars_Phys_%d", ia);
-		cb_DIRC_bars_Phys = new G4PVPlacement(G4Transform3D(rm_dirc[ia], G4ThreeVector(x, y, 0)),
-						     abname, cb_DIRC_bars_Logic,
-						      //	      Phys, false, 0.);
-       				     cb_DIRC_GVol_Phys, false, 0.);
-      }
-
 
 
 #endif

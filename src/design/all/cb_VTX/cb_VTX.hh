@@ -10,6 +10,7 @@
 #include "G4Material.hh"
 #include "G4Color.hh"
 #include "G4VisAttributes.hh"
+#include "G4SystemOfUnits.hh"
 
 #include "JLeicDetectorConfig.hh"
 
@@ -20,19 +21,46 @@ typedef struct {
     double Rin;
 } cb_VTX_ladder_LayParam;
 
-class CentralBarrelVertex {
-public:
+struct cb_VTX_Config {
 
-    explicit CentralBarrelVertex()
-    {
+    double RIn = 3.3 * cm;     /// Inner radius
+    double ROut = 20 * cm;     /// Outer radius
+    double SizeZ = 50 * cm;    /// Guess what
+    double ShiftZ;
+    double ladder_deltashi = -7. * deg;
+
+
+};
+
+
+class cb_VTX_Design {
+public:
+    inline void Construct(cb_VTX_Config cfg,G4Material* worldMaterial, G4VPhysicalVolume *motherVolume) {
+        printf("Begin cb_CTD volume \n");
+
+        ConstructionConfig = cfg;
+
+        printf("Begin cb_VERTEX volume \n");
+
+        Solid = new G4Tubs("cb_VTX_GVol_Solid", cfg.RIn, cfg.ROut, cfg.SizeZ / 2., 0., 360 * deg);
+        Logic = new G4LogicalVolume(Solid, worldMaterial, "cb_VTX_GVol_Logic");
+        Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, cfg.ShiftZ), "cb_VTX_GVol_Phys", Logic,
+                                            motherVolume, false, 0);
+
+        // cb_VTX_GVol_Logic->SetVisAttributes(G4VisAttributes::Invisible);
+        G4VisAttributes *attr_cb_VTX = new G4VisAttributes(G4Color(0.1, 0, 1., 0.1));
+        attr_cb_VTX->SetLineWidth(1);
+        attr_cb_VTX->SetForceSolid(false);
+        Logic->SetVisAttributes(attr_cb_VTX);
+
+
+
 
 
     }
-
-    inline void Create(JLeicDetectorConfig& jleicParams, G4VPhysicalVolume *physicalVolume) {
+    inline void ConstructLadders() {
         static char abname[256];
-
-        auto p = jleicParams.cb_VTX;
+        auto cfg = ConstructionConfig;
 
         //--------------------------------------------------
         //----------vtx barrel ladder geometry--------------
@@ -119,20 +147,20 @@ public:
 
             for (int ia = 0; ia < NUM; ia++) {
                 //for (int ia=0;ia<1;ia++) {
-                printf("cb_VTX_ladder:: lay=%d  NUM=%d, dR=%f cb_VTX_ladder_deltaphi=%f %f \n",lay, NUM,  dR, cb_VTX_ladder_deltaphi,p.ladder_deltashi);
+                printf("cb_VTX_ladder:: lay=%d  NUM=%d, dR=%f cb_VTX_ladder_deltaphi=%f %f \n",lay, NUM,  dR, cb_VTX_ladder_deltaphi,cfg.ladder_deltashi);
                 printf("cb_VTX_ladder:: Module  loop:: %d\n", ia);
 
                 phi = (ia * (cb_VTX_ladder_deltaphi));
                 x = - dR * cos(phi) ;
                 y = - dR * sin(phi) ;
                 rm[lay][ia].rotateZ(cb_VTX_ladder_deltaphi * ia);
-                rm[lay][ia].rotateZ(jleicParams.cb_VTX.ladder_deltashi);
+                rm[lay][ia].rotateZ(cfg.ladder_deltashi);
 
                 printf("cb_VTX_ladder::  %d %d x=%f  y=%f  \n", lay, ia, x, y);
                 sprintf(abname, "cb_VTX_ladder_Phys_%d_%d", lay, ia);
                 cb_VTX_ladder_Phys[lay] = new G4PVPlacement(G4Transform3D(rm[lay][ia], G4ThreeVector(x, y, z)),
                                                             abname, cb_VTX_ladder_Logic[lay],
-                                                            physicalVolume, false, 0.);
+                                                            Phys, false, 0.);
             }
             //-------------------------------------------------------------------------
             //                          VTX  slices and pixels
@@ -212,9 +240,14 @@ public:
         }; // --- end loop over layers
     }
 
-    inline void CreateLadders() {
+    G4Tubs *Solid;      //pointer to the solid
+    G4LogicalVolume *Logic;    //pointer to the logical
+    G4VPhysicalVolume *Phys;  //pointer to the physical
 
-    }
+    /// Parameters that was used in the moment of construction
+    cb_VTX_Config ConstructionConfig;
+
+
 private:
     JLeicMaterials *fMat;
     G4VisAttributes *attr_cb_VTX_ladder;

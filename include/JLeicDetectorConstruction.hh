@@ -194,24 +194,11 @@ private:
     G4FieldManager *SetDipoleMagField(G4double fx, G4double fy, G4double fz, float theta);
 
 
-    G4VPhysicalVolume *SimpleSetUpALICE();
-
-    G4VPhysicalVolume *SetUpALICE06();
-
-    G4VPhysicalVolume *SetUpBari05();
 
     G4VPhysicalVolume *SetUpJLEIC2019();
 
     G4VPhysicalVolume *SetUpJLEIC09();
 
-    G4VPhysicalVolume *SetUpHarris73();
-
-    G4VPhysicalVolume *SetUpWatase86();
-
-    G4VPhysicalVolume *SetUpBarr90();
-
-
-    void TestOld();
 
     void Create_cb_VTX(JLeicDetectorConfig& parameters);
     void Create_cb_DIRC(JLeicDetectorConfig& parameters);
@@ -225,14 +212,14 @@ private:
 
     JLeicDetectorConfig fConfig;
 
-    // Central Barrel Vertex cb_VTX
+    //----------------VTX  volume ------------------
     G4Tubs *cb_VTX_GVol_Solid;            //solid VTX volume
     G4LogicalVolume *cb_VTX_GVol_Logic;   //logical VTX volume
     G4VPhysicalVolume *cb_VTX_GVol_Phys;  //physical VTX volume
 
-    CentralBarrelVertex cb_VTX_Design;
+    cb_VTX_Design cb_VTX;
 
-    // Central Barrel Tracker cb_CTD
+    //----------------CTD  volume -------------------
     G4Tubs *cb_CTD_GVol_Solid;             //solid CTD  volume
     G4LogicalVolume *cb_CTD_GVol_Logic;    //logical CTD  volume
     G4VPhysicalVolume *cb_CTD_GVol_Phys;   //physical CTD  volume
@@ -245,7 +232,8 @@ private:
     G4LogicalVolume *cb_DIRC_GVol_Logic;    //pointer to the logical DIRC  volume
     G4VPhysicalVolume *cb_DIRC_GVol_Phys;    //pointer to the physical DIRC  volume
 
-    CentralBarrelDIRC cb_DIRC_Design;
+    cb_DIRC_Design cb_DIRC;
+
 
 
 
@@ -359,22 +347,6 @@ private:
     G4VPhysicalVolume *cb_CTD_Straws_Gas_Phys;    //pointer to the physical World
 
     //*************************************************************
-   //--------------DIRC bars detector----------------------
-
-    G4double cb_DIRC_bars_RIn;
-    G4double cb_DIRC_bars_ROut;
-    G4double cb_DIRC_bars_DZ;
-    G4double cb_DIRC_bars_DY;
-    G4double cb_DIRC_bars_DX;
-    G4double cb_DIRC_bars_deltaphi;
-
-    G4Material *cb_DIRC_bars_Material;
-    G4VisAttributes* attr_cb_DIRC_bars;
-    // G4Tubs*            cb_DIRC_bars_Solid;    //pointer to the solid World
-    G4Box *cb_DIRC_bars_Solid;    //pointer to the solid World
-    G4LogicalVolume *cb_DIRC_bars_Logic;    //pointer to the logical World
-    G4VPhysicalVolume *cb_DIRC_bars_Phys;    //pointer to the physical World
-   //*************************************************************
 
     //*************************************************************
     //--------------HCAL barrel volume  -------------------

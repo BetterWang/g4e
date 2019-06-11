@@ -61,12 +61,16 @@
 #include "JLeicDetectorMessenger.hh"
 #include "JLeicDetectorConfig.hh"
 
+//--------------CB---------------
 #include "cb_Solenoid/cb_Solenoid.hh"   // Central Barrel - Solenoid
 #include "cb_VTX/cb_VTX.hh"             // Central Barrel - Vertex
 #include "cb_CTD/cb_CTD.hh"             // Central Barrel - Tracker
 #include "cb_DIRC/cb_DIRC.hh"           // Central Barrel - DIRC
 #include "cb_EMCAL/cb_EMCAL.hh"         // Central Barrel - EMCAL
 #include "cb_HCAL/cb_HCAL.hh"         // Central Barrel - HCAL
+
+//--------------CE---------------
+#include "ce_MRICH/ce_MRICH.hh"         // Central Barrel - MRICH
 
 #include "ffe_CPOL/ffe_CPOL.hh"         //  Far-forward electron direction ePolarimeter
 
@@ -201,10 +205,9 @@ private:
 
     G4VPhysicalVolume *SetUpJLEIC09();
 
+    void Create_ci_Endcap(JLeicDetectorConfig::ci_Endcap_Config cfg);
 
- //   void Create_cb_VTX(JLeicDetectorConfig& parameters);
- //   void Create_cb_DIRC(JLeicDetectorConfig& parameters);
-    void Create_cb_EMCAL(JLeicDetectorConfig& parameters);
+    void Create_ce_Endcap(JLeicDetectorConfig::ce_Endcap_Config dfg);
 
 private:
 
@@ -213,48 +216,58 @@ private:
 
 
     JLeicDetectorConfig fConfig;
+    //=========================================================================
+    //--------------World -------------------
+    // =========================================================================
+    G4Box *World_Solid;    //pointer to the solid World
+    G4LogicalVolume *World_Logic;    //pointer to the logical World
+    G4VPhysicalVolume *World_Phys;    //pointer to the physical World
+    G4Material *World_Material;
 
+//-----------------Hadron ENDCAP  volume--------------------
+    G4VisAttributes *attr_ci_ENDCAP_GVol;
+    G4Tubs *ci_ENDCAP_GVol_Solid;    //pointer to the solid  ENDCAP-H volume
+    G4LogicalVolume *ci_ENDCAP_GVol_Logic;    //pointer to the logical  ENDCAP-H  volume
+    G4VPhysicalVolume *ci_ENDCAP_GVol_Phys;    //pointer to the physical ENDCAP-H  volume
+
+//-----------------Electron ENDCAP  volume--------------------
+    G4VisAttributes *attr_ce_ENDCAP_GVol;
+    G4Tubs *ce_ENDCAP_GVol_Solid;    //pointer to the solid  ENDCAP-E volume
+    G4LogicalVolume *ce_ENDCAP_GVol_Logic;    //pointer to the logical ENDCAP-E  volume
+    G4VPhysicalVolume *ce_ENDCAP_GVol_Phys;    //pointer to the physical ENDCAP-E  volume
+    //==============================================
+    //----------------BARREL -----------------------
+    cb_Solenoid_Design cb_Solenoid;
     //----------------VTX  volume ------------------
-    G4Tubs *cb_VTX_GVol_Solid;            //solid VTX volume
-    G4LogicalVolume *cb_VTX_GVol_Logic;   //logical VTX volume
-    G4VPhysicalVolume *cb_VTX_GVol_Phys;  //physical VTX volume
-
-    cb_VTX_Design cb_VTX;
-
+    cb_VTX_Design      cb_VTX;
     //----------------CTD  volume -------------------
-    G4Tubs *cb_CTD_GVol_Solid;             //solid CTD  volume
-    G4LogicalVolume *cb_CTD_GVol_Logic;    //logical CTD  volume
-    G4VPhysicalVolume *cb_CTD_GVol_Phys;   //physical CTD  volume
-
-    cb_CTD_Design cb_CTD;
-
+    cb_CTD_Design      cb_CTD;
     //----------------DIRC  volume -------------------
- //   G4Tubs *cb_DIRC_GVol_Solid;    //pointer to the solid DIRC  volume
- //   G4VisAttributes* attr_cb_DIRC_GVol;
- //   G4LogicalVolume *cb_DIRC_GVol_Logic;    //pointer to the logical DIRC  volume
- //   G4VPhysicalVolume *cb_DIRC_GVol_Phys;    //pointer to the physical DIRC  volume
-
-    cb_DIRC_Design cb_DIRC;
-
-
+    cb_DIRC_Design     cb_DIRC;
+    //----------------EMCAL  volume -------------------
+    cb_EMCAL_Design   cb_EMCAL;
     //----------------HCAL  volume -------------------
+    cb_HCAL_Design     cb_HCAL;
+    //==============================================
+    //----------------E-ENDCAP -----------------------
+    ce_MRICH_Design     ce_MRICH;
 
-    cb_HCAL_Design cb_HCAL;
+    //==============================================
+    //----------------Far-forward Electron  ---------
 
-    //----------------FFe  CPOL volume -------------------
+    //----------------FFe  CPOL volume --------------
+    ffe_CPOL_Design    ffe_CPOL;
+    //==============================================
+    //----------------Ion-ENDCAP -----------------------
 
-    ffe_CPOL_Design ffe_CPOL;
+    //==============================================
+    //----------------Far-forward ION  --------------
 
 
     // Central Barrel EMCAL cb_EMCAL
     // G4Tubs*            cb_EMCAL_GVol_Solid;    //pointer to the solid  EMCAL barrel volume
-    G4Polycone *cb_EMCAL_GVol_Solid;    //pointer to the solid  EMCAL barrel volume
-    G4LogicalVolume *cb_EMCAL_GVol_Logic;    //pointer to the logical EMCAL barrel volume
-    G4VPhysicalVolume *cb_EMCAL_GVol_Phys;    //pointer to the physical EMCAL barrel volume
 
-    CentralBarrelEMCAL cb_EMCAL_Design;
 
-    cb_Solenoid_Design cb_Solenoid;
 
 // ----------------------------------------------
 
@@ -280,39 +293,6 @@ private:
     //G4double           zstartAbs , zendAbs;
     //G4String           fSetUp;
     // World
-    //=========================================================================
-    //--------------World -------------------
-    // =========================================================================
-    G4Box *World_Solid;    //pointer to the solid World
-    G4LogicalVolume *World_Logic;    //pointer to the logical World
-    G4VPhysicalVolume *World_Phys;    //pointer to the physical World
-    G4Material *World_Material;
-
-
-
-//-----------------Hadron ENDCAP  volume--------------------
-    G4double ci_ENDCAP_GVol_RIn;
-    G4double ci_ENDCAP_GVol_ROut;
-    G4double ci_ENDCAP_GVol_SizeZ;
-    G4double ci_ENDCAP_GVol_ShiftZ ;
-    G4double ci_ENDCAP_GVol_PosX ;
-    G4double ci_ENDCAP_GVol_PosZ;
-    //    G4double fENDCAP_H_Z;
-    G4VisAttributes *attr_ci_ENDCAP_GVol;
-    G4Tubs *ci_ENDCAP_GVol_Solid;    //pointer to the solid  ENDCAP-H volume
-    G4LogicalVolume *ci_ENDCAP_GVol_Logic;    //pointer to the logical  ENDCAP-H  volume
-    G4VPhysicalVolume *ci_ENDCAP_GVol_Phys;    //pointer to the physical ENDCAP-H  volume
-
-//-----------------ENDCAP-E  volume--------------------
-    G4double ce_ENDCAP_GVol_RIn;
-    G4double ce_ENDCAP_GVol_ROut;
-    G4double ce_ENDCAP_GVol_SizeZ;
-    G4double ce_ENDCAP_GVol_PosZ;
-    G4VisAttributes *attr_ce_ENDCAP_GVol;
-    G4Tubs *ce_ENDCAP_GVol_Solid;    //pointer to the solid  ENDCAP-E volume
-    G4LogicalVolume *ce_ENDCAP_GVol_Logic;    //pointer to the logical ENDCAP-E  volume
-    G4VPhysicalVolume *ce_ENDCAP_GVol_Phys;    //pointer to the physical ENDCAP-E  volume
-    // =========================================================================
 
 
     // =========================================================================
@@ -466,24 +446,6 @@ private:
     G4VisAttributes *attr_ce_EMCAL_detGLASS;
     G4Box *ce_EMCAL_detGLASS_Solid;
     G4LogicalVolume *ce_EMCAL_detGLASS_Logic;
-    // =========================================================================
-    //----------------- ENDCAP-E  MRICH  -------------------
-    G4double ce_MRICH_GVol_RIn;
-    G4double ce_MRICH_GVol_ROut;
-    G4double ce_MRICH_GVol_SizeZ;
-    G4double ce_MRICH_GVol_PosZ;
-    G4double ce_MRICH_GVol_InnerR;
-    G4VisAttributes* attr_ce_MRICH_GVol;
-    G4Tubs *ce_MRICH_GVol_Solid;    //pointer to the solid  e-endcap MRICH volume
-    G4LogicalVolume *ce_MRICH_GVol_Logic;    //pointer to the logical  e-endcap MRICH volume
-    G4VPhysicalVolume *ce_MRICH_GVol_Phys;    //pointer to the physical  e-endcap MRICH volume
-    //............... MRICH modules ......................
-    double ce_MRICH_mod_Thickness;
-    double ce_MRICH_mod_Width;
-    G4double ce_MRICH_mod_Gap;
-    G4VisAttributes *attr_ce_MRICH_mod;
-    G4Box *ce_MRICH_mod_Solid;
-    G4LogicalVolume *ce_MRICH_mod_Logic;
 
     // =========================================================================
 

@@ -55,7 +55,8 @@ public:
         // Visual attributes
         VisAttributes = new G4VisAttributes(G4Color(0.1, 0, 0.1, 0.4));
         VisAttributes->SetLineWidth(1);
-        VisAttributes->SetForceSolid(false);
+    //    VisAttributes->SetForceSolid(false);
+        VisAttributes->SetForceSolid(true);
         Logic->SetVisAttributes(VisAttributes);
 
         if (p.UseMagneticField) {

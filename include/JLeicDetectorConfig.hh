@@ -15,6 +15,7 @@
 
 
 #include "ce_MRICH/ce_MRICH.hh"
+#include "ce_EMCAL/ce_EMCAL.hh"
 
 #include "ffe_CPOL/ffe_CPOL.hh"
 
@@ -55,6 +56,7 @@ struct JLeicDetectorConfig {
     //------------E-ENDCAP-----
 
     ce_MRICH_Config  ce_MRICH;
+    ce_EMCAL_Config  ce_EMCAL;
 
     //------------Far-Forward-Electron-----
     ffe_CPOL_Config ffe_CPOL;

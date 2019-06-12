@@ -67,10 +67,11 @@
 #include "cb_CTD/cb_CTD.hh"             // Central Barrel - Tracker
 #include "cb_DIRC/cb_DIRC.hh"           // Central Barrel - DIRC
 #include "cb_EMCAL/cb_EMCAL.hh"         // Central Barrel - EMCAL
-#include "cb_HCAL/cb_HCAL.hh"         // Central Barrel - HCAL
+#include "cb_HCAL/cb_HCAL.hh"           // Central Barrel - HCAL
 
 //--------------CE---------------
 #include "ce_MRICH/ce_MRICH.hh"         // Central Barrel - MRICH
+#include "ce_EMCAL/ce_EMCAL.hh"         // Central Barrel - EMCAL
 
 #include "ffe_CPOL/ffe_CPOL.hh"         //  Far-forward electron direction ePolarimeter
 
@@ -250,7 +251,10 @@ private:
     cb_HCAL_Design     cb_HCAL;
     //==============================================
     //----------------E-ENDCAP -----------------------
+    //----------------MRICH volume -----------------------
     ce_MRICH_Design     ce_MRICH;
+    //----------------EMCAL volume -----------------------
+    ce_EMCAL_Design     ce_EMCAL;
 
     //==============================================
     //----------------Far-forward Electron  ---------
@@ -391,11 +395,6 @@ private:
 
 
     // =========================================================================
-    //------------- ENDCAP-E HCAL -------------------
-    G4double ce_HCAL_GVol_RIn;
-    G4double ce_HCAL_GVol_ROut;
-    G4double  ce_HCAL_GVol_SizeZ;
-    G4double  ce_HCAL_GVol_ShiftZ;
 
 
     //  G4Polycone*        ce_HCAL_GVol_Solid;    //pointer to the solid ECAP_HCAL volume
@@ -410,42 +409,6 @@ private:
 
     // =========================================================================
     //------------- ENDCAP-E EMCAL -------------------
-
-    G4double ce_EMCAL_GVol_RIn;
-    G4double ce_EMCAL_GVol_ROut;
-    G4double ce_EMCAL_GVol_SizeZ;
-    G4double ce_EMCAL_GVol_PosZ;
-    G4VisAttributes *attr_ce_EMCAL_GVol;
-    G4Tubs *ce_EMCAL_GVol_Solid;    //pointer to the solid World
-    G4LogicalVolume *ce_EMCAL_GVol_Logic;    //pointer to the logical World
-    G4VPhysicalVolume *ce_EMCAL_GVol_Phys;    //pointer to the physical World
-
-    //............... EMCAL Crystals modules ......................
-    double ce_EMCAL_detPWO_Thickness;
-    double ce_EMCAL_detPWO_Width;
-    double ce_EMCAL_detPWO_ROut;
-    G4double ce_EMCAL_detPWO_Gap ;
-    G4double ce_EMCAL_detPWO_InnerR;
-    G4double ce_EMCAL_detPWO_PosZ;
-
-    G4Material *ce_EMCAL_detPWO_Material;
-    G4VisAttributes *attr_ce_EMCAL_detPWO;
-    G4Box *ce_EMCAL_detPWO_Solid;
-    G4LogicalVolume *ce_EMCAL_detPWO_Logic;
-
-
-    //............... EMCAL Glass modules ......................
-    G4double ce_EMCAL_detGLASS_InnerR;
-    G4double ce_EMCAL_detGLASS_Thickness;
-    G4double ce_EMCAL_detGLASS_OuterR;
-    G4double ce_EMCAL_detGLASS_PosZ;
-    G4double ce_EMCAL_detGLASS_Width;
-    double ce_EMCAL_detGLASS_Gap ;
-
-    G4Material *ce_EMCAL_detGLASS_Material;
-    G4VisAttributes *attr_ce_EMCAL_detGLASS;
-    G4Box *ce_EMCAL_detGLASS_Solid;
-    G4LogicalVolume *ce_EMCAL_detGLASS_Logic;
 
     // =========================================================================
 

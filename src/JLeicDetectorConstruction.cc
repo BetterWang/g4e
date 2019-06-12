@@ -92,8 +92,8 @@
 #define USE_CB_DIRC_bars  1 // bars for DIRC
 
 #define USE_CB_EMCAL
-//#define USE_CB_HCAL
-//#define USE_CB_HCAL_D // hcal detector
+#define USE_CB_HCAL
+#define USE_CB_HCAL_D // hcal detector
 #define USE_GEM   // volumes
 #define USE_GEMb  // detectors
 
@@ -236,7 +236,7 @@ void JLeicDetectorConstruction::Create_ce_Endcap(JLeicDetectorConfig::ce_Endcap_
     ce_ENDCAP_GVol_Phys = new G4PVPlacement(nullptr, G4ThreeVector(0, 0, cfg.PosZ), "ce_ENDCAP_GVol_Phys", ce_ENDCAP_GVol_Logic,
                                             World_Phys, false, 0);
 
-    attr_ce_ENDCAP_GVol = new G4VisAttributes(G4Color(0.3, 0, 3., 1));
+    attr_ce_ENDCAP_GVol = new G4VisAttributes(G4Color(0.3, 0, 3., 0.1));
     attr_ce_ENDCAP_GVol->SetLineWidth(1);
     attr_ce_ENDCAP_GVol->SetForceSolid(true);
     ce_ENDCAP_GVol_Logic->SetVisAttributes(attr_ce_ENDCAP_GVol);
@@ -346,7 +346,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 #ifdef USE_E_ENDCAP
 
 
-    fConfig.ce_Endcap.ROut = fConfig.cb_Solenoid.ROut;
+    fConfig.ce_Endcap.ROut = fConfig.cb_Solenoid.ROut - 1*cm;
     fConfig.ce_Endcap.PosZ = -fConfig.ce_Endcap.SizeZ / 2 - fConfig.cb_Solenoid.SizeZ / 2 + fConfig.World.ShiftVTX;
 
     Create_ce_Endcap(fConfig.ce_Endcap);
@@ -360,8 +360,9 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     fConfig.cb_HCAL.RIn = fConfig.cb_Solenoid.ROut;
     fConfig.cb_HCAL.ROut = fConfig.cb_Solenoid.ROut + fConfig.cb_HCAL.Thickness;
     fConfig.cb_HCAL.SizeZ = fConfig.cb_Solenoid.SizeZ + fConfig.ce_Endcap.SizeZ;
+  //  fConfig.cb_HCAL.SizeZ = fConfig.cb_Solenoid.SizeZ ;
 
-   fConfig.cb_HCAL.ShiftZ = 0.;
+    fConfig.cb_HCAL.ShiftZ = -fConfig.ce_Endcap.SizeZ/2.+fConfig.World.ShiftVTX;
 
   //  fConfig.cb_HCAL.ShiftZ = fConfig.World.ShiftVTX;
     cb_HCAL.Construct(fConfig.cb_HCAL, World_Material, World_Phys);
@@ -379,7 +380,13 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     //===================================================================================
     //==                           HADRON-ENDCAP                                       ==
     //===================================================================================
+
+#ifdef USE_CB_HCAL
+
     fConfig.ci_Endcap.ROut = fConfig.cb_HCAL.ROut;
+#else
+    fConfig.ci_Endcap.ROut = fConfig.cb_Solenoid.ROut +  100 * cm;
+#endif
     fConfig.ci_Endcap.PosZ = fConfig.cb_Solenoid.SizeZ / 2. + fConfig.World.ShiftVTX + fConfig.ci_Endcap.ShiftZ + fConfig.ci_Endcap.SizeZ / 2.;
 
     Create_ci_Endcap(fConfig.ci_Endcap);
@@ -400,7 +407,11 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
      //  G4double ci_HCAL_GVol_RIn[2]={0*cm, 0*cm }
      // G4double ci_HCAL_GVol_ROut[2]={cb_HCAL_GVol_ROut,cb_HCAL_GVol_ROut };
  ci_HCAL_GVol_RIn=0*cm ;
+#ifdef USE_CB_HCAL
  ci_HCAL_GVol_ROut=fConfig.cb_HCAL.ROut;
+#else
+    ci_HCAL_GVol_ROut=300*cm;
+#endif
  ci_HCAL_GVol_SizeZ=195*cm;
  ci_HCAL_GVol_ShiftZ=5*cm;
  // G4double  fHCAL_HCAP_Zcone[2]= {ci_ENDCAP_GVol_PosZ+ ci_ENDCAP_GVol_SizeZ/2+ci_HCAL_GVol_ShiftZ,ci_ENDCAP_GVol_PosZ+ ci_ENDCAP_GVol_SizeZ/2+ci_HCAL_GVol_SizeZ + ci_HCAL_GVol_ShiftZ} ;
@@ -560,6 +571,17 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     ce_MRICH.Construct(fConfig.ce_MRICH, World_Material, ce_ENDCAP_GVol_Phys);
 
    ce_MRICH.ConstructModules();
+
+#endif
+//===================================================================================
+//                         CE_EMCAL
+//===================================================================================
+#ifdef USE_CE_EMCAL
+    fConfig.ce_EMCAL.PosZ = -fConfig.ce_Endcap.SizeZ/2+fConfig.ce_EMCAL.Thickness/2.;
+    fConfig.ce_EMCAL.ROut = fConfig.ce_Endcap.ROut;
+    ce_EMCAL.Construct(fConfig.ce_EMCAL, World_Material, ce_ENDCAP_GVol_Phys);
+    ce_EMCAL.ConstructCrystals(); // --- inner detector with Crystals
+    ce_EMCAL.ConstructGlass();    // --- outer part with Glass 
 
 #endif
 
@@ -771,186 +793,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 
 #endif
 //===================================================================================
-
-
-
 #endif // end USE_CI_ENDCAP
-
-
-    //***********************************************************************************
-    //***********************************************************************************
-    //**                              ELECTRON  ENDCAP DETECTOR  VOLUMES               **
-    //***********************************************************************************
-    //***********************************************************************************
-
-
-
-#ifdef USE_E_ENDCAP
-
-//===================================================================================
-//                         EMCAL Electron endcap
-//===================================================================================
-
-#ifdef USE_CE_EMCAL
-
-    ce_EMCAL_GVol_RIn = 12 * cm;
-       ce_EMCAL_GVol_ROut = 150 * cm;
-    //  ce_EMCAL_GVol_ROut = 60 * cm;
-    ce_EMCAL_GVol_SizeZ = 40 * cm;
-    ce_EMCAL_GVol_PosZ = -fConfig.ce_Endcap.SizeZ / 2 + ce_EMCAL_GVol_SizeZ / 2;
-    ce_EMCAL_GVol_Solid = new G4Tubs("ce_EMCAL_GVol_Solid", ce_EMCAL_GVol_RIn, ce_EMCAL_GVol_ROut, ce_EMCAL_GVol_SizeZ / 2., 0., 360 * deg);
-    ce_EMCAL_GVol_Logic = new G4LogicalVolume(ce_EMCAL_GVol_Solid, World_Material, "ce_EMCAL_GVol_Logic");
-    attr_ce_EMCAL_GVol = new G4VisAttributes(G4Color(0.3, 0.5, 0.9, 0.9));
-    attr_ce_EMCAL_GVol->SetLineWidth(1);
-    attr_ce_EMCAL_GVol->SetForceSolid(false);
-    ce_EMCAL_GVol_Logic->SetVisAttributes(attr_ce_EMCAL_GVol);
-
-    //   my_z= 0*cm;
-    ce_EMCAL_GVol_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, ce_EMCAL_GVol_PosZ), "ce_EMCAL_GVol_Phys", ce_EMCAL_GVol_Logic,
-                                       ce_ENDCAP_GVol_Phys, false, 0);
-
-
-    //------------------------------------------------------------------
-    // Ecal module Crystals 
-    //-------------------------------------------------------------------
-
-    ce_EMCAL_detPWO_Thickness = 30. * cm;
-    ce_EMCAL_detPWO_ROut= 82*cm ;
-    ce_EMCAL_detPWO_Width = 2. * cm;
-    ce_EMCAL_detPWO_Gap = 0.01 * mm;
-
-    ce_EMCAL_detPWO_Material = fMat->GetMaterial("PbWO4");
-    ce_EMCAL_detPWO_Solid = new G4Box("ce_EMCAL_detPWO_Solid", ce_EMCAL_detPWO_Width * 0.5, ce_EMCAL_detPWO_Width * 0.5, ce_EMCAL_detPWO_Thickness * 0.5);
-    ce_EMCAL_detPWO_Logic = new G4LogicalVolume(ce_EMCAL_detPWO_Solid, ce_EMCAL_detPWO_Material, "ce_EMCAL_detPWO_Logic");
-
-    attr_ce_EMCAL_detPWO = new G4VisAttributes(G4Color(0.1, 1.0, 0.9, 0.5));
-    attr_ce_EMCAL_detPWO->SetLineWidth(1);
-    attr_ce_EMCAL_detPWO->SetForceSolid(true);
-    ce_EMCAL_detPWO_Logic->SetVisAttributes(attr_ce_EMCAL_detPWO);
-
-    // Crystals
-
-    G4double x0 = 0 * cm;
-    G4double y0 = 0 * cm;
-    ce_EMCAL_detPWO_InnerR = 15. * cm;
-    G4double y_C = 0;
-    G4double x_C;
-    ce_EMCAL_detPWO_PosZ =ce_EMCAL_GVol_SizeZ/2-ce_EMCAL_detPWO_Thickness/2;
-    G4int k = -1;
-
-//============  For sectors =====
-    for (j = 0; j < 50; j++) {
-        y_C -= ce_EMCAL_detPWO_Width + ce_EMCAL_detPWO_Gap;
-        x_C = (ce_EMCAL_detPWO_Width + ce_EMCAL_detPWO_Gap) * 0.5;
-
-        for (i = 0; i < 50; i++) {
-            double R = sqrt(x_C * x_C + y_C * y_C);
-
-            //   printf("EMCALLL::k=%d  j=%d i =%d x=%f, y=%f  R=%f ce_EMCAL_detPWO_InnerR=%f \n ",k, j,i, x_C,y_C, R, ce_EMCAL_detPWO_InnerR);
-
-
-            if (R < ce_EMCAL_detPWO_ROut - ce_EMCAL_detPWO_Width + ce_EMCAL_detPWO_Gap && R > ce_EMCAL_detPWO_InnerR) {
- 
-                k++;
-                sprintf(abname, "ce_EMCAL_detPWO_Phys_%d", k);
-                new G4PVPlacement(0, G4ThreeVector(x_C, y_C, ce_EMCAL_detPWO_PosZ), abname, ce_EMCAL_detPWO_Logic,
-                                  ce_EMCAL_GVol_Phys, false, k);
-                k++;
-                sprintf(abname, "ce_EMCAL_detPWO_Phys_%d", k);
-                new G4PVPlacement(0, G4ThreeVector(-x_C, y_C, ce_EMCAL_detPWO_PosZ ), abname, ce_EMCAL_detPWO_Logic,
-                                  ce_EMCAL_GVol_Phys, false, k);
-
-                k++;
-                sprintf(abname, "ce_EMCAL_detPWO_Phys_%d", k);
-                new G4PVPlacement(0, G4ThreeVector(x_C, -y_C,  ce_EMCAL_detPWO_PosZ), abname, ce_EMCAL_detPWO_Logic,
-                                  ce_EMCAL_GVol_Phys, false, k);
-
-                k++;
-                sprintf(abname, "ce_EMCAL_detPWO_Phys_%d", k);
-                new G4PVPlacement(0, G4ThreeVector(-x_C, -y_C,  ce_EMCAL_detPWO_PosZ), abname, ce_EMCAL_detPWO_Logic,
-                                  ce_EMCAL_GVol_Phys, false, k);
-               //  printf("ce_EMCAL_detPWO::k=%d  j=%d i =%d x=%f, y=%f  R=%f ce_EMCAL_detPWO_InnerR=%f \n ",k, j,i, x_C,y_C, R, ce_EMCAL_detPWO_InnerR);
-
-          }
-            x_C += ce_EMCAL_detPWO_Width + ce_EMCAL_detPWO_Gap;
-
-        }
-    }
-
-    //------------------------------------------------------------------
-    // Ecal module GLASS 
-    //-------------------------------------------------------------------
-
-    ce_EMCAL_detGLASS_Thickness = 40. * cm;
-    ce_EMCAL_detGLASS_OuterR= ce_EMCAL_GVol_ROut;
-
-    ce_EMCAL_detGLASS_Width = 4. * cm;
-    ce_EMCAL_detGLASS_Gap = 0.01 * mm;
-
-
-    ce_EMCAL_detGLASS_Material= fMat->GetMaterial("DSBCe");
-    //   ce_EMCAL_det_Material = fMat->GetMaterial("PbWO4");
-    ce_EMCAL_detGLASS_Solid = new G4Box("ce_EMCAL_detGLASS_Solid", ce_EMCAL_detGLASS_Width * 0.5, ce_EMCAL_detGLASS_Width * 0.5, ce_EMCAL_detGLASS_Thickness * 0.5);
-    ce_EMCAL_detGLASS_Logic = new G4LogicalVolume(ce_EMCAL_detGLASS_Solid, ce_EMCAL_detGLASS_Material, "ce_EMCAL_detGLASS_Logic");
-
-    attr_ce_EMCAL_detGLASS = new G4VisAttributes(G4Color(0.3, 0.4, 1., 0.5));
-     attr_ce_EMCAL_detGLASS->SetLineWidth(1);
-     attr_ce_EMCAL_detGLASS->SetForceSolid(true);
-    ce_EMCAL_detGLASS_Logic->SetVisAttributes(attr_ce_EMCAL_detGLASS);
-
-    // GLASS
-
-    x0 = 0 * cm;
-    y0 = 0 * cm;
-    ce_EMCAL_detGLASS_InnerR= ce_EMCAL_detPWO_ROut;
-     y_C = 0;
-     x_C=0.;
-     ce_EMCAL_detGLASS_PosZ =ce_EMCAL_GVol_SizeZ/2-ce_EMCAL_detGLASS_Thickness/2;
-     k = -1;
-
-//============  For sectors =====
-    for (j = 0; j < 50; j++) {
-        y_C -= ce_EMCAL_detGLASS_Width + ce_EMCAL_detGLASS_Gap;
-        x_C = (ce_EMCAL_detGLASS_Width + ce_EMCAL_detGLASS_Gap) * 0.5;
-
-        for (i = 0; i < 50; i++) {
-            double R = sqrt(x_C * x_C + y_C * y_C);
-
-            //   printf("EMCALLL::k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ",k, j,i, x_C,y_C, R, R0);
-
-
-            if (R <  ce_EMCAL_GVol_ROut  - ce_EMCAL_detGLASS_Width + ce_EMCAL_detGLASS_Gap && R > ce_EMCAL_detGLASS_InnerR) {
-               // printf("ce_EMCAL_detGLASS::GLASS k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ",k, j,i, x_C,y_C, R, ce_EMCAL_detPWO_InnerR);
-
-
-                k++;
-                sprintf(abname, "ce_EMCAL_detGLASS_Phys_%d", k);
-                new G4PVPlacement(0, G4ThreeVector(x_C, y_C, ce_EMCAL_detGLASS_PosZ), abname, ce_EMCAL_detGLASS_Logic,
-                                  ce_EMCAL_GVol_Phys, false, k);
-                k++;
-                sprintf(abname, "ce_EMCAL_detGLASS_Phys_%d", k);
-                new G4PVPlacement(0, G4ThreeVector(-x_C, y_C, ce_EMCAL_detGLASS_PosZ ), abname, ce_EMCAL_detGLASS_Logic,
-                                  ce_EMCAL_GVol_Phys, false, k);
-
-                k++;
-                sprintf(abname, "ce_EMCAL_detGLASS_Phys_%d", k);
-                new G4PVPlacement(0, G4ThreeVector(x_C, -y_C,  ce_EMCAL_detGLASS_PosZ), abname, ce_EMCAL_detGLASS_Logic,
-                                  ce_EMCAL_GVol_Phys, false, k);
-
-                k++;
-                sprintf(abname, "ce_EMCAL_detGLASS_Phys_%d", k);
-                new G4PVPlacement(0, G4ThreeVector(-x_C, -y_C,  ce_EMCAL_detGLASS_PosZ), abname, ce_EMCAL_detGLASS_Logic,
-                                  ce_EMCAL_GVol_Phys, false, k);
-            }
-            x_C += ce_EMCAL_detGLASS_Width + ce_EMCAL_detGLASS_Gap;
-
-        }
-    }
-
-#endif
-//======================= END E-EMCAL =================================================
-
-#endif
 
 
 
@@ -1639,12 +1482,12 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 
     // Crystals
 
-    x0 =0*cm;
-    y0 = 0 * cm;
+    double x0 =0*cm;
+    double y0 = 0 * cm;
     double R0 = 7. * cm;
-    y_C = 0;
-    x_C= 0*cm;
-    k = -1;
+    double y_C = 0;
+    double x_C= 0*cm;
+    int k = -1;
 
     //    z = fi_D1B_GVol_SizeZ / 2 - fi_D1B_EMCAL_SizeZ / 2;
     double z = ci_HCAL_GVol_SizeZ/ 2 - fi_D1B_EMCAL_SizeZ / 2;

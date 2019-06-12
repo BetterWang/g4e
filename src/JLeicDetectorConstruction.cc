@@ -553,14 +553,11 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
  #endif  // end cb_EMCAL
 
 
-//=========================================================================
+
+// ***********************************************************************************
 //                       CE_ENDCAP
-//=========================================================================
-
-//=========================================================================
+// ***********************************************************************************
 #ifdef USE_E_ENDCAP
-//=========================================================================
-
 //===================================================================================
 //                         mRICH
 //===================================================================================
@@ -581,14 +578,31 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     fConfig.ce_EMCAL.ROut = fConfig.ce_Endcap.ROut;
     ce_EMCAL.Construct(fConfig.ce_EMCAL, World_Material, ce_ENDCAP_GVol_Phys);
     ce_EMCAL.ConstructCrystals(); // --- inner detector with Crystals
-    ce_EMCAL.ConstructGlass();    // --- outer part with Glass 
+    ce_EMCAL.ConstructGlass();    // --- outer part with Glass
 
 #endif
 
-#endif // ==========end USE_E_ENDCAP=========================================
+#endif //end USE_E_ENDCAP
 
 
+// ***********************************************************************************
+//                       CI_ENDCAP
+// ***********************************************************************************
+#   ifdef USE_CI_ENDCAP
 
+#ifdef USE_CI_DRICH
+//===================================================================================
+// ==                       dRICH     Hadron endcap                                ==
+//==================================================================================
+    fConfig.ci_DRICH.RIn = fConfig.ci_Endcap.RIn;
+
+    fConfig.ci_DRICH.PosZ = -fConfig.ci_Endcap.SizeZ / 2. + fConfig.ci_DRICH.ThicknessZ / 2.;
+    //    double ci_DRICH_GVol_PosZ= 0*cm;
+
+//===================================================================================
+#endif // end USE_CI_DRICH
+
+#endif
 
 
 #ifdef USE_GEMb
@@ -643,41 +657,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 
 
 
-    //***********************************************************************************
-    //***********************************************************************************
-    //**                               HADRON ENDCAP DETECTOR  VOLUMES                 **
-    //***********************************************************************************
-    //***********************************************************************************
-#ifdef USE_CI_ENDCAP
-
-#ifdef USE_CI_DRICH
-//===================================================================================
-// ==                       dRICH     Hadron endcap                                ==
-//==================================================================================
-    ci_DRICH_GVol_RIn = fConfig.ci_Endcap.RIn;
-    ci_DRICH_GVol_ROut = 150 * cm;
-    ci_DRICH_GVol_ThicknessZ = 170 * cm;
-
-    ci_DRICH_GVol_PosZ = -fConfig.ci_Endcap.SizeZ / 2. + ci_DRICH_GVol_ThicknessZ / 2.;
-    //    double ci_DRICH_GVol_PosZ= 0*cm;
-
-    ci_DRICH_GVol_Solid = new G4Tubs("ci_DRICH_GVol_Solid", ci_DRICH_GVol_RIn, ci_DRICH_GVol_ROut, ci_DRICH_GVol_ThicknessZ / 2., 0., 360 * deg);
-
-    ci_DRICH_GVol_Logic = new G4LogicalVolume(ci_DRICH_GVol_Solid, World_Material, "ci_DRICH_GVol_Logic");
-
-    ci_DRICH_GVol_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, ci_DRICH_GVol_PosZ), "ci_DRICH_GVol_Phys", ci_DRICH_GVol_Logic,
-                                        ci_ENDCAP_GVol_Phys, false, 0);
-
-    //  fLogic_H->SetVisAttributes(G4VisAttributes::Invisible);
-
-    attr_ci_DRICH_GVol = new G4VisAttributes(G4Color(1., 1., 0.2, 0.2));
-    attr_ci_DRICH_GVol->SetLineWidth(1);
-    attr_ci_DRICH_GVol->SetForceSolid(true);
-    ci_DRICH_GVol_Logic->SetVisAttributes(attr_ci_DRICH_GVol);
-
-//===================================================================================
-#endif // end USE_CI_DRICH
-
+ #ifdef USE_CI_ENDCAP
 //===================================================================================
 //====    TRD =============================
 //===================================================================================
@@ -686,7 +666,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     ci_TRD_GVol_RIn = 20 * cm;
     ci_TRD_GVol_ROut = 200 * cm;
     ci_TRD_GVol_ThicknessZ = 40 * cm;
-    ci_TRD_GVol_PosZ = -fConfig.ci_Endcap.SizeZ / 2 + ci_DRICH_GVol_ThicknessZ + ci_TRD_GVol_ThicknessZ/2.;
+    ci_TRD_GVol_PosZ = -fConfig.ci_Endcap.SizeZ / 2 + fConfig.ci_DRICH.ThicknessZ + ci_TRD_GVol_ThicknessZ/2.;
     ci_TRD_GVol_Solid = new G4Tubs("ci_TRD_GVol_Solid", ci_TRD_GVol_RIn, ci_TRD_GVol_ROut, ci_TRD_GVol_ThicknessZ / 2., 0.,
                                360 * deg);
     ci_TRD_GVol_Logic = new G4LogicalVolume(ci_TRD_GVol_Solid, World_Material, "ci_TRD_GVol_Logic");
@@ -708,7 +688,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     ci_EMCAL_GVol_RIn = 20 * cm;
     ci_EMCAL_GVol_ROut = 200 * cm;
     ci_EMCAL_GVol_ThicknessZ = 40 * cm;
-    ci_EMCAL_GVol_PosZ = -fConfig.ci_Endcap.SizeZ / 2 + ci_DRICH_GVol_ThicknessZ + ci_TRD_GVol_ThicknessZ + ci_EMCAL_GVol_ThicknessZ / 2;
+    ci_EMCAL_GVol_PosZ = -fConfig.ci_Endcap.SizeZ / 2 + fConfig.ci_DRICH.ThicknessZ + ci_TRD_GVol_ThicknessZ + ci_EMCAL_GVol_ThicknessZ / 2;
     ci_EMCAL_GVol_Solid = new G4Tubs("ci_EMCAL_GVol_Solid", ci_EMCAL_GVol_RIn, ci_EMCAL_GVol_ROut, ci_EMCAL_GVol_ThicknessZ / 2., 0.,
                                360 * deg);
     ci_EMCAL_GVol_Logic = new G4LogicalVolume(ci_EMCAL_GVol_Solid, World_Material, "ci_EMCAL_GVol_Logic");

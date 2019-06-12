@@ -19,6 +19,9 @@
 
 #include "ffe_CPOL/ffe_CPOL.hh"
 
+#include "ci_DRICH/ci_DRICH.hh"
+
+
 
 struct JLeicDetectorConfig {
 
@@ -62,6 +65,7 @@ struct JLeicDetectorConfig {
     ffe_CPOL_Config ffe_CPOL;
 
     //------------H-ENDCAP-----
+    ci_DRICH_Config  ci_DRICH;
 
     //------------Far-Forward-Ion-----
 

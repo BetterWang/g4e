@@ -73,7 +73,12 @@
 #include "ce_MRICH/ce_MRICH.hh"         // Central Barrel - MRICH
 #include "ce_EMCAL/ce_EMCAL.hh"         // Central Barrel - EMCAL
 
+//--------------FFe---------------
 #include "ffe_CPOL/ffe_CPOL.hh"         //  Far-forward electron direction ePolarimeter
+//--------------CI---------------
+#include "ci_DRICH/ci_DRICH.hh"
+//--------------FFi---------------
+
 
 
 class JLeicCalorimeterSD;
@@ -263,13 +268,10 @@ private:
     ffe_CPOL_Design    ffe_CPOL;
     //==============================================
     //----------------Ion-ENDCAP -----------------------
+    ci_DRICH_Design     ci_DRICH;
 
     //==============================================
     //----------------Far-forward ION  --------------
-
-
-    // Central Barrel EMCAL cb_EMCAL
-    // G4Tubs*            cb_EMCAL_GVol_Solid;    //pointer to the solid  EMCAL barrel volume
 
 
 
@@ -492,19 +494,6 @@ private:
      G4Tubs *ci_TRD_det_Solid;
      G4LogicalVolume *ci_TRD_det_Logic;
      G4PVPlacement *ci_TRD_det_Phys;
-
-    // =========================================================================
-    //--------------ENDCAP-H  HCAL vol -------------------
-    double ci_DRICH_GVol_RIn ;
-    double ci_DRICH_GVol_ROut ;
-    double ci_DRICH_GVol_ThicknessZ ;
-
-    double ci_DRICH_GVol_PosZ ;
-    G4VisAttributes* attr_ci_DRICH_GVol;
-
-    G4Tubs *ci_DRICH_GVol_Solid;
-    G4LogicalVolume *ci_DRICH_GVol_Logic;
-    G4PVPlacement *ci_DRICH_GVol_Phys;
 
 
     //===========================================================

@@ -153,13 +153,12 @@
 
 JLeicDetectorConstruction::JLeicDetectorConstruction()
         :
-           fWorldChanged(false), fAbsorberMaterial(0), fGapMat(0), fSetUp("simpleALICE"),
+           fWorldChanged(false), fAbsorberMaterial(0), fGapMat(0), fSetUp("jleic2019"),
           World_Material(nullptr), World_Solid(0), World_Logic(0), World_Phys(0),
           fSolidRadSlice(0), fLogicRadSlice(0), fPhysicRadSlice(0),
-          fSolidRadiator(0), fLogicRadiator(0), fPhysicsRadiator(0),
-          fRadiatorMat(0), fPipe(false),
+           fPipe(false),
 // fSolidAbsorber(0),    fLogicAbsorber(0),   fPhysicsAbsorber(0),
-          fCalorimeterSD(0), fRegGasDet(0), fRadRegion(0), fMat(0)
+          fCalorimeterSD(0),  fMat(0)
           {
     fDetectorMessenger = new JLeicDetectorMessenger(this);
     fMat = new JLeicMaterials();
@@ -210,6 +209,9 @@ G4VPhysicalVolume *JLeicDetectorConstruction::ConstructDetectorXTR() {
 
 void JLeicDetectorConstruction::Create_ci_Endcap(JLeicDetectorConfig::ci_Endcap_Config cfg)
 {
+    //===================================================================================
+    //==                           ION-ENDCAP                                          ==
+    //===================================================================================
     // Make endcup radius the same as Barrel Hadron Calorimeter
     ci_ENDCAP_GVol_Solid = new G4Tubs("ci_ENDCAP_GVol_Solid", cfg.RIn, cfg.ROut, cfg.SizeZ / 2., 0., 360 * deg);
 
@@ -255,42 +257,10 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     char abname[128];
     int i,j;
 
-    // Preparation of mixed radiator material
-
-    G4Material *Mylar = fMat->GetMaterial("Mylar");
-    G4Material *Air = fMat->GetMaterial("Air");
-    G4Material *Al = fMat->GetMaterial("Al");
-    G4Material *CH2 = fMat->GetMaterial("CH2");
-    G4Material *He = fMat->GetMaterial("He");
 
 
     fAbsorberMaterial = fMat->GetMaterial("Si");
 
-    G4cout << "G4Material* CH2   = " << CH2 << G4endl;
-    G4cout << "G4Material* Mylar = " << Mylar << G4endl;
-    G4double foilDensity = 0.91 * g / cm3;  // CH2 1.39*g/cm3; // Mylar //  0.534*g/cm3; //Li
-    G4double gasDensity = 1.2928 * mg / cm3; // Air // 1.977*mg/cm3; // CO2 0.178*mg/cm3; // He
-    G4double totDensity = foilDensity * foilGasRatio + gasDensity * (1.0 - foilGasRatio);
-    G4cout << "Rad totDensity = " << totDensity / (g / cm3) << " g/cm3 " << G4endl;
-    G4cout << "use for Rad totDensity = " << totDensity / (g / cm3) << " g/cm3 " << G4endl;
-
-
-    G4double fractionFoil = foilDensity * foilGasRatio / totDensity;
-    G4double fractionGas = gasDensity * (1.0 - foilGasRatio) / totDensity;
-    G4Material *radiatorMat0 = new G4Material("radiatorMat0", totDensity, 2);
-    radiatorMat0->AddMaterial(CH2, fractionFoil);
-    radiatorMat0->AddMaterial(Air, fractionGas);
-    G4double NewDensity = 0.083 * (g / cm3);
-    G4Material *radiatorMat = new G4Material("radiatorMat", NewDensity, 1);
-    radiatorMat->AddMaterial(radiatorMat0, 1.);
-    G4cout << "new  Rad with totDensity = " << NewDensity / (g / cm3) << " g/cm3 " << G4endl;
-
-    G4double XTR_density = radiatorMat->GetDensity();
-    G4cout << "Read back Rad totDensity = " << XTR_density / (g / cm3) << " g/cm3 " << G4endl;
-    // default materials of the detector and TR radiator
-    fRadiatorMat = radiatorMat;
-    fFoilMat = CH2; // Kapton; // Mylar ; // Li ; // CH2 ;
-    fGasMat = Air; // CO2; // He; //
 
     G4VisAttributes *vtpc1;
 
@@ -322,8 +292,6 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     //=========================================================================
     //                    Sensitive
     //=========================================================================
-    if (fRegGasDet != 0) delete fRegGasDet;
-    if (fRegGasDet == 0) fRegGasDet = new G4Region("XTRdEdxDetector");
 
     G4SDManager *SDman = G4SDManager::GetSDMpointer();
 
@@ -387,8 +355,9 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 #else
     fConfig.ci_Endcap.ROut = fConfig.cb_Solenoid.ROut +  100 * cm;
 #endif
-    fConfig.ci_Endcap.PosZ = fConfig.cb_Solenoid.SizeZ / 2. + fConfig.World.ShiftVTX + fConfig.ci_Endcap.ShiftZ + fConfig.ci_Endcap.SizeZ / 2.;
 
+
+    fConfig.ci_Endcap.PosZ = fConfig.cb_Solenoid.SizeZ / 2. + fConfig.World.ShiftVTX + fConfig.ci_Endcap.ShiftZ + fConfig.ci_Endcap.SizeZ / 2.;
     Create_ci_Endcap(fConfig.ci_Endcap);
 
 
@@ -598,11 +567,35 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 
     fConfig.ci_DRICH.PosZ = -fConfig.ci_Endcap.SizeZ / 2. + fConfig.ci_DRICH.ThicknessZ / 2.;
     //    double ci_DRICH_GVol_PosZ= 0*cm;
+    ci_DRICH.Construct(fConfig.ci_DRICH, World_Material, ci_ENDCAP_GVol_Phys);
+    ci_DRICH.ConstructDetectors();
 
 //===================================================================================
 #endif // end USE_CI_DRICH
 
-#endif
+
+
+#ifdef USE_CI_TRD
+//===================================================================================
+// ==                       TRD     Hadron endcap                                ==
+//==================================================================================
+ //   ci_TRD_GVol_PosZ = -fConfig.ci_Endcap.SizeZ / 2 + fConfig.ci_DRICH.ThicknessZ + ci_TRD_GVol_ThicknessZ/2.;
+
+    fConfig.ci_TRD.RIn = fConfig.ci_Endcap.RIn;
+
+    fConfig.ci_TRD.PosZ = -fConfig.ci_Endcap.SizeZ / 2. + fConfig.ci_TRD.ThicknessZ / 2.;
+    //    double ci_DRICH_GVol_PosZ= 0*cm;
+    ci_TRD.Construct(fConfig.ci_TRD, World_Material, ci_ENDCAP_GVol_Phys);
+
+    ci_TRD.ConstructDetectors();
+    printf("FoilNumbers=%d\n",fConfig.ci_TRD.fFoilNumber);
+
+//===================================================================================
+#endif // end USE_CI_TRD
+
+
+
+#endif  // ============end USE_CI_ENDCAP  ===================================
 
 
 #ifdef USE_GEMb
@@ -659,27 +652,6 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 
  #ifdef USE_CI_ENDCAP
 //===================================================================================
-//====    TRD =============================
-//===================================================================================
-#ifdef USE_CI_TRD
-
-    ci_TRD_GVol_RIn = 20 * cm;
-    ci_TRD_GVol_ROut = 200 * cm;
-    ci_TRD_GVol_ThicknessZ = 40 * cm;
-    ci_TRD_GVol_PosZ = -fConfig.ci_Endcap.SizeZ / 2 + fConfig.ci_DRICH.ThicknessZ + ci_TRD_GVol_ThicknessZ/2.;
-    ci_TRD_GVol_Solid = new G4Tubs("ci_TRD_GVol_Solid", ci_TRD_GVol_RIn, ci_TRD_GVol_ROut, ci_TRD_GVol_ThicknessZ / 2., 0.,
-                               360 * deg);
-    ci_TRD_GVol_Logic = new G4LogicalVolume(ci_TRD_GVol_Solid, World_Material, "ci_TRD_GVol_Logic");
-    attr_ci_TRD_GVol = new G4VisAttributes(G4Color(0.3, 0.5, 0.9, 0.9));
-    attr_ci_TRD_GVol->SetLineWidth(1);
-    attr_ci_TRD_GVol->SetForceSolid(false);
-    ci_TRD_GVol_Logic->SetVisAttributes(attr_ci_TRD_GVol);
-
-    ci_TRD_GVol_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, ci_TRD_GVol_PosZ), "H_CAP_TRD_Physics", ci_TRD_GVol_Logic,
-                                        ci_ENDCAP_GVol_Phys, false, 0);
-
-#endif // end USE_CI_TRD 
-//===================================================================================
 //                         EMCAL Hadron endcap
 //===================================================================================
 
@@ -688,7 +660,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     ci_EMCAL_GVol_RIn = 20 * cm;
     ci_EMCAL_GVol_ROut = 200 * cm;
     ci_EMCAL_GVol_ThicknessZ = 40 * cm;
-    ci_EMCAL_GVol_PosZ = -fConfig.ci_Endcap.SizeZ / 2 + fConfig.ci_DRICH.ThicknessZ + ci_TRD_GVol_ThicknessZ + ci_EMCAL_GVol_ThicknessZ / 2;
+    ci_EMCAL_GVol_PosZ = -fConfig.ci_Endcap.SizeZ / 2 + fConfig.ci_DRICH.ThicknessZ + fConfig.ci_TRD.ThicknessZ + ci_EMCAL_GVol_ThicknessZ / 2;
     ci_EMCAL_GVol_Solid = new G4Tubs("ci_EMCAL_GVol_Solid", ci_EMCAL_GVol_RIn, ci_EMCAL_GVol_ROut, ci_EMCAL_GVol_ThicknessZ / 2., 0.,
                                360 * deg);
     ci_EMCAL_GVol_Logic = new G4LogicalVolume(ci_EMCAL_GVol_Solid, World_Material, "ci_EMCAL_GVol_Logic");
@@ -735,11 +707,11 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
         for (int i = 0; i < 50; i++) {
             double R_H = sqrt(x_Ch * x_Ch + y_Ch * y_Ch);
 
-            printf("ci_EMCAL_det:: k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ", kh, j, i, x_Ch, y_Ch, R_H, ci_EMCAL_det_Rin1);
+           // printf("ci_EMCAL_det:: k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ", kh, j, i, x_Ch, y_Ch, R_H, ci_EMCAL_det_Rin1);
 
             //----------------------- Remove left side (small ring)----------------
             if (R_H < ci_EMCAL_GVol_ROut - ci_EMCAL_det_Width + ci_EMCAL_det_Gap && R_H > ci_EMCAL_det_Rin1) {
-                printf("ci_EMCAL_det::k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ", kh, j, i, x_Ch, y_Ch, R_H, ci_EMCAL_det_Rin1);
+               // printf("ci_EMCAL_det::k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ", kh, j, i, x_Ch, y_Ch, R_H, ci_EMCAL_det_Rin1);
 
 
                 kh++;
@@ -755,7 +727,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 
             //----------------------- Remove right side (large ring)----------------
             if (R_H < ci_EMCAL_GVol_ROut - ci_EMCAL_det_Width + ci_EMCAL_det_Gap && R_H > ci_EMCAL_det_Rin2) {
-                printf("ci_EMCAL_det::k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ", kh, j, i, x_Ch, y_Ch, R_H, ci_EMCAL_det_Rin2);
+               // printf("ci_EMCAL_det::k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ", kh, j, i, x_Ch, y_Ch, R_H, ci_EMCAL_det_Rin2);
 
                 kh++;
                 sprintf(abname, "ci_EMCAL_det_Phys_%d", kh);
@@ -1231,71 +1203,6 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 #endif
 
 
-//===================================================================================
-//====    TRD  detector and radiator =============================
-//===================================================================================
-#ifdef USE_CI_TRD
-#ifdef USE_CI_TRD_D
-
-   //=========================================================================
-    //                   TR radiator envelope
-    //=========================================================================
-    printf("Radiator\n");
-    fRadThickness = 0.020 * mm;    // 16 um // ZEUS NIMA 323 (1992) 135-139, D=20um, dens.= 0.1 g/cm3
-    fGasGap = 0.600 * mm;    // for ZEUS  300-publication
-    fRadThick = 10. * cm - fGasGap + fDetGap;
-    fFoilNumber = fRadThick / (fRadThickness + fGasGap);
-
-    fRadZ = -ci_TRD_GVol_ThicknessZ/2+ fRadThick/2 +2*cm;
-
-    foilGasRatio = fRadThickness / (fRadThickness + fGasGap);
-    fAbsorberThickness = 0.050 * mm;
-    fAbsorberRadius = 100. * mm;
-    fAbsorberZ = 136. * cm;
-    fDetGap = 0.01 * mm;
-    fModuleNumber = 1;
-
-    fSolidRadiator = new G4Tubs("ci_TRD_Radiator_Solid", 50 * cm, 100 * cm, 0.5 * fRadThick,0.,360*deg);
-    fLogicRadiator = new G4LogicalVolume(fSolidRadiator, fRadiatorMat,
-                                         "ci_TRD_Radiator_Logic");
-
-    attr_ci_TRD_rad = new G4VisAttributes(G4Color(0.8, 0.7, 0.6, 0.8));
-    attr_ci_TRD_rad->SetLineWidth(1);
-    attr_ci_TRD_rad->SetForceSolid(true);
-     fLogicRadiator ->SetVisAttributes(attr_ci_TRD_rad);
-
-    fPhysicsRadiator = new G4PVPlacement(0,
-                                         G4ThreeVector(0, 0, fRadZ),
-                                         "ci_TRD_Radiator_Phys", fLogicRadiator,
-                                         ci_TRD_GVol_Phys, false, 0);
-
-    if (fRadRegion != 0) delete fRadRegion;
-    if (fRadRegion == 0) fRadRegion = new G4Region("XTRradiator");
-    fRadRegion->AddRootLogicalVolume(fLogicRadiator);
-
-    printf("Radiator done \n");
-    //-----------------------------------------------------------------
-    ci_TRD_det_RIn = 50 * cm;
-    ci_TRD_det_ROut = 100 * cm;
-    ci_TRD_det_ThicknessZ = 2.5 * cm;
-    ci_TRD_det_PosZ = fRadZ + fRadThick/2 +ci_TRD_det_ThicknessZ/2.;
-    ci_TRD_det_Material= fMat->GetMaterial("Xe20CO2");
-    ci_TRD_det_Solid = new G4Tubs("ci_TRD_det_Solid", ci_TRD_det_RIn, ci_TRD_det_ROut, ci_TRD_det_ThicknessZ / 2., 0.,
-                               360 * deg);
-    ci_TRD_det_Logic = new G4LogicalVolume(ci_TRD_det_Solid, ci_TRD_det_Material, "ci_TRD_det_Logic");
-    attr_ci_TRD_det = new G4VisAttributes(G4Color(0.8, 0.4, 0.3, 0.8));
-    attr_ci_TRD_det->SetLineWidth(1);
-    attr_ci_TRD_det->SetForceSolid(true);
-    ci_TRD_det_Logic->SetVisAttributes(attr_ci_TRD_det);
-
-    ci_TRD_det_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, ci_TRD_det_PosZ), "ci_TRD_det_Physics", ci_TRD_det_Logic,
-                                        ci_TRD_GVol_Phys, false, 0);
-
-#endif // end USE_CI_TRD det 
-#endif// end USE_CI_TRD 
-
-
-
 
     //*********************************************************************
     //====================================================================================
@@ -1758,7 +1665,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     //---------------------------------------------------------------------------
 #endif
 
-
+    printf("FoilNumbers=%d\n",fConfig.ci_TRD.fFoilNumber);
     printf("exit Detector Construction\n");
 
 
@@ -1829,7 +1736,7 @@ void JLeicDetectorConstruction::SetRadiatorMaterial(G4String materialChoice) {
         pttoMaterial = (*theMaterialTable)[J];
 
         if (pttoMaterial->GetName() == materialChoice) {
-            fRadiatorMat = pttoMaterial;
+            fConfig.ci_TRD.fRadiatorMat = pttoMaterial;
             fLogicRadSlice->SetMaterial(pttoMaterial);
             // PrintCalorParameters();
         }
@@ -1864,7 +1771,7 @@ void JLeicDetectorConstruction::SetWorldMaterial(G4String materialChoice) {
 
 void JLeicDetectorConstruction::SetAbsorberThickness(G4double val) {
     // change Absorber thickness and recompute the calorimeter parameters
-    fAbsorberThickness = val;
+    fConfig.ci_TRD.fAbsorberThickness = val;
     //  ComputeCalorParameters();
 }
 
@@ -1874,7 +1781,7 @@ void JLeicDetectorConstruction::SetAbsorberThickness(G4double val) {
 
 void JLeicDetectorConstruction::SetRadiatorThickness(G4double val) {
     // change XTR radiator thickness and recompute the calorimeter parameters
-    fRadThickness = val;
+    fConfig.ci_TRD.fRadThickness = val;
     // ComputeCalorParameters();
 }
 
@@ -1884,7 +1791,7 @@ void JLeicDetectorConstruction::SetRadiatorThickness(G4double val) {
 
 void JLeicDetectorConstruction::SetGasGapThickness(G4double val) {
     // change XTR gas gap thickness and recompute the calorimeter parameters
-    fGasGap = val;
+    fConfig.ci_TRD.fGasGap = val;
     // ComputeCalorParameters();
 }
 
@@ -1894,7 +1801,7 @@ void JLeicDetectorConstruction::SetGasGapThickness(G4double val) {
 
 void JLeicDetectorConstruction::SetAbsorberRadius(G4double val) {
     // change the transverse size and recompute the calorimeter parameters
-    fAbsorberRadius = val;
+    fConfig.ci_TRD.fAbsorberRadius = val;
     // ComputeCalorParameters();
 }
 
@@ -1923,7 +1830,7 @@ void JLeicDetectorConstruction::SetWorldSizeR(G4double val) {
 //
 
 void JLeicDetectorConstruction::SetAbsorberZpos(G4double val) {
-    fAbsorberZ = val;
+    fConfig.ci_TRD.fAbsorberZ = val;
     // ComputeCalorParameters();
 }
 

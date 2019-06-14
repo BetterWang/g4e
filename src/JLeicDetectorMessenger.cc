@@ -215,10 +215,10 @@ void JLeicDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
     // JLeicDetector->SetParametrisationModel(ModelCmd->GetNewIntValue(newValue));
     // JLeicDetector->ParametrisationModel();
   }
-  if( command == FoilNumCmd )
-  { 
-    JLeicDetector->SetFoilNumber(FoilNumCmd->GetNewIntValue(newValue));
-  }
+ // if( command == FoilNumCmd )
+//  {
+//    JLeicDetector->SetFoilNumber(FoilNumCmd->GetNewIntValue(newValue));
+//  }
   if( command == AbsMaterCmd )
    { JLeicDetector->SetAbsorberMaterial(newValue);}
 

@@ -256,7 +256,7 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step* aStep)
    	   aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName().c_str(), aStep->GetTrack()->GetKineticEnergy()/MeV);
 
     zend= aStep->GetTrack()->GetPosition().z() ;
-    runaction->FillHist(7,zend-detector->fAbsorberZ+detector->fAbsorberThickness/2.,aStep->GetTotalEnergyDeposit()/keV);
+    runaction->FillHist(7,zend-detector->fConfig.ci_TRD.fAbsorberZ+detector->fConfig.ci_TRD.fAbsorberThickness/2.,aStep->GetTotalEnergyDeposit()/keV);
     if(  ((aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->
 	   GetParticleName()) == "gamma")) {
          runaction->FillHist(27,aStep->GetTotalEnergyDeposit()/keV,1.);
@@ -283,11 +283,11 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step* aStep)
 
 	  runaction->FillHist(3,aStep->GetStepLength()/um  );
 	  if (  (aStep->GetTrack()->GetTrackID() == 1) && (aStep->GetTrack()->GetParentID()== 0)  ) {	    
-	    runaction->FillHist(5,zend-detector->fAbsorberZ+detector->fAbsorberThickness/2.,aStep->GetTotalEnergyDeposit()/keV);
+	    runaction->FillHist(5,zend-detector->fConfig.ci_TRD.fAbsorberZ+detector->fConfig.ci_TRD.fAbsorberThickness/2.,aStep->GetTotalEnergyDeposit()/keV);
 	  } else {
-	    runaction->FillHist(4,zend-detector->fAbsorberZ+detector->fAbsorberThickness/2.,aStep->GetTotalEnergyDeposit()/keV);
+	    runaction->FillHist(4,zend-detector->fConfig.ci_TRD.fAbsorberZ+detector->fConfig.ci_TRD.fAbsorberThickness/2.,aStep->GetTotalEnergyDeposit()/keV);
 	  }
-	  runaction->FillHist(6,zend-detector->fAbsorberZ+detector->fAbsorberThickness/2.,aStep->GetTotalEnergyDeposit()/keV);
+	  runaction->FillHist(6,zend-detector->fConfig.ci_TRD.fAbsorberZ+detector->fConfig.ci_TRD.fAbsorberThickness/2.,aStep->GetTotalEnergyDeposit()/keV);
     }
     if ((aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->
 	 GetParticleName()) == "gamma") 
@@ -318,8 +318,8 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step* aStep)
        xend= aStep->GetTrack()->GetPosition().x() ;
        yend= aStep->GetTrack()->GetPosition().y() ;
        zend= aStep->GetTrack()->GetPosition().z() ;
-       runaction->FillHist(1,zend-detector->fAbsorberZ+detector->fAbsorberThickness/2. );
-       runaction->FillHist(2,zend-detector->fAbsorberZ+detector->fAbsorberThickness/2., DEgamma/keV );
+       runaction->FillHist(1,zend-detector->fConfig.ci_TRD.fAbsorberZ+detector->fConfig.ci_TRD.fAbsorberThickness/2. );
+       runaction->FillHist(2,zend-detector->fConfig.ci_TRD.fAbsorberZ+detector->fConfig.ci_TRD.fAbsorberThickness/2., DEgamma/keV );
      }
       //G4VProcess* creatorProcess = aStep->GetTrack()->GetCreatorProcess();      
       //if(creatorProcess->GetProcessName() == “GammaXTRadiator”) G4cout << “Particle was created by the LowEnergy” << “Ionization process“ << G4endl;

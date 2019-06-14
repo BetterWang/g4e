@@ -119,7 +119,7 @@
 #  ZY 
 #/vis/viewer/addCutawayPlane 0  1  0  cm  -0.001 0  0
 
-/run/initialize
-/run/beamOn 1
+#/run/initialize
+#/run/beamOn 1
 
 exit 

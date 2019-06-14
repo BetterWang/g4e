@@ -51,6 +51,7 @@ JLeicXTRTransparentRegRadModel::JLeicXTRTransparentRegRadModel(G4LogicalVolume *
   G4VXTRenergyLoss(anEnvelope,foilMat,gasMat,a,b,n,processName)
 {
   G4cout<<"Regular transparent X-ray TR  radiator EM process is called"<<G4endl;
+  std::cout<<"Regular transparent X-ray TR  radiator EM process is called"<<G4endl;
 
   // Build energy and angular integral spectra of X-ray TR photons from
   // a radiator

@@ -505,9 +505,9 @@ void JLeicRunAction::SetName() {
 	  ,JLeicPrimaryGeneratorAction::GetPrimaryEnergy()/GeV
 	  //,particleGun->GetParticleDefinition()->GetParticleName()
 	  ,detector->fAbsorberMaterial->GetName().c_str() 
-	  ,detector->fAbsorberThickness
+	  ,detector->fConfig.ci_TRD.fAbsorberThickness
 	  ,detector->fadc_slice
-	  ,detector->fRadThick/cm
+	  ,detector->fConfig.ci_TRD.fRadThick/cm
 	  ,detector->fModuleNumber
 	  );
 

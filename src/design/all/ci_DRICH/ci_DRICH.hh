@@ -36,11 +36,15 @@ public:
         Logic = new G4LogicalVolume(Solid, worldMaterial, "ci_DRICH_GVol_Logic");
 
         Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, cfg.PosZ), "ci_DRICH_GVol_Phys", Logic,
-                                               Phys, false, 0);
+                                               motherVolume, false, 0);
+        printf("Begin ci_DRICH volume %f %f %f %f \n",cfg.RIn, cfg.ROut, cfg.ThicknessZ, cfg.PosZ );
 
         //  fLogic_H->SetVisAttributes(G4VisAttributes::Invisible);
 
-        G4VisAttributes *attr_ci_DRICH_GVol = new G4VisAttributes(G4Color(1., 1., 0.2, 0.2));
+    //    G4VisAttributes *attr_ci_DRICH_GVol = new G4VisAttributes(G4Color(1., 1., 0.2, 1.));
+
+        G4VisAttributes *attr_ci_DRICH_GVol = new G4VisAttributes(G4Color(0.3, 0.5, 0.9, 0.9));
+
         attr_ci_DRICH_GVol->SetLineWidth(1);
         attr_ci_DRICH_GVol->SetForceSolid(true);
         Logic->SetVisAttributes(attr_ci_DRICH_GVol);
@@ -53,6 +57,12 @@ public:
         printf("Begin ci_DRICH detector volumes \n");
 
         // construct here your detectors
+
+        G4VisAttributes *attr_ci_DRICH_GVol = new G4VisAttributes(G4Color(0.3, 0.5, 0.9, 0.9));
+
+        attr_ci_DRICH_GVol->SetLineWidth(1);
+        attr_ci_DRICH_GVol->SetForceSolid(true);
+        Logic->SetVisAttributes(attr_ci_DRICH_GVol);
 
     };
 

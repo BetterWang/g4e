@@ -70,13 +70,16 @@
 #include "cb_HCAL/cb_HCAL.hh"           // Central Barrel - HCAL
 
 //--------------CE---------------
-#include "ce_MRICH/ce_MRICH.hh"         // Central Barrel - MRICH
-#include "ce_EMCAL/ce_EMCAL.hh"         // Central Barrel - EMCAL
+#include "ce_MRICH/ce_MRICH.hh"         // Central Electron Endcap - MRICH
+#include "ce_EMCAL/ce_EMCAL.hh"         // Central Electron Endcap - EMCAL
 
 //--------------FFe---------------
 #include "ffe_CPOL/ffe_CPOL.hh"         //  Far-forward electron direction ePolarimeter
 //--------------CI---------------
-#include "ci_DRICH/ci_DRICH.hh"
+#include "ci_DRICH/ci_DRICH.hh"         // Central Ion Endcap - DRICH
+#include "ci_TRD/ci_TRD.hh"             // Central Ion Endcap - TRD
+#include "ci_EMCAL/ci_EMCAL.hh"         // Central Ion Endcap - EMCAL
+#include "ci_HCAL/ci_HCAL.hh"           // Central Ion Endcap - HCAL
 //--------------FFi---------------
 
 
@@ -106,7 +109,7 @@ public:
 
     void SetGasGapThickness(G4double);
 
-    void SetFoilNumber(G4int i) { fFoilNumber = i; };
+ //   void SetFoilNumber(G4int i) { fFoilNumber = i; };
 
     void SetWorldMaterial(G4String);
 
@@ -158,43 +161,35 @@ public:
 
     G4double GetWorldSizeR() { return fConfig.World.SizeR; };
 
-    G4double GetAbsorberZpos() { return fAbsorberZ; };
-
-    G4Material *GetAbsorberMaterial() { return fAbsorberMaterial; };
-
-    G4double GetAbsorberThickness() { return fAbsorberThickness; };
-
-    G4double GetAbsorberRadius() { return fAbsorberRadius; };
 
     const G4VPhysicalVolume *GetphysiWorld() { return World_Phys; };
 
     const G4VPhysicalVolume *GetAbsorber() { return fPhysicsAbsorber; };
 
     G4LogicalVolume *GetLogicalAbsorber() { return fLogicAbsorber; };
+    double  GetAbsorberThickness(){ return fConfig.ci_TRD.fAbsorberThickness;};
+    G4Material *GetAbsorberMaterial(){ return fConfig.ci_TRD.det_Material;};
 
-    G4LogicalVolume *GetLogicalRadiator() { return fLogicRadiator; };
+   //TRD- related ---- needs to be moved move
 
-    G4double GetFoilThick() { return fRadThickness; };
+   G4LogicalVolume *GetLogicalRadiator() { return ci_TRD.fLogicRadiator; };
+   G4Material *GetFoilMaterial() { return ci_TRD.fFoilMat; };
+   G4Material *GetGasMaterial() { return ci_TRD.fGasMat; };
+   G4double GetFoilThick() { return fConfig.ci_TRD.fRadThickness; };
+   G4double GetGasThick() {  return fConfig.ci_TRD.fGasGap; };
 
-    G4double GetGasThick() { return fGasGap; };
-
-    G4int GetFoilNumber() { return fFoilNumber; };
-
-    G4Material *GetFoilMaterial() { return fFoilMat; };
-
-    G4Material *GetGasMaterial() { return fGasMat; };
-
+   G4int   GetFoilNumber() { std::cout << " foil number = " << fConfig.ci_TRD.fFoilNumber << std::endl; return fConfig.ci_TRD.fFoilNumber;}
 
     G4String rootFileName;
     G4double fadc_slice;
     G4int NannVAR;
     //---  fsv move to public ---
-    G4double fAbsorberZ;
-    G4double fAbsorberThickness;
     G4String fSetUp;
     G4Material *fAbsorberMaterial;
-    G4double fRadThick;
+
     G4int fModuleNumber;   // the number of Rad-et modules
+
+    JLeicDetectorConfig fConfig;
 
 private:
 
@@ -221,8 +216,7 @@ private:
 //           R E F A C T O R I N G
 
 
-    JLeicDetectorConfig fConfig;
-    //=========================================================================
+     //=========================================================================
     //--------------World -------------------
     // =========================================================================
     G4Box *World_Solid;    //pointer to the solid World
@@ -230,7 +224,7 @@ private:
     G4VPhysicalVolume *World_Phys;    //pointer to the physical World
     G4Material *World_Material;
 
-//-----------------Hadron ENDCAP  volume--------------------
+//-----------------Hadron ENDCAP volume--------------------
     G4VisAttributes *attr_ci_ENDCAP_GVol;
     G4Tubs *ci_ENDCAP_GVol_Solid;    //pointer to the solid  ENDCAP-H volume
     G4LogicalVolume *ci_ENDCAP_GVol_Logic;    //pointer to the logical  ENDCAP-H  volume
@@ -268,7 +262,14 @@ private:
     ffe_CPOL_Design    ffe_CPOL;
     //==============================================
     //----------------Ion-ENDCAP -----------------------
+    //----------------DRICH volume ---------------------
     ci_DRICH_Design     ci_DRICH;
+    //----------------TRD volume ---------------------
+    ci_TRD_Design       ci_TRD;
+    //----------------EMCAL volume ---------------------
+    ci_EMCAL_Design     ci_EMCAL;
+    //----------------HCAL volume ---------------------
+    ci_HCAL_Design      ci_HCAL;
 
     //==============================================
     //----------------Far-forward ION  --------------
@@ -280,9 +281,6 @@ private:
 
 
     G4bool fWorldChanged;
-    //G4Material*        fAbsorberMaterial;
-    //G4double           fAbsorberThickness;
-    G4double fAbsorberRadius;
 
     G4Material *fPipeMat;
 
@@ -295,10 +293,6 @@ private:
     G4Material *fGapMat;
     G4double fGapThick;
 
-    //G4double           fAbsorberZ;
-    //G4double           zstartAbs , zendAbs;
-    //G4String           fSetUp;
-    // World
 
 
     // =========================================================================
@@ -475,26 +469,11 @@ private:
     // =========================================================================
     //--------------ENDCAP-H  TRD vol -------------------
 
-     double ci_TRD_GVol_RIn ;
-     double ci_TRD_GVol_ROut ;
-     double ci_TRD_GVol_ThicknessZ ;
-     double ci_TRD_GVol_PosZ;
+
      G4VisAttributes *attr_ci_TRD_GVol;
      G4Tubs *ci_TRD_GVol_Solid;
      G4LogicalVolume *ci_TRD_GVol_Logic;
      G4PVPlacement *ci_TRD_GVol_Phys;
-  //------------- det -----------
-     double ci_TRD_det_RIn ;
-     double ci_TRD_det_ROut ;
-     double ci_TRD_det_ThicknessZ ;
-     double ci_TRD_det_PosZ;
-     G4Material *ci_TRD_det_Material ;
-     G4VisAttributes *attr_ci_TRD_det;
-     G4VisAttributes *attr_ci_TRD_rad;
-     G4Tubs *ci_TRD_det_Solid;
-     G4LogicalVolume *ci_TRD_det_Logic;
-     G4PVPlacement *ci_TRD_det_Phys;
-
 
     //===========================================================
     //===========================================================
@@ -784,23 +763,12 @@ private:
     G4VPhysicalVolume *fPhysicRadRing;   // pointer to the physical R-slide
 
   //   G4Box *fSolidRadiator;
-     G4Tubs *fSolidRadiator;
-    G4LogicalVolume *fLogicRadiator;
-    G4VPhysicalVolume *fPhysicsRadiator;
 
-    G4Material *fRadiatorMat;        // pointer to the mixed TR radiator material
-    G4Material *fFoilMat;            // pointer to the TR foil radiator material
-    G4Material *fGasMat;             // pointer to the TR gas radiator material
 
-    G4double fRadThickness;
-    G4double fGasGap;
-    G4double foilGasRatio;
 
-    G4int fFoilNumber;
 
-    G4double fDetThickness;
-    G4double fDetLength;
-    G4double fDetGap;
+
+
 
     G4double fStartR;
     G4double fStartZ;
@@ -809,12 +777,12 @@ private:
 
     //G4int fModuleNumber;   // the number of Rad-Det modules
 
-    //G4double fRadThick;
+
     G4double fMylarThick;
     G4double fPipeLength;
     G4bool fPipe;
 
-    G4double fRadZ;
+
     G4double fWindowZ;
     G4double fGapZ;
     G4double fElectrodeZ;
@@ -826,8 +794,7 @@ private:
 
     JLeicDetectorMessenger *fDetectorMessenger;  //pointer to the Messenger
     JLeicCalorimeterSD *fCalorimeterSD;  //pointer to the sensitive detector
-    G4Region *fRegGasDet;
-    G4Region *fRadRegion;
+
     JLeicMaterials *fMat;
 
 };

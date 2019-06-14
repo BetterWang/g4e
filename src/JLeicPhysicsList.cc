@@ -237,19 +237,20 @@ void JLeicPhysicsList::ConstructProcess()
 
 void JLeicPhysicsList::ConstructEM()
 {
-  
+
   // G4cout<<"fMinElectronEnergy = "<<fMinElectronEnergy/keV<<" keV"<<G4endl;
   // G4cout<<"fMinGammaEnergy = "<<fMinGammaEnergy/keV<<" keV"<<G4endl;
   G4cout<<"XTR model = "<<fXTRModel<<G4endl;
+  std::cout<<"XTR model = "<<fXTRModel<<G4endl;
 
   const G4RegionStore* theRegionStore = G4RegionStore::GetInstance();
   G4Region* gas = theRegionStore->GetRegion("XTRdEdxDetector");
 
   G4VXTRenergyLoss* processXTR = 0;
 
-  if(fXTRModel == "gammaR" )          
-  {      
-    // G4GammaXTRadiator* 
+  if(fXTRModel == "gammaR" )
+  {
+    // G4GammaXTRadiator*
     processXTR = new G4GammaXTRadiator(pDet->GetLogicalRadiator(),
 				       100.,   //--  AlphaPlate 100
 				       100.,   //--  AlphaGas   100
@@ -260,9 +261,9 @@ void JLeicPhysicsList::ConstructEM()
                                        pDet->GetFoilNumber(),
                                        "GammaXTRadiator");
   }
-  else if(fXTRModel == "gammaM" ) 
+  else if(fXTRModel == "gammaM" )
   {
-    // G4XTRGammaRadModel* 
+    // G4XTRGammaRadModel*
     processXTR = new G4XTRGammaRadModel(pDet->GetLogicalRadiator(),
                                        100.,
                                        100.,
@@ -273,10 +274,10 @@ void JLeicPhysicsList::ConstructEM()
                                        pDet->GetFoilNumber(),
                                        "GammaXTRadiator");
   }
-  else if(fXTRModel == "strawR" ) 
+  else if(fXTRModel == "strawR" )
   {
 
-    // G4StrawTubeXTRadiator* 
+    // G4StrawTubeXTRadiator*
     processXTR = new G4StrawTubeXTRadiator(pDet->GetLogicalRadiator(),
                                          pDet->GetFoilMaterial(),
                                          pDet->GetGasMaterial(),
@@ -286,20 +287,20 @@ void JLeicPhysicsList::ConstructEM()
                                          true,
                                          "strawXTRadiator");
   }
-  else if(fXTRModel == "regR" ) 
-  {      
-    // G4RegularXTRadiator* 
+  else if(fXTRModel == "regR" )
+  {
+    // G4RegularXTRadiator*
     processXTR = new G4RegularXTRadiator(pDet->GetLogicalRadiator(),
                                          pDet->GetFoilMaterial(),
                                          pDet->GetGasMaterial(),
                                          pDet->GetFoilThick(),
                                          pDet->GetGasThick(),
                                          pDet->GetFoilNumber(),
-                                         "RegularXTRadiator");            
+                                         "RegularXTRadiator");
   }
-  else if(fXTRModel == "transpR" ) 
+  else if(fXTRModel == "transpR" )
   {
-    // G4TransparentRegXTRadiator* 
+    // G4TransparentRegXTRadiator*
     processXTR = new G4TransparentRegXTRadiator(pDet->GetLogicalRadiator(),
                                          pDet->GetFoilMaterial(),
                                          pDet->GetGasMaterial(),
@@ -308,9 +309,9 @@ void JLeicPhysicsList::ConstructEM()
                                          pDet->GetFoilNumber(),
                                          "RegularXTRadiator");
   }
-  else if(fXTRModel == "regM" ) 
+  else if(fXTRModel == "regM" )
   {
-    // G4XTRRegularRadModel* 
+    // G4XTRRegularRadModel*
     processXTR = new G4XTRRegularRadModel(pDet->GetLogicalRadiator(),
                                          pDet->GetFoilMaterial(),
                                          pDet->GetGasMaterial(),
@@ -318,11 +319,12 @@ void JLeicPhysicsList::ConstructEM()
                                          pDet->GetGasThick(),
                                          pDet->GetFoilNumber(),
                                          "RegularXTRadiator");
-       
+
   }
-  else if(fXTRModel == "transpM" ) 
-  { 
-    // G4XTRTransparentRegRadModel* 
+  else if(fXTRModel == "transpM" )
+  {
+  std::cout << " Enter ConstructEM transpM " << std::endl;
+    // G4XTRTransparentRegRadModel*
     // processXTR = new G4XTRTransparentRegRadModel(pDet->GetLogicalRadiator(),
     processXTR = new JLeicXTRTransparentRegRadModel(pDet->GetLogicalRadiator(),
                                          pDet->GetFoilMaterial(),
@@ -331,12 +333,14 @@ void JLeicPhysicsList::ConstructEM()
                                          pDet->GetGasThick(),
                                          pDet->GetFoilNumber(),
                                          "RegularXTRadiator");
-  }     
+    
+   std::cout << " Exit ConstructEM transpM " << std::endl;
+ }
   else
   {
     G4Exception("Invalid XTR model name", "InvalidSetup",
                  FatalException, "XTR model name is out of the name list");
-  }     
+  }
   //  processXTR->SetCompton(true);
   processXTR->SetVerboseLevel(1);
   processXTR->SetAngleRadDistr(true);
@@ -442,6 +446,7 @@ void JLeicPhysicsList::ConstructEM()
 
     }
   }
+  std::cout << " Exit ConstructEM " << std::endl;
   G4EmProcessOptions opt;
   opt.SetApplyCuts(true);
 }

@@ -583,7 +583,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 
     fConfig.ci_TRD.RIn = fConfig.ci_Endcap.RIn;
 
-    fConfig.ci_TRD.PosZ = -fConfig.ci_Endcap.SizeZ / 2. + fConfig.ci_TRD.ThicknessZ / 2.;
+    fConfig.ci_TRD.PosZ = -fConfig.ci_Endcap.SizeZ / 2. + fConfig.ci_DRICH.ThicknessZ + fConfig.ci_TRD.ThicknessZ / 2.;
     //    double ci_DRICH_GVol_PosZ= 0*cm;
     ci_TRD.Construct(fConfig.ci_TRD, World_Material, ci_ENDCAP_GVol_Phys);
 
@@ -1665,7 +1665,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     //---------------------------------------------------------------------------
 #endif
 
-    printf("FoilNumbers=%d\n",fConfig.ci_TRD.fFoilNumber);
+    printf("FoilNumbers3=%d\n",ci_TRD.ConstructionConfig.fFoilNumber);
     printf("exit Detector Construction\n");
 
 

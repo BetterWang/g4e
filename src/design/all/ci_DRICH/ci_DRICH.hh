@@ -58,7 +58,7 @@ public:
 
         // construct here your detectors
 
-        G4VisAttributes *attr_ci_DRICH_GVol = new G4VisAttributes(G4Color(0.3, 0.5, 0.9, 0.9));
+        G4VisAttributes *attr_ci_DRICH_GVol = new G4VisAttributes(G4Color(1., 0.9, 0.6, 0.1));
 
         attr_ci_DRICH_GVol->SetLineWidth(1);
         attr_ci_DRICH_GVol->SetForceSolid(true);

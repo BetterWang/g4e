@@ -178,7 +178,9 @@ public:
    G4double GetFoilThick() { return fConfig.ci_TRD.fRadThickness; };
    G4double GetGasThick() {  return fConfig.ci_TRD.fGasGap; };
 
-   G4int   GetFoilNumber() { std::cout << " foil number = " << fConfig.ci_TRD.fFoilNumber << std::endl; return fConfig.ci_TRD.fFoilNumber;}
+   G4int   GetFoilNumber() {
+       std::cout << " foil number4 = " << ci_TRD.ConstructionConfig.fFoilNumber << std::endl;
+       return ci_TRD.ConstructionConfig.fFoilNumber;}
 
     G4String rootFileName;
     G4double fadc_slice;

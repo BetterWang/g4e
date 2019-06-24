@@ -13,16 +13,19 @@
 #include "cb_EMCAL/cb_EMCAL.hh"
 #include "cb_HCAL/cb_HCAL.hh"
 
-
+#include "ce_GEM/ce_GEM.hh"
 #include "ce_MRICH/ce_MRICH.hh"
 #include "ce_EMCAL/ce_EMCAL.hh"
 
 #include "ffe_CPOL/ffe_CPOL.hh"
 
+#include "ci_GEM/ci_GEM.hh"
 #include "ci_DRICH/ci_DRICH.hh"
 #include "ci_TRD/ci_TRD.hh"
 #include "ci_EMCAL/ci_EMCAL.hh"
 #include "ci_HCAL/ci_HCAL.hh"
+
+#include "fi_EMCAL/fi_EMCAL.hh"
 
 
 
@@ -61,6 +64,7 @@ struct JLeicDetectorConfig {
     cb_HCAL_Config  cb_HCAL;
     //------------E-ENDCAP-----
 
+    ce_GEM_Config  ce_GEM;
     ce_MRICH_Config  ce_MRICH;
     ce_EMCAL_Config  ce_EMCAL;
 
@@ -68,12 +72,14 @@ struct JLeicDetectorConfig {
     ffe_CPOL_Config ffe_CPOL;
 
     //------------H-ENDCAP-----
+    ci_GEM_Config  ci_GEM;
     ci_DRICH_Config  ci_DRICH;
     ci_TRD_Config  ci_TRD;
     ci_EMCAL_Config  ci_EMCAL;
     ci_HCAL_Config  ci_HCAL;
 
     //------------Far-Forward-Ion-----
+    fi_EMCAL_Config  fi_EMCAL;
 
 
 } ;

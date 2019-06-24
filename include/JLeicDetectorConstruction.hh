@@ -70,17 +70,20 @@
 #include "cb_HCAL/cb_HCAL.hh"           // Central Barrel - HCAL
 
 //--------------CE---------------
+#include "ce_GEM/ce_GEM.hh"             // Central Ion Endcap - TRD
 #include "ce_MRICH/ce_MRICH.hh"         // Central Electron Endcap - MRICH
 #include "ce_EMCAL/ce_EMCAL.hh"         // Central Electron Endcap - EMCAL
 
 //--------------FFe---------------
 #include "ffe_CPOL/ffe_CPOL.hh"         //  Far-forward electron direction ePolarimeter
 //--------------CI---------------
+#include "ci_GEM/ci_GEM.hh"             // Central Ion Endcap - TRD
 #include "ci_DRICH/ci_DRICH.hh"         // Central Ion Endcap - DRICH
 #include "ci_TRD/ci_TRD.hh"             // Central Ion Endcap - TRD
 #include "ci_EMCAL/ci_EMCAL.hh"         // Central Ion Endcap - EMCAL
 #include "ci_HCAL/ci_HCAL.hh"           // Central Ion Endcap - HCAL
 //--------------FFi---------------
+#include "fi_EMCAL/fi_EMCAL.hh"         // Far-forward Ion D1  - EMCAL
 
 
 
@@ -252,6 +255,8 @@ private:
     cb_HCAL_Design     cb_HCAL;
     //==============================================
     //----------------E-ENDCAP -----------------------
+    //----------------GEM volume ---------------------
+    ce_GEM_Design     ce_GEM;
     //----------------MRICH volume -----------------------
     ce_MRICH_Design     ce_MRICH;
     //----------------EMCAL volume -----------------------
@@ -264,6 +269,8 @@ private:
     ffe_CPOL_Design    ffe_CPOL;
     //==============================================
     //----------------Ion-ENDCAP -----------------------
+    //----------------GEM volume ---------------------
+    ci_GEM_Design     ci_GEM;
     //----------------DRICH volume ---------------------
     ci_DRICH_Design     ci_DRICH;
     //----------------TRD volume ---------------------
@@ -275,6 +282,8 @@ private:
 
     //==============================================
     //----------------Far-forward ION  --------------
+    //----------------EMCAL volume ---------------------
+    fi_EMCAL_Design     fi_EMCAL;
 
 
 
@@ -296,17 +305,6 @@ private:
     G4double fGapThick;
 
 
-
-    // =========================================================================
-    // --------------- START DETECTOR VOLUMES ----------------------------------
-    // =========================================================================
-
-
-    // =========================================================================
-    // ---------------  BARREL -------------------------------------------------
-    // =========================================================================
-
-    //*************************************************************
 
 
     //*************************************************************
@@ -339,60 +337,7 @@ private:
 
     //*************************************************************
 
-    //***************** Included into BARREL***********************
-    //-----------------ENDCAP-E GEM  volume--------------------
-
-    G4double ce_GEM_GVol_RIn;
-    G4double ce_GEM_GVol_ROut;
-    G4double ce_GEM_GVol_SizeZ;
-    G4double ce_GEM_GVol_PosZ;
-    G4double ce_GEM_GVol_ShiftZ;
-    G4Tubs *ce_GEM_GVol_Solid;    //pointer to the solid  GEM E-endcap  volume
-    G4LogicalVolume *ce_GEM_GVol_Logic;    //pointer to the logical GEM E-endcap volume
-    G4VPhysicalVolume *ce_GEM_GVol_Phys;    //pointer to the physical GEM E-endcap volume
-    //--------------- ENDCAP-E GEM  detector ------------------
-    G4double ce_GEM_lay_RIn[20];
-    G4double ce_GEM_lay_ROut[20];
-    G4double ce_GEM_lay_SizeZ[20];
-    G4double ce_GEM_lay_PosZ[20];
-    G4Material *ce_GEM_lay_Material;
-    G4VisAttributes *attr_ce_GEM_lay;
-    G4Tubs *ce_GEM_lay_Solid[20];    //pointer to the solid World
-    G4LogicalVolume *ce_GEM_lay_Logic[20];    //pointer to the logical World
-    G4VPhysicalVolume *ce_GEM_lay_Phys[20];    //pointer to the physical World
-
-    //*************************************************************
-    //-----------------ENDCAP-H GEM  volume--------------------
-
-    G4double ci_GEM_GVol_RIn;
-    G4double ci_GEM_GVol_ROut;
-    G4double ci_GEM_GVol_SizeZ;
-    G4double ci_GEM_GVol_PosZ;
-    G4double ci_GEM_GVol_ShiftZ;
-    G4Tubs *ci_GEM_GVol_Solid;    //pointer to the solid  GEM H-endcap  volume
-    G4LogicalVolume *ci_GEM_GVol_Logic;    //pointer to the logical GEM H-endcap volume
-    G4VPhysicalVolume *ci_GEM_GVol_Phys;    //pointer to the physical GEM H-endcap volume
-    //-------------------ENDCAP-H GEM detector ------------------
-    G4double ci_GEM_lay_RIn[20];
-    G4double ci_GEM_lay_ROut[20];
-    G4double ci_GEM_lay_SizeZ[20];
-    G4double ci_GEM_lay_PosZ[20];
-    G4Material *ci_GEM_lay_Material;
-    G4VisAttributes *attr_ci_GEM_lay;
-    G4Tubs *ci_GEM_lay_Solid[20];    //pointer to the solid World
-    G4LogicalVolume *ci_GEM_lay_Logic[20];    //pointer to the logical World
-    G4VPhysicalVolume *ci_GEM_lay_Phys[20];    //pointer to the physical World
-    //--------------------------------------------------------------
-
-
-    // =========================================================================
-    // =========================================================================
-    // ---------------  ENDCAP-E -------------------------------------------------
-    // =========================================================================
-    // =========================================================================
-
-
-    // =========================================================================
+      // =========================================================================
 
 
     //  G4Polycone*        ce_HCAL_GVol_Solid;    //pointer to the solid ECAP_HCAL volume
@@ -412,70 +357,6 @@ private:
 
 
 
-    // =========================================================================
-    // =========================================================================
-    // ---------------  ENDCAP-H -------------------------------------------------
-    // =========================================================================
-    // =========================================================================
-    //
-    // =========================================================================
-    //--------------ENDCAP-H  HCAL vol -------------------
-    // G4double           cb_EMCAL_GVol_RIn;
-    // G4double           cb_EMCAL_GVol_ROut;
-    // G4double           cb_EMCAL_GVol_SizeZ;
-
-    //  G4Polycone*        ci_HCAL_GVol_Solid;    //pointer to the solid HCAP_HCAL volume
-    G4double ci_HCAL_GVol_RIn;
-    G4double ci_HCAL_GVol_ROut;
-    G4double  ci_HCAL_GVol_SizeZ;
-    G4double  ci_HCAL_GVol_ShiftZ;
-    G4VisAttributes* attr_ci_HCAL_GVol;
-    G4Tubs *ci_HCAL_GVol_Solid;    //pointer to the solid HCAP_HCAL volume
-    G4LogicalVolume *ci_HCAL_GVol_Logic;    //pointer to the logicalHCAP_HCAL  volume
-    G4VPhysicalVolume *ci_HCAL_GVol_Phys;    //pointer to the physical EMCAL barrel volume
-    //---------------ENDCAP-H HCAL det iron-------------------
-    G4double ci_HCAL_det_RIn;
-    G4double ci_HCAL_det_ROut;
-    G4double ci_HCAL_det_ThicknessZ;
-    G4double ci_HCAL_det_GapZ;
-    G4double ci_HCAL_det_PosZ;
-    int ci_HCAL_Nlay;
-    G4VisAttributes* attr_ci_HCAL_det;
-    G4Material *ci_HCAL_det_Material;
-    G4Tubs *ci_HCAL_det_Solid;    //pointer to the solid HCAP_HCAL volume
-    G4LogicalVolume *ci_HCAL_det_Logic;    //pointer to the logicalHCAP_HCAL  volume
-    G4VPhysicalVolume *ci_HCAL_det_Phys;    //pointer to the physical EMCAL barrel volume
-    // =========================================================================
-    //------------------ ENDCAP-H EMCAL vol ------------------
-    G4double ci_EMCAL_GVol_RIn;
-    G4double ci_EMCAL_GVol_ROut;
-    G4double ci_EMCAL_GVol_ThicknessZ;
-    double ci_EMCAL_GVol_PosZ;
-    G4Material *ci_EMCAL_GVol_Material;
-    G4VisAttributes *attr_ci_EMCAL_GVol;
-    G4Tubs *ci_EMCAL_GVol_Solid;    //pointer to the solid World
-    G4LogicalVolume *ci_EMCAL_GVol_Logic;    //pointer to the logical World
-    G4VPhysicalVolume *ci_EMCAL_GVol_Phys;    //pointer to the physical World
-    //  ------------ENDCAP-H  EMCAL modules -----
-    double ci_EMCAL_det_Length ;
-    double ci_EMCAL_det_Width ;
-    G4double ci_EMCAL_det_Gap ;
-    G4double ci_EMCAL_det_Rin1 ;
-    G4double ci_EMCAL_det_Rin2 ;
-
-    G4Material *ci_EMCAL_det_Material ;
-    G4VisAttributes *attr_ci_EMCAL_det;
-    G4Box *ci_EMCAL_det_Solid ;
-    G4LogicalVolume *ci_EMCAL_det_Logic ;
-
-    // =========================================================================
-    //--------------ENDCAP-H  TRD vol -------------------
-
-
-     G4VisAttributes *attr_ci_TRD_GVol;
-     G4Tubs *ci_TRD_GVol_Solid;
-     G4LogicalVolume *ci_TRD_GVol_Logic;
-     G4PVPlacement *ci_TRD_GVol_Phys;
 
     //===========================================================
     //===========================================================
@@ -524,19 +405,6 @@ private:
     G4LogicalVolume *fi_D1B_lay_Logic;    //pointer to the logical FARFORWD
     G4VPhysicalVolume *fi_D1B_lay_Phys;    //pointer to the physical FARFORWD
 
-    //----------------EMCAL D1 area---------------------
-
-    double fi_D1B_EMCAL_SizeZ;
-    double fi_D1B_EMCAL_Width;
-    G4double fi_D1B_EMCAL_Gap ;
-    G4double fi_D1B_EMCAL_Angle;
-    float fi_D1B_EMCAL_Shift;
-    G4RotationMatrix rotm_fi_D1B_EMCAL;
-    G4Material *fi_D1B_EMCAL_Material;
-    G4VisAttributes* attr_fi_D1B_EMCAL;
-
-    G4Box *fi_D1B_EMCAL_Solid;
-    G4LogicalVolume *fi_D1B_EMCAL_Logic;
 
 
     //-----------------FORWARD TRD inside D2  volume--------------------

@@ -15,12 +15,18 @@ Jefferson Lab EIC Geant4 simulation
 
 [[_TOC_]] 
 
+<!-- MarkdownTOC autolink="true" -->
+items here
+
+
 ## 1. Installation
  
 
  
 ## INTRODUCTION
-	
+
+<!-- /MarkdownTOC -->
+
  3- GEOMETRY DEFINITION
  
   	

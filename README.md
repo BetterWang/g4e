@@ -1,4 +1,4 @@
-# JLEICgeant4
+# Geant 4 EIC = g4e
 
 Jefferson Lab EIC Geant4 simulation
 -------------------------------------------------------------------
@@ -13,32 +13,36 @@ Jefferson Lab EIC Geant4 simulation
 
 ![Design picture](doc/JLEICgeant4-v1a.png)
 
- 0- INTRODUCTION
-	
+[[_TOC_]] 
 
+## 1. Installation
+ 
+
+ 
+## INTRODUCTION
 	
- 1- GEOMETRY DEFINITION
+ 3- GEOMETRY DEFINITION
  
   	
- 2- AN EVENT : THE PRIMARY GENERATOR
+ 4- AN EVENT : THE PRIMARY GENERATOR
   	
- 3- DETECTOR RESPONSE
+ 5. DETECTOR RESPONSE
 
   				
- 4- PHYSICS DEMO
+ 6 - PHYSICS DEMO
  
  	
  5- HOW TO START ?
  
 	
- 	- execute JLEICgeant4 in 'interactive' mode with visualization e.g.
- 		% JLEICgeant4
+ 	- execute g4e in 'interactive' mode with visualization e.g.
+ 		% g4e
 		....
 		Idle> type your commands
 		....
-        - execute JLEICgeant4 in 'batch' mode  
+        - execute g4e in 'batch' mode  
                   ( set number of events in jleic.mac, example   /run/beamOn 100) 
-                 % JLEICgeant4 jleic.mac
+                 % g4e jleic.mac
                  
 
 		
@@ -60,4 +64,5 @@ Jefferson Lab EIC Geant4 simulation
 
  Using histograms
  ---------------- 
+
 

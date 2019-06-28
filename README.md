@@ -19,8 +19,18 @@ Jefferson Lab EIC Geant4 simulation
 items here
 
 
-## 1. Installation
- 
+## Installation
+
+
+*ejpm* - EIC Jana Packet Manager
+
+```
+ejpm install g4e
+```
+
+Manual installation
+
+
 
  
 ## INTRODUCTION

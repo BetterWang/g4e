@@ -79,14 +79,14 @@
 #define USE_CB_VTX
 //#define  USE_VTX0 1   // for simple vtx geom
 #define USE_CB_VTX_LADDERS
-//#define  USE_VTX_ENDCAP    // for vxt endcaps ladders
+//#define  USE_CB_VTX_ENDCAPS    // for vxt endcaps ladders
 //#define  USE_VTX_DISKS    // for vxt disks along beampipe
 //#define USE_VTX_E 1   // for vxt endcaps 
 
 
 #define USE_CB_CTD
 #define USE_CB_CTD_Si  1 // silicon version of CTD
-//#define USE_cb_CTD_Straw 1 // straw version of CTD
+//#define USE_CB_CTD_Straw 1 // straw version of CTD
 
 #define USE_CB_DIRC
 #define USE_CB_DIRC_bars  1 // bars for DIRC
@@ -109,8 +109,10 @@
 #define USE_CI_EMCAL
 #define USE_CI_HCAL
 #define USE_CI_HCAL_D
-
-//==============================================
+//--------- Forward D1
+#define USE_FI_EMCAL
+#define USE_FI_TRKD1
+// ==============================================
 //--------E-encap------
 #define USE_E_ENDCAP
 //------- subdetector-volumes E-encap ----- 
@@ -122,9 +124,11 @@
 #define  USE_FFE_CPOL
 //--------FARFORWARD HADRON------
 //#define USE_DIPOLE1_SI
-//#define USE_FI_DIPOLE1_A
+//
 //#define USE_FI_DIPOLE1_B
 //#define USE_FI_DIPOLE2
+
+#define USE_FFI_ZDC
 
 //#define USE_FARFORWARD_GEM
 
@@ -395,6 +399,17 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 #endif // end HCAL
 
 
+//===================================================================================
+//                          START placement of BEAM ELEMENTS                       ==
+//===================================================================================
+#ifdef USE_FFQs
+
+
+    Read_Di_File();
+    Read_dE_File();
+
+#endif
+
     //***********************************************************************************
     //***********************************************************************************
     //**                                DETECTOR VOLUMES                               **
@@ -414,7 +429,13 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 
 #ifdef  USE_CB_VTX_LADDERS
     //----------vtx barrel ladder geometry--------------
-    cb_VTX.ConstructLadders();
+    cb_VTX.ConstructLaddersCentral();
+#endif
+#ifdef  USE_CB_VTX_ENDCAPS
+    cb_VTX.ConstructLaddersEndcaps();
+//           if (fLogicVTXEndE[lay]) { fLogicVTXEndE[lay]->SetSensitiveDetector(fCalorimeterSD); }
+//            if (fLogicVTXEndH[lay]) { fLogicVTXEndH[lay]->SetSensitiveDetector(fCalorimeterSD); }
+
 #endif
 
 #endif  // end VTX
@@ -430,6 +451,9 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 
 #ifdef USE_CB_CTD_Si
     cb_CTD.ConstructLadders();
+#endif
+#ifdef  USE_CB_CTD_Straw
+    cb_CTD.ConstructStraws();
 #endif
 #endif  // end CTD
 
@@ -587,18 +611,61 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 #endif  // ============end USE_CI_ENDCAP  ===================================
 
 
+    //====================================================================================
+    //==                          DIPOLE-1 Tracker and EMCAL                            ==
+    //====================================================================================
+
+#ifdef USE_FI_TRKD1
+    //-------------------------------------------------------------------------------
+    //                      Place Si_disks inside D1a
+    //-------------------------------------------------------------------------------
+    int mydipole_id;
+
+    for (int id = 0; id < 20; id++) {
+        if (strcmp(fSolid_BigDi_ffqsNAME[id], "iBDS1a") == 0) {
+            printf("found D21=%s  Z=%f dZ=%f Rout=%f \n", fSolid_BigDi_ffqsNAME[id], fSolid_BigDi_ffqsZ[id],
+                   fSolid_BigDi_ffqsSizeZDi[id],
+                   fSolid_BigDi_ffqsRinDi[id]);
+            mydipole_id = id;
+        };
+    };
+
+    fConfig.fi_TRKD1.ROut = fSolid_BigDi_ffqsRinDi[mydipole_id] * cm;
+    fConfig.fi_TRKD1.Zpos = (fSolid_BigDi_ffqsSizeZDi[mydipole_id]/2.) * cm  -fConfig.fi_TRKD1.SizeZ/2.;
+    fi_TRKD1.ConstructA(fConfig.fi_TRKD1, World_Material, fPhysics_BigDi_m[mydipole_id]);
+    fi_TRKD1.ConstructDetectorsA();
+
+   // fi_TRKD1.ConstructDetectorsB();
+    //  if (f1_D1A_Lay_Logic) f1_D1A_Lay_Logic->SetSensitiveDetector(fCalorimeterSD);
+
+
+
+#endif
+//------------------------------------------------
 #ifdef USE_CI_HCAL
 
+#ifdef USE_FI_EMCAL
     // Ecal module  AFTER !!!   Dipole1
 
-    fConfig.fi_EMCAL.Zpos = fConfig.ci_HCAL.SizeZ/ 2 - fConfig.fi_EMCAL.SizeZ / 2;
+    fConfig.fi_EMCAL.Zpos = - fConfig.ci_HCAL.SizeZ/ 2 + fConfig.fi_EMCAL.SizeZ / 2;
 
     fConfig.fi_EMCAL.rot_matx.rotateY(fConfig.fi_EMCAL.Angle * rad);
     fi_EMCAL.Construct(fConfig.fi_EMCAL, World_Material, ci_HCAL.Phys);
 
 
-
 #endif
+#endif
+
+    //------------------------------------------------
+#ifdef USE_FFI_ZDC
+    fConfig.ffi_ZDC.rot_matx.rotateY(fConfig.ffi_ZDC.Angle * rad);
+    fConfig.ffi_ZDC.Zpos = 4000*cm;
+    fConfig.ffi_ZDC.Xpos = -170*cm;
+
+    ffi_ZDC.Construct(fConfig.ffi_ZDC, World_Material, World_Phys);
+
+#endif // end ffi_ZDC
+
 
     //===================================================================================
     //==                        Compton Polarimeter                                  ==
@@ -610,17 +677,6 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 
 
 
-
-//===================================================================================
-//                          START placement of BEAM ELEMENTS                       ==
-//===================================================================================
-#ifdef USE_FFQs
-
-
-    Read_Di_File();
-    Read_dE_File();
-
-#endif
 
 
 #ifdef  USE_BEAMPIPE
@@ -752,300 +808,10 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 
 #endif
 
-#ifdef  USE_VTX0    /*----------vtx barrel simple geometry--------------*/
-                                                                                                                            //===================================================================================
-
-  int FDIV=0;
-
-  G4RotationMatrix rm[10][20], rm1[10][20], rm2[10][20];
-   deltaphi1=0; cb_VTX_ladder_deltaphi=30.*deg; phi=0; x=3*cm; y=0*cm; z=0*cm;
-  cb_VTX_ladder_deltashi=-7.*deg;
-  G4double           fAbsorberDX=10*cm;
-  G4double           cb_VTX_ladder_DY=2*cm;
-  G4double fVTXZ;
-  fVTXZ = fStartZ + fRadThick + 2*cm;  //-- Si at dist. 2cm
-  int NLAYBARR=6;
-  G4double   fVTXThickness0[6]=  {0.005,0.005,0.01,0.01,0.01,0.01};  // --- in cm ;
-  G4double           VTXin[6] =  { 3.5 ,4.5, 6.5, 10.5, 14.5, 19.5 };  // --- in cm
-  G4double           VTXout[6];
-  G4double          fVTXZ[6]=  { 10., 11., 18.,24.,36.,48.}; // --- in cm  ;
-
-  /* VTXin[0]=3.5; VTXout[0]=( VTXin[0]*cm; fVTXZ[0]=10*cm;
-  VTXin[1]=4.5; VTXout[1]=4.505*cm; fVTXZ[1]=11*cm;
-  VTXin[2]=6.5; VTXout[2]=6.51*cm;   fVTXZ[2]=18*cm;
-  VTXin[3]=10.5; VTXout[3]=10.51*cm; fVTXZ[3]=24*cm;
-  VTXin[4]=14.5; VTXout[4]=14.51*cm; fVTXZ[4]=36*cm;
-  VTXin[5]=19.5; VTXout[5]=19.51*cm; fVTXZ[5]=48*cm;
-  */
-
-
-
-    // ------- layers of Si in VTX0
-      for (int ia=0;ia<NLAYBARR;ia++) {
-
-	VTXout[ia]=VTXin[ia]+fVTXThickness0[ia];
-	sprintf(abname,"Solid_VTX_layer%d",ia);
-	fSolidVTXBarrel[ia] = new  G4Tubs(abname, VTXin[ia]*cm, VTXout[ia]*cm,(fVTXZ[ia]/2.)*cm,0.,360*deg);
-
-	sprintf(abname,"Logic_VTX_layer_%d",ia);
-	fLogicVTXBarrel[ia] = new G4LogicalVolume(fSolidVTXBarrel[ia],
-                                         fVTXMaterial, abname);
-	G4VisAttributes* attr_cb_VTX;
-	if(ia<2){      attr_cb_VTX= new G4VisAttributes(G4Color(0.0,0.2,0.8,2.0));}
-	else{       attr_cb_VTX= new G4VisAttributes(G4Color(1.0-0.1*(ia-2), 1.0, 0.0+0.1*(ia-2),1.1));}
-	attr_cb_VTX->SetLineWidth(1); attr_cb_VTX->SetForceSolid(true);
-        fLogicVTXBarrel[ia]->SetVisAttributes(attr_cb_VTX);
-
-	sprintf(abname,"BarrelVTX_layer_%d",ia);
-	printf("Logic BarrelVTX_layer_%d \n ",ia);
-	fPhysicsVTXBarrel[ia] = new G4PVPlacement(0,G4ThreeVector(),
-					     abname,fLogicVTXBarrel[ia],
-					     cb_VTX_GVol_Phys,false,0.);
-	//	if (fLogicVTXBarrel[ia])  fLogicVTXBarrel[ia]->SetSenstiveDetector(fCalorimeterSD);
-     }
-
-
-     printf(" I use vtx0, nlay=%d\n",NLAYBARR);
-    for (int ia=0;ia<NLAYBARR;ia++) {
-
-	if (fLogicVTXBarrel[ia]) { 	printf("Sensitive BarrelVTX_layer_%d\n",ia); fLogicVTXBarrel[ia]->SetSensitiveDetector(fCalorimeterSD);  }
-    }
- printf(" end of VERTEX detector \n");
-
-
-
-#endif
-
-
-    /*--------------------------------------------------*/
-    /*-----------VTX  End caps ladder geometry----------*/
-    /*--------------------------------------------------*/
-
-
-#ifdef  USE_VTX_ENDCAP
-
-    lay = 0;
-    int NUMF;
-    G4RotationMatrix rme[10][20], rme1[10][20], rme2[10][20];
-    G4double Fdeltaphi, Ftheta, F2theta;
-    G4double RxF[10], RyF[10], RzF[10], RxF2[10], RyF2[10], RzF2[10];
-    //for simple version     G4double Rzshift =24.;
-    G4double Rzshift = 24.;
-
-    //  Rx[lay]=(1.4)*cm; Ry[lay]=Rx[lay];
-    G4double fVTX_END_EDY = 12 * cm;
-    G4double fVTX_END_EDZ = 0.05 * cm;
-    G4double fVTX_END_EDX1 = 6 * cm;
-    G4double fVTX_END_EDX2 = 4 * cm;
-
-    for (lay = 0; lay < 4; lay++) {
-        if (lay == 3) {
-            fVTX_END_EDY = 18 * cm;
-            NUMF = 24;
-            Fdeltaphi = 15. * deg;
-            Ftheta = -40. * deg;
-            RxF[lay] = (1.3) * cm;
-            RyF[lay] = RxF[lay];
-            RzF[lay] = -Rzshift * cm - 5.5 * cm;
-            RxF2[lay] = (1.3) * cm;
-            RyF2[lay] = RxF2[lay];
-            RzF2[lay] = Rzshift * cm + 5.5 * cm;
-        }
-        if (lay == 2) {
-            NUMF = 20;
-            fVTX_END_EDY = 16 * cm;
-            Fdeltaphi = 18. * deg;
-            Ftheta = -38. * deg;
-            RxF[lay] = (1.1) * cm;
-            RyF[lay] = RxF[lay];
-            RzF[lay] = -Rzshift * cm - 1. * cm;
-            RxF2[lay] = (1.1) * cm;
-            RyF2[lay] = RxF2[lay];
-            RzF2[lay] = Rzshift * cm + 1. * cm;
-        }
-        if (lay == 1) {
-            NUMF = 18;
-            fVTX_END_EDY = 14 * cm;
-            Fdeltaphi = 20. * deg;
-            Ftheta = -45. * deg;
-            RxF[lay] = (1.0) * cm;
-            RyF[lay] = RxF[lay];
-            RzF[lay] = -Rzshift * cm + 1.0 * cm;
-            RxF2[lay] = (1.0) * cm;
-            RyF2[lay] = RxF2[lay];
-            RzF2[lay] = Rzshift * cm - 1.0 * cm;
-        }
-        if (lay == 0) {
-            NUMF = 12;
-            fVTX_END_EDY = 12 * cm;
-            Fdeltaphi = 30. * deg;
-            Ftheta = -55. * deg;
-            RxF[lay] = (0.8) * cm;
-            RyF[lay] = RxF[lay];
-            RzF[lay] = -Rzshift * cm + 7. * cm;
-            RxF2[lay] = (0.8) * cm;
-            RyF2[lay] = RxF2[lay];
-            RzF2[lay] = Rzshift * cm - 7. * cm;
-        }
-        printf("x1=%f x2=%f  ,y=%f ,z=%f \n", fVTX_END_EDZ, fVTX_END_EDY + lay * 2., fVTX_END_EDX1, fVTX_END_EDX2);
-        sprintf(abname, "Solid_VTX_ladder_END_E%d", lay);
-        fSolidVTXEndE[lay] = new G4Trap(abname, fVTX_END_EDZ,
-                                        fVTX_END_EDY + lay * 2., fVTX_END_EDX1, fVTX_END_EDX2);
-
-        sprintf(abname, "Logic_VTX_ladder_END_E%d", lay);
-        fLogicVTXEndE[lay] = new G4LogicalVolume(fSolidVTXEndE[lay], fVTXMaterial,
-                                                 abname);
-
-        //      G4VisAttributes* vs2= new G4VisAttributes(G4Color(0.0+0.2*double(lay),0.2,0.8-0.2*double(lay),0.5));
-        G4VisAttributes *vs2 = new G4VisAttributes(G4Color(1.0 - 0.1 * lay, 1.0, 0.0 + 0.1 * lay, 0.5));
-        //vs2->SetForceWireframe(true);
-        vs2->SetForceSolid(true);
-        fLogicVTXEndE[lay]->SetVisAttributes(vs2);
-
-        for (int ia = 0; ia < NUMF; ia++) {
-
-            //       cb_VTX_ladder_deltaphi=0;cb_VTX_ladder_deltashi=0;
-            phi = (ia * (Fdeltaphi));
-            x = -RxF[lay] * cos(phi) * cm;
-            y = -RyF[lay] * sin(phi) * cm;
-            z = RzF[lay];
-            rme1[lay][ia].rotateX(Ftheta);
-            rme1[lay][ia].rotateZ(-90 + (Fdeltaphi * (ia + 1)));
-            //WORKING       rm1[lay][ia].rotateX(-60*deg);
-            //WORKING       rm1[lay][ia].rotateZ(-90+(cb_VTX_ladder_deltaphi*(ia+1)));
-            sprintf(abname, "VTX_ladderEnd_%d_%d", lay, ia);
-            fPhysicsVTXEndE = new G4PVPlacement(G4Transform3D(rme1[lay][ia], G4ThreeVector(x, y, z)),
-                                                abname, fLogicVTXEndE[lay],
-                                                cb_VTX_GVol_Phys, false, 0.);
-        }
-
-
-        printf("x1=%f x2=%f  ,y=%f ,z=%f \n", fVTX_END_EDZ, fVTX_END_EDY, fVTX_END_EDX1, fVTX_END_EDX2);
-        sprintf(abname, "Solid_VTX_ladder_END_H%d", lay);
-        fSolidVTXEndH[lay] = new G4Trap(abname, fVTX_END_EDZ,
-                                        fVTX_END_EDY, fVTX_END_EDX1, fVTX_END_EDX2);
-
-        sprintf(abname, "Logic_VTX_ladder_END_H%d", lay);
-        fLogicVTXEndH[lay] = new G4LogicalVolume(fSolidVTXEndH[lay], fVTXMaterial,
-                                                 abname);
-        //      G4VisAttributes* vs3= new G4VisAttributes(G4Color(0.0+0.2*double(lay),0.2,0.8-0.2*double(lay),0.5));
-        G4VisAttributes *vs3 = new G4VisAttributes(G4Color(1.0 - 0.1 * lay, 1.0, 0.0 + 0.1 * lay, 0.5));
-        //      vs3->SetForceWireframe(true);
-        vs3->SetForceSolid(true);
-        fLogicVTXEndH[lay]->SetVisAttributes(vs3);
-
-        for (int ia = 0; ia < NUMF; ia++) {
-
-
-            //       cb_VTX_ladder_deltaphi=0;cb_VTX_ladder_deltashi=0;
-            phi = (ia * (Fdeltaphi));
-            x = -RxF2[lay] * cos(phi) * cm;
-            y = -RyF2[lay] * sin(phi) * cm;
-            z = RzF2[lay];
-            rme2[lay][ia].rotateX(-Ftheta);
-            rme2[lay][ia].rotateZ(-90 + (Fdeltaphi * (ia + 1)));
-            //WORKING       rm1[lay][ia].rotateX(-60*deg);
-            //WORKING       rm1[lay][ia].rotateZ(-90+(cb_VTX_ladder_deltaphi*(ia+1)));
-            sprintf(abname, "VTX_ladderEnd2_%d_%d", lay, ia);
-            fPhysicsVTXEndH = new G4PVPlacement(G4Transform3D(rme2[lay][ia], G4ThreeVector(x, y, z)),
-                                                abname, fLogicVTXEndH[lay],
-                                                cb_VTX_GVol_Phys, false, 0.);
-
-
-        }
-
-        if (fLogicVTXEndE[lay]) { fLogicVTXEndE[lay]->SetSensitiveDetector(fCalorimeterSD); }
-        if (fLogicVTXEndH[lay]) { fLogicVTXEndH[lay]->SetSensitiveDetector(fCalorimeterSD); }
-
-
-    }
-
-
-
-    //-----------------------------------------------------------------------
-
-#endif
-
-    printf(" end of VERTEX volume \n");
 
 
 
 
-
-    //*********************************************************************
-    //====================================================================================
-    //==                          DETECTOR VOLUME  H-FORWARD                           ==
-    //====================================================================================
-    //*********************************************************************
-
-    //====================================================================================
-    //==                          DIPOLE-1 Tracker and EMCAL                            ==
-    //====================================================================================
-
-#ifdef USE_FI_DIPOLE1_A
-    //-------------------------------------------------------------------------------
-    //                      Place Si_disks inside D1a
-    //-------------------------------------------------------------------------------
-    int mydipole_id;
-
-    for (int id = 0; id < 20; id++) {
-        if (strcmp(fSolid_BigDi_ffqsNAME[id], "iBDS1a") == 0) {
-            printf("found D21=%s  Z=%f dZ=%f Rout=%f \n", fSolid_BigDi_ffqsNAME[id], fSolid_BigDi_ffqsZ[id],
-                   fSolid_BigDi_ffqsSizeZDi[id],
-                   fSolid_BigDi_ffqsRinDi[id]);
-            mydipole_id = id;
-        };
-    };
-    fi_D1A_GVol_RIn = 0 * cm;
-    fi_D1A_GVol_ROut = fSolid_BigDi_ffqsRinDi[mydipole_id] * cm;
-    fi_D1A_GVol_SizeZ = 30 * cm;
-
-
-    fi_D1A_GVol_Solid = new G4Tubs("fi_D1A_GVol_Solid", fi_D1A_GVol_RIn, fi_D1A_GVol_ROut,
-                                    fi_D1A_GVol_SizeZ / 2., 0., 360 * deg);
-
-    fi_D1A_GVol_Logic = new G4LogicalVolume(fi_D1A_GVol_Solid, World_Material, "fi_D1A_GVol_Logic");
-
-    // ci_GEM_GVol_PosZ= SizeZ/2-abs(World_ShiftVTX)+ci_GEM_GVol_SizeZ-5*cm;   // --- need to find out why this 5 cm are needed
-    fi_D1A_GVol_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), "fi_D1A_GVol_Phys", fi_D1A_GVol_Logic,
-                                             fPhysics_BigDi_m[mydipole_id], false, 0);
-
-    //  G4VisAttributes* vgemff= new G4VisAttributes(G4Color(0.8,0.4,0.3,0.8));
-    attr_fi_D1A_GVol = new G4VisAttributes(G4Color(0.3, 0, 3., 0.1));
-    attr_fi_D1A_GVol->SetLineWidth(1);
-    attr_fi_D1A_GVol->SetForceSolid(true);
-    fi_D1A_GVol_Logic->SetVisAttributes(attr_fi_D1A_GVol);
-
-    // ---------------------------------------------------------------------------
-    //                     D1 tracking  all
-    // ---------------------------------------------------------------------------
-    fi_D1A_lay_RIn = 5 * cm;
-    fi_D1A_lay_ROut = fi_D1A_GVol_ROut - 5 * cm;
-    fi_D1A_lay_SizeZ = 1 * cm;
-    f1_D1A_NLAY=5;
-    //   fi_D1A_lay_Material = fMat->GetMaterial("Ar10CO2");  //----   !!!!! ----
-    fi_D1A_lay_Material =fMat->GetMaterial("G4_Galactic");
-    f1_D1A_lay_Solid = new G4Tubs("f1_D1A_lay_Solid", fi_D1A_lay_RIn, fi_D1A_lay_ROut,
-                                        fi_D1A_lay_SizeZ / 2., 170., 330 * deg);
-    f1_D1A_Lay_Logic = new G4LogicalVolume(f1_D1A_lay_Solid, fi_D1A_lay_Material, "f1_D1A_lay_Logic");
-
-    if (f1_D1A_Lay_Logic) f1_D1A_Lay_Logic->SetSensitiveDetector(fCalorimeterSD);
-
-
-    int ffsi_counter = 0;
-    for (int fflay = 0; fflay < f1_D1A_NLAY; fflay++) {
-        double Z = -fi_D1A_GVol_SizeZ / 2 + (fflay + 1) * fi_D1A_lay_SizeZ / 2 + (fflay + 1) * 5 * cm;
-        f1_D1A_lay_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, Z),
-                                                     "f1_D1A_lay_Phys", f1_D1A_Lay_Logic,
-                                                     fi_D1A_GVol_Phys, false, ffsi_counter);
-        ffsi_counter++;
-        attr_fi_D1A_lay = new G4VisAttributes(G4Color(0.8, 0.4 + 0.1 * fflay, 0.3, 1.));
-        attr_fi_D1A_lay->SetLineWidth(1);
-        attr_fi_D1A_lay->SetForceSolid(true);
-        f1_D1A_Lay_Logic->SetVisAttributes(attr_fi_D1A_lay);
-    }
-
-#endif
 
 #ifdef USE_FI_DIPOLE1_B
 

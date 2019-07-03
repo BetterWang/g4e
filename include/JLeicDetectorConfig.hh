@@ -25,8 +25,11 @@
 #include "ci_EMCAL/ci_EMCAL.hh"
 #include "ci_HCAL/ci_HCAL.hh"
 
+#include "fi_TRKD1/fi_TRKD1.hh"
 #include "fi_EMCAL/fi_EMCAL.hh"
 
+
+#include "ffi_ZDC/ffi_ZDC.hh"         // Far-forward Ion   - HCAL ZDC
 
 
 struct JLeicDetectorConfig {
@@ -79,8 +82,11 @@ struct JLeicDetectorConfig {
     ci_HCAL_Config  ci_HCAL;
 
     //------------Far-Forward-Ion-----
+    fi_TRKD1_Config  fi_TRKD1;
     fi_EMCAL_Config  fi_EMCAL;
 
+    //---------------HCAL -ZDC -------------------------
+    ffi_ZDC_Config  ffi_ZDC;
 
 } ;
 

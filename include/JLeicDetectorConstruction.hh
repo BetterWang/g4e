@@ -83,8 +83,10 @@
 #include "ci_EMCAL/ci_EMCAL.hh"         // Central Ion Endcap - EMCAL
 #include "ci_HCAL/ci_HCAL.hh"           // Central Ion Endcap - HCAL
 //--------------FFi---------------
+#include "fi_TRKD1/fi_TRKD1.hh"         // Far-forward Ion D1  - Tracking
 #include "fi_EMCAL/fi_EMCAL.hh"         // Far-forward Ion D1  - EMCAL
 
+#include "ffi_ZDC/ffi_ZDC.hh"         // Far-forward Ion   - HCAL ZDC
 
 
 class JLeicCalorimeterSD;
@@ -282,10 +284,12 @@ private:
 
     //==============================================
     //----------------Far-forward ION  --------------
+    //----------------Tracking volume ---------------------
+    fi_TRKD1_Design     fi_TRKD1;
     //----------------EMCAL volume ---------------------
     fi_EMCAL_Design     fi_EMCAL;
-
-
+    //---------------HCAL -ZDC -------------------------
+    ffi_ZDC_Design  ffi_ZDC;
 
 // ----------------------------------------------
 
@@ -305,39 +309,7 @@ private:
     G4double fGapThick;
 
 
-
-
-    //*************************************************************
-    //----------------CTD  volume -------------------
- //-------------------CTD_Si barrel detector ------------------
-     //-------------------CTD_Straw barrel detector ------------------
-    G4double cb_CTD_detStraw_RIn;
-    G4double cb_CTD_detStraw_ROut;
-    G4double cb_CTD_detStraw_SizeZ;
-    G4double cb_CTD_detStraw_Steps;
-    G4Material *cb_CTD_detStraw_Material;
-    G4int cb_CTD_detStraw_Layers;
-    G4double cb_CTD_Straws_RIn;
-    G4double cb_CTD_Straws_ROut;
-    G4VisAttributes* attr_cb_CTD_Straws;
-    G4Tubs *cb_CTD_Straws_Solid;    //pointer to the solid World
-    G4LogicalVolume *cb_CTD_Straws_Logic;    //pointer to the logical World
-    G4VPhysicalVolume *cb_CTD_Straws_Phys;    //pointer to the physical World
-
-    G4Material *cb_CTD_Straws_Wall_Material;
-    G4Tubs *cb_CTD_Straws_Wall_Solid;    //pointer to the solid World
-    G4LogicalVolume *cb_CTD_Straws_Wall_Logic;    //pointer to the logical World
-    G4VPhysicalVolume *cb_CTD_Straws_Wall_Phys;    //pointer to the physical World
-
-    G4VisAttributes* attr_cb_CTD_Straws_Gas;
-    G4Material *cb_CTD_Straws_Gas_Material;
-    G4Tubs *cb_CTD_Straws_Gas_Solid;    //pointer to the solid World
-    G4LogicalVolume *cb_CTD_Straws_Gas_Logic;    //pointer to the logical World
-    G4VPhysicalVolume *cb_CTD_Straws_Gas_Phys;    //pointer to the physical World
-
-    //*************************************************************
-
-      // =========================================================================
+     // =========================================================================
 
 
     //  G4Polycone*        ce_HCAL_GVol_Solid;    //pointer to the solid ECAP_HCAL volume
@@ -365,24 +337,6 @@ private:
     //===========================================================
     //===========================================================
    //-----------------FORWARD D1  volume--------------------
-    // ----- A----
-    G4double fi_D1A_GVol_RIn;
-    G4double fi_D1A_GVol_ROut;
-    G4double fi_D1A_GVol_SizeZ;
-    G4VisAttributes* attr_fi_D1A_GVol;
-    G4Tubs *fi_D1A_GVol_Solid;    //pointer to the solid  FARFORWD
-    G4LogicalVolume *fi_D1A_GVol_Logic;    //pointer to the logical FARFORWD
-    G4VPhysicalVolume *fi_D1A_GVol_Phys;    //pointer to the physical FARFORWD
-
-    G4double fi_D1A_lay_RIn;
-    G4double fi_D1A_lay_ROut;
-    G4double fi_D1A_lay_SizeZ;
-    int f1_D1A_NLAY;
-    G4Material *fi_D1A_lay_Material;
-    G4VisAttributes* attr_fi_D1A_lay;
-    G4Tubs *f1_D1A_lay_Solid;    //pointer to the solid  FARFORWD
-    G4LogicalVolume *f1_D1A_Lay_Logic;    //pointer to the logical FARFORWD
-    G4VPhysicalVolume *f1_D1A_lay_Phys;    //pointer to the physical FARFORWD
 
     // ----- B----
     G4double fi_D1B_GVol_RIn;
@@ -483,22 +437,6 @@ private:
     G4Tubs *fSolidTPCBarrel[20];    //pointer to the solid World
     G4LogicalVolume *fLogicTPCBarrel[20];    //pointer to the logical World
     G4VPhysicalVolume *fPhysicsTPCBarrel[20];    //pointer to the physical World
-
-
-
-    //-------------------VERTEX barrel detector ------------------
-    G4Material *fVTXMaterial;
-    G4Tubs *fSolidVTXBarrel[20];    //pointer to the solid World
-    G4LogicalVolume *fLogicVTXBarrel[20];    //pointer to the logical World
-    G4VPhysicalVolume *fPhysicsVTXBarrel[20];    //pointer to the physical World
-    //--------------------Vertex Endcaps ---------------------------
-
-    G4Trap *fSolidVTXEndE[10]; //pointer to the solid Absorber
-    G4LogicalVolume *fLogicVTXEndE[10]; //pointer to the logical Absorber
-    G4VPhysicalVolume *fPhysicsVTXEndE; //pointer to the physical Absorber
-    G4Trap *fSolidVTXEndH[10]; //pointer to the solid Absorber
-    G4LogicalVolume *fLogicVTXEndH[10]; //pointer to the logical Absorber
-    G4VPhysicalVolume *fPhysicsVTXEndH; //pointer to the physical Absorber
 
     //--------------------------------------------------------------
 

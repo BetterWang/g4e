@@ -80,7 +80,151 @@ public:
         }
     }
 
-    G4Tubs *Solid;      //pointer to the solid
+    inline void ConstructStraws() {
+     printf("begin STRAW volume \n");
+          static char abname[256];
+          auto cfg = ConstructionConfig;
+
+ int NUMFs[100];
+ G4double Stheta,Sphi,phi_s, Sx, Sy, Sz;;
+ G4RotationMatrix rm1s;
+ G4double  RxF_Straw[100],RyF_Straw[100],RzF_Straw[100];
+ G4double CTD_Str_in=0.3, CTD_Str_out=0.31;
+ G4VisAttributes* vstr2[100];
+
+ cb_CTD_detStraw_SizeZ=200*cm;
+ cb_CTD_detStraw_Layers=20;
+
+ Straw_Material= G4Material::GetMaterial("G4_Galactic");
+
+ Straw_RIn=CTD_Str_in*cm;
+ Straw_ROut=CTD_Str_out*cm;
+ Straw_SizeZ=cfg.SizeZ;
+ sprintf(abname,"cb_CTD_det_Straw_Solid");
+ Straw_Solid = new  G4Tubs(abname,0., Straw_ROut,Straw_SizeZ/2.,0.,360*deg);
+
+ sprintf(abname,"cb_CTD_det_Straw_Logic");
+ Straw_Logic = new G4LogicalVolume(Straw_Solid,
+                                                   Straw_Material, abname);
+ G4VisAttributes* vstr= new G4VisAttributes(G4Color(0.5,0.5,0.5,1.));
+ vstr->SetLineWidth(1); vstr->SetForceSolid(true);
+ Straw_Logic->SetVisAttributes(vstr);
+
+ //-----Walls
+ Straw_Wall_Material=G4Material::GetMaterial("Mylar");
+ sprintf(abname,"cb_CTD_det_Straw_Wall_Solid");
+ Straw_Wall_Solid = new  G4Tubs(abname,0., Straw_ROut,Straw_SizeZ/2.,0.,360*deg);
+
+ sprintf(abname,"cb_CTD_det_Straw_Wall_Logic");
+ Straw_Wall_Logic = new G4LogicalVolume(Straw_Wall_Solid,
+                                                   Straw_Wall_Material, abname);
+sprintf(abname,"cb_CTD_det_Straw_Wall_Phys");
+ Straw_Wall_Phys = new G4PVPlacement(0, G4ThreeVector(0,0,0),
+                                                  Straw_Wall_Logic, abname,
+                                                   Straw_Logic, false,   0 );
+
+ //-----Gas
+ Straw_Gas_Material=G4Material::GetMaterial("Ar10CO2");
+ sprintf(abname,"cb_CTD_det_Straw_Gas_Solid");
+ Straw_Gas_Solid = new  G4Tubs(abname,0., Straw_RIn,Straw_SizeZ/2.,0.,360*deg);
+
+ sprintf(abname,"cb_CTD_det_Straw_Gas_Logic");
+ Straw_Gas_Logic = new G4LogicalVolume(Straw_Gas_Solid,
+                                                   Straw_Gas_Material, abname);
+
+ G4VisAttributes* vstr1= new G4VisAttributes(G4Color(1.,0.5,0.,1.));
+ vstr1->SetLineWidth(1); vstr1->SetForceSolid(true);
+ Straw_Gas_Logic->SetVisAttributes(vstr1);
+
+ sprintf(abname,"Phys_CTD_Straw_layer_gas");
+ Straw_Gas_Phys = new G4PVPlacement(0, G4ThreeVector(0,0,0),
+                                                  Straw_Gas_Logic, abname,
+                                                  Straw_Logic, false,   0 );
+
+
+
+
+ //   if (Straw_Gas_Logic)  Straw_Gas_Logic->SetSensitiveDetector(fCalorimeterSD);
+
+
+       // ------- layers of Straw in CTD
+    int counter=0;
+    for (int lay=0;lay<cb_CTD_detStraw_Layers;lay++) {
+
+        //      RxF_Straw[lay]=fCTDSizeRin;
+        //     printf("Straw X=%f\n",   RxF_Straw[lay]);
+       RxF_Straw[lay]=cfg.RIn+30.+(Straw_ROut*2*lay)+lay*20.; // position of first layer
+        RyF_Straw[lay]=RxF_Straw[lay]+Straw_ROut/2;
+        RzF_Straw[lay]=0*cm;
+
+        // CTD_Straw_Rout[lay]=fCTDSizeRin+(0.01+fCTD_Straw_steps*lay)*cm;
+        //      if(lay==0) NUMFs[lay]=213;
+        //      if(lay==1) NUMFs[lay]=213;
+        NUMFs[lay]=213;
+        int j=2*3.1415*RxF_Straw[lay]/2/Straw_ROut+1;
+        printf("NLAY=%d %d %f\n",lay, j ,2*3.1415*RxF_Straw[lay]/2/Straw_ROut);
+        NUMFs[lay]=j;
+
+
+        Sphi= (Straw_ROut*2/RxF_Straw[lay]);
+        Stheta=0*deg;
+
+        for (int ia=0;ia<NUMFs[lay];ia++) {
+
+          phi_s=(ia*(Sphi));
+          Sx=- RxF_Straw[lay]*cos(phi_s);
+          Sy=- RyF_Straw[lay]*sin(phi_s);
+          Sz= 2*RzF_Straw[lay];
+           rm1s.rotateX(Stheta);
+           rm1s.rotateZ(0+(Sphi*(ia+1)));
+
+           printf("Straw X=%f (%f,%f,%f \n",    RxF_Straw[lay],Sx,Sy,Sz);
+
+           //       G4VisAttributes* vstr= new G4VisAttributes(G4Color(1,0,1,0.2));
+
+          //sprintf(abname,"Barrel_CTD_Straw_layer_%d_str_%d",lay,ia);
+          sprintf(abname,"Barrel_CTD_Straw");
+          Straw_Phys = new G4PVPlacement(G4Transform3D(rm1s,G4ThreeVector(Sx,Sy,Sz)),
+                                                       abname,
+                                                       Straw_Logic,
+                                                       Phys,
+                                                       false,
+                                                       counter);
+          counter++;
+          /* ------------------------------------------------
+            G4PVPlacement(  G4RotationMatrix*       pRot,
+                            const G4ThreeVector&    tlate,
+                            G4LogicalVolume*        pCurrentLogical,
+                            const G4String&         pName,
+                            G4LogicalVolume*   pMotherLogical,
+                            G4bool             pMany,
+                            G4int              pCopyNo,
+                            G4bool             pSurfChk=false );
+            -------------------------------------------------
+            physiHoleSF = new G4PVPlacement(
+                         rm3,
+                         G4ThreeVector(x,y,z),
+                         logicHoleSF,
+                         "HoleSF",
+                         logicZnScomp,
+                         false,
+                         counter);
+            counter++;
+            ------------------------------------------------
+          */
+
+        }
+        vstr2[lay]= new G4VisAttributes(G4Color(1.0-0.1*lay, 1.0, 0.0+0.1*lay,1));
+        vstr2[lay]->SetLineWidth(1); vstr2[lay]->SetForceSolid(true);
+        Straw_Logic->SetVisAttributes(vstr2[lay]);
+       }
+
+
+    printf("STRAW end  number=%d\n",counter );
+
+
+    }
+        G4Tubs *Solid;      //pointer to the solid
     G4LogicalVolume *Logic;    //pointer to the logical
     G4VPhysicalVolume *Phys;  //pointer to the physical
 
@@ -94,6 +238,36 @@ private:
     G4Tubs *SiSolids[100];    //pointer to the solid World
     G4LogicalVolume *SiLogics[100];    //pointer to the logical World
     G4VPhysicalVolume *cb_CTD_detSi_Phys[100];    //pointer to the physical World
+
+//-------------straw---------------
+ //-------------------CTD_Si barrel detector ------------------
+     //-------------------CTD_Straw barrel detector ------------------
+    G4double cb_CTD_detStraw_RIn;
+    G4double cb_CTD_detStraw_ROut;
+    G4double cb_CTD_detStraw_SizeZ;
+    G4double cb_CTD_detStraw_Steps;
+    G4Material *Straw_Material;
+    G4int cb_CTD_detStraw_Layers;
+    G4double Straw_RIn;
+    G4double Straw_ROut;
+    G4double Straw_SizeZ;
+    G4VisAttributes* attr_cb_CTD_Straws;
+    G4Tubs *Straw_Solid;    //pointer to the solid World
+    G4LogicalVolume *Straw_Logic;    //pointer to the logical World
+    G4VPhysicalVolume *Straw_Phys;    //pointer to the physical World
+
+    G4Material *Straw_Wall_Material;
+    G4Tubs *Straw_Wall_Solid;    //pointer to the solid World
+    G4LogicalVolume *Straw_Wall_Logic;    //pointer to the logical World
+    G4VPhysicalVolume *Straw_Wall_Phys;    //pointer to the physical World
+
+   // G4VisAttributes* Straws_Gas;
+    G4Material *Straw_Gas_Material;
+    G4Tubs *Straw_Gas_Solid;    //pointer to the solid World
+    G4LogicalVolume *Straw_Gas_Logic;    //pointer to the logical World
+    G4VPhysicalVolume *Straw_Gas_Phys;    //pointer to the physical World
+
+
 };
 
 #endif //G4E_CB_CTD_HH

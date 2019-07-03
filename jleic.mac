@@ -171,7 +171,7 @@
 /plots/sethistName      hist_jleic.root
 #
 #/generator/select particleGun
-#/gun/particle proton
+#/gun/particle neutron
 #--------------crossing angle 50mrad-------
 #/gun/energy  200 GeV
 #------------ 50 mrad ---
@@ -195,15 +195,16 @@
 
 #
 # GEMC/BNL version
-/generator/select pythiaAscii
-/generator/pythiaAscii/verbose 1
+#/generator/select pythiaAscii
+#/generator/pythiaAscii/verbose 1
 #/generator/pythiaAscii/open  pythia1pis.txt
 #/generator/pythiaAscii/open  /home/yulia/yulia/TestVTXhmc/build.newnewOK/pythiaBeautyDIS100.txt
 #/generator/pythiaAscii/open  pythia_e-p_10x50_Q2_100k_msel2_DIS.txt
 #/generator/pythiaAscii/open  /home/yulia/GEMC/detectors/eic/script/pythia-PHP.txt
 
-#/generator/pythiaAscii/open  /data/yulia/yulia-PCbackup/EIC-soft/pythia_jlab/pythiaeRHIC/1.0.0/build_old2/pythia_PHP_Charm.txt
-#/data/yulia/yulia-PCbackup/EIC-soft/pythia_jlab/pythiaeRHIC/1.0.0/build/pythia_PHP_Charm.txt
+##/generator/pythiaAscii/open  /data/yulia/yulia-PCbackup/EIC-soft/pythia_jlab/pythiaeRHIC/1.0.0/build_old2/pythia_PHP_Charm.txt
+
+
 #
 #/generator/pythiaAscii/open  jpsi_10x200_mu_JF.txt
 #/generator/pythiaAscii/open pythia_200GeV_50mrad.txt
@@ -228,7 +229,8 @@
 #------ for roman pots------
 #/generator/pythiaAscii/open  pythia_50GeV_50mrad.txt
 #/generator/pythiaAscii/open  pythia_100GeV_50mrad.txt
-/generator/pythiaAscii/open  pythia_200GeV_50mrad.txt
+#/generator/pythiaAscii/open  pythia_200GeV_50mrad.txt
+#/generator/pythiaAscii/open  pythia_200GeV_50mrad_n.txt
 #----------electrons-----------
 #/generator/pythiaAscii/open  pythia_e_50GeV_90.txt
 #/generator/pythiaAscii/open  pythia_e_10GeV_90.txt
@@ -249,12 +251,13 @@
 #--------------------------------------------------------------------
 
 # Open HepMc v2.x ascii files
-#/generator/select hepmcAscii
+/generator/select hepmcAscii
 #/generator/hepmcAscii/open EIC_DIS.hepmc
 #/generator/hepmcAscii/open /home/romanov/eic/g4e/EIC_DIS.hepmc
 #/generator/hepmcAscii/open  /data/yulia/Herwig6/herwig6_P19104_Q10_N5e+06_e-p_5x100.hepmc
 
 #/generator/hepmcAscii/open pythia8_CCdis.hepmc
+/generator/hepmcAscii/open  /data/yulia/Herwig6/herwig6_P19010_Q100_N1e+06_e+p_5x200.hepmc
 #---------old------------------
 #/generator/hepmcAscii/open   /home/yulia/work/Herwig6_HepMC/DATA/herwig6_P19000_Q10_N1e+05_e-p10x100.hepmc
 #/generator/hepmcAscii/open  /home/yulia/work/Herwig6_HepMC/DATA/herwig6_P19000_Q2_N1e+06_e-p10x100.hepmc

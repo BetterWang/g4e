@@ -35,7 +35,7 @@ public:
 
     inline void ConstructDetectors() {
         printf("Begin ffe_LUMI detector volumes \n");
-
+        auto cfg = ConstructionConfig;
         // construct here your detectors
 
     };

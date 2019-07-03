@@ -42,7 +42,7 @@ public:
         Solid= new G4Box("fi_D1_EMCAL_Solid", cfg.Width * 0.5, cfg.Width * 0.5, cfg.SizeZ / 2.);
         Logic = new G4LogicalVolume(Solid,fi_EMCAL_Material, "fi_D1_EMCAL_Logic");
 
-        G4VisAttributes *attr_fi_D1B_EMCAL = new G4VisAttributes(G4Color(0.1, 1.0, 0.9, 0.5));
+        G4VisAttributes *attr_fi_D1B_EMCAL = new G4VisAttributes(G4Color(0.1, 1.0, 0.9, 1.));
         attr_fi_D1B_EMCAL->SetLineWidth(1);
         attr_fi_D1B_EMCAL->SetForceSolid(true);
         Logic->SetVisAttributes(attr_fi_D1B_EMCAL);

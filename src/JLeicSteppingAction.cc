@@ -82,7 +82,7 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step* aStep)
   	 aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), aStep->GetTrack()->GetPosition().z(),
          aStep->GetTrack()->GetMomentumDirection().x(),aStep->GetTrack()->GetMomentumDirection().y(),aStep->GetTrack()->GetMomentumDirection().z());
   */
-
+#ifdef USE_TUNE
   //--------------------------for TUNE-------------------------------------------------------------------------
   if( 
      //      strcmp(aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str(),"World")==0 && 
@@ -152,7 +152,7 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step* aStep)
        runaction->FillHist2d(5, aStep->GetTrack()->GetPosition().x(),aStep->GetTrack()->GetPosition().y(),1.);
   }
  
- 
+#endif
 
  //--------------------------end for TUNE-------------------------------------------------------------------------
 

@@ -19,7 +19,7 @@ struct ci_TRD_Config {
 // define here Global volume parameters
     double RIn = 20 * cm;
     double ROut = 200 * cm;
-    double ThicknessZ = 40 * cm;
+    double ThicknessZ = 30 * cm;
     double PosZ;
     G4double fRadZ;
     //----------------------------

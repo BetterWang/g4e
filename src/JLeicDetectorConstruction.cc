@@ -79,14 +79,14 @@
 #define USE_CB_VTX
 //#define  USE_VTX0 1   // for simple vtx geom
 #define USE_CB_VTX_LADDERS
-//#define  USE_CB_VTX_ENDCAPS    // for vxt endcaps ladders
+#define  USE_CB_VTX_ENDCAPS    // for vxt endcaps ladders
 //#define  USE_VTX_DISKS    // for vxt disks along beampipe
 //#define USE_VTX_E 1   // for vxt endcaps 
 
 
 #define USE_CB_CTD
-#define USE_CB_CTD_Si  1 // silicon version of CTD
-//#define USE_CB_CTD_Straw 1 // straw version of CTD
+//#define USE_CB_CTD_Si  1 // silicon version of CTD
+#define USE_CB_CTD_Straw 1 // straw version of CTD
 
 #define USE_CB_DIRC
 #define USE_CB_DIRC_bars  1 // bars for DIRC
@@ -129,7 +129,7 @@
 //#define USE_FI_DIPOLE2
 
 #define USE_FFI_ZDC
-
+#define USE_FFI_RPOT
 //#define USE_FARFORWARD_GEM
 
 //#define USE_FARFORWARD_VP
@@ -430,11 +430,13 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 #ifdef  USE_CB_VTX_LADDERS
     //----------vtx barrel ladder geometry--------------
     cb_VTX.ConstructLaddersCentral();
+ //   for (int lay = 0; lay < fConfig.cb_VTX.Nlayers; lay++) {
+ //       if (cb_VTX.cb_VTX_ladder_Logic) { cb_VTX.cb_VTX_ladder_Logic[lay]->SetSensitiveDetector(fCalorimeterSD); }
+ //   }
 #endif
 #ifdef  USE_CB_VTX_ENDCAPS
     cb_VTX.ConstructLaddersEndcaps();
-//           if (fLogicVTXEndE[lay]) { fLogicVTXEndE[lay]->SetSensitiveDetector(fCalorimeterSD); }
-//            if (fLogicVTXEndH[lay]) { fLogicVTXEndH[lay]->SetSensitiveDetector(fCalorimeterSD); }
+  //         if (fLogicVTXEndH[lay]) { fLogicVTXEndH[lay]->SetSensitiveDetector(fCalorimeterSD); }
 
 #endif
 
@@ -515,6 +517,10 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 
     ce_GEM.Construct(fConfig.ce_GEM, World_Material, cb_Solenoid.Phys);
     ce_GEM.ConstructDetectors();
+ //   for (int lay = 0; lay < fConfig.ce_GEM.Nlayers; lay++) {
+ //       if (ce_GEM.lay_Logic[lay]) ce_GEM.lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD);
+ //   }
+
 //    for (int lay = 0; lay < fConfig.ce_GEM.Nlayers; lay++) {
 //        if (ce_GEM.lay_Logic[lay]) ce_GEM.lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD);
  //   }
@@ -656,6 +662,10 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 #endif
 #endif
 
+    //====================================================================================
+    //==                    Far-Forward Area    D2, D3                                  ==
+    //====================================================================================
+
     //------------------------------------------------
 #ifdef USE_FFI_ZDC
     fConfig.ffi_ZDC.rot_matx.rotateY(fConfig.ffi_ZDC.Angle * rad);
@@ -663,8 +673,20 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     fConfig.ffi_ZDC.Xpos = -170*cm;
 
     ffi_ZDC.Construct(fConfig.ffi_ZDC, World_Material, World_Phys);
+    if (ffi_ZDC.Logic) ffi_ZDC.Logic->SetSensitiveDetector(fCalorimeterSD);
 
 #endif // end ffi_ZDC
+
+    //------------------------------------------------
+#ifdef USE_FFI_RPOT
+    fConfig.ffi_RPOT.rot_matx.rotateY(fConfig.ffi_RPOT.Angle * rad);
+    fConfig.ffi_RPOT.PosZ = 5000*cm;
+    fConfig.ffi_RPOT.PosX = -170*cm;
+
+    ffi_RPOT.Construct(fConfig.ffi_RPOT, World_Material, World_Phys);
+    if (ffi_RPOT.Logic) ffi_RPOT.Logic->SetSensitiveDetector(fCalorimeterSD);
+
+#endif // end ffi_RPOT
 
 
     //===================================================================================

@@ -87,6 +87,7 @@
 #include "fi_EMCAL/fi_EMCAL.hh"         // Far-forward Ion D1  - EMCAL
 
 #include "ffi_ZDC/ffi_ZDC.hh"         // Far-forward Ion   - HCAL ZDC
+#include "ffi_RPOT/ffi_RPOT.hh"         // Far-forward Ion   - RomanPots system
 
 
 class JLeicCalorimeterSD;
@@ -290,6 +291,8 @@ private:
     fi_EMCAL_Design     fi_EMCAL;
     //---------------HCAL -ZDC -------------------------
     ffi_ZDC_Design  ffi_ZDC;
+    //---------------Roman Pot system -------------------------
+    ffi_RPOT_Design  ffi_RPOT;
 
 // ----------------------------------------------
 

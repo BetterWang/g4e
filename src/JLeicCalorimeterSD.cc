@@ -255,7 +255,8 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
     G4int copyIDy_pre = touchablepre->GetCopyNumber();
     G4int copyIDx_pre = touchablepre->GetCopyNumber(1);
     G4int copyIDz_pre = 0;
-    if (use_depfet > 0) copyIDz_pre = touchablepre->GetCopyNumber(2);
+  //JMF got crash on "run beam on"   here. Needs to be fixed ... commenting this for a moment
+  // if (use_depfet > 0) copyIDz_pre = touchablepre->GetCopyNumber(2);
     G4double xstep = (aStep->GetTrack()->GetStep()->GetPostStepPoint()->GetPosition()).x();
     G4double ystep = (aStep->GetTrack()->GetStep()->GetPostStepPoint()->GetPosition()).y();
     G4double zstep = (aStep->GetTrack()->GetStep()->GetPostStepPoint()->GetPosition()).z();

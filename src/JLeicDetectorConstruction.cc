@@ -130,7 +130,7 @@
 //#define USE_FI_DIPOLE2
 
 #define USE_FFI_ZDC
-
+#define USE_FFI_RPOT
 //#define USE_FARFORWARD_GEM
 
 //#define USE_FARFORWARD_VP
@@ -681,18 +681,9 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     fConfig.ffi_ZDC.Xpos = -170*cm;
 
     ffi_ZDC.Construct(fConfig.ffi_ZDC, World_Material, World_Phys);
+    if (ffi_ZDC.Logic) ffi_ZDC.Logic->SetSensitiveDetector(fCalorimeterSD);
 
 #endif // end ffi_ZDC
-
-    //------------------------------------------------
-#ifdef USE_FFI_RPOT
-    fConfig.ffi_RPOT.rot_matx.rotateY(fConfig.ffi_ZDC.Angle * rad);
-    fConfig.ffi_ZDC.Zpos = 4000*cm;
-    fConfig.ffi_ZDC.Xpos = -170*cm;
-
-    ffi_ZDC.Construct(fConfig.ffi_ZDC, World_Material, World_Phys);
-
-#endif // end ffi_RPOT
 
 
     //===================================================================================

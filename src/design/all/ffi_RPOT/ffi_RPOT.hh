@@ -9,10 +9,14 @@
 struct ffi_RPOT_Config {
 // define here Global volume parameters
     double RIn = 0 * cm;
-    double ROut = 65 * cm + 50 * cm;
+    double ROut = 120 * cm;
     double SizeZ = 30 * cm;
     double ShiftZ = 0 * cm;
     double PosZ = 0 * cm;
+    double PosX=0*cm;
+    double Angle=-0.05;
+    G4RotationMatrix rot_matx;
+
     int Nlayers=1;
 };
 
@@ -33,9 +37,13 @@ public:
         Logic = new G4LogicalVolume(Solid, worldMaterial, "ffi_RPOT_GVol_Logic");
 
         // ffi_RPOT_GVol_PosZ= SizeZ/2-abs(World_ShiftVTX)+ffi_RPOT_GVol_SizeZ-5*cm;   // --- need to find out why this 5 cm are needed
-        Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, cfg.PosZ), "ffi_RPOT_GVol_Phys", Logic,
+        Phys = new G4PVPlacement(G4Transform3D(cfg.rot_matx,G4ThreeVector(cfg.PosX,0,cfg.PosZ)), "ffi_RPOT_GVol_Phys", Logic,
                                  motherVolume, false, 0);
 
+        G4VisAttributes *visAttr = new G4VisAttributes(G4Color(0.1, 0, 1., 0.1));
+        visAttr->SetLineWidth(1);
+        visAttr->SetForceSolid(true);
+        Logic->SetVisAttributes(visAttr);
 
 
     };
@@ -49,7 +57,8 @@ public:
         // ===================================================================================
 //                           GEM tracker                                           ==
 //===================================================================================
-        printf("Begin ffi_RPOT_lay_\n");
+
+/*        printf("Begin ffi_RPOT_lay_\n");
         //ffi_RPOT_lay_Material = fMat->GetMaterial("Si");
         ffi_RPOT_lay_Material = G4Material::GetMaterial("Ar10CO2");  //----   !!!!! ----
 
@@ -79,14 +88,12 @@ public:
             lay_Phys[lay] = new G4PVPlacement(0, G4ThreeVector(0, 0, ffi_RPOT_lay_PosZ[lay]),
                                               abname, lay_Logic[lay],
                                               Phys, false, 0);
-
-
-
         }
 
         printf("END ffi_RPOT_lay_\n");
-
+*/
     };
+
 
     G4Tubs *Solid;      //pointer to the solid
     G4LogicalVolume *Logic;    //pointer to the logical

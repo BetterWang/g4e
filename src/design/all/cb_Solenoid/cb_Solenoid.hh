@@ -16,7 +16,9 @@
 struct cb_Solenoid_Config
 {
     bool UseMagneticField = true;                       // field in helium pipe used?
-    double FieldStrength = -2.0 * tesla;
+// default version     double FieldStrength = -2.0 * tesla;
+    double FieldStrength = 0.0 * tesla;
+
     double AlphaB = 0. * degree;
     double SizeZ = 400. * cm;
     double ROut = 144. * cm;

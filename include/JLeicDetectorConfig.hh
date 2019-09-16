@@ -30,6 +30,7 @@
 
 
 #include "ffi_ZDC/ffi_ZDC.hh"         // Far-forward Ion   - HCAL ZDC
+#include "ffi_RPOT/ffi_RPOT.hh"         // Far-forward Ion   -Roman Pots
 
 
 struct JLeicDetectorConfig {
@@ -85,8 +86,9 @@ struct JLeicDetectorConfig {
     fi_TRKD1_Config  fi_TRKD1;
     fi_EMCAL_Config  fi_EMCAL;
 
-    //---------------HCAL -ZDC -------------------------
+    //---------------HCAL -ZDC  and Roman Pots-------------------------
     ffi_ZDC_Config  ffi_ZDC;
+    ffi_RPOT_Config  ffi_RPOT;
 
 } ;
 

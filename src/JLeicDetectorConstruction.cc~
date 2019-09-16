@@ -436,9 +436,9 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 #ifdef  USE_CB_VTX_LADDERS
     //----------vtx barrel ladder geometry--------------
     cb_VTX.ConstructLaddersCentral();
-    for (int lay = 0; lay < cb_VTX.Lays.size(); lay++) {
-      if (cb_VTX.cb_VTX_ladder_Logic) { cb_VTX.cb_VTX_ladder_Logic[lay]->SetSensitiveDetector(fVertexSD); }
-    }
+ //   for (int lay = 0; lay < fConfig.cb_VTX.Nlayers; lay++) {
+ //       if (cb_VTX.cb_VTX_ladder_Logic) { cb_VTX.cb_VTX_ladder_Logic[lay]->SetSensitiveDetector(fCalorimeterSD); }
+ //   }
 #endif
 #ifdef  USE_CB_VTX_ENDCAPS
     cb_VTX.ConstructLaddersEndcaps();
@@ -631,7 +631,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     //-------------------------------------------------------------------------------
     //                      Place Si_disks inside D1a
     //-------------------------------------------------------------------------------
-    int mydipole_id=-1;
+    int mydipole_id=0;
 
     for (int id = 0; id < 20; id++) {
         if (strcmp(fSolid_BigDi_ffqsNAME[id], "iBDS1a") == 0) {
@@ -642,7 +642,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
         };
     };
 
-    if (mydipole_id==-1) { printf("ERROR mydipole_id=-1\n"); sleep(3); exit(1); }
+    if (mydipole_id==0) { printf("ERROR mydipole_id=0\n"); sleep(3); exit(1); }
 
     fConfig.fi_TRKD1.ROut = fSolid_BigDi_ffqsRinDi[mydipole_id] * cm;
     fConfig.fi_TRKD1.Zpos = (fSolid_BigDi_ffqsSizeZDi[mydipole_id]/2.) * cm  -fConfig.fi_TRKD1.SizeZ/2.;
@@ -887,7 +887,8 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
                                         fi_D1B_lay_SizeZ / 2., 170., 330 * deg);
     fi_D1B_lay_Logic = new G4LogicalVolume(fi_D1B_lay_Solid, fi_D1B_lay_Material, "fi_D1B_lay_Logic");
 
-    if (fi_D1B_lay_Logic) fi_D1B_lay_Logic->SetSensitiveDetector(fCalorimeterSD);
+    //if (fi_D1B_lay_Logic) fi_D1B_lay_Logic->SetSensitiveDetector(fCalorimeterSD);
+    if (fi_D1B_lay_Logic) fi_D1B_lay_Logic->SetSensitiveDetector(fVertexSD);
 
 
     ffsi_counter = 0;

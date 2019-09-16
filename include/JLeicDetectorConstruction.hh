@@ -87,9 +87,11 @@
 #include "fi_EMCAL/fi_EMCAL.hh"         // Far-forward Ion D1  - EMCAL
 
 #include "ffi_ZDC/ffi_ZDC.hh"         // Far-forward Ion   - HCAL ZDC
+#include "ffi_RPOT/ffi_RPOT.hh"         // Far-forward Ion   - RomanPots system
 
 
 class JLeicCalorimeterSD;
+class JLeicVertexSD;
 
 class JLeicDetectorConstruction : public G4VUserDetectorConstruction {
 public:
@@ -198,6 +200,9 @@ public:
 
     JLeicDetectorConfig fConfig;
 
+    //----------------VTX  volume ------------------
+    cb_VTX_Design      cb_VTX;
+
 private:
 
     G4VPhysicalVolume *ConstructDetectorXTR();
@@ -216,6 +221,7 @@ private:
     void Create_ci_Endcap(JLeicDetectorConfig::ci_Endcap_Config cfg);
 
     void Create_ce_Endcap(JLeicDetectorConfig::ce_Endcap_Config dfg);
+
 
 private:
 
@@ -246,7 +252,7 @@ private:
     //----------------BARREL -----------------------
     cb_Solenoid_Design cb_Solenoid;
     //----------------VTX  volume ------------------
-    cb_VTX_Design      cb_VTX;
+    //cb_VTX_Design      cb_VTX;
     //----------------CTD  volume -------------------
     cb_CTD_Design      cb_CTD;
     //----------------DIRC  volume -------------------
@@ -290,6 +296,8 @@ private:
     fi_EMCAL_Design     fi_EMCAL;
     //---------------HCAL -ZDC -------------------------
     ffi_ZDC_Design  ffi_ZDC;
+    //---------------Roman Pot system -------------------------
+    ffi_RPOT_Design  ffi_RPOT;
 
 // ----------------------------------------------
 
@@ -602,6 +610,7 @@ private:
 
     JLeicDetectorMessenger *fDetectorMessenger;  //pointer to the Messenger
     JLeicCalorimeterSD *fCalorimeterSD;  //pointer to the sensitive detector
+    JLeicVertexSD *fVertexSD;  //pointer to the sensitive detector
 
     JLeicMaterials *fMat;
 

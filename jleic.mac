@@ -252,12 +252,10 @@
 
 # Open HepMc v2.x ascii files
 /generator/select hepmcAscii
-#/generator/hepmcAscii/open EIC_DIS.hepmc
-#/generator/hepmcAscii/open /home/romanov/eic/g4e/EIC_DIS.hepmc
-#/generator/hepmcAscii/open  /data/yulia/Herwig6/herwig6_P19104_Q10_N5e+06_e-p_5x100.hepmc
+/generator/hepmcAscii/open  /data/yulia/Herwig6/herwig6_P19104_Q10_N5e+06_e-p_5x100.hepmc
 
 #/generator/hepmcAscii/open pythia8_CCdis.hepmc
-/generator/hepmcAscii/open  /data/yulia/Herwig6/herwig6_P19010_Q100_N1e+06_e+p_5x200.hepmc
+#/generator/hepmcAscii/open  /data/yulia/Herwig6/herwig6_P19010_Q100_N1e+06_e+p_5x200.hepmc
 #---------old------------------
 #/generator/hepmcAscii/open   /home/yulia/work/Herwig6_HepMC/DATA/herwig6_P19000_Q10_N1e+05_e-p10x100.hepmc
 #/generator/hepmcAscii/open  /home/yulia/work/Herwig6_HepMC/DATA/herwig6_P19000_Q2_N1e+06_e-p10x100.hepmc

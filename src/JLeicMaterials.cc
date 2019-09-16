@@ -288,20 +288,6 @@ void JLeicMaterials::Initialise()
   //
   // MWPC mixtures
 
-  // 90% Ar + 10% CO2, STP
-
-  density = 1.802*mg/cm3;
-  G4Material* Ar10CO2 = new G4Material(name="Ar10CO2"  , density, ncomponents=2);
-  Ar10CO2->AddMaterial( Argon,              fractionmass = 0.891 ); // 1.78*0.9 / density
-  Ar10CO2->AddMaterial( CarbonDioxide,   fractionmass = 0.109 ); // 1 - frmAr
-
-
-  // 85% Xe + 15% CO2, STP
-
-  density = 4.9*mg/cm3;
-  G4Material* Xe15CO2 = new G4Material(name="Xe15CO2"  , density, ncomponents=2);
-  Xe15CO2->AddMaterial( Xe,              fractionmass = 0.979);
-  Xe15CO2->AddMaterial( CarbonDioxide,   fractionmass = 0.021);
 
   // 80% Xe + 20% CO2, STP
 
@@ -383,35 +369,35 @@ void JLeicMaterials::Initialise()
   XeArCH4->AddMaterial( Xe5CH4,       fractionmass = 0.766 );
   XeArCH4->AddMaterial( Ar7CH4,   fractionmass = 0.234 );
 
-  // Silicon as detector material
 
-  density = 2.330*g/cm3;
-  a = 28.09*g/mole;
-  new G4Material(name="Si", z=14., a, density);
+    // 90% Ar + 10% CO2, STP
 
-  density =  19.32*g/cm3;
-  a = 196.97*g/mole;
-  new G4Material(name="Au", z= 79., a, density);
+    density = 1.802*mg/cm3;
+    G4Material* Ar10CO2 = new G4Material(name="Ar10CO2"  , density, ncomponents=2);
+    Ar10CO2->AddMaterial( Argon,              fractionmass = 0.891 ); // 1.78*0.9 / density
+    Ar10CO2->AddMaterial( CarbonDioxide,   fractionmass = 0.109 ); // 1 - frmAr
 
 
- 
-  density = 2.700*g/cm3;
-  a = 26.98*g/mole;
-  new G4Material(name="Al", z=13., a, density);
+    // 85% Xe + 15% CO2, STP
 
-  density =7.87*g/cm3;
-  a = 55.85*g/mole;
-  new G4Material(name="Iron", z=26., a,density);
- 
+    density = 4.9*mg/cm3;
+    G4Material* Xe15CO2 = new G4Material(name="Xe15CO2"  , density, ncomponents=2);
+    Xe15CO2->AddMaterial( Xe,              fractionmass = 0.979);
+    Xe15CO2->AddMaterial( CarbonDioxide,   fractionmass = 0.021);
 
-  density =70000.87*g/cm3;
-  a = 5005.85*g/mole;
-  new G4Material(name="IronAll", z=26., a,density);
+    // Silicon as detector material
 
-G4int natoms;
-  // a = 16.00*g/mole;
-  // G4Element* elO  = new G4Element(name="Oxygen"  ,symbol="O" , z= 8., a);
+    density = 2.330*g/cm3;
+    a = 28.09*g/mole;
+    new G4Material(name="Si", z=14., a, density);
 
+    density =  19.32*g/cm3;
+    a = 196.97*g/mole;
+    new G4Material(name="Au", z= 79., a, density);
+
+
+   G4int natoms;
+   // G4Element* elO  = new G4Element(name="Oxygen"  ,symbol="O" , z= 8., a);
   a = 183.84*g/mole;
   G4Element* elW = new G4Element(name="Tungsten" ,symbol="W",  z=74., a);
 
@@ -441,6 +427,22 @@ G4Material* SiO2 = new G4Material("quartz",density, ncomponents=2);
 SiO2->AddElement(elSi, natoms=1);
 SiO2->AddElement(elO , natoms=2);
 //-----------------------------------------------------------------------
+
+
+
+
+    density = 2.700*g/cm3;
+    a = 26.98*g/mole;
+    new G4Material(name="Al", z=13., a, density);
+
+    density =7.87*g/cm3;
+    a = 55.85*g/mole;
+    new G4Material(name="Iron", z=26., a,density);
+
+
+    density =70000.87*g/cm3;
+    a = 5005.85*g/mole;
+    new G4Material(name="IronAll", z=26., a,density);
 
 G4NistManager* man = G4NistManager::Instance();
   G4Element* C  = man->FindOrBuildElement("C");

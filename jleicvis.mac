@@ -116,9 +116,9 @@
 #/vis/viewer/addCutawayPlane 0  1  0  cm  0. 100. 1.
 # XY 
 #/vis/viewer/addCutawayPlane  1  0  0  cm   0  0  -0.001
-#  ZY 
+#  ZY
 #/vis/viewer/addCutawayPlane 0  1  0  cm  -0.001 0  0
-
+#/vis/viewer/clearCutawayPlanes
 #/run/initialize
 #/run/beamOn 1
 

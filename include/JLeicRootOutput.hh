@@ -1,8 +1,8 @@
-#include <memory>
 #ifndef G4E_JLEICROOTOUTPUT_HH
 #define G4E_JLEICROOTOUTPUT_HH
 
 #include <string>
+#include <memory>
 
 #include <TFile.h>
 #include <TTree.h>

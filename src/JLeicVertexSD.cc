@@ -490,7 +490,6 @@ void JLeicVertexSD::EndOfEvent(G4HCofThisEvent *HCE) {
         //printf(" new event:%6d",nevent);  for (int ii=0;  ii<30; ii++) printf(" %4.1f",dEslice[ii]);  printf("\n");
     }
 
-
     if (save_hits_root) { //--   fill tree  ----
         const G4Event *evt = G4RunManager::GetRunManager()->GetCurrentEvent();
 

@@ -1,9 +1,4 @@
 #include <memory>
-
-//
-// Created by romanov on 3/14/19.
-//
-
 #ifndef G4E_JLEICROOTOUTPUT_HH
 #define G4E_JLEICROOTOUTPUT_HH
 
@@ -89,7 +84,7 @@ namespace g4e
                 MomentumVect.clear();
             }
 
-            size_t TrackCount;
+            uint64_t TrackCount;
             std::vector <uint64_t> IdVect;
             std::vector <uint64_t> ParticleIdVect;
             std::vector <uint64_t> PdgVect;
@@ -127,9 +122,9 @@ namespace g4e
                 WeightVect.clear();
             }
 
-            size_t VertexCount;
-            std::vector<size_t> IdVect;             // PrimaryVertexIndex;
-            std::vector<size_t> ParticleCountVect;  // PrimaryVertex->GetNumberOfParticle();
+            uint64_t VertexCount;
+            std::vector<uint64_t> IdVect;             // PrimaryVertexIndex;
+            std::vector<uint64_t> ParticleCountVect;  // PrimaryVertex->GetNumberOfParticle();
             std::vector<double> XVect;              // PrimaryVertex->GetX0();
             std::vector<double> YVect;              // PrimaryVertex->GetY0();
             std::vector<double> ZVect;              // PrimaryVertex->GetZ0();
@@ -178,11 +173,11 @@ namespace g4e
                 PolZVect.clear();
             }
 
-            size_t ParticleCount;
-            std::vector<size_t> IdVect;             // PartInVtxIndexVect
-            std::vector<size_t> PrimeVtxIdVect;     // primeVtxIndex
-            std::vector<size_t> PDGCodeVect;        // particle->GetPDGcode();
-            std::vector<size_t> TrackIdVect;        // particle->GetTrackID();
+            uint64_t ParticleCount;
+            std::vector<uint64_t> IdVect;             // PartInVtxIndexVect
+            std::vector<uint64_t> PrimeVtxIdVect;     // primeVtxIndex
+            std::vector<uint64_t> PDGCodeVect;        // particle->GetPDGcode();
+            std::vector<uint64_t> TrackIdVect;        // particle->GetTrackID();
             std::vector<double> ChargeVect;         // particle->GetCharge();
             std::vector<double> MomDirXVect;        // particle->GetMomentumDirection().x();
             std::vector<double> MomDirYVect;        // particle->GetMomentumDirection().y();
@@ -281,8 +276,8 @@ namespace g4e
         }
 
         void AddPrimaryVertex(
-                size_t aId,
-                size_t aParticleCount,
+                uint64_t aId,
+                uint64_t aParticleCount,
                 double aX,
                 double aY,
                 double aZ,
@@ -301,10 +296,10 @@ namespace g4e
         }
 
         void AddPrimaryParticle (
-                size_t aId,
-                size_t aPrimeVtxId,
-                size_t aPDGCode,
-                size_t aTrackId,
+                uint64_t aId,
+                uint64_t aPrimeVtxId,
+                uint64_t aPDGCode,
+                uint64_t aTrackId,
                 double aCharge,
                 double aMomDirX,
                 double aMomDirY,
@@ -359,7 +354,7 @@ namespace g4e
         TTree *mEventTree;
         uint64_t mEventId;
 
-        std::map<uint64_t, size_t> trk_index_by_id; // Track vector indexes by track id
+        std::map<uint64_t, uint64_t> trk_index_by_id; // Track vector indexes by track id
 
         HitIo mHitIo;
         TrackIo mTrackIo;

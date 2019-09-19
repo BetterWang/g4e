@@ -13,8 +13,8 @@
 
 # Use this open statement to create an OpenGL view:
 ### This works  ->   
-/vis/open OGL 600x600-0+0
-#/vis/open OGLI 600x600-0+0
+#/vis/open OGL 600x600-0+0
+/vis/open OGLI 600x600-0+0
 #/vis/open OGLIX 600x600-0+0
 #/vis/open OGLIQt 600x600-0+0
 #
@@ -88,6 +88,7 @@
 /vis/modeling/trajectories/drawByParticleID-0/set pion0 blue
 /vis/modeling/trajectories/drawByParticleID-0/set gamma yellow
 /vis/modeling/trajectories/drawByParticleID-0/set proton blue
+/vis/modeling/trajectories/drawByParticleID-0/set neuton magenta
 #/vis/modeling/trajectories/drawByParticleID-0/set e- yellow
 #
 # To superimpose all of the events from a given run:
@@ -110,15 +111,15 @@
 
 /vis/viewer/set/cutawayMode intersection
 
-#/vis/viewer/addCutawayPlane 0  30  0  cm  0. -100 0
-/vis/viewer/addCutawayPlane 0  1  0  cm  0. -0.1 0
+/vis/viewer/addCutawayPlane 0  30  0  cm  0. -100 0
+#/vis/viewer/addCutawayPlane 0  1  0  cm  0. -0.1 0
 #/vis/viewer/addCutawayPlane 0  1  0  cm  0. -500. 1.
 #/vis/viewer/addCutawayPlane 0  1  0  cm  0. 100. 1.
 # XY 
 #/vis/viewer/addCutawayPlane  1  0  0  cm   0  0  -0.001
-#  ZY 
+#  ZY
 #/vis/viewer/addCutawayPlane 0  1  0  cm  -0.001 0  0
-
+#/vis/viewer/clearCutawayPlanes
 #/run/initialize
 #/run/beamOn 1
 

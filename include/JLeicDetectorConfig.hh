@@ -28,8 +28,9 @@
 #include "fi_TRKD1/fi_TRKD1.hh"
 #include "fi_EMCAL/fi_EMCAL.hh"
 
-
+#include "ffi_TRKD2/ffi_TRKD2.hh"  // Far-forward Ion - Silicon discs in D2 magnet
 #include "ffi_ZDC/ffi_ZDC.hh"         // Far-forward Ion   - HCAL ZDC
+#include "ffi_RPOT/ffi_RPOT.hh"         // Far-forward Ion   -Roman Pots
 
 
 struct JLeicDetectorConfig {
@@ -85,8 +86,11 @@ struct JLeicDetectorConfig {
     fi_TRKD1_Config  fi_TRKD1;
     fi_EMCAL_Config  fi_EMCAL;
 
-    //---------------HCAL -ZDC -------------------------
+      // --- Tracking in D2 -----
+     ffi_TRKD2_Config ffi_TRKD2;
+    //---------------HCAL -ZDC  and Roman Pots-------------------------
     ffi_ZDC_Config  ffi_ZDC;
+    ffi_RPOT_Config  ffi_RPOT;
 
 } ;
 

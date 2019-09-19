@@ -33,6 +33,7 @@
 #include "JLeicDetectorConstruction.hh"
 //#include "JLeicDetectorMessenger.hh"
 #include "JLeicCalorimeterSD.hh"
+#include "JLeicVertexSD.hh"
 //#include "JLeicMaterials.hh"
 
 //#include "G4Material.hh"
@@ -79,7 +80,7 @@
 #define USE_CB_VTX
 //#define  USE_VTX0 1   // for simple vtx geom
 #define USE_CB_VTX_LADDERS
-//#define  USE_CB_VTX_ENDCAPS    // for vxt endcaps ladders
+#define  USE_CB_VTX_ENDCAPS    // for vxt endcaps ladders
 //#define  USE_VTX_DISKS    // for vxt disks along beampipe
 //#define USE_VTX_E 1   // for vxt endcaps 
 
@@ -128,8 +129,9 @@
 //#define USE_FI_DIPOLE1_B
 //#define USE_FI_DIPOLE2
 
+#define USE_FFI_TRKD2
 #define USE_FFI_ZDC
-
+#define USE_FFI_RPOT
 //#define USE_FARFORWARD_GEM
 
 //#define USE_FARFORWARD_VP
@@ -165,7 +167,7 @@ JLeicDetectorConstruction::JLeicDetectorConstruction()
           fSolidRadSlice(0), fLogicRadSlice(0), fPhysicRadSlice(0),
            fPipe(false),
 // fSolidAbsorber(0),    fLogicAbsorber(0),   fPhysicsAbsorber(0),
-          fCalorimeterSD(0),  fMat(0)
+          fCalorimeterSD(0), fVertexSD(0),   fMat(0)
           {
     fDetectorMessenger = new JLeicDetectorMessenger(this);
     fMat = new JLeicMaterials();
@@ -306,8 +308,13 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
         fCalorimeterSD = new JLeicCalorimeterSD("CalorSD", this);
         SDman->AddNewDetector(fCalorimeterSD);
     }
+    if (!fVertexSD) {
 
-    printf("CalorSD done\n");
+        fVertexSD = new JLeicVertexSD("VertexSD", this);
+        SDman->AddNewDetector(fVertexSD);
+    }
+
+    printf("VertexSD done\n");
 
 
 #ifdef  USE_BARREL
@@ -430,11 +437,13 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 #ifdef  USE_CB_VTX_LADDERS
     //----------vtx barrel ladder geometry--------------
     cb_VTX.ConstructLaddersCentral();
+    for (int lay = 0; lay < cb_VTX.Lays.size(); lay++) {
+      if (cb_VTX.cb_VTX_ladder_Logic) { cb_VTX.cb_VTX_ladder_Logic[lay]->SetSensitiveDetector(fVertexSD); }
+    }
 #endif
 #ifdef  USE_CB_VTX_ENDCAPS
     cb_VTX.ConstructLaddersEndcaps();
-//           if (fLogicVTXEndE[lay]) { fLogicVTXEndE[lay]->SetSensitiveDetector(fCalorimeterSD); }
-//            if (fLogicVTXEndH[lay]) { fLogicVTXEndH[lay]->SetSensitiveDetector(fCalorimeterSD); }
+  //         if (fLogicVTXEndH[lay]) { fLogicVTXEndH[lay]->SetSensitiveDetector(fCalorimeterSD); }
 
 #endif
 
@@ -515,6 +524,10 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 
     ce_GEM.Construct(fConfig.ce_GEM, World_Material, cb_Solenoid.Phys);
     ce_GEM.ConstructDetectors();
+ //   for (int lay = 0; lay < fConfig.ce_GEM.Nlayers; lay++) {
+ //       if (ce_GEM.lay_Logic[lay]) ce_GEM.lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD);
+ //   }
+
 //    for (int lay = 0; lay < fConfig.ce_GEM.Nlayers; lay++) {
 //        if (ce_GEM.lay_Logic[lay]) ce_GEM.lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD);
  //   }
@@ -560,6 +573,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 #ifdef USE_CI_GEM
     fConfig.ci_GEM.PosZ = fConfig.cb_Solenoid.SizeZ / 2 -
                           fConfig.ci_GEM.SizeZ / 2;   // --- need to find out why this 5 cm are needed
+    fConfig.ci_GEM.PosX = -5*cm;
     ci_GEM.Construct(fConfig.ci_GEM, World_Material, cb_Solenoid.Phys);
     ci_GEM.ConstructDetectors();
     for (int lay = 0; lay < fConfig.ci_GEM.Nlayers; lay++) {
@@ -619,7 +633,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     //-------------------------------------------------------------------------------
     //                      Place Si_disks inside D1a
     //-------------------------------------------------------------------------------
-    int mydipole_id;
+    int mydipole_id=-1;
 
     for (int id = 0; id < 20; id++) {
         if (strcmp(fSolid_BigDi_ffqsNAME[id], "iBDS1a") == 0) {
@@ -629,6 +643,8 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
             mydipole_id = id;
         };
     };
+
+    if (mydipole_id==-1) { printf("ERROR mydipole_id=-1\n"); sleep(3); exit(1); }
 
     fConfig.fi_TRKD1.ROut = fSolid_BigDi_ffqsRinDi[mydipole_id] * cm;
     fConfig.fi_TRKD1.Zpos = (fSolid_BigDi_ffqsSizeZDi[mydipole_id]/2.) * cm  -fConfig.fi_TRKD1.SizeZ/2.;
@@ -656,6 +672,29 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 #endif
 #endif
 
+    //====================================================================================
+    //==                    Far-Forward Area    D2, D3  ZDC. Roman Pots                 ==
+    //====================================================================================
+#ifdef USE_FFI_TRKD2
+    for (int id = 0; id < 20; id++) {
+        if (strcmp(fSolid_BigDi_ffqsNAME[id], "iBDS2") == 0) {
+            printf("fi_D2_GVol :: found D2=%s  Z=%f dZ=%f Rout=%f \n", fSolid_BigDi_ffqsNAME[id], fSolid_BigDi_ffqsZ[id],
+                   fSolid_BigDi_ffqsSizeZDi[id],
+                   fSolid_BigDi_ffqsRinDi[id]);
+            mydipole_id = id;
+        };
+    };
+    fConfig.ffi_TRKD2.RIn = 0 * cm;
+    fConfig.ffi_TRKD2.ROut = fSolid_BigDi_ffqsRinDi[mydipole_id] * cm;
+    fConfig.ffi_TRKD2.SizeZ = fSolid_BigDi_ffqsSizeZDi[mydipole_id] * m;
+
+    ffi_TRKD2.Construct(fConfig.ffi_TRKD2, World_Material, fPhysics_BigDi_m[mydipole_id]);
+    ffi_TRKD2.ConstructDetectors();
+ //   for (int lay = 0; lay < fConfig.ffi_TRKD2.Nlayers; lay++) {
+        if (ffi_TRKD2.lay_Logic) ffi_TRKD2.lay_Logic->SetSensitiveDetector(fCalorimeterSD);
+ //   }
+
+#endif
     //------------------------------------------------
 #ifdef USE_FFI_ZDC
     fConfig.ffi_ZDC.rot_matx.rotateY(fConfig.ffi_ZDC.Angle * rad);
@@ -663,9 +702,20 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     fConfig.ffi_ZDC.Xpos = -170*cm;
 
     ffi_ZDC.Construct(fConfig.ffi_ZDC, World_Material, World_Phys);
+    if (ffi_ZDC.Logic) ffi_ZDC.Logic->SetSensitiveDetector(fCalorimeterSD);
 
 #endif // end ffi_ZDC
 
+    //------------------------------------------------
+#ifdef USE_FFI_RPOT
+    fConfig.ffi_RPOT.rot_matx.rotateY(fConfig.ffi_RPOT.Angle * rad);
+    fConfig.ffi_RPOT.PosZ = 3100*cm;
+    fConfig.ffi_RPOT.PosX = -170*cm;
+
+    ffi_RPOT.Construct(fConfig.ffi_RPOT, World_Material, World_Phys);
+    if (ffi_RPOT.Logic) ffi_RPOT.Logic->SetSensitiveDetector(fCalorimeterSD);
+
+#endif // end ffi_RPOT
 
     //===================================================================================
     //==                        Compton Polarimeter                                  ==
@@ -1701,7 +1751,7 @@ void JLeicDetectorConstruction::CreateQuad(int j, char *ffqsNAME, float ffqsSize
 
     //---------------- set magnetic field ---------------
     sprintf(abname, "Solid_QUADS_hd_m_%s", ffqsNAME);
-    fSolid_QUADS_hd_m[j] = new G4Tubs(abname, 0. * cm, ffqsRoutDi * cm, (ffqsSizeZDi / 2.) * m, 0., 360 * deg);
+    fSolid_QUADS_hd_m[j] = new G4Tubs(abname, 0. * cm, ffqsRinDi * cm, (ffqsSizeZDi / 2.) * m, 0., 360 * deg);
     sprintf(abname, "Logic_QUADS_hd_m_%s", ffqsNAME);
     fLogic_QUADS_hd_m[j] = new G4LogicalVolume(fSolid_QUADS_hd_m[j], ffqsMaterial_G, abname);
     sprintf(abname, "Physics_QUADS_hd_m_%s", ffqsNAME);
@@ -1950,6 +2000,11 @@ JLeicDetectorConstruction::CreateASolenoid(int j, char *ffqsNAME, float ffqsSize
     // fLogic_ASOLENOIDm[j]->SetFieldManager(fieldMgr,true);
 
     // G4double fieldStrength = 3.0*tesla;  // 0.01*tesla; // field strength in pipe
+
+
+    //JF just keep it for now! Need to move it back to nominal!
+    qFIELSol=0;
+
     G4double fieldStrength = qFIELSol * tesla;  // 0.01*tesla; // field strength in pipe
     G4double alphaB = 0. * degree;
     fMagField_ASOLENOID[j] = new G4UniformMagField(G4ThreeVector(fieldStrength * std::sin(alphaB),

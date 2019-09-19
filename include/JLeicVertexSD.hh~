@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: JLeicEventAction.hh,v 1.3 2006-06-29 16:37:51 gunter Exp $
+// $Id: JLeicVertexSD.hh,v 1.3 2006-06-29 16:37:43 gunter Exp $
 // GEANT4 tag $Name: geant4-09-04-patch-01 $
 //
 // 
@@ -32,61 +32,81 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-#ifndef JLeicEventAction_h
-#define JLeicEventAction_h 1
+#ifndef JLeicVertexSD_h
+#define JLeicVertexSD_h 1
 
-#include "G4UserEventAction.hh"
+#include <vector>
+#include "G4VSensitiveDetector.hh"
 #include "globals.hh"
+
+#include "G4HCofThisEvent.hh"
+#include "G4Step.hh"
+
+#include "JLeicDetectorConstruction.hh"
 #include "JLeicRootOutput.hh"
 
-class JLeicRunAction;
-class JLeicEventActionMessenger;
+//class JLeicDetectorConstruction;
+//class G4HCofThisEvent;
+//class G4Step;
+
+#include "JLeicCalorHit.hh"
+#include "JLeicRunAction.hh"
+#include "G4RunManager.hh"
+
+#include "rootlib.h"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-class JLeicEventAction : public G4UserEventAction
+class JLeicVertexSD : public G4VSensitiveDetector
 {
-  public:
-    JLeicEventAction(JLeicRunAction* JLeicRA);
-   ~JLeicEventAction();
+public:
 
-  public:
-    void BeginOfEventAction(const G4Event*);
-    void   EndOfEventAction(const G4Event*);
-    G4int GetEventno();
-    void setEventVerbose(G4int level);
-  void AddGammaDE(G4double de) ;   //---- fsv
-    void CountStepsCharged() ;
-    void CountStepsNeutral() ;
-    void AddCharged() ;
-    void AddNeutral() ;
-    void AddE();
-    void AddP();   
-    void SetTr();
-    void SetRef();
-    
-    void SetDrawFlag(G4String val)  {drawFlag = val;};
-    void SetPrintModulo(G4int val)  {printModulo = val;};
-        
+    JLeicVertexSD(G4String, JLeicDetectorConstruction *);
+
+    ~JLeicVertexSD() override;
+
+    void Initialize(G4HCofThisEvent *) override;
+
+    G4bool ProcessHits(G4Step *, G4TouchableHistory *) override;
+
+    void EndOfEvent(G4HCofThisEvent *) override;
+
+    void clear() override;
+
+    void PrintAll() override;
+
+    void hits_reset();
+
+private:
+
+    //G4RunManager* fRM; //=G4RunManager::GetRunManager();
+    JLeicRunAction *runaction; // = fRM->runAction
+
+    JLeicCalorHitsCollection *CalCollection;
+    JLeicDetectorConstruction *Detector;
+    G4int *HitID;
+    G4double dEslice[100];
+    TH2F *hmatrix1[120], *hmatrix2;
+    TH1F *dedx_fadc;
+    int nevent;
+    G4int ntr, ntr1, ntr2, ntr3;
+    int N_bin, char_sh;
+    TH2F *hist_charge[45 + 1];
+    TFile *fm, *fm1;
+
+    uint_fast64_t mHitsCount = 0;
+
+  int NumRow ; // :64 depfet
+  int NumCol ; // :256 depfet
+  char myname[120], buffer[50];
+  std::vector <unsigned short> FRAME;
+
     //----- EVENT STRUCTURE -----
-    g4e::RootOutput* mRootEventsOut = nullptr;
+    g4e::RootOutput mRootEventsOut;
     TFile * mHitsFile = nullptr;
 
-  private:
-    G4int    calorimeterCollID;
-    G4int    vertexCollID;
-    JLeicEventActionMessenger*  eventMessenger;
-    JLeicRunAction* runaction;
-    G4int verboselevel;
-    G4double nstep,nstepCharged,nstepNeutral;
-  G4double Nch,Nne,GamDE;
-    G4double NE,NP;
-    G4double Transmitted,Reflected ;
-    
-    G4String drawFlag;
-    G4int    printModulo;             
+    //---------------------------
 };
 
 #endif
 
-    

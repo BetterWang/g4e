@@ -23,70 +23,55 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+/// \file electromagnetic/VertexEIC/src/JLeicVTXHit.cc
+/// \brief Implementation of the JLeicVTXHit class
 //
-// $Id: JLeicEventAction.hh,v 1.3 2006-06-29 16:37:51 gunter Exp $
-// GEANT4 tag $Name: geant4-09-04-patch-01 $
+//
+// $Id: JLeicVTXHit.cc 66241 2012-12-13 18:34:42Z gunter $
 //
 // 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-#ifndef JLeicEventAction_h
-#define JLeicEventAction_h 1
+#include "JLeicVTXHit.hh"
 
-#include "G4UserEventAction.hh"
-#include "globals.hh"
-#include "JLeicRootOutput.hh"
-
-class JLeicRunAction;
-class JLeicEventActionMessenger;
+G4Allocator<JLeicVTXHit> JLeicVTXHitAllocator;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-class JLeicEventAction : public G4UserEventAction
+JLeicVTXHit::JLeicVTXHit()
 {
-  public:
-    JLeicEventAction(JLeicRunAction* JLeicRA);
-   ~JLeicEventAction();
+   EdepAbs = 0.; TrackLengthAbs = 0.;
+   EdepGap = 0.; TrackLengthGap = 0.;
+}
 
-  public:
-    void BeginOfEventAction(const G4Event*);
-    void   EndOfEventAction(const G4Event*);
-    G4int GetEventno();
-    void setEventVerbose(G4int level);
-  void AddGammaDE(G4double de) ;   //---- fsv
-    void CountStepsCharged() ;
-    void CountStepsNeutral() ;
-    void AddCharged() ;
-    void AddNeutral() ;
-    void AddE();
-    void AddP();   
-    void SetTr();
-    void SetRef();
-    
-    void SetDrawFlag(G4String val)  {drawFlag = val;};
-    void SetPrintModulo(G4int val)  {printModulo = val;};
-        
-    //----- EVENT STRUCTURE -----
-    g4e::RootOutput* mRootEventsOut = nullptr;
-    TFile * mHitsFile = nullptr;
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-  private:
-    G4int    calorimeterCollID;
-    G4int    vertexCollID;
-    JLeicEventActionMessenger*  eventMessenger;
-    JLeicRunAction* runaction;
-    G4int verboselevel;
-    G4double nstep,nstepCharged,nstepNeutral;
-  G4double Nch,Nne,GamDE;
-    G4double NE,NP;
-    G4double Transmitted,Reflected ;
-    
-    G4String drawFlag;
-    G4int    printModulo;             
-};
+JLeicVTXHit::~JLeicVTXHit()
+{;}
 
-#endif
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+/*
+JLeicVTXHit::JLeicVTXHit(const JLeicVTXHit& right)
+{
+  EdepAbs = right.EdepAbs; TrackLengthAbs = right.TrackLengthAbs;
+  EdepGap = right.EdepGap; TrackLengthGap = right.TrackLengthGap;
+}
+*/
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-    
+const JLeicVTXHit& JLeicVTXHit::operator=(const JLeicVTXHit& right)
+{
+  EdepAbs = right.EdepAbs; TrackLengthAbs = right.TrackLengthAbs;
+  EdepGap = right.EdepGap; TrackLengthGap = right.TrackLengthGap;
+  return *this;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
+void JLeicVTXHit::Print()
+{;}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+

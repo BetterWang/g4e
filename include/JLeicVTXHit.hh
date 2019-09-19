@@ -23,70 +23,79 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+/// \file electromagnetic/VertexEIC/include/JLeicVTXHit.hh
+/// \brief Definition of the JLeicVTXHit class
 //
-// $Id: JLeicEventAction.hh,v 1.3 2006-06-29 16:37:51 gunter Exp $
-// GEANT4 tag $Name: geant4-09-04-patch-01 $
+//
+// $Id: JLeicVTXHit.hh 66241 2012-12-13 18:34:42Z gunter $
 //
 // 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-#ifndef JLeicEventAction_h
-#define JLeicEventAction_h 1
+#ifndef JLeicVTXHit_h
+#define JLeicVTXHit_h 1
 
-#include "G4UserEventAction.hh"
-#include "globals.hh"
-#include "JLeicRootOutput.hh"
-
-class JLeicRunAction;
-class JLeicEventActionMessenger;
+#include "G4VHit.hh"
+#include "G4THitsCollection.hh"
+#include "G4Allocator.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-class JLeicEventAction : public G4UserEventAction
+class JLeicVTXHit : public G4VHit
 {
-  public:
-    JLeicEventAction(JLeicRunAction* JLeicRA);
-   ~JLeicEventAction();
+public:
 
-  public:
-    void BeginOfEventAction(const G4Event*);
-    void   EndOfEventAction(const G4Event*);
-    G4int GetEventno();
-    void setEventVerbose(G4int level);
-  void AddGammaDE(G4double de) ;   //---- fsv
-    void CountStepsCharged() ;
-    void CountStepsNeutral() ;
-    void AddCharged() ;
-    void AddNeutral() ;
-    void AddE();
-    void AddP();   
-    void SetTr();
-    void SetRef();
-    
-    void SetDrawFlag(G4String val)  {drawFlag = val;};
-    void SetPrintModulo(G4int val)  {printModulo = val;};
-        
-    //----- EVENT STRUCTURE -----
-    g4e::RootOutput* mRootEventsOut = nullptr;
-    TFile * mHitsFile = nullptr;
+  JLeicVTXHit();
+  ~JLeicVTXHit();
+  JLeicVTXHit(const JLeicVTXHit&);
 
-  private:
-    G4int    calorimeterCollID;
-    G4int    vertexCollID;
-    JLeicEventActionMessenger*  eventMessenger;
-    JLeicRunAction* runaction;
-    G4int verboselevel;
-    G4double nstep,nstepCharged,nstepNeutral;
-  G4double Nch,Nne,GamDE;
-    G4double NE,NP;
-    G4double Transmitted,Reflected ;
-    
-    G4String drawFlag;
-    G4int    printModulo;             
+  void* operator new(size_t);
+  void  operator delete(void*);
+
+  const JLeicVTXHit& operator=(const JLeicVTXHit&);
+
+  void Print();
+      
+public:
+  
+  void AddAbs(G4double de, G4double dl) {EdepAbs += de; TrackLengthAbs += dl;};
+  void AddGap(G4double de, G4double dl) {EdepGap += de; TrackLengthGap += dl;};      
+  
+  G4double GetEdepAbs()     { return EdepAbs; };
+  G4double GetTrakAbs()     { return TrackLengthAbs; };
+  G4double GetEdepGap()     { return EdepGap; };
+  G4double GetTrakGap()     { return TrackLengthGap; };
+     
+private:
+
+  G4double EdepAbs, TrackLengthAbs;
+  G4double EdepGap, TrackLengthGap;
 };
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
+typedef G4THitsCollection<JLeicVTXHit> JLeicVTXHitsCollection;
+
+extern G4Allocator<JLeicVTXHit> JLeicVTXHitAllocator;
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
+inline void* JLeicVTXHit::operator new(size_t)
+{
+  void* aHit;
+  aHit = (void*) JLeicVTXHitAllocator.MallocSingle();
+  return aHit;
+}
+
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
+inline void JLeicVTXHit::operator delete(void* aHit)
+{
+  JLeicVTXHitAllocator.FreeSingle((JLeicVTXHit*) aHit);
+}
 
 #endif
 
-    
+

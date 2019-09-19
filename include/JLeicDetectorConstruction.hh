@@ -86,6 +86,7 @@
 #include "fi_TRKD1/fi_TRKD1.hh"         // Far-forward Ion D1  - Tracking
 #include "fi_EMCAL/fi_EMCAL.hh"         // Far-forward Ion D1  - EMCAL
 
+#include "ffi_TRKD2/ffi_TRKD2.hh"     // Far-forward Ion D2 - Tracking
 #include "ffi_ZDC/ffi_ZDC.hh"         // Far-forward Ion   - HCAL ZDC
 #include "ffi_RPOT/ffi_RPOT.hh"         // Far-forward Ion   - RomanPots system
 
@@ -294,6 +295,10 @@ private:
     fi_TRKD1_Design     fi_TRKD1;
     //----------------EMCAL volume ---------------------
     fi_EMCAL_Design     fi_EMCAL;
+
+    //----------------D2 Tracking volume  ---------------------
+    ffi_TRKD2_Design     ffi_TRKD2;
+
     //---------------HCAL -ZDC -------------------------
     ffi_ZDC_Design  ffi_ZDC;
     //---------------Roman Pot system -------------------------

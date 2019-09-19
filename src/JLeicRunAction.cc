@@ -339,7 +339,11 @@ void JLeicRunAction::BeginOfRunAction(const G4Run* aRun)
 
   if(pVVisManager)    UI->ApplyCommand("/vis/scene/notifyHandlers");
 
-  printf("RunAction:: 1\n");
+  //char rootfilename[]="g4e_output_VTX.root";
+  printf("RunAction:: open output roort file 1\n");
+  mHitsFile = new TFile("g4e_output_evt.root", "RECREATE");
+  mRootEventsOut.Initialize(mHitsFile);
+
       
   EnergySumAbs = 0. ;
   EnergySquareSumAbs = 0.;
@@ -1016,6 +1020,16 @@ void JLeicRunAction::EndOfRunAction(const G4Run*)
 
   printf(" Close file %s, f=%p \n",histName.c_str(),myRootfile);
   myRootfile->Close();
+
+
+    if(mHitsFile)
+    {
+        mHitsFile->cd();
+        mRootEventsOut.Write();
+        mHitsFile->Close();
+    }
+
+
 }
 
 ///////////////////////////////////////////////////////////////////////////

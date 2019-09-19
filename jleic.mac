@@ -208,6 +208,7 @@
 #
 #/generator/pythiaAscii/open  jpsi_10x200_mu_JF.txt
 /generator/pythiaAscii/open pythia_200GeV_50mrad.txt
+#/generator/pythiaAscii/open pythia_200GeV_50mrad0.txt
 #/generator/pythiaAscii/open  BEAGLE.txt
 #
 #/generator/pythiaAscii/open  pythia_TRK_10.txt

@@ -31,7 +31,7 @@ public:
         //====================================================================================
         //==                        Roman Pot DETECTOR VOLUME Far-Forward  Hadron side          ==
         //====================================================================================
-
+        ffi_RPOT_det_Material = G4Material::GetMaterial("Ar10CO2");
         Solid = new G4Tubs("ffi_RPOT_GVol_Solid", cfg.RIn, cfg.ROut, cfg.SizeZ / 2., 0., 360 * deg);
 
         Logic = new G4LogicalVolume(Solid, worldMaterial, "ffi_RPOT_GVol_Logic");
@@ -114,7 +114,7 @@ private:
     G4double ffi_RPOT_lay_ROut[20];
     G4double ffi_RPOT_lay_SizeZ[20];
     G4double ffi_RPOT_lay_PosZ[20];
-    G4Material *ffi_RPOT_lay_Material;
+    G4Material *ffi_RPOT_det_Material;
     G4VisAttributes *attr_ffi_RPOT_lay;
     //--------------------------------------------------------------
 

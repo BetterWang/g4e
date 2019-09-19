@@ -18,7 +18,7 @@
 
 struct ffi_ZDC_Config {
 // define here Global volume parameters
-  double Width=100.*cm;
+  double Width=70.*cm;
   double Thickness =150.*cm;
   double Zpos;
   double Xpos;
@@ -35,13 +35,13 @@ public:
 
         ConstructionConfig = cfg;
         // create  a global volume for your detectors
-
+        ffi_ZDC_det_Material = G4Material::GetMaterial("Iron");
         Solid = new G4Box("ffi_ZDC_GVol_Solid", cfg.Width*0.5 , cfg.Width *0.5, cfg.Thickness *0.5);
-        Logic = new G4LogicalVolume(Solid, worldMaterial, "ffi_ZDC_GVol_Logic");
+        Logic = new G4LogicalVolume(Solid, ffi_ZDC_det_Material, "ffi_ZDC_GVol_Logic");
         Phys = new G4PVPlacement(G4Transform3D(cfg.rot_matx,G4ThreeVector(cfg.Xpos,0,cfg.Zpos)), "ffi_ZDC_GVol_Phys", Logic, motherVolume, false, 0);
 
         // ffi_ZDC_GVol_Logic->SetVisAttributes(G4VisAttributes::Invisible);
-        G4VisAttributes *visAttr = new G4VisAttributes(G4Color(0.1, 0, 1., 0.1));
+        G4VisAttributes *visAttr = new G4VisAttributes(G4Color(0.1, 0, 1., 1.));
         visAttr->SetLineWidth(1);
         visAttr->SetForceSolid(true);
         Logic->SetVisAttributes(visAttr);
@@ -66,6 +66,7 @@ public:
 private:
 
     // define here local variables and parameter of detectors
+    G4Material *ffi_ZDC_det_Material;
 };
 
 

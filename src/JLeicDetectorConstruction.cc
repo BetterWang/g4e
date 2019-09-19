@@ -86,8 +86,8 @@
 
 
 #define USE_CB_CTD
-//#define USE_CB_CTD_Si  1 // silicon version of CTD
-#define USE_CB_CTD_Straw 1 // straw version of CTD
+#define USE_CB_CTD_Si  1 // silicon version of CTD
+//#define USE_CB_CTD_Straw 1 // straw version of CTD
 
 #define USE_CB_DIRC
 #define USE_CB_DIRC_bars  1 // bars for DIRC
@@ -129,6 +129,7 @@
 //#define USE_FI_DIPOLE1_B
 //#define USE_FI_DIPOLE2
 
+#define USE_FFI_TRKD2
 #define USE_FFI_ZDC
 #define USE_FFI_RPOT
 //#define USE_FARFORWARD_GEM
@@ -572,6 +573,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 #ifdef USE_CI_GEM
     fConfig.ci_GEM.PosZ = fConfig.cb_Solenoid.SizeZ / 2 -
                           fConfig.ci_GEM.SizeZ / 2;   // --- need to find out why this 5 cm are needed
+    fConfig.ci_GEM.PosX = -5*cm;
     ci_GEM.Construct(fConfig.ci_GEM, World_Material, cb_Solenoid.Phys);
     ci_GEM.ConstructDetectors();
     for (int lay = 0; lay < fConfig.ci_GEM.Nlayers; lay++) {
@@ -671,9 +673,28 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 #endif
 
     //====================================================================================
-    //==                    Far-Forward Area    D2, D3                                  ==
+    //==                    Far-Forward Area    D2, D3  ZDC. Roman Pots                 ==
     //====================================================================================
+#ifdef USE_FFI_TRKD2
+    for (int id = 0; id < 20; id++) {
+        if (strcmp(fSolid_BigDi_ffqsNAME[id], "iBDS2") == 0) {
+            printf("fi_D2_GVol :: found D2=%s  Z=%f dZ=%f Rout=%f \n", fSolid_BigDi_ffqsNAME[id], fSolid_BigDi_ffqsZ[id],
+                   fSolid_BigDi_ffqsSizeZDi[id],
+                   fSolid_BigDi_ffqsRinDi[id]);
+            mydipole_id = id;
+        };
+    };
+    fConfig.ffi_TRKD2.RIn = 0 * cm;
+    fConfig.ffi_TRKD2.ROut = fSolid_BigDi_ffqsRinDi[mydipole_id] * cm;
+    fConfig.ffi_TRKD2.SizeZ = fSolid_BigDi_ffqsSizeZDi[mydipole_id] * m;
 
+    ffi_TRKD2.Construct(fConfig.ffi_TRKD2, World_Material, fPhysics_BigDi_m[mydipole_id]);
+    ffi_TRKD2.ConstructDetectors();
+ //   for (int lay = 0; lay < fConfig.ffi_TRKD2.Nlayers; lay++) {
+        if (ffi_TRKD2.lay_Logic) ffi_TRKD2.lay_Logic->SetSensitiveDetector(fCalorimeterSD);
+ //   }
+
+#endif
     //------------------------------------------------
 #ifdef USE_FFI_ZDC
     fConfig.ffi_ZDC.rot_matx.rotateY(fConfig.ffi_ZDC.Angle * rad);
@@ -685,6 +706,16 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 
 #endif // end ffi_ZDC
 
+    //------------------------------------------------
+#ifdef USE_FFI_RPOT
+    fConfig.ffi_RPOT.rot_matx.rotateY(fConfig.ffi_RPOT.Angle * rad);
+    fConfig.ffi_RPOT.PosZ = 3100*cm;
+    fConfig.ffi_RPOT.PosX = -170*cm;
+
+    ffi_RPOT.Construct(fConfig.ffi_RPOT, World_Material, World_Phys);
+    if (ffi_RPOT.Logic) ffi_RPOT.Logic->SetSensitiveDetector(fCalorimeterSD);
+
+#endif // end ffi_RPOT
 
     //===================================================================================
     //==                        Compton Polarimeter                                  ==
@@ -1720,7 +1751,7 @@ void JLeicDetectorConstruction::CreateQuad(int j, char *ffqsNAME, float ffqsSize
 
     //---------------- set magnetic field ---------------
     sprintf(abname, "Solid_QUADS_hd_m_%s", ffqsNAME);
-    fSolid_QUADS_hd_m[j] = new G4Tubs(abname, 0. * cm, ffqsRoutDi * cm, (ffqsSizeZDi / 2.) * m, 0., 360 * deg);
+    fSolid_QUADS_hd_m[j] = new G4Tubs(abname, 0. * cm, ffqsRinDi * cm, (ffqsSizeZDi / 2.) * m, 0., 360 * deg);
     sprintf(abname, "Logic_QUADS_hd_m_%s", ffqsNAME);
     fLogic_QUADS_hd_m[j] = new G4LogicalVolume(fSolid_QUADS_hd_m[j], ffqsMaterial_G, abname);
     sprintf(abname, "Physics_QUADS_hd_m_%s", ffqsNAME);
@@ -1969,6 +2000,11 @@ JLeicDetectorConstruction::CreateASolenoid(int j, char *ffqsNAME, float ffqsSize
     // fLogic_ASOLENOIDm[j]->SetFieldManager(fieldMgr,true);
 
     // G4double fieldStrength = 3.0*tesla;  // 0.01*tesla; // field strength in pipe
+
+
+    //JF just keep it for now! Need to move it back to nominal!
+    qFIELSol=0;
+
     G4double fieldStrength = qFIELSol * tesla;  // 0.01*tesla; // field strength in pipe
     G4double alphaB = 0. * degree;
     fMagField_ASOLENOID[j] = new G4UniformMagField(G4ThreeVector(fieldStrength * std::sin(alphaB),

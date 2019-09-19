@@ -21,6 +21,7 @@ struct ci_GEM_Config {
     double SizeZ = 30 * cm;
     double ShiftZ = 0 * cm;
     double PosZ = 0 * cm;
+    double PosX =0*cm;
     int Nlayers=8;
 };
 
@@ -41,7 +42,7 @@ public:
         Logic = new G4LogicalVolume(Solid, worldMaterial, "ci_GEM_GVol_Logic");
 
         // ci_GEM_GVol_PosZ= SizeZ/2-abs(World_ShiftVTX)+ci_GEM_GVol_SizeZ-5*cm;   // --- need to find out why this 5 cm are needed
-         Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, cfg.PosZ), "ci_GEM_GVol_Phys", Logic,
+         Phys = new G4PVPlacement(0, G4ThreeVector(cfg.PosX, 0, cfg.PosZ), "ci_GEM_GVol_Phys", Logic,
                                             motherVolume, false, 0);
 
 

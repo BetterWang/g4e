@@ -102,7 +102,7 @@ private:
   std::vector <unsigned short> FRAME;
 
     //----- EVENT STRUCTURE -----
-    g4e::RootOutput mRootEventsOut;
+    g4e::RootOutput* mRootEventsOut = nullptr;
     TFile * mHitsFile = nullptr;
 
     //---------------------------

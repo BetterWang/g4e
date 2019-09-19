@@ -40,7 +40,7 @@ static int use_fdc = 0;
 static FILE *fann; //*fopen(const char *path, const char *mode);
 static char AnnFileName[128];
 static int NVAR;
-static int jDebug = 3;
+static int jDebug = 7;
 
 //=====================================================================================================
 
@@ -63,7 +63,7 @@ static int jDebug = 3;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
 JLeicVertexSD::JLeicVertexSD(G4String name, JLeicDetectorConstruction *det)
-        : G4VSensitiveDetector(name), Detector(det)
+  : G4VSensitiveDetector(name), Detector(det)
 {
     printf("JLeicVertexSD()::constructor  enter\n");
     //fRM=G4RunManager::GetRunManager();
@@ -76,11 +76,11 @@ JLeicVertexSD::JLeicVertexSD(G4String name, JLeicDetectorConstruction *det)
     HitID = new G4int[500];
     printf("--> JLeicVertexSD::Constructor(%s) \n", name.c_str());
 
-    if (save_hits_root) {
-        mHitsFile = new TFile("g4e_output.root", "RECREATE");
-        mRootEventsOut.Initialize(mHitsFile);
-    }
+  JLeicRunAction* runaction = (JLeicRunAction*)(G4RunManager::GetRunManager()->GetUserRunAction());
+  JLeicRunAction* eventaction = (JLeicRunAction*)(G4RunManager::GetRunManager()->GetUserEventAction());
 
+  mHitsFile = runaction->mHitsFile;
+  mRootEventsOut=&runaction->mRootEventsOut;
 
     if (use_depfet) for (int ii = 0; ii < (NumRow * NumCol); ii++) FRAME[ii] = 0; //-- 8000;  //-- set pedestals
     if (use_fdc) {
@@ -119,14 +119,14 @@ JLeicVertexSD::JLeicVertexSD(G4String name, JLeicDetectorConstruction *det)
 
 JLeicVertexSD::~JLeicVertexSD() {
 
-
+  /*
     if(mHitsFile)
     {
         mHitsFile->cd();
-        mRootEventsOut.Write();
+        mRootEventsOut->Write();
         mHitsFile->Close();
     }
-
+  */
 
     delete[] HitID;
 
@@ -182,10 +182,11 @@ void JLeicVertexSD::Initialize(G4HCofThisEvent *) {
 
     //printf("--> JLeicVertexSD::Initialize(%s) \n",collectionName[0].c_str());
 
+    /*
     if (save_hits_root) {
-        mRootEventsOut.ClearForNewEvent();
+        mRootEventsOut->ClearForNewEvent();
     }
-
+    */
 
 
     //printf("JLeicVertexSD()::Initialize 2\n");
@@ -275,10 +276,10 @@ G4bool JLeicVertexSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
         printf("--> JLeicVertexSD::ProcessHits() Vol: 0=%s \n", theTouchable->GetVolume()->GetName().c_str());
 
     if (jDebug > 3)
-        printf("--> JLeicVertexSD::ProcessHits() Vol: 0=%s 1=%s  2=%s 3=%s Abs=%s\n",
+        printf("--> JLeicVertexSD::ProcessHits() Vol: 0=%s 1=%s  2=%s 3=%s \n",
                theTouchable->GetVolume()->GetName().c_str(), theTouchable->GetVolume(1)->GetName().c_str(),
-               theTouchable->GetVolume(2)->GetName().c_str(), theTouchable->GetVolume(3)->GetName().c_str(),
-               Detector->GetAbsorber()->GetName().c_str());
+               theTouchable->GetVolume(2)->GetName().c_str(), theTouchable->GetVolume(3)->GetName().c_str());
+	       //               Detector->GetAbsorber()->GetName().c_str());
 
     if (use_depfet > 0) {
         G4String VTXmod = theTouchable->GetVolume()->GetName();
@@ -371,12 +372,12 @@ G4bool JLeicVertexSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
     //--- save hits ------
     if (save_hits_root) {
         if (jDebug > 6)
-            printf("New Hit:: IdVect=%d XYZloc (%f,%f,%f) dEdx=%f \n", aStep->GetTrack()->GetTrackID(), xloc, yloc, zloc,
+            printf("New VTX Hit:: IdVect=%d XYZloc (%f,%f,%f) dEdx=%f \n", aStep->GetTrack()->GetTrackID(), xloc, yloc, zloc,
                    edep / keV);
 
         int curTrackID = aStep->GetTrack()->GetTrackID();
         std::string volumeName = theTouchable->GetVolume()->GetName().c_str();
-        mRootEventsOut.AddHit(
+        mRootEventsOut->AddHit(
                  mHitsCount,  /* aHitId */
                  curTrackID,  /* aTrackId */
                  xstep / mm,  /* aX */
@@ -390,7 +391,7 @@ G4bool JLeicVertexSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
         mHitsCount++;
 
         //-- fill tracks --
-        mRootEventsOut.AddTrack(
+        mRootEventsOut->AddTrack(
                 curTrackID,                           /* int aTrackId,*/
                 ParrentID,                            /* int aParentId,*/
                 PDG,                                  /* int aTrackPdg,*/
@@ -502,7 +503,7 @@ void JLeicVertexSD::EndOfEvent(G4HCofThisEvent *HCE) {
             auto primeVtx = evt->GetPrimaryVertex(primeVtxIndex);
 
             // Add primary vertex to root output
-            mRootEventsOut.AddPrimaryVertex(
+            mRootEventsOut->AddPrimaryVertex(
                     (size_t) primeVtxIndex,                    /* size_t aVtxIndex, */
                     (size_t) primeVtx->GetNumberOfParticle(),  /* size_t aParticleCount, */
                     primeVtx->GetX0(),                         /* double aX, */
@@ -515,7 +516,7 @@ void JLeicVertexSD::EndOfEvent(G4HCofThisEvent *HCE) {
             const G4int partCount = primeVtx->GetNumberOfParticle();
             for(G4int partIndex = 0; partIndex < partCount; partIndex++) {
                 auto particle = primeVtx->GetPrimary(partIndex);
-                mRootEventsOut.AddPrimaryParticle(
+                mRootEventsOut->AddPrimaryParticle(
                          particleId,                             /*size_t aId */
                          (size_t)primeVtxIndex,                  /*size_t aPrimeVtxId */
                          (size_t)particle->GetPDGcode(),         /*size_t aPDGCode */
@@ -536,7 +537,7 @@ void JLeicVertexSD::EndOfEvent(G4HCofThisEvent *HCE) {
             }
         }
 
-        mRootEventsOut.FillEvent((uint64_t)evt->GetEventID());
+        // mRootEventsOut->FillEvent((uint64_t)evt->GetEventID());
     }
 
 

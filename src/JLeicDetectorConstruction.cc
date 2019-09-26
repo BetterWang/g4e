@@ -62,6 +62,7 @@
 
 #include "G4PVDivision.hh"
 #include "G4SystemOfUnits.hh"
+#include "JLeicSolenoid3D.hh"
 
 #define USE_TGEOM 1
 //--------BEAM elements------
@@ -610,8 +611,8 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     ci_TRD.Construct(fConfig.ci_TRD, World_Material, ci_ENDCAP_GVol_Phys);
 
     ci_TRD.ConstructDetectors();
-    printf("FoilNumbers=%d\n",fConfig.ci_TRD.fFoilNumber);
-
+    printf("FoilNumbers=%d (%d) \n",fConfig.ci_TRD.fFoilNumber,ci_TRD.ConstructionConfig.fFoilNumber); // --- ????????? ---
+    //ci_TRD.ConstructionConfig.fFoilNumber
 //===================================================================================
 #endif // end USE_CI_TRD
 
@@ -699,10 +700,11 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 #ifdef USE_FFI_ZDC
     fConfig.ffi_ZDC.rot_matx.rotateY(fConfig.ffi_ZDC.Angle * rad);
     fConfig.ffi_ZDC.Zpos = 4000*cm;
-    fConfig.ffi_ZDC.Xpos = -170*cm;
+    fConfig.ffi_ZDC.Xpos = -190*cm;
 
     ffi_ZDC.Construct(fConfig.ffi_ZDC, World_Material, World_Phys);
-    if (ffi_ZDC.Logic) ffi_ZDC.Logic->SetSensitiveDetector(fCalorimeterSD);
+    ffi_ZDC.ConstructTowels();
+ //   if (ffi_ZDC.Logic) ffi_ZDC.Logic->SetSensitiveDetector(fCalorimeterSD);
 
 #endif // end ffi_ZDC
 
@@ -1522,9 +1524,11 @@ void JLeicDetectorConstruction::Read_Di_File() {
     int iqmax_i;
     printf("read Di file\n");
     // sprintf(fname,"ion_ir_06feb19.txt");
-    // --- this is for tune!!    
-     sprintf(fname, "i_ir.txt");
-    // sprintf(fname, "ion_ir_01mar19_v2_origin.txt");
+     sprintf(fname,"ion_ir_23sep19.txt");
+
+    // --- this is for tune!!
+   // sprintf(fname, "i_ir_forward.txt");
+ //   sprintf(fname, " ");
     rc = fopen(fname, "r");
     if (rc == NULL) return;
 
@@ -1995,6 +1999,8 @@ JLeicDetectorConstruction::CreateASolenoid(int j, char *ffqsNAME, float ffqsSize
     vb1as->SetForceSolid(true);
     fLogic_ASOLENOID_hd_ir[j]->SetVisAttributes(vb1as);
 
+
+    G4MagneticField* SolenoidField= new JLeicSolenoid3D("SolenoidMag3D.TABLE", 0.);
 
     //    G4FieldManager* fieldMgr = SetQMagField(qFIELDx[j],qFIELDy[j]);   // gradient tesla/m;
     // fLogic_ASOLENOIDm[j]->SetFieldManager(fieldMgr,true);

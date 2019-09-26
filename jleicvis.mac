@@ -18,6 +18,11 @@
 #/vis/open OGLIX 600x600-0+0
 #/vis/open OGLIQt 600x600-0+0
 #
+#/vis/open OGLS 600x600-0+0
+#/vis/open OGLSX 600x600-0+0
+#/vis/open OGLIQt_FALLBACK 600x600-0+0
+#/vis/open OGLSQt_FALLBACK 600x600-0+0
+#
 # Use this open statement to create a .prim file suitable for
 # viewing in DAWN:
 #/vis/open DAWNFILE
@@ -88,7 +93,7 @@
 /vis/modeling/trajectories/drawByParticleID-0/set pion0 blue
 /vis/modeling/trajectories/drawByParticleID-0/set gamma yellow
 /vis/modeling/trajectories/drawByParticleID-0/set proton blue
-/vis/modeling/trajectories/drawByParticleID-0/set neuton magenta
+/vis/modeling/trajectories/drawByParticleID-0/set neutron magenta
 #/vis/modeling/trajectories/drawByParticleID-0/set e- yellow
 #
 # To superimpose all of the events from a given run:

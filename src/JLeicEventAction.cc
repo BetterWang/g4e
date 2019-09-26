@@ -103,7 +103,7 @@ void JLeicEventAction::BeginOfEventAction(const G4Event *evt) {
     Transmitted = 0.;
     Reflected = 0.;
 
-    if (evtNb == 0) printf("---> Begin of Event: %d \n", evtNb);
+    if (evtNb == 0) printf("----> Begin of Event: %d \n", evtNb);
 
 
 }

@@ -55,6 +55,7 @@
 
 //-- physics processes --
 #include "FTFP_BERT.hh"
+#include "QGSP_BIC.hh"
 
 #include "clara.hh"
 
@@ -109,7 +110,11 @@ int main(int argc, char **argv)
     // detector = new ALICEDetectorConstruction;
 
     runManager->SetUserInitialization(detector);
+
     runManager->SetUserInitialization(new JLeicPhysicsList(detector));
+    //runManager->SetUserInitialization(new QGSP_BIC);
+    //G4VUserPhysicsList* physics = new FTFP_BERT;
+    //runManager->SetUserInitialization(physics);
 
     // == - set user action classes - ==
 

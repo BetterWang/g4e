@@ -115,9 +115,9 @@ JLeicPhysicsList::JLeicPhysicsList(JLeicDetectorConstruction* p)
     G4IonPhysics
   */
 
-  //RegisterPhysics( new G4HadronPhysicsQGSP_BIC_HP()); 
+  //RegisterPhysics( new G4HadronPhysicsQGSP_BIC_HP()); //--- hadron physics !!! OFF by default
   // all physics processes having to do with protons
-  RegisterPhysics( new G4EmStandardPhysics_option4() );
+  //RegisterPhysics( new G4EmStandardPhysics_option4() );   //--- electrons physics  !!
   // all physics processes having to do with electrons
   RegisterPhysics( new G4DecayPhysics() );
   // physics of unstable particles

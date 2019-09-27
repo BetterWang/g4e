@@ -703,8 +703,8 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     fConfig.ffi_ZDC.Xpos = -190*cm;
 
     ffi_ZDC.Construct(fConfig.ffi_ZDC, World_Material, World_Phys);
-    ffi_ZDC.ConstructTowels();
- //   if (ffi_ZDC.Logic) ffi_ZDC.Logic->SetSensitiveDetector(fCalorimeterSD);
+ //   ffi_ZDC.ConstructTowels();
+     if (ffi_ZDC.Logic) ffi_ZDC.Logic->SetSensitiveDetector(fCalorimeterSD);
 
 #endif // end ffi_ZDC
 
@@ -1999,8 +1999,6 @@ JLeicDetectorConstruction::CreateASolenoid(int j, char *ffqsNAME, float ffqsSize
     vb1as->SetForceSolid(true);
     fLogic_ASOLENOID_hd_ir[j]->SetVisAttributes(vb1as);
 
-
-    G4MagneticField* SolenoidField= new JLeicSolenoid3D("SolenoidMag3D.TABLE", 0.);
 
     //    G4FieldManager* fieldMgr = SetQMagField(qFIELDx[j],qFIELDy[j]);   // gradient tesla/m;
     // fLogic_ASOLENOIDm[j]->SetFieldManager(fieldMgr,true);

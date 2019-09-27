@@ -155,7 +155,7 @@
 #/gun/energy 5000.0 MeV
 #/gun/ion Z A Q
 #--------------------------------------------------------------------
-#/tracking/verbose 1
+/tracking/verbose 1
 #
 #/run/dumpCouples
 #/event/printModulo 1000
@@ -171,11 +171,11 @@
 /plots/sethistName      hist_jleic.root
 #
 #/generator/select particleGun
-/gun/particle neutron
+#/gun/particle neutron
 #/gun/particle proton
 #--------------crossing angle 50mrad-------
-/gun/energy  200 GeV
-/gun/momentum   -9.995833854   0.    199.7500520
+#/gun/energy  200 GeV
+#/gun/momentum   -9.995833854   0.    199.7500520
 #------------ 50 mrad ---
 #/gun/momentum   -9.995833854   0.    199.7500520
 #-------------53 mrad-----
@@ -200,7 +200,7 @@
 #/gun/position  -1349.58247     0   41314.67469      mm
 #
 # GEMC/BNL version
-#/generator/select pythiaAscii
+/generator/select pythiaAscii
 #/generator/pythiaAscii/verbose 1
 #/generator/pythiaAscii/open  pythia1pis.txt
 #/generator/pythiaAscii/open  /home/yulia/yulia/TestVTXhmc/build.newnewOK/pythiaBeautyDIS100.txt
@@ -213,6 +213,7 @@
 #
 #/generator/pythiaAscii/open  jpsi_10x200_mu_JF.txt
 #/generator/pythiaAscii/open pythia_200GeV_50mrad.txt
+#/generator/pythiaAscii/open pythia_200GeV_neutron_50mrad.txt
 #/generator/pythiaAscii/open pythia_200GeV_50mrad0.txt
 #/generator/pythiaAscii/open  BEAGLE.txt
 #
@@ -223,7 +224,7 @@
 #----------electrons 
 #/generator/pythiaAscii/open  pythia_10GeV_e_php.txt
 #------------pions--------------
-#/generator/pythiaAscii/open  pythia_100MeV_90.txt
+/generator/pythiaAscii/open  pythia_100MeV_90.txt
 #/generator/pythiaAscii/open  pythia_1GeV_90.txt
 #/generator/pythiaAscii/open  pythia_3GeV_90.txt
 #/generator/pythiaAscii/open  pythia_5GeV_90.txt
@@ -240,6 +241,7 @@
 #----------electrons-----------
 #/generator/pythiaAscii/open  pythia_e_50GeV_90.txt
 #/generator/pythiaAscii/open  pythia_e_10GeV_90.txt
+/generator/pythiaAscii/open  pythia_e_10GeV_90x.txt
 #/generator/pythiaAscii/open  pythia_e_1GeV_90.txt
 #--------------------------------------
 #/generator/pythiaAscii/open  pythia_10GeV_4.txt

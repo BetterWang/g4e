@@ -47,8 +47,10 @@ JLeicSolenoid3D::JLeicSolenoid3D(const char* filename,
   :fZoffset(zOffset),invertX(false),invertY(false),invertZ(false)
 {    
  
-  double lenUnit= meter;
-  double fieldUnit= tesla; 
+  //double lenUnit= meter;
+  //double fieldUnit= tesla; 
+  double lenUnit= cm;
+  double fieldUnit=tesla; 
   G4cout << "\n-----------------------------------------------------------"
 	 << "\n      Magnetic field"
 	 << "\n-----------------------------------------------------------";
@@ -72,14 +74,16 @@ JLeicSolenoid3D::JLeicSolenoid3D(const char* filename,
 
   // Ignore first blank line
   char buffer[256];
-  file.getline(buffer,256);
+  //file.getline(buffer,256);
   
   // Read table dimensions 
-  file >> nx >> ny >> nz; // Note dodgy order
+  //file >> nx >> ny >> nz; // Note dodgy order
+  int tmp;
+  file >> nx >> ny >> nz >> tmp; // Note dodgy order
 
-  G4cout << "  [ Number of values x,y,z: " 
-	 << nx << " " << ny << " " << nz << " ] "
-	 << endl;
+  std::cout << "  [ Number of values x,y,z: " 
+	    << nx << " " << ny << " " << nz << " ] " << " tesla=" << tesla
+	 << endl ;
 
   // Set up storage space for table
   xField.resize( nx );
@@ -87,6 +91,7 @@ JLeicSolenoid3D::JLeicSolenoid3D(const char* filename,
   zField.resize( nx );
   int ix, iy, iz;
   for (ix=0; ix<nx; ix++) {
+    printf("JLeicSolenoid3D:: resize vectors:: ix=%d of %d \n",ix,nx);
     xField[ix].resize(ny);
     yField[ix].resize(ny);
     zField[ix].resize(ny);
@@ -108,17 +113,19 @@ JLeicSolenoid3D::JLeicSolenoid3D(const char* filename,
   double xval,yval,zval,bx,by,bz;
   double permeability; // Not used in this example.
   for (ix=0; ix<nx; ix++) {
+    printf("JLeicSolenoid3D:: read file:: ix=%d of %d \n",ix,nx);
     for (iy=0; iy<ny; iy++) {
       for (iz=0; iz<nz; iz++) {
-        file >> xval >> yval >> zval >> bx >> by >> bz >> permeability;
+        //file >> xval >> yval >> zval >> bx >> by >> bz >> permeability;
+        file >> xval >> yval >> zval >> bx >> by >> bz;
         if ( ix==0 && iy==0 && iz==0 ) {
           minx = xval * lenUnit;
           miny = yval * lenUnit;
           minz = zval * lenUnit;
         }
-        xField[ix][iy][iz] = bx * fieldUnit;
-        yField[ix][iy][iz] = by * fieldUnit;
-        zField[ix][iy][iz] = bz * fieldUnit;
+        xField[ix][iy][iz] = bx * 0.0001 * fieldUnit;
+        yField[ix][iy][iz] = by * 0.0001 * fieldUnit;
+        zField[ix][iy][iz] = bz * 0.0001 * fieldUnit;
       }
     }
   }
@@ -197,18 +204,28 @@ void JLeicSolenoid3D::GetFieldValue(const double point[4],
     int yindex = static_cast<int>(ydindex);
     int zindex = static_cast<int>(zdindex);
     
-
+#define DEBUG_INTERPOLATING_FIELD
 #ifdef DEBUG_INTERPOLATING_FIELD
     G4cout << "Local x,y,z: " << xlocal << " " << ylocal << " " << zlocal << endl;
+    std::cout << "Local x,y,z: " << xlocal << " " << ylocal << " " << zlocal << endl;
     G4cout << "Index x,y,z: " << xindex << " " << yindex << " " << zindex << endl;
     double valx0z0, mulx0z0, valx1z0, mulx1z0;
     double valx0z1, mulx0z1, valx1z1, mulx1z1;
-    valx0z0= table[xindex  ][0][zindex];  mulx0z0=  (1-xlocal) * (1-zlocal);
-    valx1z0= table[xindex+1][0][zindex];  mulx1z0=   xlocal    * (1-zlocal);
-    valx0z1= table[xindex  ][0][zindex+1]; mulx0z1= (1-xlocal) * zlocal;
-    valx1z1= table[xindex+1][0][zindex+1]; mulx1z1=  xlocal    * zlocal;
+    valx0z0= xField[xindex  ][0][zindex];  mulx0z0=  (1-xlocal) * (1-zlocal);
+    valx1z0= xField[xindex+1][0][zindex];  mulx1z0=   xlocal    * (1-zlocal);
+    valx0z1= xField[xindex  ][0][zindex+1]; mulx0z1= (1-xlocal) * zlocal;
+    valx1z1= xField[xindex+1][0][zindex+1]; mulx1z1=  xlocal    * zlocal;
+    
+    G4cout << "Bfield0 x,y,z: "   
+	   << " "  << xField[xindex  ][yindex  ][zindex  ]/tesla
+	   << " "  << yField[xindex  ][yindex  ][zindex  ]/tesla
+	   << " "  << zField[xindex  ][yindex  ][zindex  ]/tesla << endl;
+    std::cout << "Bfield0 x,y,z: "   
+	   << " "  << xField[xindex  ][yindex  ][zindex  ]/tesla
+	   << " "  << yField[xindex  ][yindex  ][zindex  ]/tesla
+	   << " "  << zField[xindex  ][yindex  ][zindex  ]/tesla << endl;
+    
 #endif
-
         // Full 3-dimensional version
     Bfield[0] =
       xField[xindex  ][yindex  ][zindex  ] * (1-xlocal) * (1-ylocal) * (1-zlocal) +
@@ -237,11 +254,18 @@ void JLeicSolenoid3D::GetFieldValue(const double point[4],
       zField[xindex+1][yindex  ][zindex+1] *    xlocal  * (1-ylocal) *    zlocal  +
       zField[xindex+1][yindex+1][zindex  ] *    xlocal  *    ylocal  * (1-zlocal) +
       zField[xindex+1][yindex+1][zindex+1] *    xlocal  *    ylocal  *    zlocal ;
-
   } else {
     Bfield[0] = 0.0;
     Bfield[1] = 0.0;
     Bfield[2] = 0.0;
   }
+
+    Bfield[0] = 0.0;
+    Bfield[1] = 0.0;
+    Bfield[2] = 2.0 * tesla;
+
+    G4cout << "Bfield x,y,z: " <<  Bfield[0]/tesla << " " << Bfield[1]/tesla << " " << Bfield[2]/tesla << endl;
+    std::cout << "Bfield x,y,z: " <<  Bfield[0]/tesla << " " << Bfield[1]/tesla << " " << Bfield[2]/tesla << endl;
+
 }
 

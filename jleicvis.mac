@@ -126,6 +126,6 @@
 #/vis/viewer/addCutawayPlane 0  1  0  cm  -0.001 0  0
 #/vis/viewer/clearCutawayPlanes
 #/run/initialize
-#/run/beamOn 1
+/run/beamOn 1
 
 exit 

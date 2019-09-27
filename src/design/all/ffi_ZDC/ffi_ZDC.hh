@@ -138,6 +138,9 @@ public:
 
     /// Parameters that was used in the moment of construction
     ffi_ZDC_Config  ConstructionConfig;
+    G4Box *ffi_ZDC_HCAL_Solid;
+    G4LogicalVolume *ffi_ZDC_HCAL_Logic;
+
 
 private:
 JLeicMaterials *fMat;
@@ -153,8 +156,7 @@ JLeicMaterials *fMat;
 
     G4Material *ffi_ZDC_HCAL_Material;
     G4VisAttributes *attr_ffi_ZDC_HCAL;
-    G4Box *ffi_ZDC_HCAL_Solid;
-    G4LogicalVolume *ffi_ZDC_HCAL_Logic;
+
 
 };
 

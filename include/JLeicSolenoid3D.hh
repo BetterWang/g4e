@@ -33,6 +33,9 @@
 //    *************************************
 //
 //
+#ifndef JLEIC_SOLENOID_3D_H
+#define JLEIC_SOLENOID_3D_H
+
 
 #include "globals.hh"
 #include "G4MagneticField.hh"
@@ -69,3 +72,4 @@ public:
 		       double *Bfield          ) const;
 };
 
+#endif //JLEIC_SOLENOID_3D_H

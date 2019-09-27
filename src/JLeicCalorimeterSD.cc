@@ -442,8 +442,6 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
                    edep / keV);
 
         int curTrackID = aStep->GetTrack()->GetTrackID();
-        
-
         std::string volumeName = theTouchable->GetVolume()->GetName().c_str();
         mRootEventsOut->AddHit(
                  mHitsCount,  /* aHitId */

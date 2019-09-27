@@ -190,17 +190,29 @@
 
 #
 #--------------------------------------------------------------------
-#/generator/select particleGun
-#/gun/particle proton
-#/gun/energy  200 GeV
+/generator/select particleGun
+/gun/particle proton
+/gun/energy  200 GeV
 #/gun/momentum   0.   0.    200.
+#----------- 0.053 angle -------
+/gun/momentum   -10.59503813   0.    199.7191657
+
+#/gun/position -327.111674     0   6491.761992  mm
+#--- before iQDS2
+/gun/position -0.687342971     0   13.28221363  m
+#---- corrector
+#/gun/position -0.936326367     0   17.97561402  m
+#/gun/position -0.962813962     0   18.47491194 m
+#--- This location is before entering  D2---
+#/gun/position -1137.632091     0   21770.27817  mm
 #--- This location is after exiting D2---
 #/gun/position -1349.58247     0.   29766.53336   mm
 #-- This location is before entering D3 ---
 #/gun/position  -1349.58247     0   41314.67469      mm
+
 #
 # GEMC/BNL version
-/generator/select pythiaAscii
+#/generator/select pythiaAscii
 #/generator/pythiaAscii/verbose 1
 #/generator/pythiaAscii/open  pythia1pis.txt
 #/generator/pythiaAscii/open  /home/yulia/yulia/TestVTXhmc/build.newnewOK/pythiaBeautyDIS100.txt
@@ -241,7 +253,7 @@
 #----------electrons-----------
 #/generator/pythiaAscii/open  pythia_e_50GeV_90.txt
 #/generator/pythiaAscii/open  pythia_e_10GeV_90.txt
-/generator/pythiaAscii/open  pythia_e_10GeV_90x.txt
+#/generator/pythiaAscii/open  pythia_e_10GeV_90x.txt
 #/generator/pythiaAscii/open  pythia_e_1GeV_90.txt
 #--------------------------------------
 #/generator/pythiaAscii/open  pythia_10GeV_4.txt

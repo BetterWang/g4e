@@ -88,7 +88,8 @@
 
 #include "ffi_TRKD2/ffi_TRKD2.hh"     // Far-forward Ion D2 - Tracking
 #include "ffi_ZDC/ffi_ZDC.hh"         // Far-forward Ion   - HCAL ZDC
-#include "ffi_RPOT/ffi_RPOT.hh"         // Far-forward Ion   - RomanPots system
+#include "ffi_RPOT_D2/ffi_RPOT_D2.hh"         // Far-forward Ion   - RomanPots system
+#include "ffi_RPOT_D3/ffi_RPOT_D3.hh"         // Far-forward Ion   - RomanPots system
 
 
 class JLeicCalorimeterSD;
@@ -302,7 +303,8 @@ private:
     //---------------HCAL -ZDC -------------------------
     ffi_ZDC_Design  ffi_ZDC;
     //---------------Roman Pot system -------------------------
-    ffi_RPOT_Design  ffi_RPOT;
+    ffi_RPOT_D2_Design  ffi_RPOT_D2;
+    ffi_RPOT_D3_Design  ffi_RPOT_D3;
 
 // ----------------------------------------------
 

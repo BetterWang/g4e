@@ -132,7 +132,8 @@
 
 #define USE_FFI_TRKD2
 #define USE_FFI_ZDC
-#define USE_FFI_RPOT
+#define USE_FFI_RPOT_D2
+#define USE_FFI_RPOT_D3
 //#define USE_FARFORWARD_GEM
 
 //#define USE_FARFORWARD_VP
@@ -709,15 +710,26 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 #endif // end ffi_ZDC
 
     //------------------------------------------------
-#ifdef USE_FFI_RPOT
-    fConfig.ffi_RPOT.rot_matx.rotateY(fConfig.ffi_RPOT.Angle * rad);
-    fConfig.ffi_RPOT.PosZ = 3100*cm;
-    fConfig.ffi_RPOT.PosX = -170*cm;
+#ifdef USE_FFI_RPOT_D2
+    fConfig.ffi_RPOT_D2.rot_matx.rotateY(fConfig.ffi_RPOT_D2.Angle * rad);
+    fConfig.ffi_RPOT_D2.PosZ = 3100*cm;
+    fConfig.ffi_RPOT_D2.PosX = -170*cm;
 
-    ffi_RPOT.Construct(fConfig.ffi_RPOT, World_Material, World_Phys);
-    if (ffi_RPOT.Logic) ffi_RPOT.Logic->SetSensitiveDetector(fCalorimeterSD);
+    ffi_RPOT_D2.Construct(fConfig.ffi_RPOT_D2, World_Material, World_Phys);
+    if (ffi_RPOT_D2.Logic) ffi_RPOT_D2.Logic->SetSensitiveDetector(fCalorimeterSD);
 
-#endif // end ffi_RPOT
+#endif // end ffi_RPOT_D2
+    //------------------------------------------------
+#ifdef USE_FFI_RPOT_D3
+    fConfig.ffi_RPOT_D3.Angle= -0.053;
+    fConfig.ffi_RPOT_D3.rot_matx.rotateY(fConfig.ffi_RPOT_D3.Angle * rad);
+    fConfig.ffi_RPOT_D3.PosZ = 5000*cm;
+    fConfig.ffi_RPOT_D3.PosX = -175*cm;
+
+    ffi_RPOT_D3.Construct(fConfig.ffi_RPOT_D3, World_Material, World_Phys);
+    if (ffi_RPOT_D3.Logic) ffi_RPOT_D3.Logic->SetSensitiveDetector(fCalorimeterSD);
+
+#endif // end ffi_RPOT_D3
 
     //===================================================================================
     //==                        Compton Polarimeter                                  ==

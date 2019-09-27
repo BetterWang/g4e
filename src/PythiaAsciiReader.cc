@@ -98,19 +98,20 @@ PythiaAsciiReader *PythiaAsciiReader::GeneratePythiaEvent() {
                 lundUserDefined.push_back(tmp);
             }
         }
-        double dCone;
-        gif >> dCone;
-        double dmyPhi;
-        gif >> dmyPhi;
-
-
-        printf("=====> LUND 1  !!!! npart=%d \n", nparticles);
+	// 11    0    1        2112        0        0       -1.332584       -0.299053       31.538593       31.582129        0.939570        0.000000        0.000000        0.000000
+	//	printf("=====> LUND 1  !!!! npart=%d dCone=%f dmyPhi=%f \n", nparticles, dCone, dmyPhi);
+	printf("=====> LUND 1  !!!! npart=%d \n", nparticles);
         N = 0;
         pyEvt.clear();
 
         if (nparticles < 0) { //--- generate particles in CONE ---
 
-            nparticles = -nparticles;
+	  double dCone;
+	  gif >> dCone;
+	  double dmyPhi;
+	  gif >> dmyPhi;
+
+           nparticles = -nparticles;
             for (int kp = 0; kp < nparticles; kp++) {
 
                 //--- GEMC version of LUND ---
@@ -119,9 +120,9 @@ PythiaAsciiReader *PythiaAsciiReader::GeneratePythiaEvent() {
                 int parent = 0, daughter1 = 0, daughter2 = 0;
                 // i,icharge,flag,PID,K(I,4),K(I,5) P(I,1),P(I,2),P(I,3),P(I,4),P(I,5)  V(I,1)*0.1,V(I,2)*0.1,VZoffSet*0.1
                 int ip, icharge, itype, iPDG, K4, K5; //, pPDG=0;
-                gif >> ip >> charge >> itype >> iPDG >> K4 >> K5 >> px >> py >> pz >> etot >> mass >> Vx >> Vy >> Vz;
+                gif >> ip >> icharge >> itype >> iPDG >> K4 >> K5 >> px >> py >> pz >> etot >> mass >> Vx >> Vy >> Vz;
                 printf("read: i=%3d Charge=%2d  Sts=%d  PDG=%5d  K4=%3d  K5=%3d    P=(%8.3f,%8.3f,%8.3f,%8.3f,%8.3f)    Vtx=(%f,%f,%f) \n",
-                       ip, charge, itype, iPDG, K4, K5, px, py, pz, etot, mass, Vx, Vy, Vz);
+                       ip, icharge, itype, iPDG, K4, K5, px, py, pz, etot, mass, Vx, Vy, Vz);
                 Vt = 0;
                 daughter1 = K4;
                 daughter2 = K5;
@@ -147,23 +148,38 @@ PythiaAsciiReader *PythiaAsciiReader::GeneratePythiaEvent() {
 
                     double ptot = sqrt(px * px + py * py + pz * pz);
 
-                    double Theta = acos(pz / ptot);
+                    Theta = acos(pz / ptot);
 
-                    double dTheta = (0.5 - G4UniformRand()) * 2. * dCone; // --- flat
-                    Theta += dTheta;
-
+                    //double dTheta = (0.5 - G4UniformRand()) * 2. * dCone; // --- flat
+		    //  Theta += dTheta;
+		    double dTheta = G4RandGauss::shoot(0,dCone); 
 
                     //double rpz  = (0.5-G4UniformRand())*2.*0.05 * pz*GeV;
-                    double rpz = ptot * cos(Theta);
+                    //double rpz = ptot * cos(Theta);
 
-                    double Phi = atan2(py, px);
-                    double dPhi = (0.5 - G4UniformRand()) * 2. * dmyPhi; // --- flat
+                    Phi = atan2(py, px);
+                    //double dPhi = (0.5 - G4UniformRand()) * 2. * dmyPhi; // --- flat
+                    double phi0 = G4UniformRand()*2.*pi; // --- flat in phi
 
+		    G4ThreeVector dir(std::sin(dTheta)*std::cos(phi0),std::sin(dTheta)*std::sin(phi0),std::cos(dTheta));
+		    dir.rotateY(Theta); dir.rotateZ(Phi);  
+		    // dir.setMag(ptot);
+		    dir.setMag(etot);  //--- use energi as momentum !!!! for beam protons !!! if beam is defined by momentum !!!!
+		    //--- recalculate etot if PROTON !!! 
+		    double proton_mass=0.938272;
+		    etot=sqrt(ptot*ptot+proton_mass*proton_mass);
+
+		    /*
                     Phi += dPhi;
                     double rpt = ptot * sin(Theta);
                     double rpx = rpt * cos(Phi);
                     double rpy = rpt * sin(Phi);
-                    std::cout << "G4LorentzVector px " << rpx << " py " << rpy << " pz " << rpz;
+		    */
+		    double rpz=dir.z();
+		    double rpx=dir.x();
+		    double rpy=dir.y();
+		    
+                    std::cout << "G4LorentzVector px= " << rpx << " py= " << rpy << " pz= " << rpz << std::endl;
                     /*
                     double rpt = sqrt(px*px + py*py);
                     //double rphi = (0.5-G4UniformRand())*2. * 3.1415 / 2.;
@@ -180,10 +196,12 @@ PythiaAsciiReader *PythiaAsciiReader::GeneratePythiaEvent() {
                     */
 
                     //G4LorentzVector p(px*GeV+rpx,py*GeV+rpy,pz*GeV+rpz,etot*GeV);
+
                     G4LorentzVector p(rpx * GeV, rpy * GeV, rpz * GeV, etot * GeV);
 
                     G4LorentzVector v(Vx * mm, Vy * mm, Vz * mm, Vt * mm / c_light);
-                    std::cout << "G4LorentzVector p= " << p;
+                    std::cout << "G4LorentzVector p= " << p << std::endl;
+                    
                     ptrk.P = p;
                     ptrk.V = v;
                     pyEvt.push_back(ptrk);

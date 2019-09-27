@@ -23,68 +23,55 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file electromagnetic/VertexEIC/include/JLeicPhysicsList.hh
-/// \brief Definition of the JLeicPhysicsList class
+/// \file electromagnetic/VertexEIC/include/JLeicPhysicsListMessenger.hh
+/// \brief Definition of the JLeicPhysicsListMessenger class
 //
 //
-//  JLeicPhysicsList.hh 2019-02-19  ---
+// $Id: JLeicXTRphysicsMessenger.hh 73033 2013-08-15 09:24:45Z gcosmo $
 //
+// 
 
-#ifndef JLeicPhysicsList_h
-#define JLeicPhysicsList_h 1
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-//#include "G4VUserPhysicsList.hh"
-#include "G4VModularPhysicsList.hh"
+#ifndef JLeicXTRphysicsMessenger_h
+#define JLeicXTRphysicsMessenger_h 1
+
 #include "globals.hh"
+#include "G4UImessenger.hh"
 
-class G4ForwardXrayTR ;
-class JLeicStepCut;
-class JLeicDetectorConstruction;
-class JLeicPhysicsListMessenger;
-class G4ProductionCuts;
 class JLeicXTRphysics;
+class G4UIcmdWithoutParameter;
+class G4UIcmdWithADouble;
+class G4UIcmdWithADoubleAndUnit;
+class G4UIcmdWithAString;
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-class JLeicPhysicsList: public G4VModularPhysicsList
+class JLeicXTRphysicsMessenger: public G4UImessenger
 {
-public:
-  JLeicPhysicsList( JLeicDetectorConstruction*);
+  public:
+    JLeicXTRphysicsMessenger(JLeicXTRphysics* pp);
+   ~JLeicXTRphysicsMessenger();
+    
+    void SetNewValue(G4UIcommand*, G4String);
+    
+  private:
+    JLeicXTRphysics*          JLeicList;
 
-  ~JLeicPhysicsList();
+    G4UIcmdWithADoubleAndUnit* setMaxStepCmd;
 
-  // Construct particle and physics
-  void ConstructParticle();
-  //void ConstructProcess();
- 
-  void SetCuts();
+    G4UIcmdWithADoubleAndUnit* cutGCmd;
+    G4UIcmdWithADoubleAndUnit* cutECmd;
+    G4UIcmdWithADoubleAndUnit* eCmd;
 
-private:
+    G4UIcmdWithADoubleAndUnit* ElectronCutCmd;
+    G4UIcmdWithADoubleAndUnit* PositronCutCmd;
+    G4UIcmdWithADoubleAndUnit* GammaCutCmd;
 
-public:
-
-private:
-
-  G4double MaxChargedStep;
-
-  G4ForwardXrayTR*       fForwardXrayTR ;
-
-  JLeicStepCut* theeminusStepCut ;
-  JLeicStepCut* theeplusStepCut ;
-
-  G4double cutForGamma;
-  G4double cutForElectron, cutForPositron;
-
-  JLeicDetectorConstruction* pDet;
-  JLeicXTRphysics  * XTRphys;
-
-  JLeicPhysicsListMessenger* physicsListMessenger;
-
-  G4ProductionCuts* fRadiatorCuts;
-  G4ProductionCuts* fDetectorCuts;
-  G4double fElectronCut, fGammaCut, fPositronCut;
-  G4String fXTRModel;
+    G4UIcmdWithADoubleAndUnit* RadiatorCutCmd;
+    G4UIcmdWithADoubleAndUnit* DetectorCutCmd;
+    G4UIcmdWithAString*        XTRModelCmd;
 };
 
 #endif
-
-
 

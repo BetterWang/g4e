@@ -62,6 +62,7 @@
 
 #include "G4PVDivision.hh"
 #include "G4SystemOfUnits.hh"
+#include "JLeicSolenoid3D.hh"
 
 #define USE_TGEOM 1
 //--------BEAM elements------
@@ -131,7 +132,8 @@
 
 #define USE_FFI_TRKD2
 #define USE_FFI_ZDC
-#define USE_FFI_RPOT
+#define USE_FFI_RPOT_D2
+#define USE_FFI_RPOT_D3
 //#define USE_FARFORWARD_GEM
 
 //#define USE_FARFORWARD_VP
@@ -610,8 +612,8 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     ci_TRD.Construct(fConfig.ci_TRD, World_Material, ci_ENDCAP_GVol_Phys);
 
     ci_TRD.ConstructDetectors();
-    printf("FoilNumbers=%d\n",fConfig.ci_TRD.fFoilNumber);
-
+    printf("FoilNumbers=%d (%d) \n",fConfig.ci_TRD.fFoilNumber,ci_TRD.ConstructionConfig.fFoilNumber); // --- ????????? ---
+    //ci_TRD.ConstructionConfig.fFoilNumber
 //===================================================================================
 #endif // end USE_CI_TRD
 
@@ -699,23 +701,35 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 #ifdef USE_FFI_ZDC
     fConfig.ffi_ZDC.rot_matx.rotateY(fConfig.ffi_ZDC.Angle * rad);
     fConfig.ffi_ZDC.Zpos = 4000*cm;
-    fConfig.ffi_ZDC.Xpos = -170*cm;
+    fConfig.ffi_ZDC.Xpos = -190*cm;
 
     ffi_ZDC.Construct(fConfig.ffi_ZDC, World_Material, World_Phys);
-    if (ffi_ZDC.Logic) ffi_ZDC.Logic->SetSensitiveDetector(fCalorimeterSD);
+ //   ffi_ZDC.ConstructTowels();
+     if (ffi_ZDC.Logic) ffi_ZDC.Logic->SetSensitiveDetector(fCalorimeterSD);
 
 #endif // end ffi_ZDC
 
     //------------------------------------------------
-#ifdef USE_FFI_RPOT
-    fConfig.ffi_RPOT.rot_matx.rotateY(fConfig.ffi_RPOT.Angle * rad);
-    fConfig.ffi_RPOT.PosZ = 3100*cm;
-    fConfig.ffi_RPOT.PosX = -170*cm;
+#ifdef USE_FFI_RPOT_D2
+    fConfig.ffi_RPOT_D2.rot_matx.rotateY(fConfig.ffi_RPOT_D2.Angle * rad);
+    fConfig.ffi_RPOT_D2.PosZ = 3100*cm;
+    fConfig.ffi_RPOT_D2.PosX = -170*cm;
 
-    ffi_RPOT.Construct(fConfig.ffi_RPOT, World_Material, World_Phys);
-    if (ffi_RPOT.Logic) ffi_RPOT.Logic->SetSensitiveDetector(fCalorimeterSD);
+    ffi_RPOT_D2.Construct(fConfig.ffi_RPOT_D2, World_Material, World_Phys);
+    if (ffi_RPOT_D2.Logic) ffi_RPOT_D2.Logic->SetSensitiveDetector(fCalorimeterSD);
 
-#endif // end ffi_RPOT
+#endif // end ffi_RPOT_D2
+    //------------------------------------------------
+#ifdef USE_FFI_RPOT_D3
+    fConfig.ffi_RPOT_D3.Angle= -0.053;
+    fConfig.ffi_RPOT_D3.rot_matx.rotateY(fConfig.ffi_RPOT_D3.Angle * rad);
+    fConfig.ffi_RPOT_D3.PosZ = 5000*cm;
+    fConfig.ffi_RPOT_D3.PosX = -175*cm;
+
+    ffi_RPOT_D3.Construct(fConfig.ffi_RPOT_D3, World_Material, World_Phys);
+    if (ffi_RPOT_D3.Logic) ffi_RPOT_D3.Logic->SetSensitiveDetector(fCalorimeterSD);
+
+#endif // end ffi_RPOT_D3
 
     //===================================================================================
     //==                        Compton Polarimeter                                  ==
@@ -1522,9 +1536,11 @@ void JLeicDetectorConstruction::Read_Di_File() {
     int iqmax_i;
     printf("read Di file\n");
     // sprintf(fname,"ion_ir_06feb19.txt");
-    // --- this is for tune!!    
-     sprintf(fname, "i_ir.txt");
-    // sprintf(fname, "ion_ir_01mar19_v2_origin.txt");
+     sprintf(fname,"ion_ir_23sep19.txt");
+
+    // --- this is for tune!!
+   // sprintf(fname, "i_ir_forward.txt");
+ //   sprintf(fname, " ");
     rc = fopen(fname, "r");
     if (rc == NULL) return;
 

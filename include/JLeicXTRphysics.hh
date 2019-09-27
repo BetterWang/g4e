@@ -23,15 +23,15 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file electromagnetic/VertexEIC/include/JLeicPhysicsList.hh
-/// \brief Definition of the JLeicPhysicsList class
+/// \file electromagnetic/VertexEIC/include/JLeicXTRphysics.hh
+/// \brief Definition of the JLeicXTRphysics class
 //
 //
-//  JLeicPhysicsList.hh 2019-02-19  ---
+//  JLeicXTRphysics.hh 2019-02-19  ---
 //
 
-#ifndef JLeicPhysicsList_h
-#define JLeicPhysicsList_h 1
+#ifndef JLeicXTRphysics_h
+#define JLeicXTRphysics_h 1
 
 //#include "G4VUserPhysicsList.hh"
 #include "G4VModularPhysicsList.hh"
@@ -40,26 +40,49 @@
 class G4ForwardXrayTR ;
 class JLeicStepCut;
 class JLeicDetectorConstruction;
-class JLeicPhysicsListMessenger;
+class JLeicXTRphysicsMessenger;
 class G4ProductionCuts;
-class JLeicXTRphysics;
+class JLeicPhysicsList;
 
-class JLeicPhysicsList: public G4VModularPhysicsList
+class JLeicXTRphysics: public G4VPhysicsConstructor
 {
 public:
-  JLeicPhysicsList( JLeicDetectorConstruction*);
+  
+  JLeicXTRphysics( JLeicDetectorConstruction* p, JLeicPhysicsList* pl, const G4String& name);
 
-  ~JLeicPhysicsList();
+  ~JLeicXTRphysics();
 
-  // Construct particle and physics
-  void ConstructParticle();
-  //void ConstructProcess();
+  virtual void ConstructParticle() { };
+  // Construct physics
+  virtual void ConstructProcess();
  
-  void SetCuts();
 
 private:
 
+  // these methods Construct physics processes and register them
+
+
 public:
+
+  void SetCuts();
+
+  void SetGammaCut(G4double);
+  void SetElectronCut(G4double);
+
+  void SetRegGammaCut(G4double    cut){ printf("SetRegGammaCut()::  new val = %f \n",cut); fGammaCut    = cut;};
+  void SetRegElectronCut(G4double cut){fElectronCut = cut;};
+  void SetRegPositronCut(G4double cut){fPositronCut = cut;};
+
+  void SetRadiatorCuts();
+  void SetDetectorCuts();
+
+  void SetMaxStep(G4double);
+  void SetXTRModel(G4String model) {
+      fXTRModel = model;
+      G4cout<<fXTRModel<<G4endl;
+  };
+  G4double cutForGamma;
+  G4double cutForElectron, cutForPositron;
 
 private:
 
@@ -70,13 +93,11 @@ private:
   JLeicStepCut* theeminusStepCut ;
   JLeicStepCut* theeplusStepCut ;
 
-  G4double cutForGamma;
-  G4double cutForElectron, cutForPositron;
 
   JLeicDetectorConstruction* pDet;
-  JLeicXTRphysics  * XTRphys;
+  JLeicPhysicsList* pList;
 
-  JLeicPhysicsListMessenger* physicsListMessenger;
+  JLeicXTRphysicsMessenger* fJLeicXTRphysicsMessenger;
 
   G4ProductionCuts* fRadiatorCuts;
   G4ProductionCuts* fDetectorCuts;

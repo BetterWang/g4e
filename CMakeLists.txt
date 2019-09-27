@@ -137,7 +137,7 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
-add_executable(g4e g4e.cc ${sources} ${headers} include/JLeicRootOutput.hh)
+add_executable(g4e g4e.cc ${sources} ${headers} include/JLeicRootOutput.hh src/design/all/ffi_RPOT_D3/ffi_RPOT_D3.hh)
 target_link_libraries(g4e
         ${Geant4_LIBRARIES}
         ${HEPMC_LIBRARIES}

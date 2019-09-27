@@ -78,10 +78,22 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step* aStep)
   IDnow = evno+10000*(aStep->GetTrack()->GetTrackID())+
     100000000*(aStep->GetTrack()->GetParentID());                //-- 100 k events only ???
 
-  /* printf("SteppingAction:: Volume=%s  x=%f y=%f z=%f   mom (%f,%f, %f ) \n",aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str(),
+  /*
+   printf("SteppingAction:: Volume=%s  x=%f y=%f z=%f   mom_dir (%f,%f, %f ) particle=%s \n",aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str(),
   	 aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), aStep->GetTrack()->GetPosition().z(),
-         aStep->GetTrack()->GetMomentumDirection().x(),aStep->GetTrack()->GetMomentumDirection().y(),aStep->GetTrack()->GetMomentumDirection().z());
+         aStep->GetTrack()->GetMomentumDirection().x(),aStep->GetTrack()->GetMomentumDirection().y(),aStep->GetTrack()->GetMomentumDirection().z()
+	  ,aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName().c_str());
   */
+
+  // print positions at Roman_pot location
+  if( strcmp(aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str(),"ffi_RPOT_D3_GVol_Phys")==0 ) {
+
+   printf("SteppingAction:: Volume=%s  x=%f y=%f z=%f   mom_dir (%f,%f, %f ) particle=%s \n",aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(),
+  	 aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), aStep->GetTrack()->GetPosition().z(),
+         aStep->GetTrack()->GetMomentumDirection().x(),aStep->GetTrack()->GetMomentumDirection().y(),aStep->GetTrack()->GetMomentumDirection().z()
+	  ,aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName().c_str());
+
+  }
 #ifdef USE_TUNE
   //--------------------------for TUNE-------------------------------------------------------------------------
   if( 

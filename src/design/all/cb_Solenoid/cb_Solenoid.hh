@@ -12,6 +12,7 @@
 #include "G4PVPlacement.hh"
 #include "G4UImessenger.hh"
 #include "G4SystemOfUnits.hh"
+#include "JLeicSolenoid3D.hh"
 
 struct cb_Solenoid_Config
 {
@@ -77,12 +78,15 @@ public:
         auto direction = G4ThreeVector(p.FieldStrength * std::sin(p.AlphaB),
                                        0.,
                                        p.FieldStrength * std::cos(p.AlphaB));
-        MagneticField = new G4UniformMagField(direction);
+        //MagneticField = new G4UniformMagField(direction);
+	double zOffset=0;
+        MagneticField = new JLeicSolenoid3D("SolenoidMag3D.TABLE", zOffset);
 
         auto *fieldMgr = new G4FieldManager(MagneticField);
         fieldMgr->SetDetectorField(MagneticField);
         fieldMgr->CreateChordFinder(MagneticField);
-        Logic->SetFieldManager(fieldMgr, true);
+	G4bool forceToAllDaughters = true;
+        Logic->SetFieldManager(fieldMgr, forceToAllDaughters);
 
     }
 
@@ -90,7 +94,9 @@ public:
     G4Tubs *Solid;      //pointer to the solid
     G4LogicalVolume *Logic;    //pointer to the logical
     G4VPhysicalVolume *Phys;  //pointer to the physical
-    G4UniformMagField *MagneticField;      //pointer to the magnetic field
+  //G4UniformMagField *MagneticField;      //pointer to the magnetic field
+    JLeicSolenoid3D *MagneticField;      //pointer to the magnetic field
+  //G4MagneticField *SolenoidField;  
 
     /// Parameters that was used in the moment of construction
     cb_Solenoid_Config ConstructionConfig;

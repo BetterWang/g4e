@@ -30,7 +30,8 @@
 
 #include "ffi_TRKD2/ffi_TRKD2.hh"  // Far-forward Ion - Silicon discs in D2 magnet
 #include "ffi_ZDC/ffi_ZDC.hh"         // Far-forward Ion   - HCAL ZDC
-#include "ffi_RPOT/ffi_RPOT.hh"         // Far-forward Ion   -Roman Pots
+#include "ffi_RPOT_D2/ffi_RPOT_D2.hh"         // Far-forward Ion   -Roman Pots before D3
+#include "ffi_RPOT_D3/ffi_RPOT_D3.hh"         // Far-forward Ion   -Roman Pots after D3
 
 
 struct JLeicDetectorConfig {
@@ -90,7 +91,8 @@ struct JLeicDetectorConfig {
      ffi_TRKD2_Config ffi_TRKD2;
     //---------------HCAL -ZDC  and Roman Pots-------------------------
     ffi_ZDC_Config  ffi_ZDC;
-    ffi_RPOT_Config  ffi_RPOT;
+    ffi_RPOT_D2_Config  ffi_RPOT_D2;
+    ffi_RPOT_D3_Config  ffi_RPOT_D3;
 
 } ;
 

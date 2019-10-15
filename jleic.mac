@@ -175,7 +175,6 @@
 #/gun/particle proton
 #--------------crossing angle 50mrad-------
 #/gun/energy  200 GeV
-#/gun/momentum   -9.995833854   0.    199.7500520
 #------------ 50 mrad ---
 #/gun/momentum   -9.995833854   0.    199.7500520
 #-------------53 mrad-----
@@ -190,29 +189,37 @@
 
 #
 #--------------------------------------------------------------------
-/generator/select particleGun
-/gun/particle proton
-/gun/energy  200 GeV
+#/generator/select particleGun
+#/gun/particle proton
+#/gun/energy  200 GeV
 #/gun/momentum   0.   0.    200.
+#************************************************
+#----------- 0.050 angle -------
+#/gun/momentum   -9.995833854   0.    199.7500521
+#--- at 0
+#/gun/position 0.     0.    0.  m
+#/gun/position -0.249895846     0   4.993751302   m
+#************************************************
 #----------- 0.053 angle -------
-/gun/momentum   -10.59503813   0.    199.7191657
+#/gun/momentum   -10.59503813   0.    199.7191657
 
-#/gun/position -327.111674     0   6491.761992  mm
-#--- before iQDS2
-/gun/position -0.687342971     0   13.28221363  m
-#---- corrector
+####--- after iBDS1
+#/gun/position -0.327111674     0   6.491761992  m
+####--- before iQDS2
+#/gun/position -0.687342971     0   13.28221363  m
+####---- corrector
 #/gun/position -0.936326367     0   17.97561402  m
 #/gun/position -0.962813962     0   18.47491194 m
-#--- This location is before entering  D2---
+####--- This location is before entering  D2---
 #/gun/position -1137.632091     0   21770.27817  mm
-#--- This location is after exiting D2---
+####--- This location is after exiting D2---
 #/gun/position -1349.58247     0.   29766.53336   mm
-#-- This location is before entering D3 ---
+####-- This location is before entering D3 ---
 #/gun/position  -1349.58247     0   41314.67469      mm
 
 #
 # GEMC/BNL version
-#/generator/select pythiaAscii
+/generator/select pythiaAscii
 #/generator/pythiaAscii/verbose 1
 #/generator/pythiaAscii/open  pythia1pis.txt
 #/generator/pythiaAscii/open  /home/yulia/yulia/TestVTXhmc/build.newnewOK/pythiaBeautyDIS100.txt
@@ -224,9 +231,9 @@
 
 #
 #/generator/pythiaAscii/open  jpsi_10x200_mu_JF.txt
-#/generator/pythiaAscii/open pythia_200GeV_50mrad.txt
-#/generator/pythiaAscii/open pythia_200GeV_neutron_50mrad.txt
+/generator/pythiaAscii/open pythia_200GeV_50mrad.txt
 #/generator/pythiaAscii/open pythia_200GeV_50mrad0.txt
+#/generator/pythiaAscii/open pythia_200GeV_neutron_50mrad.txt
 #/generator/pythiaAscii/open  BEAGLE.txt
 #
 #/generator/pythiaAscii/open  pythia_TRK_10.txt
@@ -236,7 +243,7 @@
 #----------electrons 
 #/generator/pythiaAscii/open  pythia_10GeV_e_php.txt
 #------------pions--------------
-/generator/pythiaAscii/open  pythia_100MeV_90.txt
+#/generator/pythiaAscii/open  pythia_100MeV_90.txt
 #/generator/pythiaAscii/open  pythia_1GeV_90.txt
 #/generator/pythiaAscii/open  pythia_3GeV_90.txt
 #/generator/pythiaAscii/open  pythia_5GeV_90.txt
@@ -255,6 +262,7 @@
 #/generator/pythiaAscii/open  pythia_e_10GeV_90.txt
 #/generator/pythiaAscii/open  pythia_e_10GeV_90x.txt
 #/generator/pythiaAscii/open  pythia_e_1GeV_90.txt
+#/generator/pythiaAscii/open  pythia_e_1GeV_90x.txt
 #--------------------------------------
 #/generator/pythiaAscii/open  pythia_10GeV_4.txt
 #/generator/pythiaAscii/open  pythia_100GeV_90.txt
@@ -287,5 +295,5 @@
 #/generator/hepmcAscii/verbose 1
 
 
-#/run/beamOn 1
+/run/beamOn 1000000
 exit

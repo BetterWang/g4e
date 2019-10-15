@@ -97,7 +97,7 @@ JLeicPhysicsList::JLeicPhysicsList(JLeicDetectorConstruction* p)
 
   // world cuts
 
-  SetVerboseLevel(1);
+  SetVerboseLevel(0);
 
   defaultCutValue = 1.0*mm; 
   //defaultCutValue = 0.001*mm;  // 1 um

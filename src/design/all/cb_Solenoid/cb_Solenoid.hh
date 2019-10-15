@@ -51,9 +51,9 @@ public:
         printf("SizeZ=%f", p.SizeZ);
 
         // Global placement
-        Solid = new G4Tubs("Solid", p.RIn, p.ROut, p.SizeZ / 2., 0., 360 * deg);
-        Logic = new G4LogicalVolume(Solid, material, "Logic");
-        Phys = new G4PVPlacement(nullptr, G4ThreeVector(0, 0, p.ShiftZ), "Phys", Logic, motherVolume, false, 0);
+        Solid = new G4Tubs("cb_Solenid_GVol_Solid", p.RIn, p.ROut, p.SizeZ / 2., 0., 360 * deg);
+        Logic = new G4LogicalVolume(Solid, material, "cb_Solenoid_GVol_Logic");
+        Phys = new G4PVPlacement(nullptr, G4ThreeVector(0, 0, p.ShiftZ), "cb_Solenoid_GVol_Phys", Logic, motherVolume, false, 0);
 
         // Visual attributes
         VisAttributes = new G4VisAttributes(G4Color(0.1, 0, 0.1, 0.4));
@@ -71,22 +71,26 @@ public:
         }
     }
 
-    void CreateMagneticField(const cb_Solenoid_Config &p)
-    {
+    void CreateMagneticField(const cb_Solenoid_Config &p) {
         delete MagneticField;   //delete the existing mag field
 
         auto direction = G4ThreeVector(p.FieldStrength * std::sin(p.AlphaB),
                                        0.,
                                        p.FieldStrength * std::cos(p.AlphaB));
         //MagneticField = new G4UniformMagField(direction);
-	double zOffset=0;
-        MagneticField = new JLeicSolenoid3D("SolenoidMag3D.TABLE", zOffset);
+        double zOffset = 0;
+        bool zInvert = true;
+        bool useFieldmap =true;
+        if (useFieldmap) {
+	  MagneticField = new JLeicSolenoid3D("SolenoidMag3D.TABLE", zOffset, zInvert);
 
-        auto *fieldMgr = new G4FieldManager(MagneticField);
-        fieldMgr->SetDetectorField(MagneticField);
-        fieldMgr->CreateChordFinder(MagneticField);
-	G4bool forceToAllDaughters = true;
-        Logic->SetFieldManager(fieldMgr, forceToAllDaughters);
+	  auto *fieldMgr = new G4FieldManager(MagneticField);
+	  fieldMgr->SetDetectorField(MagneticField);
+	  fieldMgr->CreateChordFinder(MagneticField);
+	  G4bool forceToAllDaughters = true;
+	  Logic->SetFieldManager(fieldMgr, forceToAllDaughters);
+	}
+
 
     }
 
@@ -94,9 +98,9 @@ public:
     G4Tubs *Solid;      //pointer to the solid
     G4LogicalVolume *Logic;    //pointer to the logical
     G4VPhysicalVolume *Phys;  //pointer to the physical
-  //G4UniformMagField *MagneticField;      //pointer to the magnetic field
+    //G4UniformMagField *MagneticField;      //pointer to the magnetic field
     JLeicSolenoid3D *MagneticField;      //pointer to the magnetic field
-  //G4MagneticField *SolenoidField;  
+    //G4MagneticField *SolenoidField;  
 
     /// Parameters that was used in the moment of construction
     cb_Solenoid_Config ConstructionConfig;

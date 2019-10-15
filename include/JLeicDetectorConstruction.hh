@@ -170,6 +170,7 @@ public:
 
     G4double GetWorldSizeR() { return fConfig.World.SizeR; };
 
+  void checkVolumeOverlap();
 
     const G4VPhysicalVolume *GetphysiWorld() { return World_Phys; };
 

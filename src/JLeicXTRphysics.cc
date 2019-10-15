@@ -75,6 +75,7 @@ JLeicXTRphysics::JLeicXTRphysics(JLeicDetectorConstruction* p, JLeicPhysicsList*
 {
   pDet = p;
   pList= pl;
+  SetXTRModel("none");
   fJLeicXTRphysicsMessenger = new JLeicXTRphysicsMessenger(this);
 }
 
@@ -100,7 +101,7 @@ void JLeicXTRphysics::ConstructProcess()
 
   G4VXTRenergyLoss* processXTR = 0;
 
-  if(fXTRModel == "gammaR" )
+  if(fXTRModel == "gammaR" && pDet->GetFoilNumber()>0 )
   {
     // G4GammaXTRadiator*
     processXTR = new G4GammaXTRadiator(pDet->GetLogicalRadiator(),
@@ -113,7 +114,7 @@ void JLeicXTRphysics::ConstructProcess()
                                        pDet->GetFoilNumber(),
                                        "GammaXTRadiator");
   }
-  else if(fXTRModel == "gammaM" )
+  else if(fXTRModel == "gammaM" && pDet->GetFoilNumber()>0)
   {
     // G4XTRGammaRadModel*
     processXTR = new G4XTRGammaRadModel(pDet->GetLogicalRadiator(),
@@ -126,7 +127,7 @@ void JLeicXTRphysics::ConstructProcess()
                                        pDet->GetFoilNumber(),
                                        "GammaXTRadiator");
   }
-  else if(fXTRModel == "strawR" )
+  else if(fXTRModel == "strawR" && pDet->GetFoilNumber()>0)
   {
 
     // G4StrawTubeXTRadiator*
@@ -139,7 +140,7 @@ void JLeicXTRphysics::ConstructProcess()
                                          true,
                                          "strawXTRadiator");
   }
-  else if(fXTRModel == "regR" )
+  else if(fXTRModel == "regR" && pDet->GetFoilNumber()>0)
   {
     // G4RegularXTRadiator*
     processXTR = new G4RegularXTRadiator(pDet->GetLogicalRadiator(),
@@ -150,7 +151,7 @@ void JLeicXTRphysics::ConstructProcess()
                                          pDet->GetFoilNumber(),
                                          "RegularXTRadiator");
   }
-  else if(fXTRModel == "transpR" )
+  else if(fXTRModel == "transpR" && pDet->GetFoilNumber()>0)
   {
     // G4TransparentRegXTRadiator*
     processXTR = new G4TransparentRegXTRadiator(pDet->GetLogicalRadiator(),
@@ -161,7 +162,7 @@ void JLeicXTRphysics::ConstructProcess()
                                          pDet->GetFoilNumber(),
                                          "RegularXTRadiator");
   }
-  else if(fXTRModel == "regM" )
+  else if(fXTRModel == "regM" && pDet->GetFoilNumber()>0)
   {
     // G4XTRRegularRadModel*
     processXTR = new G4XTRRegularRadModel(pDet->GetLogicalRadiator(),
@@ -173,7 +174,7 @@ void JLeicXTRphysics::ConstructProcess()
                                          "RegularXTRadiator");
 
   }
-  else if(fXTRModel == "transpM" )
+  else if(fXTRModel == "transpM" && pDet->GetFoilNumber()>0)
   {
   std::cout << " Enter ConstructEM transpM " << std::endl;
     // G4XTRTransparentRegRadModel*
@@ -187,15 +188,15 @@ void JLeicXTRphysics::ConstructProcess()
                                          "RegularXTRadiator");
     
    std::cout << " Exit ConstructEM transpM " << std::endl;
- }
+  }
   else
   {
-    G4Exception("Invalid XTR model name", "InvalidSetup",
-                 FatalException, "XTR model name is out of the name list");
+    //G4Exception("Invalid XTR model name", "InvalidSetup",FatalException, "XTR model name is out of the name list");
+    printf("Invalid XTR model name %s, or foil number =%d \n",fXTRModel.c_str(),pDet->GetFoilNumber());
   }
   //  processXTR->SetCompton(true);
-  processXTR->SetVerboseLevel(1);
-  processXTR->SetAngleRadDistr(true);
+  if (processXTR) processXTR->SetVerboseLevel(1);
+  if (processXTR) processXTR->SetAngleRadDistr(true);
 
   auto theParticleIterator=GetParticleIterator();
   theParticleIterator->reset();
@@ -206,7 +207,7 @@ void JLeicXTRphysics::ConstructProcess()
     G4ProcessManager* pmanager = particle->GetProcessManager();
     G4String particleName = particle->GetParticleName();
 
-    printf("JLeicXTRphysics::ConstructEM():: particle=%s \n",particle->GetParticleName().c_str());
+   // printf("JLeicXTRphysics::ConstructEM():: particle=%s \n",particle->GetParticleName().c_str());
 
    if (particleName == "gamma")
     {
@@ -225,13 +226,13 @@ void JLeicXTRphysics::ConstructProcess()
       //theeminusStepCut->SetMaxStep(100*um) ;
       G4eIonisation* eioni = new G4eIonisation();
       G4PAIModel*     pai = new G4PAIModel(particle,"PAIModel");
-      eioni->AddEmModel(0,pai,pai,gas);
+      if (gas) eioni->AddEmModel(0,pai,pai,gas);
 
       pmanager->AddProcess(new G4eMultipleScattering,-1,1,1);
       //pmanager->AddProcess(new G4eMultipleScattering,-1,-1,-1);
       pmanager->AddProcess(eioni,-1,2,2);
       pmanager->AddProcess(new G4eBremsstrahlung,-1,3,3);
-      pmanager->AddDiscreteProcess(processXTR);
+      if (processXTR) pmanager->AddDiscreteProcess(processXTR);
       pmanager->AddDiscreteProcess(new G4SynchrotronRadiation);
       pmanager->AddDiscreteProcess(theeminusStepCut);
 
@@ -244,14 +245,14 @@ void JLeicXTRphysics::ConstructProcess()
       theeplusStepCut->SetMaxStep(MaxChargedStep) ;
       G4eIonisation* eioni = new G4eIonisation();
       G4PAIModel*     pai = new G4PAIModel(particle,"PAIModel");
-      eioni->AddEmModel(0,pai,pai,gas);
+      if (gas) eioni->AddEmModel(0,pai,pai,gas);
 
       pmanager->AddProcess(new G4eMultipleScattering,-1,1,1);
       //pmanager->AddProcess(new G4eMultipleScattering,-1,-1,-1);
       pmanager->AddProcess(eioni,-1,2,2);
       pmanager->AddProcess(new G4eBremsstrahlung,-1,3,3);
       pmanager->AddProcess(new G4eplusAnnihilation,0,-1,4);
-      pmanager->AddDiscreteProcess(processXTR);
+      if (processXTR) pmanager->AddDiscreteProcess(processXTR);
       pmanager->AddDiscreteProcess(new G4SynchrotronRadiation);
       pmanager->AddDiscreteProcess(theeplusStepCut);
 
@@ -267,14 +268,14 @@ void JLeicXTRphysics::ConstructProcess()
       G4MuIonisation* muioni = new G4MuIonisation() ;
 
       G4PAIModel*     pai = new G4PAIModel(particle,"PAIModel");
-      muioni->AddEmModel(0,pai,pai,gas);
+      if (gas) muioni->AddEmModel(0,pai,pai,gas);
 
       pmanager->AddProcess(new G4MuMultipleScattering(),-1,1,1);
       pmanager->AddProcess(muioni,-1,2,2);
       pmanager->AddProcess(new G4MuBremsstrahlung(),-1,3,3);
       pmanager->AddProcess(new G4MuPairProduction(),-1,4,4);
       pmanager->AddProcess( muonStepCut,-1,-1,5);
-      //pmanager->AddDiscreteProcess(processXTR);
+      //if (processXTR) pmanager->AddDiscreteProcess(processXTR);
 
     }
     else if (
@@ -291,12 +292,12 @@ void JLeicXTRphysics::ConstructProcess()
 
       G4hIonisation* thehIonisation = new G4hIonisation();
       G4PAIModel*     pai = new G4PAIModel(particle,"PAIModel");
-      thehIonisation->AddEmModel(0,pai,pai,gas);
+      if (gas) thehIonisation->AddEmModel(0,pai,pai,gas);
 
       pmanager->AddProcess(new G4hMultipleScattering,-1,1,1);
       pmanager->AddProcess(thehIonisation,-1,2,2);
       pmanager->AddProcess( thehadronStepCut,-1,-1,3);
-      //pmanager->AddDiscreteProcess(processXTR);
+      //if (processXTR) pmanager->AddDiscreteProcess(processXTR);
 
  
 
@@ -315,12 +316,12 @@ void JLeicXTRphysics::SetCuts()
   //* uncomment for FDC & depfet !!!!!!!!!!!!!!!!!!!!!!!!!!!
   if( !fRadiatorCuts ) SetRadiatorCuts();
   region = (G4RegionStore::GetInstance())->GetRegion("XTRradiator");
-  region->SetProductionCuts(fRadiatorCuts);
+  if (region) region->SetProductionCuts(fRadiatorCuts);
   G4cout << "Radiator cuts are set" << G4endl;
   
   if( !fDetectorCuts ) SetDetectorCuts();
   region = (G4RegionStore::GetInstance())->GetRegion("XTRdEdxDetector");
-  region->SetProductionCuts(fDetectorCuts);
+  if (region) region->SetProductionCuts(fDetectorCuts);
   G4cout << "Detector cuts are set" << G4endl;
 
 }

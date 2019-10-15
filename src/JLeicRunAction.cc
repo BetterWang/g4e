@@ -52,9 +52,12 @@ static TH1D *histo1,*histo2,*histo3,*histo4,*histo5,*histo6,*histo7,*histo8,*his
 //static TH2D* d2_pos_ffq1;
 const int NHIST=50;
 static TH1D* hist[NHIST];
+
 static TH1D* HLikelihood[NHIST];
 static char Hname[256];
 static TH2D* d2_hist[NHIST];
+
+
 static char RootFileName[256];
 static char FileName[256];
 static int NumRow=10;
@@ -215,21 +218,37 @@ void JLeicRunAction::bookHisto()
   d2_hist[3] = new TH2D("Hist2d3","dE/dx  vs energy STRIP",1000, 0., 1000.,1000, 0., 5000.); 
  
   // ---- position at the  entrance of dipole -----
-  d2_hist[4] = new TH2D("d2_pos_iBDS1a_in"," d2_pos_iBDS1a_in ",100,-1500.,1000.,100,-20.,20.); 
-  d2_hist[5] = new TH2D("d2_pos_iBDS1b_in"," d2_pos_iBDS1b_in ",100,-1500.,0.,100,-20.,20.); 
-  d2_hist[6] = new TH2D("d2_pos_iBDS2_in"," d2_pos_iBDS2_in ",100,-3500.,3500.,100,-20.,20.); 
-  d2_hist[7] = new TH2D("d2_pos_iBDS3_in"," d2_pos_iBDS3_in ",100,-3500.,3500.,100,-20.,20.); 
+  d2_hist[4] = new TH2D("d2_pos_iBDS1a_in"," d2_pos_iBDS1a_in ",120,-280.,-220.,80,-20.,20.);
+  d2_hist[5] = new TH2D("d2_pos_iBDS1b_in"," d2_pos_iBDS1b_in ",120,-320.,-260.,80,-20.,20.);
+  d2_hist[6] = new TH2D("d2_pos_iBDS2_in"," d2_pos_iBDS2_in ",120,-1180.,-1120.,80,-20.,20.);
+  d2_hist[7] = new TH2D("d2_pos_iBDS3_in"," d2_pos_iBDS3_in ",120,-1390.,-1330.,80,-20.,20.);
 
   // ---- position at the entrance of quadr -----
 
-  d2_hist[8] = new TH2D("d2_pos_iQDS1a_in"," d2_pos_iQDS1a_in ",100,-500.,0.,100,-20.,20.); 
-  d2_hist[9] = new TH2D("d2_pos_iQDS1S_in"," d2_pos_iQDS1S_in ",100,-1500.,0.,100,-20.,20.); 
-  d2_hist[10] = new TH2D("d2_pos_iQDS1b_in"," d2_pos_iQDS1b_in ",100,-1500.,0.,100,-20.,20.); 
-  d2_hist[11] = new TH2D("d2_pos_iQDS2S_in"," d2_pos_iQDS2S_in ",100,-1500.,0.,100,-20.,20.); 
-  d2_hist[12] = new TH2D("d2_pos_iQDS2_in"," d2_pos_iQDS2_in ",100,-1500.,0.,100,-20.,20.); 
-  d2_hist[13] = new TH2D("d2_pos_iQDS3S_in"," d2_pos_iQDS3S_in ",100,-1500.,0.,100,-20.,20.); 
+  d2_hist[8] = new TH2D("d2_pos_iQDS1a_in"," d2_pos_iQDS1a_in ",120,-380.,-320.,80,-20.,20.);
+  d2_hist[9] = new TH2D("d2_pos_iQDS1S_in"," d2_pos_iQDS1S_in ",120,-510.,-450.,80,-20.,20.);
+  d2_hist[10] = new TH2D("d2_pos_iQDS1b_in"," d2_pos_iQDS1b_in ",120,-550.,-490.,80,-20.,20.);
+  d2_hist[11] = new TH2D("d2_pos_iQDS2S_in"," d2_pos_iQDS2S_in ",120,-670.,-610.,80,-20.,20.);
+  d2_hist[12] = new TH2D("d2_pos_iQDS2_in"," d2_pos_iQDS2_in ",120,-740.,-680.,80,-20.,20.);
+  d2_hist[13] = new TH2D("d2_pos_iQDS3S_in"," d2_pos_iQDS3S_in ",120,-960.,-900.,80,-20.,20.);
+  d2_hist[14] = new TH2D("d2_pos_iQDS4_in"," d2_pos_iQDS4_in ",200,-1800.,-1700.,80,-20.,20.);
 
-for (int in=0;in<12;in++) {    
+    d2_hist[20] = new TH2D("pt_at_RP"," pt at Roman pot",100,0.99,1.,200,0.,10.);
+    // ---- position at the  EXIT  of dipole -----
+    d2_hist[24] = new TH2D("d2_pos_iBDS1a_out"," d2_pos_iBDS1a_out ",120,-360.,-300.,80,-20.,20.);
+    d2_hist[25] = new TH2D("d2_pos_iBDS1b_out"," d2_pos_iBDS1b_out ",120,-380.,-320.,80,-20.,20.);
+    d2_hist[26] = new TH2D("d2_pos_iBDS2_out"," d2_pos_iBDS2_out ",120,-1400.,-1340.,80,-20.,20.);
+    d2_hist[27] = new TH2D("d2_pos_iBDS3_out"," d2_pos_iBDS3_out ",120,-1550.,-1490.,80,-20.,20.);
+    // ---- position at the EXIT of quadr -----
+    d2_hist[28] = new TH2D("d2_pos_iQDS1a_out"," d2_pos_iQDS1a_out ",120,-510.,-450.,80,-20.,20.);
+    d2_hist[29] = new TH2D("d2_pos_iQDS1S_out"," d2_pos_iQDS1S_out ",120,-550.,-490.,80,-20.,20.);
+    d2_hist[30] = new TH2D("d2_pos_iQDS1b_out"," d2_pos_iQDS1b_out ",120,-670.,-610.,80,-20.,20.);
+    d2_hist[31] = new TH2D("d2_pos_iQDS2S_out"," d2_pos_iQDS2S_out ",120,-720.,-660.,80,-20.,20.);
+    d2_hist[32] = new TH2D("d2_pos_iQDS2_out"," d2_pos_iQDS2_out ",120,-970.,-910.,80,-20.,20.);
+    d2_hist[33] = new TH2D("d2_pos_iQDS3S_out"," d2_pos_iQDS3S_out ",120,-1180.,-1120.,80,-20.,20.);
+    d2_hist[34] = new TH2D("d2_pos_iQDS4_out"," d2_pos_iQDS4_out ",200,-2100.,-1700.,80,-20.,20.);
+
+    for (int in=0;in<12;in++) {
     sprintf(myname,"hmatrixOccup1_%d",in);
     hmatrixOccup[in]= new TH2F(myname,myname,NumCol,-0.5,NumCol-0.5,NumRow,-0.5,NumRow-0.5);
     sprintf(myname,"hmatrixOccupCM1_%d",in);

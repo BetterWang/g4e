@@ -64,10 +64,11 @@ class JLeicSolenoid3D
   // The physical extent of the defined region
   double dx, dy, dz;
   double fZoffset;
+  bool fZinvert;
   bool invertX, invertY, invertZ;
 
 public:
-  JLeicSolenoid3D(const char* filename, double zOffset );
+  JLeicSolenoid3D(const char* filename, double zOffset, bool InvertZ);
   void  GetFieldValue( const  double Point[4],
 		       double *Bfield          ) const;
 };

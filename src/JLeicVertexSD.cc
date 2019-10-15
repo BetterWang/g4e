@@ -202,8 +202,6 @@ void JLeicVertexSD::Initialize(G4HCofThisEvent *) {
 G4bool JLeicVertexSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
     if (jDebug > 2) printf("--> JLeicVertexSD::ProcessHits() Enter\n");
 
-
-
     //  const G4TouchableHandle touchablepre[128];
     G4double edep = aStep->GetTotalEnergyDeposit();
 

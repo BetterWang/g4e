@@ -83,7 +83,8 @@ public:
 
 //============  For sectors =====
         for (int j = 0; j < 50; j++) {
-            y_Ch -= cfg.det_Width + cfg.det_Gap;
+             if(j==0) { y_Ch = cfg.det_Gap ; }
+             else { y_Ch -= cfg.det_Width + cfg.det_Gap;}
             x_Ch = (cfg.det_Width + cfg.det_Gap) * 0.5;
 
             for (int i = 0; i < 50; i++) {

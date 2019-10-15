@@ -42,12 +42,10 @@ namespace{
   G4Mutex myJLeicSolenoid3DLock = G4MUTEX_INITIALIZER;
 }
 
-JLeicSolenoid3D::JLeicSolenoid3D(const char* filename, 
-						 double zOffset ) 
-  :fZoffset(zOffset),invertX(false),invertY(false),invertZ(false)
+JLeicSolenoid3D::JLeicSolenoid3D(const char* filename, double zOffset , bool zInvert ) 
+  :fZoffset(zOffset),fZinvert(zInvert),invertX(false),invertY(false),invertZ(false)
 {    
- 
-  //double lenUnit= meter;
+ //double lenUnit= meter;
   //double fieldUnit= tesla; 
   double lenUnit= cm;
   double fieldUnit=tesla; 
@@ -118,6 +116,8 @@ JLeicSolenoid3D::JLeicSolenoid3D(const char* filename,
       for (iz=0; iz<nz; iz++) {
         //file >> xval >> yval >> zval >> bx >> by >> bz >> permeability;
         file >> xval >> yval >> zval >> bx >> by >> bz;
+	//if (fZinvert) { bx=-bx; by=-by; bz=-bz; }
+
         if ( ix==0 && iy==0 && iz==0 ) {
           minx = xval * lenUnit;
           miny = yval * lenUnit;
@@ -168,9 +168,10 @@ JLeicSolenoid3D::JLeicSolenoid3D(const char* filename,
 void JLeicSolenoid3D::GetFieldValue(const double point[4],
 				      double *Bfield ) const
 {
+ int debug=0;
 
-  double x = point[0];
-  double y = point[1];
+  double x = fabs(point[0]); // !!! 
+  double y = fabs(point[1]); // !!
   double z = point[2] + fZoffset;
 
   // Check that the point is within the defined region 
@@ -206,9 +207,9 @@ void JLeicSolenoid3D::GetFieldValue(const double point[4],
     
 #define DEBUG_INTERPOLATING_FIELD
 #ifdef DEBUG_INTERPOLATING_FIELD
-    G4cout << "Local x,y,z: " << xlocal << " " << ylocal << " " << zlocal << endl;
-    std::cout << "Local x,y,z: " << xlocal << " " << ylocal << " " << zlocal << endl;
-    G4cout << "Index x,y,z: " << xindex << " " << yindex << " " << zindex << endl;
+    if(debug>2) G4cout << "Local x,y,z: " << xlocal << " " << ylocal << " " << zlocal << endl;
+   if(debug>2) std::cout << "Local x,y,z: " << xlocal << " " << ylocal << " " << zlocal << endl;
+   if(debug>2) G4cout << "Index x,y,z: " << xindex << " " << yindex << " " << zindex << endl;
     double valx0z0, mulx0z0, valx1z0, mulx1z0;
     double valx0z1, mulx0z1, valx1z1, mulx1z1;
     valx0z0= xField[xindex  ][0][zindex];  mulx0z0=  (1-xlocal) * (1-zlocal);
@@ -216,11 +217,11 @@ void JLeicSolenoid3D::GetFieldValue(const double point[4],
     valx0z1= xField[xindex  ][0][zindex+1]; mulx0z1= (1-xlocal) * zlocal;
     valx1z1= xField[xindex+1][0][zindex+1]; mulx1z1=  xlocal    * zlocal;
     
-    G4cout << "Bfield0 x,y,z: "   
+    if(debug>2) G4cout << "Bfield0 x,y,z: "
 	   << " "  << xField[xindex  ][yindex  ][zindex  ]/tesla
 	   << " "  << yField[xindex  ][yindex  ][zindex  ]/tesla
 	   << " "  << zField[xindex  ][yindex  ][zindex  ]/tesla << endl;
-    std::cout << "Bfield0 x,y,z: "   
+   if(debug>2)  std::cout << "Bfield0 x,y,z: "
 	   << " "  << xField[xindex  ][yindex  ][zindex  ]/tesla
 	   << " "  << yField[xindex  ][yindex  ][zindex  ]/tesla
 	   << " "  << zField[xindex  ][yindex  ][zindex  ]/tesla << endl;
@@ -259,13 +260,15 @@ void JLeicSolenoid3D::GetFieldValue(const double point[4],
     Bfield[1] = 0.0;
     Bfield[2] = 0.0;
   }
-
+  /*
     Bfield[0] = 0.0;
     Bfield[1] = 0.0;
     Bfield[2] = 2.0 * tesla;
-
-    G4cout << "Bfield x,y,z: " <<  Bfield[0]/tesla << " " << Bfield[1]/tesla << " " << Bfield[2]/tesla << endl;
-    std::cout << "Bfield x,y,z: " <<  Bfield[0]/tesla << " " << Bfield[1]/tesla << " " << Bfield[2]/tesla << endl;
+  */
+#ifdef DEBUG_INTERPOLATING_FIELD
+  if(debug>2) G4cout << "Bfield x,y,z: " <<  Bfield[0]/tesla << " " << Bfield[1]/tesla << " " << Bfield[2]/tesla << endl;
+  if(debug>2) std::cout << "Bfield x,y,z: " <<  Bfield[0]/tesla << " " << Bfield[1]/tesla << " " << Bfield[2]/tesla <<  endl;
+#endif
 
 }
 

@@ -74,68 +74,67 @@
 //===========================================
 //--------BARREL------
 #define USE_BARREL
-#define USE_BARREL_det
+//#define USE_BARREL_det
 //#define USE_BEAMPIPE 1 // beampipe 
 //------- subdetector-volumes  barrel ----- 
 
-#define USE_CB_VTX
+//#define USE_CB_VTX
 //#define  USE_VTX0 1   // for simple vtx geom
-#define USE_CB_VTX_LADDERS
-#define  USE_CB_VTX_ENDCAPS    // for vxt endcaps ladders
+//#define USE_CB_VTX_LADDERS
+//#define  USE_CB_VTX_ENDCAPS    // for vxt endcaps ladders
 //#define  USE_VTX_DISKS    // for vxt disks along beampipe
 //#define USE_VTX_E 1   // for vxt endcaps 
 
 
-#define USE_CB_CTD
-#define USE_CB_CTD_Si  1 // silicon version of CTD
+//#define USE_CB_CTD
+//#define USE_CB_CTD_Si  1 // silicon version of CTD
 //#define USE_CB_CTD_Straw 1 // straw version of CTD
 
-#define USE_CB_DIRC
-#define USE_CB_DIRC_bars  1 // bars for DIRC
+//#define USE_CB_DIRC
+//#define USE_CB_DIRC_bars  1 // bars for DIRC
 
-#define USE_CB_EMCAL
-#define USE_CB_HCAL
-#define USE_CB_HCAL_D // hcal detector
-#define USE_GEM   // volumes
-#define USE_GEMb  // detectors
+//#define USE_CB_EMCAL
+//#define USE_CB_HCAL
+//#define USE_CB_HCAL_D // hcal detector
+//#define USE_GEM   // volumes
+//#define USE_GEMb  // detectors
 
 
 //==============================================
 //--------H-encap------
-#define USE_CI_ENDCAP
+//#define USE_CI_ENDCAP
 //------- subdetector-volumes H-encap -----
-#define USE_CI_GEM
-#define USE_CI_DRICH
-#define USE_CI_TRD
-#define USE_CI_TRD_D  // -detector and radiator
-#define USE_CI_EMCAL
-#define USE_CI_HCAL
-#define USE_CI_HCAL_D
+//#define USE_CI_GEM
+//#define USE_CI_DRICH
+//#define USE_CI_TRD
+//#define USE_CI_TRD_D  // -detector and radiator
+//#define USE_CI_EMCAL
+//#define USE_CI_HCAL
+//#define USE_CI_HCAL_D
 //--------- Forward D1
-#define USE_FI_EMCAL
-#define USE_FI_TRKD1
+//#define USE_FI_EMCAL
+//#define USE_FI_TRKD1
 // ==============================================
 //--------E-encap------
-#define USE_E_ENDCAP
+//#define USE_E_ENDCAP
 //------- subdetector-volumes E-encap ----- 
-#define  USE_CE_GEM
-#define  USE_CE_EMCAL
-#define  USE_CE_MRICH
+//#define  USE_CE_GEM
+//#define  USE_CE_EMCAL
+//#define  USE_CE_MRICH
 
 //==============================================
-#define  USE_FFE_CPOL
+//#define  USE_FFE_CPOL
 //--------FARFORWARD HADRON------
 //#define USE_DIPOLE1_SI
 //
 //#define USE_FI_DIPOLE1_B
 //#define USE_FI_DIPOLE2
 
-#define USE_FFI_TRKD2
-#define USE_FFI_ZDC
-#define USE_FFI_RPOT_D2
-#define USE_FFI_RPOT_D3
+//#define USE_FFI_TRKD2
+//#define USE_FFI_ZDC
+//#define USE_FFI_RPOT_D2
+//#define USE_FFI_RPOT_D3
 //#define USE_FARFORWARD_GEM
-
 //#define USE_FARFORWARD_VP
 
 //--------barrel------
@@ -173,6 +172,7 @@ JLeicDetectorConstruction::JLeicDetectorConstruction()
           {
     fDetectorMessenger = new JLeicDetectorMessenger(this);
     fMat = new JLeicMaterials();
+
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -189,7 +189,13 @@ JLeicDetectorConstruction::~JLeicDetectorConstruction() {
 //
 
 G4VPhysicalVolume *JLeicDetectorConstruction::Construct() {
-    return ConstructDetectorXTR();
+
+  G4VPhysicalVolume *mdet = ConstructDetectorXTR();
+
+  //std::cout << " start checkVolumeOverlap() ..... " << std::endl ;   checkVolumeOverlap();
+  
+  return mdet;
+
 }
 
 
@@ -283,7 +289,9 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     spdlog::info("fConfig.World.SizeR={}", fConfig.World.SizeR);
     spdlog::info("fConfig.World.SizeZ={}", fConfig.World.SizeZ);
 
-
+    fConfig.World.SizeR/=30.;
+    fConfig.World.SizeZ/=5.;
+    printf("==>> create a world : xyz= %f %f %f [m]\n", fConfig.World.SizeR*2/m, fConfig.World.SizeR*2/m, fConfig.World.SizeZ/m );
     // World_Material    = Air;
     World_Material = fMat->GetMaterial("G4_Galactic");
     World_Solid = new G4Box("World_Solid", fConfig.World.SizeR, fConfig.World.SizeR, fConfig.World.SizeZ / 2.);
@@ -674,7 +682,8 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 #endif
 #endif
 
-    //====================================================================================
+  int mydipole_id;
+  //====================================================================================
     //==                    Far-Forward Area    D2, D3  ZDC. Roman Pots                 ==
     //====================================================================================
 #ifdef USE_FFI_TRKD2
@@ -1396,20 +1405,16 @@ G4FieldManager *JLeicDetectorConstruction::SetQMagField(float field, float skew,
     G4RotationMatrix *qrm_f;
     printf("SetQMagField:: got parameters %f %f \n", field, skew);
 
-
     //G4double fGradient = -223.*tesla/m;
     G4double fGradient = sqrt(field * field + skew * skew) * tesla / m;
-    G4double angle;
-    if (field != 0) { angle = 0.5 * atan2(skew, field); }
-    else {
-        if (skew != 0) { angle = 0.5 * (3.1415 / 2 - atan2(field, skew)); }
-        else { angle = 0; }
-    }
+    fGradient = copysign(fGradient,field);
+    G4double  angle = atan2(skew, fabs(field)); //--   atan2(y,x);
+    printf("SetQMagField():: angle=%f(%f) theta=%f(%f) rad(deg) \n",angle,angle/deg, theta,theta/deg);
 
     qrm_f = new G4RotationMatrix();
-
     qrm_f->rotateZ(angle * rad);
-    qrm_f->rotateY(theta * rad);
+    qrm_f->rotateY(-theta * rad);
+ //--------------------------
 
     //G4ThreeVector fieldValue = G4ThreeVector( fGradient_x,fGradient_y,fGradient_z);
     // old  G4QuadrupoleMagField* pipeField = new G4QuadrupoleMagField(fGradient);
@@ -1418,11 +1423,25 @@ G4FieldManager *JLeicDetectorConstruction::SetQMagField(float field, float skew,
 
     G4QuadrupoleMagField *pipeField = new G4QuadrupoleMagField(fGradient, fieldorigin, qrm_f);
 
+
+#if 1
+    
     G4Mag_UsualEqRhs *myEquation = new G4Mag_UsualEqRhs(pipeField);
     G4MagIntegratorStepper *myStepper = new G4ClassicalRK4(myEquation);
     G4ChordFinder *myChordFinder = new G4ChordFinder(pipeField, 0.1 * mm, myStepper);
 
     G4FieldManager *fieldMgr = new G4FieldManager(pipeField, myChordFinder, false);
+    
+#else
+    G4FieldManager *fieldMgr = new G4FieldManager(pipeField);
+    fieldMgr->SetDetectorField(pipeField);
+    fieldMgr->CreateChordFinder(pipeField);
+    //G4double minEps = 1.0e-5; // Minimum & value for smallest steps
+    //G4double maxEps = 1.0e-4; // Maximum & value for largest steps
+    //fieldMgr->SetMinimumEpsilonStep(minEps);
+    //fieldMgr->SetMaximumEpsilonStep(maxEps);
+    //fieldMgr->SetDeltaOneStep(0.5 * um); // 0.5 micrometer
+#endif
 
     //logicSpace_Pipe->SetFieldManager(fieldMgr,true);
 
@@ -1536,8 +1555,9 @@ void JLeicDetectorConstruction::Read_Di_File() {
     int iqmax_i;
     printf("read Di file\n");
     // sprintf(fname,"ion_ir_06feb19.txt");
-     sprintf(fname,"ion_ir_23sep19.txt");
-
+   // sprintf(fname,"ion_ir_23sep19_var2a.txt");
+   // sprintf(fname,"ion_ir_21aug19.txt");
+    sprintf(fname,"ion_ir_02oct19.txt");
     // --- this is for tune!!
    // sprintf(fname, "i_ir_forward.txt");
  //   sprintf(fname, " ");
@@ -1546,7 +1566,7 @@ void JLeicDetectorConstruction::Read_Di_File() {
 
 
     // int iq=0,ik=0,is=0;
-    printf("read Di file %s\n", fname);
+    printf("read Di file %s [m]=%f [cm]=%f \n", fname, m ,cm );
     while (fgets(buffer, 512, (FILE *) rc)) {
 
         printf("*********************************************************************************\n");
@@ -1555,6 +1575,9 @@ void JLeicDetectorConstruction::Read_Di_File() {
         printf("mychar=%s\n ", mychar);
         if (mychar[0] != 'i' || mychar[0] == '\n') {
             printf("SKIP LINE %s\n", buffer);
+            continue;
+        }
+        if (buffer[0] == '#' || buffer[0] == '\n') {
             continue;
         }
 
@@ -1576,7 +1599,7 @@ void JLeicDetectorConstruction::Read_Di_File() {
 	
         // ----------- create volumes for kickers and rbend----------
         if ((strcmp(ffqtype, "KICKER") == 0) || (strcmp(ffqtype, "RBEND") == 0)) {
-            printf(" found KICKER %s \n", ffqtype);
+            printf(" found  %s \n", ffqtype);
             CreateDipole(ik, ffqnameDi, ffqsSizeZDi, ffqsRinDiG, ffqsRinDi, ffqsRoutDi, qFIELDx, qFIELDy, qFIELQn,
                          qFIELQs, qFIELSek, qFIELSol, ffqsX, ffqsY, ffqsZ, ffqsTheta, ffqsPhi);
             ik++;
@@ -1659,10 +1682,17 @@ void JLeicDetectorConstruction::Read_dE_File() {
         printf("Read_dE %s\n", buffer);
         sscanf(buffer, "%s", mychar);
         printf("Read_dE:: mychar=%s\n ", mychar);
+        if (buffer[0] == '#' || buffer[0] == '\n') {
+            continue;
+        }
+
+
+
         if (mychar[0] != 'e' || mychar[0] == '\n') {
             printf("SKIP LINE %s\n", buffer);
             continue;
         }
+
 
         sscanf(buffer, "%s %s %f %f %f %f %f %f  %f %f %f %f %f  %f %f %f %f", ffqnameDi, ffqtype, &ffqsSizeZDi,
                &ffqsRinDiG, &ffqsRinDi, &ffqsRoutDi, &qFIELDx, &qFIELDy,
@@ -1724,7 +1754,7 @@ void JLeicDetectorConstruction::CreateQuad(int j, char *ffqsNAME, float ffqsSize
     vb1 = new G4VisAttributes(G4Color(0.8, 0.3, 0.1, 0.9));
     vb1->SetForceSolid(true);
 
-    printf("CreateQuad:: theta =%f %f %f \n", ffqsTheta, ffqsTheta * rad, (ffqsTheta * 180 / 3.1415) * deg);
+    printf("CreateQuad:: theta =%f rad=%f  deg=%f \n", ffqsTheta, ffqsTheta/rad, ffqsTheta/deg);
     brm_hd[j].rotateY(ffqsTheta * rad);
     // brm_hd.rotateY((0*180/3.1415)*deg);
 
@@ -1742,16 +1772,18 @@ void JLeicDetectorConstruction::CreateQuad(int j, char *ffqsNAME, float ffqsSize
     fSolid_ffqsY[j] = ffqsY;
     fSolid_ffqsZ[j] = ffqsZ;
 
-
-    //--------------------Volumes ---------
+     //--------------------Volumes ---------
     sprintf(abname, "Solid_QUADS_hd_v_%s", ffqsNAME);
     fSolid_QUADS_hd_v[j] = new G4Tubs(abname, 0., (ffqsRoutDi + 0.01) * cm, (ffqsSizeZDi / 2.) * m, 0., 360 * deg);
     sprintf(abname, "Logic_QUADS_hd_v_%s", ffqsNAME);
     fLogic_QUADS_hd_v[j] = new G4LogicalVolume(fSolid_QUADS_hd_v[j], World_Material, abname);
+    //fLogic_QUADS_hd_v[j] = new G4LogicalVolume(fSolid_QUADS_hd_v[j], World_Material, abname,fieldMgr_QUADS_hd[j]);
     sprintf(abname, "Physics_QUADS_hd_v_%s", ffqsNAME);
     fPhysics_QUADS_hd_v[j] = new G4PVPlacement(G4Transform3D(brm_hd[j], G4ThreeVector(ffqsX * m, ffqsY * m, ffqsZ * m)),
                                                abname,
                                                fLogic_QUADS_hd_v[j], World_Phys, false, 0);
+
+    fLogic_QUADS_hd_v[j]->SetFieldManager(fieldMgr_QUADS_hd[j], true);
     //printf("create %s ");
 
     //--------------------Iron---------
@@ -1764,25 +1796,27 @@ void JLeicDetectorConstruction::CreateQuad(int j, char *ffqsNAME, float ffqsSize
     fPhysics_QUADS_hd_ir[j] = new G4PVPlacement(0, G4ThreeVector(), abname, fLogic_QUADS_hd_ir[j],
                                                 fPhysics_QUADS_hd_v[j], false, 0);
     fLogic_QUADS_hd_ir[j]->SetVisAttributes(vb1);
+  
 
-    //---------------- set magnetic field ---------------
+
+    
+   //----------------  magnetic field volume---------------
     sprintf(abname, "Solid_QUADS_hd_m_%s", ffqsNAME);
     fSolid_QUADS_hd_m[j] = new G4Tubs(abname, 0. * cm, ffqsRinDi * cm, (ffqsSizeZDi / 2.) * m, 0., 360 * deg);
     sprintf(abname, "Logic_QUADS_hd_m_%s", ffqsNAME);
-    fLogic_QUADS_hd_m[j] = new G4LogicalVolume(fSolid_QUADS_hd_m[j], ffqsMaterial_G, abname);
+    fLogic_QUADS_hd_m[j] = new G4LogicalVolume(fSolid_QUADS_hd_m[j], ffqsMaterial_G, abname,fieldMgr_QUADS_hd[j]);
     sprintf(abname, "Physics_QUADS_hd_m_%s", ffqsNAME);
     fPhysics_QUADS_hd_m[j] = new G4PVPlacement(0, G4ThreeVector(), abname, fLogic_QUADS_hd_m[j], fPhysics_QUADS_hd_v[j],
                                                false, 0);
-
+    
+  //---------------- create  magnetic field ---------------
+    printf("CreateQuad:: j=%d  FIELD =%f %f --  %f %f -- %f %f \n", j, qFIELDx, qFIELDy, qFIELQn, qFIELQs, qFIELSek, qFIELSol);
+    fieldMgr_QUADS_hd[j] = SetQMagField(qFIELQn, qFIELQs, ffqsTheta,
+                                        G4ThreeVector(ffqsX * m, ffqsY * m, ffqsZ * m));   // gradient tesla/m;
 
     //    G4FieldManager* fieldMgr = SetQMagField(qFIELDx[j],qFIELDy[j]);   // gradient tesla/m;
     // fLogic_QUADSm[j]->SetFieldManager(fieldMgr,true);
 
-    printf("CreateQuad:: FIELD =%f %f --  %f %f -- %f %f \n", qFIELDx, qFIELDy, qFIELQn, qFIELQs, qFIELSek, qFIELSol);
-
-
-    fieldMgr_QUADS_hd[j] = SetQMagField(qFIELQn, qFIELQs, ffqsTheta,
-                                        G4ThreeVector(ffqsX * m, ffqsY * m, ffqsZ * m));   // gradient tesla/m;
 
     fLogic_QUADS_hd_m[j]->SetFieldManager(fieldMgr_QUADS_hd[j], true);
 
@@ -1999,7 +2033,7 @@ JLeicDetectorConstruction::CreateASolenoid(int j, char *ffqsNAME, float ffqsSize
 
     //---------------- set magnetic field ---------------
     sprintf(abname, "Solid_ASOLENOID_hd_m_%s", ffqsNAME);
-    fSolid_ASOLENOID_hd_m[j] = new G4Tubs(abname, 0. * cm, ffqsRoutDi * cm, (ffqsSizeZDi / 2.) * m, 0., 360 * deg);
+    fSolid_ASOLENOID_hd_m[j] = new G4Tubs(abname, 0. * cm, ffqsRinDi * cm, (ffqsSizeZDi / 2.) * m, 0., 360 * deg);
     sprintf(abname, "Logic_ASOLENOID_hd_m_%s", ffqsNAME);
     fLogic_ASOLENOID_hd_m[j] = new G4LogicalVolume(fSolid_ASOLENOID_hd_m[j], ffqsMaterial_G, abname);
     sprintf(abname, "Physics_ASOLENOID_hd_m_%s", ffqsNAME);
@@ -2031,12 +2065,32 @@ JLeicDetectorConstruction::CreateASolenoid(int j, char *ffqsNAME, float ffqsSize
     fieldMgrAS[j]->CreateChordFinder(fMagField_ASOLENOID[j]);
     fLogic_ASOLENOID_hd_m[j]->SetFieldManager(fieldMgrAS[j], true);
 
-
 }
 
 
+//==============================================================================================================
 
+void JLeicDetectorConstruction::checkVolumeOverlap()
+{
+    // loop inside all the daughters volumes
+  G4cout<< " loop inside all the daughters volumes" << G4endl;
+    //        bool bCheckOverlap;
+    //        bCheckOverlap=false;
 
-
-
-
+    int nSubWorlds, nSubWorlds2;
+    for (int i=0; i<(int) World_Phys->GetLogicalVolume()->GetNoDaughters(); i++)
+    {
+        World_Phys->GetLogicalVolume()->GetDaughter(i)->CheckOverlaps();
+        nSubWorlds=(int) World_Phys->GetLogicalVolume()->GetDaughter(i)->GetLogicalVolume()->GetNoDaughters();
+        for (int j=0; j<nSubWorlds; j++)
+        {
+            World_Phys->GetLogicalVolume()->GetDaughter(i)->GetLogicalVolume()->GetDaughter(j)->CheckOverlaps();
+            nSubWorlds2=(int) World_Phys->GetLogicalVolume()->GetDaughter(i)->GetLogicalVolume()->GetDaughter(j)->GetLogicalVolume()->GetNoDaughters();
+            for (int k=0; k<nSubWorlds2; k++)
+            {
+                World_Phys->GetLogicalVolume()->GetDaughter(i)->GetLogicalVolume()->GetDaughter(j)->GetLogicalVolume()->GetDaughter(k)->CheckOverlaps();
+            }
+        }
+    }
+    G4cout<< G4endl;
+}

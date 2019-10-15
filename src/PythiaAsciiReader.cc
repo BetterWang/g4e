@@ -99,7 +99,7 @@ PythiaAsciiReader *PythiaAsciiReader::GeneratePythiaEvent() {
             }
         }
 	// 11    0    1        2112        0        0       -1.332584       -0.299053       31.538593       31.582129        0.939570        0.000000        0.000000        0.000000
-	//	printf("=====> LUND 1  !!!! npart=%d dCone=%f dmyPhi=%f \n", nparticles, dCone, dmyPhi);
+	//	printf("=====> LUND 1  !!!! npart=%d dCone=%f dmyMom=%f \n", nparticles, dCone, dmyMom);
 	printf("=====> LUND 1  !!!! npart=%d \n", nparticles);
         N = 0;
         pyEvt.clear();
@@ -108,8 +108,9 @@ PythiaAsciiReader *PythiaAsciiReader::GeneratePythiaEvent() {
 
 	  double dCone;
 	  gif >> dCone;
-	  double dmyPhi;
-	  gif >> dmyPhi;
+	  double dmyMom;
+	  gif >> dmyMom;
+
 
            nparticles = -nparticles;
             for (int kp = 0; kp < nparticles; kp++) {
@@ -158,16 +159,20 @@ PythiaAsciiReader *PythiaAsciiReader::GeneratePythiaEvent() {
                     //double rpz = ptot * cos(Theta);
 
                     Phi = atan2(py, px);
-                    //double dPhi = (0.5 - G4UniformRand()) * 2. * dmyPhi; // --- flat
                     double phi0 = G4UniformRand()*2.*pi; // --- flat in phi
 
 		    G4ThreeVector dir(std::sin(dTheta)*std::cos(phi0),std::sin(dTheta)*std::sin(phi0),std::cos(dTheta));
-		    dir.rotateY(Theta); dir.rotateZ(Phi);  
-		    // dir.setMag(ptot);
-		    dir.setMag(etot);  //--- use energi as momentum !!!! for beam protons !!! if beam is defined by momentum !!!!
-		    //--- recalculate etot if PROTON !!! 
+		    dir.rotateY(Theta); dir.rotateZ(Phi);
+
+		    ptot = G4RandGauss::shoot(ptot,dmyMom); 
+		    dir.setMag(ptot); //- new ptot Gauss !!!
+		    //dir.setMag(etot);  //--- use energi as momentum !!!! for beam protons !!! if beam is defined by momentum !!!!
+
+                    //--- recalculate etot if PROTON !!!
 		    double proton_mass=0.938272;
-		    etot=sqrt(ptot*ptot+proton_mass*proton_mass);
+		 //JF
+		   etot=sqrt(ptot*ptot+proton_mass*proton_mass);
+		  //  etot=sqrt(DMptot*DMptot+proton_mass*proton_mass);
 
 		    /*
                     Phi += dPhi;

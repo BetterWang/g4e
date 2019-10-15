@@ -75,7 +75,8 @@ public:
 
 //============  For MRICH sectors =====
         for ( int j = 0; j < 10; j++) {
-            y_mrich -= (cfg.mod_Width + cfg.mod_Gap);
+            if(j==0){y_mrich= cfg.mod_Gap;}
+            else {y_mrich -= (cfg.mod_Width + cfg.mod_Gap);}
             x_mrich = (cfg.mod_Width + cfg.mod_Gap) * 0.5;
             // printf("MRICH0:: x_mrich =%f,  y_mrich=%f\n", x_mrich, y_mrich);
             for (int i = 0; i < 10; i++) {

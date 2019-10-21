@@ -58,6 +58,7 @@ public:
 
 
     }
+
     inline void ConstructLaddersCentral() {
         static char abname[256];
         auto cfg = ConstructionConfig;
@@ -84,7 +85,7 @@ public:
         // TODO calling global stuff like that kills kittens, so think about it later!
         cb_VTX_ladder_Material = G4Material::GetMaterial("Si");
 
-        std::vector <cb_VTX_ladder_LayParam> Lays;
+        //std::vector <cb_VTX_ladder_LayParam> Lays;
         cb_VTX_ladder_LayParam Lay;
         // Lay 0
         Lay.Dx=0.050 * mm; Lay.Dy=2*cm; Lay.Dz=10*cm; Lay.Rin=3.5 * cm; Lays.push_back(Lay);
@@ -383,7 +384,7 @@ public:
         //-----------------------------------------------------------------------
 
     }
-
+	
     G4Tubs *Solid;      //pointer to the solid
     G4LogicalVolume *Logic;    //pointer to the logical
     G4VPhysicalVolume *Phys;  //pointer to the physical
@@ -391,6 +392,8 @@ public:
     /// Parameters that was used in the moment of construction
     cb_VTX_Config ConstructionConfig;
 
+    std::vector <cb_VTX_ladder_LayParam> Lays;
+    G4LogicalVolume *cb_VTX_ladder_Logic[10]; //pointer to the logical Absorber
 
 private:
     JLeicMaterials *fMat;
@@ -399,7 +402,6 @@ private:
 
     //--------------- VTX ladders geom-------
     G4Box *cb_VTX_ladder_Solid[10]; //pointer to the solid Absorber
-    G4LogicalVolume *cb_VTX_ladder_Logic[10]; //pointer to the logical Absorber
     G4VPhysicalVolume *cb_VTX_ladder_Phys[10]; //pointer to the logical Absorber
 
     //-- slices and pixels

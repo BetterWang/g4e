@@ -97,7 +97,7 @@ private:
 
 
     //----- EVENT STRUCTURE -----
-    g4e::RootOutput mRootEventsOut;
+    g4e::RootOutput* mRootEventsOut = nullptr;
     TFile * mHitsFile = nullptr;
 
     //---------------------------

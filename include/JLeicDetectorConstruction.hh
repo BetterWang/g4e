@@ -86,10 +86,14 @@
 #include "fi_TRKD1/fi_TRKD1.hh"         // Far-forward Ion D1  - Tracking
 #include "fi_EMCAL/fi_EMCAL.hh"         // Far-forward Ion D1  - EMCAL
 
+#include "ffi_TRKD2/ffi_TRKD2.hh"     // Far-forward Ion D2 - Tracking
 #include "ffi_ZDC/ffi_ZDC.hh"         // Far-forward Ion   - HCAL ZDC
+#include "ffi_RPOT_D2/ffi_RPOT_D2.hh"         // Far-forward Ion   - RomanPots system
+#include "ffi_RPOT_D3/ffi_RPOT_D3.hh"         // Far-forward Ion   - RomanPots system
 
 
 class JLeicCalorimeterSD;
+class JLeicVertexSD;
 
 class JLeicDetectorConstruction : public G4VUserDetectorConstruction {
 public:
@@ -166,6 +170,7 @@ public:
 
     G4double GetWorldSizeR() { return fConfig.World.SizeR; };
 
+  void checkVolumeOverlap();
 
     const G4VPhysicalVolume *GetphysiWorld() { return World_Phys; };
 
@@ -198,6 +203,9 @@ public:
 
     JLeicDetectorConfig fConfig;
 
+    //----------------VTX  volume ------------------
+    cb_VTX_Design      cb_VTX;
+
 private:
 
     G4VPhysicalVolume *ConstructDetectorXTR();
@@ -216,6 +224,7 @@ private:
     void Create_ci_Endcap(JLeicDetectorConfig::ci_Endcap_Config cfg);
 
     void Create_ce_Endcap(JLeicDetectorConfig::ce_Endcap_Config dfg);
+
 
 private:
 
@@ -246,7 +255,7 @@ private:
     //----------------BARREL -----------------------
     cb_Solenoid_Design cb_Solenoid;
     //----------------VTX  volume ------------------
-    cb_VTX_Design      cb_VTX;
+    //cb_VTX_Design      cb_VTX;
     //----------------CTD  volume -------------------
     cb_CTD_Design      cb_CTD;
     //----------------DIRC  volume -------------------
@@ -288,8 +297,15 @@ private:
     fi_TRKD1_Design     fi_TRKD1;
     //----------------EMCAL volume ---------------------
     fi_EMCAL_Design     fi_EMCAL;
+
+    //----------------D2 Tracking volume  ---------------------
+    ffi_TRKD2_Design     ffi_TRKD2;
+
     //---------------HCAL -ZDC -------------------------
     ffi_ZDC_Design  ffi_ZDC;
+    //---------------Roman Pot system -------------------------
+    ffi_RPOT_D2_Design  ffi_RPOT_D2;
+    ffi_RPOT_D3_Design  ffi_RPOT_D3;
 
 // ----------------------------------------------
 
@@ -602,6 +618,7 @@ private:
 
     JLeicDetectorMessenger *fDetectorMessenger;  //pointer to the Messenger
     JLeicCalorimeterSD *fCalorimeterSD;  //pointer to the sensitive detector
+    JLeicVertexSD *fVertexSD;  //pointer to the sensitive detector
 
     JLeicMaterials *fMat;
 

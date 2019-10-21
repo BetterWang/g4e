@@ -37,6 +37,7 @@
 
 #include "G4UserEventAction.hh"
 #include "globals.hh"
+#include "JLeicRootOutput.hh"
 
 class JLeicRunAction;
 class JLeicEventActionMessenger;
@@ -67,8 +68,13 @@ class JLeicEventAction : public G4UserEventAction
     void SetDrawFlag(G4String val)  {drawFlag = val;};
     void SetPrintModulo(G4int val)  {printModulo = val;};
         
+    //----- EVENT STRUCTURE -----
+    g4e::RootOutput* mRootEventsOut = nullptr;
+    TFile * mHitsFile = nullptr;
+
   private:
     G4int    calorimeterCollID;
+    G4int    vertexCollID;
     JLeicEventActionMessenger*  eventMessenger;
     JLeicRunAction* runaction;
     G4int verboselevel;

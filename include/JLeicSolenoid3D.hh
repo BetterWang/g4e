@@ -23,49 +23,54 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file HadronElasticPhysicsHP.hh
-/// \brief Definition of the HadronElasticPhysicsHP class
+// Code developed by:
+//  S.Larsson and J. Generowicz.
 //
-// $Id: HadronElasticPhysicsHP.hh 71037 2013-06-10 09:20:54Z gcosmo $
+//    *************************************
+//    *                                   *
+//    *    JLeicSolenoid3D.hh     *
+//    *                                   *
+//    *************************************
 //
+//
+#ifndef JLEIC_SOLENOID_3D_H
+#define JLEIC_SOLENOID_3D_H
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-#ifndef HadronElasticPhysicsHP_h
-#define HadronElasticPhysicsHP_h 1
 
 #include "globals.hh"
-#include "G4HadronElasticPhysics.hh"
+#include "G4MagneticField.hh"
+#include "G4ios.hh"
 
-class NeutronHPMessenger;
+#include <fstream>
+#include <vector>
+#include <cmath>
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+using namespace std;
 
-class HadronElasticPhysicsHP : public G4HadronElasticPhysics
+class JLeicSolenoid3D
+#ifndef STANDALONE
+ : public G4MagneticField
+#endif
 {
-  public: 
-    HadronElasticPhysicsHP(G4int ver = 1); 
-   ~HadronElasticPhysicsHP();
+  
+  // Storage space for the table
+  vector< vector< vector< double > > > xField;
+  vector< vector< vector< double > > > yField;
+  vector< vector< vector< double > > > zField;
+  // The dimensions of the table
+  int nx,ny,nz; 
+  // The physical limits of the defined region
+  double minx, maxx, miny, maxy, minz, maxz;
+  // The physical extent of the defined region
+  double dx, dy, dz;
+  double fZoffset;
+  bool fZinvert;
+  bool invertX, invertY, invertZ;
 
-  public: 
-    virtual void ConstructProcess();
-    
-  public:
-    void SetThermalPhysics(G4bool flag) {fThermal = flag;};
-      
-  private:
-    G4bool                  fThermal;
-    NeutronHPMessenger*     fNeutronMessenger;          
+public:
+  JLeicSolenoid3D(const char* filename, double zOffset, bool InvertZ);
+  void  GetFieldValue( const  double Point[4],
+		       double *Bfield          ) const;
 };
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-#endif
-
-
-
-
-
-
-
-
+#endif //JLEIC_SOLENOID_3D_H

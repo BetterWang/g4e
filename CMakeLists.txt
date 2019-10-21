@@ -48,12 +48,12 @@ message(DEBUG "g4e: Geant4_LIBS  :${Geant4_LIBRARIES}" )
 
 print_header(">>>>    V G M     <<<<" )
 
-if(EXISTS ${VGM_DIRECTORY})
+if(DEFINED VGM_DIRECTORY)
     message(STATUS "jleic-geant: cmake VGM_DIRECTORY provided: ${VGM_DIRECTORY}")
-elseif(EXISTS $ENV{VGM_DIRECTORY})
+elseif(DEFINED ENV{VGM_DIRECTORY})
     set(VGM_DIRECTORY $ENV{VGM_DIRECTORY})
     message(STATUS "g4e: VGM_DIRECTORY set from environemnt ${VGM_DIRECTORY}")
-elseif(EXISTS $ENV{VGM_DIR})
+elseif(DEFINED ENV{VGM_DIR})
     set(VGM_DIRECTORY $ENV{VGM_DIR})
     message(STATUS "g4e: VGM_DIRECTORY set from environemnt ${VGM_DIRECTORY}")
 else()
@@ -137,7 +137,7 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
-add_executable(g4e g4e.cc ${sources} ${headers} include/JLeicRootOutput.hh src/design/all/ffi_RPOT_D3/ffi_RPOT_D3.hh)
+add_executable(g4e g4e.cc ${sources} ${headers})
 target_link_libraries(g4e
         ${Geant4_LIBRARIES}
         ${HEPMC_LIBRARIES}

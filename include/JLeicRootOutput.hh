@@ -17,6 +17,7 @@ namespace g4e
                 tree->Branch("hit_count", &HitsCount, "hit_count/l");
                 tree->Branch("hit_id", &IdVect);
                 tree->Branch("hit_trk_id", &TrackIdVect);
+                tree->Branch("hit_ptr_id", &GenPartIdVect);
                 tree->Branch("hit_vol_name", &VolumeNameVect);
                 tree->Branch("hit_x", &XPosVect);
                 tree->Branch("hit_y", &YPosVect);
@@ -35,6 +36,7 @@ namespace g4e
                 ELossVect.clear();
                 IdVect.clear();
                 TrackIdVect.clear();
+                GenPartIdVect.clear();
                 IRepVect.clear();
                 JRepVect.clear();
                 VolumeNameVect.clear();
@@ -43,6 +45,7 @@ namespace g4e
             uint64_t HitsCount;
             std::vector <uint64_t> IdVect;
             std::vector <uint64_t> TrackIdVect;
+            std::vector <uint64_t> GenPartIdVect;
             std::vector <double> XPosVect;
             std::vector <double> YPosVect;
             std::vector <double> ZPosVect;
@@ -59,7 +62,7 @@ namespace g4e
                 tree->Branch("trk_count", &TrackCount, "trk_count/l");
                 tree->Branch("trk_id", &IdVect);
                 tree->Branch("trk_pdg", &PdgVect);
-                tree->Branch("trk_part_id", &ParticleIdVect);
+                tree->Branch("trk_part_id", &ParentId);
                 tree->Branch("trk_vtx_x", &XVtxVect);
                 tree->Branch("trk_vtx_y", &YVtxVect);
                 tree->Branch("trk_vtx_z", &ZVtxVect);
@@ -73,7 +76,7 @@ namespace g4e
             {
                 TrackCount = 0;
                 IdVect.clear();
-                ParticleIdVect.clear();
+                ParentId.clear();
                 PdgVect.clear();
                 XVtxVect.clear();
                 YVtxVect.clear();
@@ -86,7 +89,7 @@ namespace g4e
 
             uint64_t TrackCount;
             std::vector <uint64_t> IdVect;
-            std::vector <uint64_t> ParticleIdVect;
+            std::vector <uint64_t> ParentId;
             std::vector <uint64_t> PdgVect;
             std::vector <double> XVtxVect;
             std::vector <double> YVtxVect;
@@ -216,13 +219,13 @@ namespace g4e
             mTrackIo.Clear();
             mParticleIo.Clear();
             mPrimeVertexIo.Clear();
-
             trk_index_by_id.clear();
         }
 
         void AddHit(
-                uint64_t aHitId,
-                uint64_t aTrackId,
+                uint64_t aHitId,        // Hit unique ID
+                uint64_t aTrackId,      // Track unique ID
+                uint64_t aGenPartId,        // Generated particle ID
                 double aX,
                 double aY,
                 double aZ,
@@ -238,6 +241,7 @@ namespace g4e
             mHitIo.ZPosVect.push_back(aZ);
             mHitIo.ELossVect.push_back(aELoss);
             mHitIo.TrackIdVect.push_back(aTrackId);
+            mHitIo.GenPartIdVect.push_back(aGenPartId);
             mHitIo.IRepVect.push_back(aIRep);
             mHitIo.JRepVect.push_back(aJRep);
             mHitIo.VolumeNameVect.push_back(aVolName);
@@ -262,7 +266,7 @@ namespace g4e
             }
 
             mTrackIo.IdVect.push_back(aTrackId);
-            mTrackIo.ParticleIdVect.push_back(aParentId);
+            mTrackIo.ParentId.push_back(aParentId);
             mTrackIo.PdgVect.push_back(aTrackPdg);
             mTrackIo.XVtxVect.push_back(aXVertex);
             mTrackIo.YVtxVect.push_back(aYVertex);

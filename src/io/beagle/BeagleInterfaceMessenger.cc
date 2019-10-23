@@ -27,56 +27,54 @@
 #include "G4UIcmdWithoutParameter.hh"
 #include "G4UIcmdWithAString.hh"
 #include "G4UIcmdWithAnInteger.hh"
-#include "PythiaAsciiReaderMessenger.hh"
-#include "PythiaAsciiReader.hh"
+#include "BeagleInterfaceMessenger.hh"
+#include "BeagleReader.hh"
 
 
-PythiaAsciiReaderMessenger::PythiaAsciiReaderMessenger
-        (PythiaAsciiReader *agen)
-        : gen(agen) {
-    dir = new G4UIdirectory("/generator/pythiaAscii/");
-    dir->SetGuidance("Reading Pythia event from an Ascii file");
+BeagleInterfaceMessenger::BeagleInterfaceMessenger(BeagleInterface *interface)
+        : fBeagleInterface(interface)
+{
+    fDirectory = new G4UIdirectory("/generator/beagle/");
+    fDirectory->SetGuidance("Reading Beagle event from an Ascii file");
 
-    verbose = new G4UIcmdWithAnInteger("/generator/pythiaAscii/verbose", this);
-    verbose->SetGuidance("Set verbose level");
-    verbose->SetParameterName("verboseLevel", false, false);
-    verbose->SetRange("verboseLevel>=0 && verboseLevel<=1");
+    fVerbose = new G4UIcmdWithAnInteger("/generator/beagle/verbose", this);
+    fVerbose->SetGuidance("Set verbose level");
+    fVerbose->SetParameterName("verboseLevel", false, false);
+    fVerbose->SetRange("verboseLevel>=0 && verboseLevel<=1");
 
-    open = new G4UIcmdWithAString("/generator/pythiaAscii/open", this);
-    open->SetGuidance("(re)open data file (Pythia Ascii format)");
-    open->SetParameterName("input ascii file", true, true);
+    fOpenCmd = new G4UIcmdWithAString("/generator/generator/open", this);
+    fOpenCmd->SetGuidance("(re)open data file (Beagle Ascii format)");
+    fOpenCmd->SetParameterName("input ascii file", true, true);
 }
 
 
-PythiaAsciiReaderMessenger::~PythiaAsciiReaderMessenger() {
-    delete verbose;
-    delete open;
-    delete dir;
+BeagleInterfaceMessenger::~BeagleInterfaceMessenger() {
+    delete fVerbose;
+    delete fOpenCmd;
+    delete fDirectory;
 }
 
 
-void PythiaAsciiReaderMessenger::SetNewValue(G4UIcommand *command,
-                                             G4String newValues) {
-    if (command == verbose) {
-        int level = verbose->GetNewIntValue(newValues);
-        gen->SetVerboseLevel(level);
-    } else if (command == open) {
-        gen->SetFileName(newValues);
-        G4cout << "Pythia Ascii inputfile: "
-               << gen->GetFileName() << G4endl;
-        gen->Initialize();
+void BeagleInterfaceMessenger::SetNewValue(G4UIcommand *command, G4String newValues) {
+    // verbosity level
+    if (command == fVerbose) {
+        int level = fVerbose->GetNewIntValue(newValues);
+        fBeagleInterface->SetVerboseLevel(level);
+    }
+
+    // open command
+    else if (command == fOpenCmd) {
+        fBeagleInterface->Open(newValues);
     }
 }
 
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-G4String PythiaAsciiReaderMessenger::GetCurrentValue(G4UIcommand *command) {
-    G4String cv;
-
-    if (command == verbose) {
-        cv = verbose->ConvertToString(gen->GetVerboseLevel());
-    } else if (command == open) {
-        cv = gen->GetFileName();
+G4String BeagleInterfaceMessenger::GetCurrentValue(G4UIcommand *command) {
+    G4String value;
+    if (command == fVerbose) {
+        value = fVerbose->ConvertToString(fBeagleInterface->GetVerboseLevel());
+    } else if (command == fOpenCmd) {
+        value = fBeagleInterface->GetFileName();
     }
-    return cv;
+    return value;
 }

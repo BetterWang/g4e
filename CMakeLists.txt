@@ -49,7 +49,7 @@ message(DEBUG "g4e: Geant4_LIBS  :${Geant4_LIBRARIES}" )
 print_header(">>>>    V G M     <<<<" )
 
 if(DEFINED VGM_DIRECTORY)
-    message(STATUS "jleic-geant: cmake VGM_DIRECTORY provided: ${VGM_DIRECTORY}")
+    message(STATUS "g4e: cmake VGM_DIRECTORY provided: ${VGM_DIRECTORY}")
 elseif(DEFINED ENV{VGM_DIRECTORY})
     set(VGM_DIRECTORY $ENV{VGM_DIRECTORY})
     message(STATUS "g4e: VGM_DIRECTORY set from environemnt ${VGM_DIRECTORY}")
@@ -89,9 +89,9 @@ print_grand_header("    G E N E R A L   C O N F I G U R A T I O N    ")
 # C++ standard to use (controlled with -DCPP_STANDARD flag)
 if(NOT DEFINED CMAKE_CXX_STANDARD)
     SET(CMAKE_CXX_STANDARD 11)
-    message(STATUS "ejana: Setting default to ${CPP_STANDARD}")
+    message(STATUS "g4e: Setting default to ${CPP_STANDARD}")
 endif()
-message(STATUS "ejana: CMAKE_CXX_STANDARD: ${CMAKE_CXX_STANDARD}")
+message(STATUS "g4e: CMAKE_CXX_STANDARD: ${CMAKE_CXX_STANDARD}")
 
 # General include directories
 # TODO move to targets whatever is possible
@@ -99,6 +99,12 @@ include_directories(
         BEFORE
             ${PROJECT_SOURCE_DIR}/include
             ${PROJECT_SOURCE_DIR}/src/design/all
+            ${PROJECT_SOURCE_DIR}/src/io/beagle
+            ${PROJECT_SOURCE_DIR}/src/io/hepmc2
+            ${PROJECT_SOURCE_DIR}/src/io/pythia
+            ${PROJECT_SOURCE_DIR}/src/io/generic_lund
+            ${PROJECT_SOURCE_DIR}/src/helpers
+
         SYSTEM
             ${ROOT_INCLUDE_DIRS}
             ${PROJECT_SOURCE_DIR}/src/external/spdlog/include
@@ -133,7 +139,46 @@ ENDIF("${isSystemDir}" STREQUAL "-1")
 # TODO this is terrible!
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
+list(APPEND sources
 
+        #    H E L P E R S
+        src/helpers/StringHelpers.cc
+        src/helpers/StringHelpers.hh
+
+
+        #
+        # I O
+        #
+
+        # Generic lund reader
+        src/io/generic_lund/TextEventFileReader.hh
+
+        # Beagle event generator reader
+        src/io/beagle/BeagleReader.cc
+        src/io/beagle/BeagleReader.hh
+        src/io/beagle/BeagleInterfaceMessenger.cc
+        src/io/beagle/BeagleInterfaceMessenger.hh
+        src/io/beagle/BeagleInterface.cc
+        src/io/beagle/BeagleInterface.hh
+
+        # HepMC2 event generator reader
+        src/io/hepmc2/HepMCG4AsciiReader.cc
+        src/io/hepmc2/HepMCG4AsciiReader.hh
+        src/io/hepmc2/HepMCG4AsciiReaderMessenger.cc
+        src/io/hepmc2/HepMCG4AsciiReaderMessenger.hh
+        src/io/hepmc2/HepMCG4Interface.cc
+        src/io/hepmc2/HepMCG4Interface.hh
+        src/io/hepmc2/HepMCG4PythiaInterface.hh
+
+        # Pythia 6 lund format reader
+        src/io/pythia/PythiaAsciiReaderMessenger.hh
+        src/io/pythia/PythiaAsciiReader.cc
+        src/io/pythia/PythiaAsciiReader.hh
+        src/io/pythia/PythiaAsciiReaderMessenger.cc
+        src/io/pythia/PythiaInterface.cc
+        src/io/pythia/PythialeInterface.hh
+
+        )
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #

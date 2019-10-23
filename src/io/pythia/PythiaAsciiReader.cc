@@ -30,7 +30,7 @@
 //
 #include "G4ParticleTable.hh"
 #include "PythiaAsciiReader.hh"
-#include "PythiaAsciiReaderMessenger.hh"
+#include "BeagleInterfaceMessenger.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4PhysicalConstants.hh"
 #include "Randomize.hh"

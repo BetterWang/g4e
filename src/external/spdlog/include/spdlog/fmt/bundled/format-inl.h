@@ -480,7 +480,7 @@ FMT_FUNC bool grisu2_round(
   return true;
 }
 
-// Generates output using Grisu2 digit-gen algorithm.
+// Generates output using Grisu2 digit-fBeagleReader algorithm.
 FMT_FUNC bool grisu2_gen_digits(
     char *buf, int &size, uint32_t hi, uint64_t lo, int &exp,
     uint64_t delta, const fp &one, const fp &diff, int max_digits) {

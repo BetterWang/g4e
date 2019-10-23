@@ -232,6 +232,7 @@
 #
 #/generator/pythiaAscii/open  jpsi_10x200_mu_JF.txt
 /generator/pythiaAscii/open pythia_200GeV_50mrad.txt
+#/generator/pythiaAscii/open pythia_200GeV_51mrad.txt
 #/generator/pythiaAscii/open pythia_200GeV_50mrad0.txt
 #/generator/pythiaAscii/open pythia_200GeV_neutron_50mrad.txt
 #/generator/pythiaAscii/open  BEAGLE.txt
@@ -295,5 +296,5 @@
 #/generator/hepmcAscii/verbose 1
 
 
-/run/beamOn 1000000
+/run/beamOn 1
 exit

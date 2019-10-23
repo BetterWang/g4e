@@ -46,20 +46,22 @@
 # Specify view angle:
 #/vis/viewer/set/viewpointThetaPhi 90. 0.
 #/vis/viewer/set/viewpointThetaPhi 0. 0.
-/vis/viewer/set/viewpointThetaPhi 90.0000 89.99999999
-##/vis/viewer/set/viewpointThetaPhi -135. -135.
+#/vis/viewer/set/viewpointThetaPhi 0. 0.
+#/vis/viewer/set/viewpointThetaPhi 90.0000 89.99999999
+/vis/viewer/set/viewpointThetaPhi -135. -135.
 #
 # Specify zoom value:
-/vis/viewer/zoom 50.
+#/vis/viewer/zoom 50.
+/vis/viewer/zoom 2.
 #
 # Specify style (surface or wireframe):
 #/vis/viewer/set/style wireframe
 #
 # Draw coordinate axes:
-/vis/scene/add/axes 0 0 0 1 m
+#/vis/scene/add/axes 0 0 0 1 m
 #/vis/scene/add/magneticField 200
 #/vis/scene/add/magneticField 100 lightArrow
-/vis/scene/add/magneticField 100
+###/vis/scene/add/magneticField 100
 #
 #
 # Draw smooth trajectories at end of event, showing trajectory points
@@ -120,7 +122,7 @@
 
 /vis/viewer/set/cutawayMode intersection
 
-#/vis/viewer/addCutawayPlane 0  30  0  cm  0. -100 0
+/vis/viewer/addCutawayPlane 0  30  0  cm  0. -100 0
 #/vis/viewer/addCutawayPlane 0  1  0  cm  0. -0.1 0
 #/vis/viewer/addCutawayPlane 0  1  0  cm  0. -500. 1.
 #/vis/viewer/addCutawayPlane 0  1  0  cm  0. 100. 1.

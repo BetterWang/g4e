@@ -74,53 +74,50 @@
 //===========================================
 //--------BARREL------
 #define USE_BARREL
-//#define USE_BARREL_det
+#define USE_BARREL_det
 //#define USE_BEAMPIPE 1 // beampipe 
 //------- subdetector-volumes  barrel ----- 
 
-//#define USE_CB_VTX
+#define USE_CB_VTX
 //#define  USE_VTX0 1   // for simple vtx geom
-//#define USE_CB_VTX_LADDERS
+#define USE_CB_VTX_LADDERS
 //#define  USE_CB_VTX_ENDCAPS    // for vxt endcaps ladders
 //#define  USE_VTX_DISKS    // for vxt disks along beampipe
 //#define USE_VTX_E 1   // for vxt endcaps 
 
 
-//#define USE_CB_CTD
-//#define USE_CB_CTD_Si  1 // silicon version of CTD
+#define USE_CB_CTD
+#define USE_CB_CTD_Si  1 // silicon version of CTD
 //#define USE_CB_CTD_Straw 1 // straw version of CTD
 
-//#define USE_CB_DIRC
-//#define USE_CB_DIRC_bars  1 // bars for DIRC
+#define USE_CB_DIRC
+#define USE_CB_DIRC_bars  1 // bars for DIRC
 
-//#define USE_CB_EMCAL
-//#define USE_CB_HCAL
-//#define USE_CB_HCAL_D // hcal detector
-//#define USE_GEM   // volumes
-//#define USE_GEMb  // detectors
-
+#define USE_CB_EMCAL
+#define USE_CB_HCAL
+#define USE_CB_HCAL_D // hcal detector
 
 //==============================================
 //--------H-encap------
-//#define USE_CI_ENDCAP
+#define USE_CI_ENDCAP
 //------- subdetector-volumes H-encap -----
-//#define USE_CI_GEM
-//#define USE_CI_DRICH
+#define USE_CI_GEM
+#define USE_CI_DRICH
 //#define USE_CI_TRD
 //#define USE_CI_TRD_D  // -detector and radiator
-//#define USE_CI_EMCAL
-//#define USE_CI_HCAL
-//#define USE_CI_HCAL_D
+#define USE_CI_EMCAL
+#define USE_CI_HCAL
+#define USE_CI_HCAL_D
 //--------- Forward D1
 //#define USE_FI_EMCAL
-//#define USE_FI_TRKD1
+#define USE_FI_TRKD1
 // ==============================================
 //--------E-encap------
-//#define USE_E_ENDCAP
+#define USE_E_ENDCAP
 //------- subdetector-volumes E-encap ----- 
-//#define  USE_CE_GEM
-//#define  USE_CE_EMCAL
-//#define  USE_CE_MRICH
+#define  USE_CE_GEM
+#define  USE_CE_EMCAL
+#define  USE_CE_MRICH
 
 //==============================================
 //#define  USE_FFE_CPOL
@@ -130,10 +127,10 @@
 //#define USE_FI_DIPOLE1_B
 //#define USE_FI_DIPOLE2
 
-//#define USE_FFI_TRKD2
-//#define USE_FFI_ZDC
-//#define USE_FFI_RPOT_D2
-//#define USE_FFI_RPOT_D3
+#define USE_FFI_TRKD2
+#define USE_FFI_ZDC
+#define USE_FFI_RPOT_D2
+#define USE_FFI_RPOT_D3
 //#define USE_FARFORWARD_GEM
 //#define USE_FARFORWARD_VP
 
@@ -643,22 +640,22 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     //-------------------------------------------------------------------------------
     //                      Place Si_disks inside D1a
     //-------------------------------------------------------------------------------
-    int mydipole_id=-1;
+    int mydipole_fi_trk1=-1;
 
     for (int id = 0; id < 20; id++) {
         if (strcmp(fSolid_BigDi_ffqsNAME[id], "iBDS1a") == 0) {
             printf("found D21=%s  Z=%f dZ=%f Rout=%f \n", fSolid_BigDi_ffqsNAME[id], fSolid_BigDi_ffqsZ[id],
                    fSolid_BigDi_ffqsSizeZDi[id],
                    fSolid_BigDi_ffqsRinDi[id]);
-            mydipole_id = id;
+            mydipole_fi_trk1 = id;
         };
     };
 
-    if (mydipole_id==-1) { printf("ERROR mydipole_id=-1\n"); sleep(3); exit(1); }
+    if (mydipole_fi_trk1==-1) { printf("ERROR mydipole_fi_trk1=-1\n"); sleep(3); exit(1); }
 
-    fConfig.fi_TRKD1.ROut = fSolid_BigDi_ffqsRinDi[mydipole_id] * cm;
-    fConfig.fi_TRKD1.Zpos = (fSolid_BigDi_ffqsSizeZDi[mydipole_id]/2.) * cm  -fConfig.fi_TRKD1.SizeZ/2.;
-    fi_TRKD1.ConstructA(fConfig.fi_TRKD1, World_Material, fPhysics_BigDi_m[mydipole_id]);
+    fConfig.fi_TRKD1.ROut = fSolid_BigDi_ffqsRinDi[mydipole_fi_trk1] * cm;
+    fConfig.fi_TRKD1.Zpos = (fSolid_BigDi_ffqsSizeZDi[mydipole_fi_trk1]/2.) * cm  -fConfig.fi_TRKD1.SizeZ/2.;
+    fi_TRKD1.ConstructA(fConfig.fi_TRKD1, World_Material, fPhysics_BigDi_m[mydipole_fi_trk1]);
     fi_TRKD1.ConstructDetectorsA();
 
    // fi_TRKD1.ConstructDetectorsB();
@@ -682,7 +679,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 #endif
 #endif
 
-  int mydipole_id;
+  int mydipole_ffi_trk2;
   //====================================================================================
     //==                    Far-Forward Area    D2, D3  ZDC. Roman Pots                 ==
     //====================================================================================
@@ -692,14 +689,14 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
             printf("fi_D2_GVol :: found D2=%s  Z=%f dZ=%f Rout=%f \n", fSolid_BigDi_ffqsNAME[id], fSolid_BigDi_ffqsZ[id],
                    fSolid_BigDi_ffqsSizeZDi[id],
                    fSolid_BigDi_ffqsRinDi[id]);
-            mydipole_id = id;
+            mydipole_ffi_trk2 = id;
         };
     };
     fConfig.ffi_TRKD2.RIn = 0 * cm;
-    fConfig.ffi_TRKD2.ROut = fSolid_BigDi_ffqsRinDi[mydipole_id] * cm;
-    fConfig.ffi_TRKD2.SizeZ = fSolid_BigDi_ffqsSizeZDi[mydipole_id] * m;
+    fConfig.ffi_TRKD2.ROut = fSolid_BigDi_ffqsRinDi[mydipole_ffi_trk2] * cm;
+    fConfig.ffi_TRKD2.SizeZ = fSolid_BigDi_ffqsSizeZDi[mydipole_ffi_trk2] * m;
 
-    ffi_TRKD2.Construct(fConfig.ffi_TRKD2, World_Material, fPhysics_BigDi_m[mydipole_id]);
+    ffi_TRKD2.Construct(fConfig.ffi_TRKD2, World_Material, fPhysics_BigDi_m[mydipole_ffi_trk2]);
     ffi_TRKD2.ConstructDetectors();
  //   for (int lay = 0; lay < fConfig.ffi_TRKD2.Nlayers; lay++) {
         if (ffi_TRKD2.lay_Logic) ffi_TRKD2.lay_Logic->SetSensitiveDetector(fCalorimeterSD);
@@ -713,7 +710,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     fConfig.ffi_ZDC.Xpos = -190*cm;
 
     ffi_ZDC.Construct(fConfig.ffi_ZDC, World_Material, World_Phys);
- //   ffi_ZDC.ConstructTowels();
+    ffi_ZDC.ConstructTowels();
      if (ffi_ZDC.Logic) ffi_ZDC.Logic->SetSensitiveDetector(fCalorimeterSD);
 
 #endif // end ffi_ZDC
@@ -733,7 +730,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     fConfig.ffi_RPOT_D3.Angle= -0.053;
     fConfig.ffi_RPOT_D3.rot_matx.rotateY(fConfig.ffi_RPOT_D3.Angle * rad);
     fConfig.ffi_RPOT_D3.PosZ = 5000*cm;
-    fConfig.ffi_RPOT_D3.PosX = -175*cm;
+    fConfig.ffi_RPOT_D3.PosX = -153*cm;
 
     ffi_RPOT_D3.Construct(fConfig.ffi_RPOT_D3, World_Material, World_Phys);
     if (ffi_RPOT_D3.Logic) ffi_RPOT_D3.Logic->SetSensitiveDetector(fCalorimeterSD);
@@ -897,12 +894,12 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
             printf("found D1b=%s  Z=%f dZ=%f Rout=%f \n", fSolid_BigDi_ffqsNAME[id], fSolid_BigDi_ffqsZ[id],
                    fSolid_BigDi_ffqsSizeZDi[id],
                    fSolid_BigDi_ffqsRinDi[id]);
-            mydipole_id = id;
+            mydipole_fi_trk2 = id;
         };
     };
     fi_D1B_GVol_RIn = 0 * cm;
-    fi_D1B_GVol_ROut = fSolid_BigDi_ffqsRinDi[mydipole_id] * cm;
-    fi_D1B_GVol_SizeZ = fSolid_BigDi_ffqsSizeZDi[mydipole_id] * m;
+    fi_D1B_GVol_ROut = fSolid_BigDi_ffqsRinDi[mydipole_fi_trk2] * cm;
+    fi_D1B_GVol_SizeZ = fSolid_BigDi_ffqsSizeZDi[mydipole_fi_trk2] * m;
 
 
     fi_D1B_GVol_Solid = new G4Tubs("fi_D1B_GVol_Solid", fi_D1B_GVol_RIn, fi_D1B_GVol_ROut,
@@ -912,7 +909,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 
     // ci_GEM_GVol_PosZ= SizeZ/2-abs(World_ShiftVTX)+ci_GEM_GVol_SizeZ-5*cm;   // --- need to find out why this 5 cm are needed
     fi_D1B_GVol_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), "fi_D1B_GVol_Phys", fi_D1B_GVol_Logic,
-                                             fPhysics_BigDi_m[mydipole_id], false, 0);
+                                             fPhysics_BigDi_m[mydipole_fi_trk2], false, 0);
 
     attr_fi_D1B_GVol = new G4VisAttributes(G4Color(0.3, 0, 3., 0.1));
     attr_fi_D1B_GVol->SetLineWidth(1);

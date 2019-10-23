@@ -90,6 +90,7 @@ if(evno!=myevno) {
 }
 
 #if 0
+    Nauka_11
     //===========================================================================
     //   DEBUG 
     //===========================================================================
@@ -436,23 +437,6 @@ if(evno!=myevno) {
         //  fclose(rc);
 
     }
-    //--------------------------for TUNE-------------------------------------------------------------------------
-   //----------------------------- Quads -------------------------------
-    if( strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(),"Physics_QUADS_hd_m_iQDS1S")==0 ){
-         runaction->FillHist2d(9, aStep->GetTrack()->GetPosition().x(),aStep->GetTrack()->GetPosition().y(),1.);
-    }
-    if( strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(),"Physics_QUADS_hd_m_iQDS1b")==0 ){
-         runaction->FillHist2d(10, aStep->GetTrack()->GetPosition().x(),aStep->GetTrack()->GetPosition().y(),1.);
-    }
-     if( strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(),"Physics_QUADS_hd_m_iQDS2S")==0 ){
-         runaction->FillHist2d(11, aStep->GetTrack()->GetPosition().x(),aStep->GetTrack()->GetPosition().y(),1.);
-    }
-     if( strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(),"Physics_QUADS_hd_m_iQDS2")==0 ){
-         runaction->FillHist2d(12, aStep->GetTrack()->GetPosition().x(),aStep->GetTrack()->GetPosition().y(),1.);
-    }
-    if( strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(),"Physics_QUADS_hd_m_iQDS3S")==0 ){
-         runaction->FillHist2d(13, aStep->GetTrack()->GetPosition().x(),aStep->GetTrack()->GetPosition().y(),1.);
-    }
 
 
   //----------------------------- dipoles -------------------------------
@@ -460,15 +444,6 @@ if(evno!=myevno) {
 
         fprintf(rc,"SteppingAction:: iBDS3 %f %f %f %f %f %f \n", aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), aStep->GetTrack()->GetPosition().z(),  aStep->GetTrack()->GetMomentumDirection().x(),aStep->GetTrack()->GetMomentumDirection().y(),aStep->GetTrack()->GetMomentumDirection().z());
          runaction->FillHist2d(7, aStep->GetTrack()->GetPosition().x(),aStep->GetTrack()->GetPosition().y(),1.);
-    }
-    if( strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(),"Physics_DIPOLE_m_iBDS2")==0 ){
-         runaction->FillHist2d(6, aStep->GetTrack()->GetPosition().x(),aStep->GetTrack()->GetPosition().y(),1.);
-    }
-    if( strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(),"Physics_DIPOLE_m_iBDS1a")==0 ){
-         runaction->FillHist2d(4, aStep->GetTrack()->GetPosition().x(),aStep->GetTrack()->GetPosition().y(),1.);
-    }
-    if( strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(),"Physics_DIPOLE_m_iBDS1b")==0 ){
-         runaction->FillHist2d(5, aStep->GetTrack()->GetPosition().x(),aStep->GetTrack()->GetPosition().y(),1.);
     }
 
 #endif

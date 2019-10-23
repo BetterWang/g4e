@@ -203,8 +203,10 @@ PythiaAsciiReader *PythiaAsciiReader::GeneratePythiaEvent() {
                     //G4LorentzVector p(px*GeV+rpx,py*GeV+rpy,pz*GeV+rpz,etot*GeV);
 
                     G4LorentzVector p(rpx * GeV, rpy * GeV, rpz * GeV, etot * GeV);
-
-                    G4LorentzVector v(Vx * mm, Vy * mm, Vz * mm, Vt * mm / c_light);
+                    double dVx = G4RandGauss::shoot(0,Vx);
+                    double dVy = G4RandGauss::shoot(0,Vy);
+                    double dVz = G4RandGauss::shoot(0,Vz);
+                    G4LorentzVector v(dVx * mm, dVy * mm, dVz * mm, Vt * mm / c_light);
                     std::cout << "G4LorentzVector p= " << p << std::endl;
                     
                     ptrk.P = p;

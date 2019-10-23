@@ -218,35 +218,53 @@ void JLeicRunAction::bookHisto()
   d2_hist[3] = new TH2D("Hist2d3","dE/dx  vs energy STRIP",1000, 0., 1000.,1000, 0., 5000.); 
  
   // ---- position at the  entrance of dipole -----
-  d2_hist[4] = new TH2D("d2_pos_iBDS1a_in"," d2_pos_iBDS1a_in ",120,-280.,-220.,80,-20.,20.);
-  d2_hist[5] = new TH2D("d2_pos_iBDS1b_in"," d2_pos_iBDS1b_in ",120,-320.,-260.,80,-20.,20.);
-  d2_hist[6] = new TH2D("d2_pos_iBDS2_in"," d2_pos_iBDS2_in ",120,-1180.,-1120.,80,-20.,20.);
-  d2_hist[7] = new TH2D("d2_pos_iBDS3_in"," d2_pos_iBDS3_in ",120,-1390.,-1330.,80,-20.,20.);
+  int dminY=40, nbinY=dminY*2,dmaxY;
+  int nbinX=0,dminX,dmaxX, dmX=0;
+
+  dmX=500; nbinX=dmX*2; dminX=-254-dmX; dmaxX=-254+dmX;
+  dminY=-dmX; dmaxY=dmX;nbinY=dmX*2;
+  d2_hist[4] = new TH2D("d2_hist4_iBDS1a_in"," d2_pos_iBDS1a_in ",nbinX,dminX,dmaxX,nbinY,dminY,dmaxY);
+  dmX=500; nbinX=dmX*2; dminX=-254-dmX; dmaxX=-254+dmX; dminY=-dmX; dmaxY=dmX;nbinY=dmX*2;
+  d2_hist[5] = new TH2D("d2_hist5_iBDS1b_in"," d2_pos_iBDS1b_in ",nbinX,dminX,dmaxX,nbinY,dminY,dmaxY);
+  dmX=400; nbinX=dmX*2; dminX=-1163-dmX; dmaxX=-1163+dmX;dminY=-dmX; dmaxY=dmX;nbinY=dmX*2;
+  d2_hist[6] = new TH2D("d2_hist6_iBDS2_in"," d2_pos_iBDS2_in ",nbinX,dminX,dmaxX,nbinY,dminY,dmaxY);
+  dmX=50; nbinX=dmX*2; dminX=-1358-dmX; dmaxX=-1358+dmX;dminY=-dmX; dmaxY=dmX;nbinY=dmX*2;
+  d2_hist[7] = new TH2D("d2_hist7_iBDS3_in"," d2_pos_iBDS3_in ",nbinX,dminX,dmaxX,nbinY,dminY,dmaxY);
 
   // ---- position at the entrance of quadr -----
+  dmX=100; nbinX=dmX*2; dminX=-360-dmX; dmaxX=-360+dmX;dminY=-dmX; dmaxY=dmX;nbinY=dmX*2;
+  d2_hist[8] = new TH2D("d2_hist8_iQDS1a_in"," d2_pos_iQDS1a_in ",nbinX,dminX,dmaxX,nbinY,dminY,dmaxY);
+  d2_hist[9] = new TH2D("d2_hist9_iQDS1S_in"," d2_pos_iQDS1S_in ",nbinX,dminX,dmaxX,nbinY,dminY,dmaxY);
+  dmX=140; nbinX=dmX*2; dminX=-532-dmX; dmaxX=-532+dmX;dminY=-dmX; dmaxY=dmX;nbinY=dmX*2;
+  d2_hist[10] = new TH2D("d2_hist10_iQDS1b_in"," d2_pos_iQDS1b_in ",nbinX,dminX,dmaxX,nbinY,dminY,dmaxY);
+  d2_hist[11] = new TH2D("d2_hist11_iQDS2S_in"," d2_pos_iQDS2S_in ",nbinX,-670.,-610.,nbinY,dminY,dmaxY);
+  dmX=200; nbinX=dmX*2; dminX=-709-dmX; dmaxX=-709+dmX;dminY=-dmX; dmaxY=dmX;nbinY=dmX*2;
+  d2_hist[12] = new TH2D("d2_hist12_iQDS2_in"," d2_pos_iQDS2_in ",nbinX,dminX,dmaxX,nbinY,dminY,dmaxY);
+  d2_hist[13] = new TH2D("d2_hist13_iQDS3S_in"," d2_pos_iQDS3S_in ",nbinX,-960.,-900.,nbinY,dminY,dmaxY);
+  d2_hist[14] = new TH2D("d2_hist14_iQDS4_in"," d2_pos_iQDS4_in ",nbinX,-1800.,-1700.,nbinY,dminY,dmaxY);
 
-  d2_hist[8] = new TH2D("d2_pos_iQDS1a_in"," d2_pos_iQDS1a_in ",120,-380.,-320.,80,-20.,20.);
-  d2_hist[9] = new TH2D("d2_pos_iQDS1S_in"," d2_pos_iQDS1S_in ",120,-510.,-450.,80,-20.,20.);
-  d2_hist[10] = new TH2D("d2_pos_iQDS1b_in"," d2_pos_iQDS1b_in ",120,-550.,-490.,80,-20.,20.);
-  d2_hist[11] = new TH2D("d2_pos_iQDS2S_in"," d2_pos_iQDS2S_in ",120,-670.,-610.,80,-20.,20.);
-  d2_hist[12] = new TH2D("d2_pos_iQDS2_in"," d2_pos_iQDS2_in ",120,-740.,-680.,80,-20.,20.);
-  d2_hist[13] = new TH2D("d2_pos_iQDS3S_in"," d2_pos_iQDS3S_in ",120,-960.,-900.,80,-20.,20.);
-  d2_hist[14] = new TH2D("d2_pos_iQDS4_in"," d2_pos_iQDS4_in ",200,-1800.,-1700.,80,-20.,20.);
+  d2_hist[20] = new TH2D("pt_at_RP"," pt at Roman pot",100,0.99,1.,200,0.,10.);
 
-    d2_hist[20] = new TH2D("pt_at_RP"," pt at Roman pot",100,0.99,1.,200,0.,10.);
-    // ---- position at the  EXIT  of dipole -----
-    d2_hist[24] = new TH2D("d2_pos_iBDS1a_out"," d2_pos_iBDS1a_out ",120,-360.,-300.,80,-20.,20.);
-    d2_hist[25] = new TH2D("d2_pos_iBDS1b_out"," d2_pos_iBDS1b_out ",120,-380.,-320.,80,-20.,20.);
-    d2_hist[26] = new TH2D("d2_pos_iBDS2_out"," d2_pos_iBDS2_out ",120,-1400.,-1340.,80,-20.,20.);
-    d2_hist[27] = new TH2D("d2_pos_iBDS3_out"," d2_pos_iBDS3_out ",120,-1550.,-1490.,80,-20.,20.);
-    // ---- position at the EXIT of quadr -----
-    d2_hist[28] = new TH2D("d2_pos_iQDS1a_out"," d2_pos_iQDS1a_out ",120,-510.,-450.,80,-20.,20.);
-    d2_hist[29] = new TH2D("d2_pos_iQDS1S_out"," d2_pos_iQDS1S_out ",120,-550.,-490.,80,-20.,20.);
-    d2_hist[30] = new TH2D("d2_pos_iQDS1b_out"," d2_pos_iQDS1b_out ",120,-670.,-610.,80,-20.,20.);
-    d2_hist[31] = new TH2D("d2_pos_iQDS2S_out"," d2_pos_iQDS2S_out ",120,-720.,-660.,80,-20.,20.);
-    d2_hist[32] = new TH2D("d2_pos_iQDS2_out"," d2_pos_iQDS2_out ",120,-970.,-910.,80,-20.,20.);
-    d2_hist[33] = new TH2D("d2_pos_iQDS3S_out"," d2_pos_iQDS3S_out ",120,-1180.,-1120.,80,-20.,20.);
-    d2_hist[34] = new TH2D("d2_pos_iQDS4_out"," d2_pos_iQDS4_out ",200,-2100.,-1700.,80,-20.,20.);
+  //--------------------------------------------
+  // ---- position at the  EXIT  of dipole -----
+  dmX=500; nbinX=dmX*2; dminX=-333-dmX; dmaxX=-333+dmX;dminY=-dmX; dmaxY=dmX;nbinY=dmX*2;
+  d2_hist[24] = new TH2D("d2_hist24_iBDS1a_out"," d2_pos_iBDS1a_out ",nbinX,dminX,dmaxX,nbinY,dminY,dmaxY);
+  d2_hist[25] = new TH2D("d2_hist25_iBDS1b_out"," d2_pos_iBDS1b_out ",nbinX,-380.,-320.,nbinY,dminY,dmaxY);
+  dmX=400; nbinX=dmX*2; dminX=-1368-dmX; dmaxX=-1368+dmX;dminY=-dmX; dmaxY=dmX;nbinY=dmX*2;
+  d2_hist[26] = new TH2D("d2_hist26_iBDS2_out"," d2_pos_iBDS2_out ",nbinX,dminX,dmaxX,nbinY,dminY,dmaxY);
+  dmX=50; nbinX=dmX*2*10; dminX=-1525-dmX; dmaxX=-1525+dmX;dminY=-dmX; dmaxY=dmX;nbinY=dmX*2*10;
+  d2_hist[27] = new TH2D("d2_hist27_iBDS3_out"," d2_pos_iBDS3_out ",nbinX,dminX,dmaxX,nbinY,dminY,dmaxY);
+  // ---- position at the EXIT of quadr -----
+   dmX=100; nbinX=dmX*2; dminX=-483-dmX; dmaxX=-483+dmX;dminY=-dmX; dmaxY=dmX;nbinY=dmX*2;
+  d2_hist[28] = new TH2D("d2_hist28_iQDS1a_out"," d2_pos_iQDS1a_out ",nbinX,dminX,dmaxX,nbinY,dminY,dmaxY);
+  d2_hist[29] = new TH2D("d2_hist29_iQDS1S_out"," d2_pos_iQDS1S_out ",nbinX,-550.,-490.,nbinY,dminY,dmaxY);
+  dmX=140; nbinX=dmX*2; dminX=-658-dmX; dmaxX=-658+dmX;dminY=-dmX; dmaxY=dmX;nbinY=dmX*2;
+  d2_hist[30] = new TH2D("d2_hist30_iQDS1b_out"," d2_pos_iQDS1b_out ",nbinX,dminX,dmaxX,nbinY,dminY,dmaxY);
+  d2_hist[31] = new TH2D("d2_hist31_iQDS2S_out"," d2_pos_iQDS2S_out ",nbinX,-720.,-660.,nbinY,dminY,dmaxY);
+  dmX=200; nbinX=dmX*2; dminX=-955-dmX; dmaxX=-955+dmX;dminY=-dmX; dmaxY=dmX;nbinY=dmX*2;
+  d2_hist[32] = new TH2D("d2_hist32_iQDS2_out"," d2_pos_iQDS2_out ",nbinX,dminX,dmaxX,nbinY,dminY,dmaxY);
+  d2_hist[33] = new TH2D("d2_hist33_iQDS3S_out"," d2_pos_iQDS3S_out ",nbinX,-1180.,-1120.,nbinY,dminY,dmaxY);
+  d2_hist[34] = new TH2D("d2_hist34_iQDS4_out"," d2_pos_iQDS4_out ",nbinX,-2100.,-1700.,nbinY,dminY,dmaxY);
 
     for (int in=0;in<12;in++) {
     sprintf(myname,"hmatrixOccup1_%d",in);

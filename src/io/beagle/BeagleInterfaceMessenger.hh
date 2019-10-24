@@ -40,23 +40,23 @@ class G4UIcmdWithAString;
 class G4UIcmdWithAnInteger;
 
 namespace g4e {
-class BeagleInterface;
+    class BeagleInterface;
 
-class BeagleInterfaceMessenger : public G4UImessenger
-        {
-public:
-    explicit BeagleInterfaceMessenger(g4e::BeagleInterface *interface);
-    ~BeagleInterfaceMessenger() override;
+    class BeagleInterfaceMessenger : public G4UImessenger
+            {
+    public:
+        explicit BeagleInterfaceMessenger(g4e::BeagleInterface *interface);
+        ~BeagleInterfaceMessenger() override;
 
-    void SetNewValue(G4UIcommand *command, G4String newValues) override;
-    G4String GetCurrentValue(G4UIcommand *command) override;
+        void SetNewValue(G4UIcommand *command, G4String newValues) override;
+        G4String GetCurrentValue(G4UIcommand *command) override;
 
-private:
-    g4e::BeagleInterface *fBeagleInterface;
-    G4UIdirectory *fDirectoryCmd;
-    G4UIcmdWithAnInteger *fVerboseCmd;
-    G4UIcmdWithAString *fOpenCmd;
-};
+    private:
+        g4e::BeagleInterface *fBeagleInterface;
+        G4UIdirectory *fDirectoryCmd;
+        G4UIcmdWithAnInteger *fVerboseCmd;
+        G4UIcmdWithAString *fOpenCmd;
+    };
 }
 
 #endif

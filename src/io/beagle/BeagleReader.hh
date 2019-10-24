@@ -41,25 +41,28 @@
 #include <TextEventFileReader.hh>
 #include <fstream>
 
-class BeagleReader{
-public:
-    BeagleReader() = default;
-    virtual ~BeagleReader() = default;
-    BeagleReader(BeagleReader&) = delete;           // No copy constructor (@see fLundReader type)
-    void operator=(const BeagleReader&) = delete;   // No copy operator (@see fLundReader type)
+namespace g4e {
 
-    // methods...
-    void Open(const std::string& fileName);           /// Opens the file with
-    void Close() {fLundReader.reset(nullptr);}     /// Closes a file if something is opened
-    bool IsOpened() { return (bool)fLundReader; }     /// True if some file is open
+    class BeagleReader {
+    public:
+        BeagleReader() = default;
 
-    /// Tries to read the next event. nullptr=no more events, throws on io errors
-    std::unique_ptr<g4e::BeagleEventData> ReadNextEvent();
+        virtual ~BeagleReader() = default;
 
-private:
-    // Generators Input Files : Beagle
-    std::unique_ptr<g4e::TextEventFileReader> fLundReader;
-};
+        BeagleReader(BeagleReader &) = delete;           // No copy constructor (@see fLundReader type)
+        void operator=(const BeagleReader &) = delete;   // No copy operator (@see fLundReader type)
 
+        // methods...
+        void Open(const std::string &fileName);           /// Opens the file with
+        void Close() {fLundReader.reset(nullptr);}        /// Closes a file if something is opened
+        bool IsOpened() { return (bool)fLundReader; }     /// True if some file is open
 
+        /// Tries to read the next event. nullptr=no more events, throws on io errors
+        std::unique_ptr<BeagleEventData> ReadNextEvent();
+
+    private:
+        // Generators Input Files : Beagle
+        std::unique_ptr<g4e::TextEventFileReader> fLundReader;
+    };
+}
 #endif

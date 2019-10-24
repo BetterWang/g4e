@@ -43,7 +43,7 @@
 #include <spdlog/fmt/bundled/format.h>
 
 
-void BeagleReader::Open(const std::string& fileName) {
+void g4e::BeagleReader::Open(const std::string& fileName) {
     using namespace g4e;
 
     // unique_ptr reset first creates a new object and only then deletes an old one
@@ -71,7 +71,7 @@ void BeagleReader::Open(const std::string& fileName) {
 }
 
 
-std::unique_ptr<BeagleEventData> BeagleReader::ReadNextEvent() {
+std::unique_ptr<BeagleEventData> g4e::BeagleReader::ReadNextEvent() {
     uint line_count = 0;
     // Read file lines until full event is read
     while(!fLundReader->IsNewEventReady())

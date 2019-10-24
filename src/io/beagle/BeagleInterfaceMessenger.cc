@@ -24,23 +24,22 @@
 // ********************************************************************
 
 #include "G4UIdirectory.hh"
-#include "G4UIcmdWithoutParameter.hh"
 #include "G4UIcmdWithAString.hh"
 #include "G4UIcmdWithAnInteger.hh"
 #include "BeagleInterfaceMessenger.hh"
-#include "BeagleReader.hh"
+#include "BeagleInterface.hh"
 
 
-BeagleInterfaceMessenger::BeagleInterfaceMessenger(BeagleInterface *interface)
+g4e::BeagleInterfaceMessenger::BeagleInterfaceMessenger(BeagleInterface *interface)
         : fBeagleInterface(interface)
 {
-    fDirectory = new G4UIdirectory("/generator/beagle/");
-    fDirectory->SetGuidance("Reading Beagle event from an Ascii file");
+    fDirectoryCmd = new G4UIdirectory("/generator/beagle/");
+    fDirectoryCmd->SetGuidance("Reading Beagle event from an Ascii file");
 
-    fVerbose = new G4UIcmdWithAnInteger("/generator/beagle/verbose", this);
-    fVerbose->SetGuidance("Set verbose level");
-    fVerbose->SetParameterName("verboseLevel", false, false);
-    fVerbose->SetRange("verboseLevel>=0 && verboseLevel<=1");
+    fVerboseCmd = new G4UIcmdWithAnInteger("/generator/beagle/verbose", this);
+    fVerboseCmd->SetGuidance("Set verbose level");
+    fVerboseCmd->SetParameterName("verboseLevel", false, false);
+    fVerboseCmd->SetRange("verboseLevel>=0 && verboseLevel<=1");
 
     fOpenCmd = new G4UIcmdWithAString("/generator/generator/open", this);
     fOpenCmd->SetGuidance("(re)open data file (Beagle Ascii format)");
@@ -48,17 +47,17 @@ BeagleInterfaceMessenger::BeagleInterfaceMessenger(BeagleInterface *interface)
 }
 
 
-BeagleInterfaceMessenger::~BeagleInterfaceMessenger() {
-    delete fVerbose;
+g4e::BeagleInterfaceMessenger::~BeagleInterfaceMessenger() {
+    delete fVerboseCmd;
     delete fOpenCmd;
-    delete fDirectory;
+    delete fDirectoryCmd;
 }
 
 
-void BeagleInterfaceMessenger::SetNewValue(G4UIcommand *command, G4String newValues) {
+void g4e::BeagleInterfaceMessenger::SetNewValue(G4UIcommand *command, G4String newValues) {
     // verbosity level
-    if (command == fVerbose) {
-        int level = fVerbose->GetNewIntValue(newValues);
+    if (command == fVerboseCmd) {
+        int level = G4UIcmdWithAnInteger::GetNewIntValue(newValues);
         fBeagleInterface->SetVerboseLevel(level);
     }
 
@@ -69,10 +68,10 @@ void BeagleInterfaceMessenger::SetNewValue(G4UIcommand *command, G4String newVal
 }
 
 
-G4String BeagleInterfaceMessenger::GetCurrentValue(G4UIcommand *command) {
+G4String g4e::BeagleInterfaceMessenger::GetCurrentValue(G4UIcommand *command) {
     G4String value;
-    if (command == fVerbose) {
-        value = fVerbose->ConvertToString(fBeagleInterface->GetVerboseLevel());
+    if (command == fVerboseCmd) {
+        value = G4UIcmdWithAnInteger::ConvertToString(fBeagleInterface->GetVerboseLevel());
     } else if (command == fOpenCmd) {
         value = fBeagleInterface->GetFileName();
     }

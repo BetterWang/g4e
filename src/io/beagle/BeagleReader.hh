@@ -36,25 +36,27 @@
 #ifndef BEAGLE_ASCII_READER_H
 #define BEAGLE_ASCII_READER_H
 
-#include "BeagleInterface.hh"
+
 #include "BeagleEventData.hh"
 #include <TextEventFileReader.hh>
 #include <fstream>
 
-class BeagleInterfaceMessenger;
-
 class BeagleReader{
 public:
-    BeagleReader();
-    virtual ~BeagleReader();
+    BeagleReader() = default;
+    virtual ~BeagleReader() = default;
+    BeagleReader(BeagleReader&) = delete;           // No copy constructor (@see fLundReader type)
+    void operator=(const BeagleReader&) = delete;   // No copy operator (@see fLundReader type)
 
     // methods...
-    void Open(const std::string& fileName);   /// Opens the file with
+    void Open(const std::string& fileName);           /// Opens the file with
+    void Close() {fLundReader.reset(nullptr);}     /// Closes a file if something is opened
+    bool IsOpened() { return (bool)fLundReader; }     /// True if some file is open
 
-    g4e::BeagleEventData* ReadNextEvent();    /// Tries to read the next event. nullptr=no more events, throws on io errors
+    /// Tries to read the next event. nullptr=no more events, throws on io errors
+    std::unique_ptr<g4e::BeagleEventData> ReadNextEvent();
 
 private:
-
     // Generators Input Files : Beagle
     std::unique_ptr<g4e::TextEventFileReader> fLundReader;
 };

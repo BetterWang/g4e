@@ -40,90 +40,104 @@
 #include "G4SystemOfUnits.hh"
 
 
-BeagleInterface::BeagleInterface() {
-    fReader = new BeagleReader();
-    fMessenger = new BeagleInterfaceMessenger(this);
-}
+    g4e::BeagleInterface::BeagleInterface()
+    {
+        fReader = new BeagleReader();
+        fMessenger = new BeagleInterfaceMessenger(this);
+        fVerbose=1;
+    }
 
+    g4e::BeagleInterface::~BeagleInterface()
+    {
 
-BeagleInterface::~BeagleInterface() {
+    }
 
-}
+    G4bool g4e::BeagleInterface::CheckVertexInsideWorld(const G4ThreeVector &pos) const {
+        G4Navigator *navigator = G4TransportationManager::GetTransportationManager()->GetNavigatorForTracking();
 
+        G4VPhysicalVolume *world = navigator->GetWorldVolume();
+        G4VSolid *solid = world->GetLogicalVolume()->GetSolid();
+        EInside checkResult = solid->Inside(pos);
 
-G4bool BeagleInterface::CheckVertexInsideWorld(const G4ThreeVector &pos) const {
-    G4Navigator *navigator = G4TransportationManager::GetTransportationManager()->GetNavigatorForTracking();
+        return checkResult == kInside;
+    }
 
-    G4VPhysicalVolume *world = navigator->GetWorldVolume();
-    G4VSolid *solid = world->GetLogicalVolume()->GetSolid();
-    EInside checkResult = solid->Inside(pos);
+    void g4e::BeagleInterface::Open(const std::string &fileName) {
+        fFileName = fileName;
+        G4cout << "Beagle input file: '" << fileName << "'" << G4endl;
+    }
 
-    return checkResult == kInside;
-}
+    void g4e::BeagleInterface::GeneratePrimaryVertex(G4Event *anEvent) {
 
+        auto beagleEvent = fReader->ReadNextEvent();
 
-void BeagleInterface::PyMC2G4(const BeagleReader *reader, G4Event *g4event) {
-    printf("=======> ENTER PyMC2G4 N part=%d vec=%ld<===============\n", reader->N, reader->pyEvt.size());
+        for(auto beagleParticle: beagleEvent->particles) {
 
-    G4PrimaryVertex *g4vtx;
-    int Np = reader->pyEvt.size(); // =reader->N;
-
-    for (int ip = 0; ip < Np; ip++) {  // loop for particles ...
-
-        // check world boundary
-        //G4LorentzVector XVtxVect(reader->V[0][ip],reader->V[1][ip],reader->V[2][ip],reader->V[3][ip]);
-        G4LorentzVector xvtx(reader->pyEvt.at(ip).V);
-
-        if (!CheckVertexInsideWorld(xvtx.vect())) {
-            printf("PyMC2G4: vtx outside world ip=%d\n", ip);
-            continue;
         }
+    };
 
-        //if (ip==0) {
-        // create G4PrimaryVertex and associated G4PrimaryParticles
-        g4vtx = new G4PrimaryVertex(xvtx.x(), xvtx.y(), xvtx.z(), xvtx.t());
-        //}
 
-        //G4int pdgcode= reader->K[2][ip];
+
+/*
+    void g4e::BeagleInterface::PyMC2G4(const BeagleReader *reader, G4Event *g4event) {
+        printf("=======> ENTER PyMC2G4 N part=%d vec=%ld<===============\n", reader->N, reader->pyEvt.size());
+
+        G4PrimaryVertex *g4vtx;
+        int Np = reader->pyEvt.size(); // =reader->N;
+
+        for (int ip = 0; ip < Np; ip++) {  // loop for particles ...
+
+            // check world boundary
+            //G4LorentzVector XVtxVect(reader->V[0][ip],reader->V[1][ip],reader->V[2][ip],reader->V[3][ip]);
+            G4LorentzVector xvtx(reader->pyEvt.at(ip).V);
+
+            if (!CheckVertexInsideWorld(xvtx.vect())) {
+                printf("PyMC2G4: vtx outside world ip=%d\n", ip);
+                continue;
+            }
+
+            //if (ip==0) {
+            // create G4PrimaryVertex and associated G4PrimaryParticles
+            g4vtx = new G4PrimaryVertex(xvtx.x(), xvtx.y(), xvtx.z(), xvtx.t());
+            //}
+
+            //G4int pdgcode= reader->K[2][ip];
+            G4int pdgcode = reader->pyEvt.at(ip).K[2];
+            G4LorentzVector p(reader->pyEvt.at(ip).P);
+            G4PrimaryParticle *g4prim = new G4PrimaryParticle(pdgcode, p.x(), p.y(), p.z());
+
+            printf("PyMC2G4:: PDG= %d vtx=(%f,%f,%f) mom=(%f,%f,%f) \n", pdgcode, xvtx.x() / mm, xvtx.y() / mm,
+                   xvtx.z() / mm, p.x() / GeV, p.y() / GeV, p.z() / GeV);
+
+            g4vtx->SetPrimary(g4prim);
+            g4event->AddPrimaryVertex(g4vtx);
+        }
+        //  g4event-> AddPrimaryVertex(g4vtx);
+
+    }
+
+    void g4e::BeagleInterface::GeneratePrimaryVertex(G4Event *anEvent) {
+        // delete previous event object
+        // delete hepmcEvent;
         G4int pdgcode = reader->pyEvt.at(ip).K[2];
         G4LorentzVector p(reader->pyEvt.at(ip).P);
         G4PrimaryParticle *g4prim = new G4PrimaryParticle(pdgcode, p.x(), p.y(), p.z());
 
-        printf("PyMC2G4:: PDG= %d vtx=(%f,%f,%f) mom=(%f,%f,%f) \n", pdgcode, xvtx.x() / mm, xvtx.y() / mm,
-               xvtx.z() / mm, p.x() / GeV, p.y() / GeV, p.z() / GeV);
+        // generate next event
+        BeagleReader *pyEvent = GenerateBeagleEvent();
 
-        g4vtx->SetPrimary(g4prim);
-        g4event->AddPrimaryVertex(g4vtx);
+        if (!pyEvent) {
+            G4cout << "BeagleInterface: no generated particles. Terminating the run..." << G4endl;
+            G4RunManager::GetRunManager()->AbortRun();
+            return;
+        } else {
+            PyMC2G4(pyEvent, anEvent);
+        }
     }
-    //  g4event-> AddPrimaryVertex(g4vtx);
 
-}
+    void g4e::BeagleInterface::PyMC2G4(const BeagleEventData *beagleEvent, G4Event *g4event) {
 
-
-void BeagleInterface::GeneratePrimaryVertex(G4Event *anEvent) {
-    // delete previous event object
-    // delete hepmcEvent;
-
-    // generate next event
-    BeagleReader *pyEvent = GenerateBeagleEvent();
-
-    if (!pyEvent) {
-        G4cout << "BeagleInterface: no generated particles. Terminating the run..."<< G4endl;
-        G4RunManager::GetRunManager()->AbortRun();
-        return;
     }
-    else {
-        PyMC2G4(pyEvent, anEvent);
-    }
-}
+*/
 
-void BeagleInterface::PyMC2G4(const BeagleEventData *beagleEvent, G4Event *g4event) {
 
-}
-
-void BeagleInterface::Open(const std::string &fileName)
-{
-    G4cout << "Beagle input file: '" << fileName << "'" << G4endl;
-    
-
-};

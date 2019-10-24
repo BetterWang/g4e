@@ -43,18 +43,13 @@
 #include <spdlog/fmt/bundled/format.h>
 
 
-
-BeagleReader::BeagleReader():
-        fFileName() {
-}
-
-
-BeagleReader::~BeagleReader() {
-}
-
-
 void BeagleReader::Open(const std::string& fileName) {
     using namespace g4e;
+
+    // unique_ptr reset first creates a new object and only then deletes an old one
+    // We want to first close the underlying file, then open a new one.
+    // So we put this reset first
+    fLundReader.reset(nullptr);
 
     fLundReader = std::unique_ptr<g4e::TextEventFileReader>(new TextEventFileReader(
             fileName,
@@ -76,7 +71,7 @@ void BeagleReader::Open(const std::string& fileName) {
 }
 
 
-g4e::BeagleEventData* BeagleReader::ReadNextEvent(){
+std::unique_ptr<BeagleEventData> BeagleReader::ReadNextEvent() {
     uint line_count = 0;
     // Read file lines until full event is read
     while(!fLundReader->IsNewEventReady())
@@ -102,6 +97,6 @@ g4e::BeagleEventData* BeagleReader::ReadNextEvent(){
     auto event = new BeagleEventData();
     event->text_event = fLundReader->GetEvent();
     event->Parse();
-    event->started_at_line = event->text_event.
+    event->particles = BeagleParticle::ParseParticles(event->text_event->particle_values);
     return event;
 }

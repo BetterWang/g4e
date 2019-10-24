@@ -29,33 +29,34 @@
 // $Id: BeagleReaderMessenger.hh 77801 2013-11-28 13:33:20Z gcosmo $
 //
 
-#ifndef BEAGLE_ASCII_READER_MESSENGER_H
-#define BEAGLE_ASCII_READER_MESSENGER_H
+#ifndef BEAGLE_INTERFACE_MESSENGER_H
+#define BEAGLE_INTERFACE_MESSENGER_H
 
 #include "G4UImessenger.hh"
 
-class BeagleInterface;
 class G4UIdirectory;
 class G4UIcmdWithoutParameter;
 class G4UIcmdWithAString;
 class G4UIcmdWithAnInteger;
 
+namespace g4e {
+class BeagleInterface;
+
 class BeagleInterfaceMessenger : public G4UImessenger
         {
 public:
-    explicit BeagleInterfaceMessenger(BeagleInterface *interface);
+    explicit BeagleInterfaceMessenger(g4e::BeagleInterface *interface);
     ~BeagleInterfaceMessenger() override;
 
     void SetNewValue(G4UIcommand *command, G4String newValues) override;
     G4String GetCurrentValue(G4UIcommand *command) override;
 
 private:
-    BeagleInterface *fBeagleInterface;
-    G4UIdirectory *fDirectory;
-    G4UIcmdWithAnInteger *fVerbose;
+    g4e::BeagleInterface *fBeagleInterface;
+    G4UIdirectory *fDirectoryCmd;
+    G4UIcmdWithAnInteger *fVerboseCmd;
     G4UIcmdWithAString *fOpenCmd;
 };
-
-
+}
 
 #endif

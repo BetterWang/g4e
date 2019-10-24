@@ -35,9 +35,10 @@
 #include "G4SystemOfUnits.hh"
 #include "BeagleInterfaceMessenger.hh"
 
+
+namespace g4e {
 class BeagleEventData;
 class BeagleReader;
-
 
 class BeagleInterface : public G4VPrimaryGenerator {
 
@@ -51,7 +52,7 @@ public:
     void GeneratePrimaryVertex(G4Event *anEvent) override;
 
     /// Get verbosity level 0 = silent, 1 = some, 2 = debug
-    void SetVerboseLevel(G4int i){fVerbose = i;}
+    void SetVerboseLevel(G4int i) { fVerbose = i; }
 
     /// Set verbosity level 0 = silent, 1 = some, 2 = debug
     G4int GetVerboseLevel() const { return fVerbose; };
@@ -70,13 +71,12 @@ protected:
     // can be implemented in your own class.
     virtual G4bool CheckVertexInsideWorld(const G4ThreeVector &pos) const;
 
-    // service method for conversion from Pythia/LUND arrays to G4Event
-    void PyMC2G4(const BeagleEventData *beagleEvent, G4Event *g4event);
 
 private:
     G4int fVerbose;                         /// verbosity level 0 = silent, 1 = some, 2 = debug
     std::string fFileName;
-    BeagleInterfaceMessenger *fMessenger;
-    BeagleReader* fReader;
+    g4e::BeagleInterfaceMessenger *fMessenger;
+    g4e::BeagleReader* fReader;
 };
+}
 #endif

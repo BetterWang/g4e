@@ -21,7 +21,7 @@
 #include "BeagleParticle.hh"
 
 
-namespace g4e{
+
 class BeagleEventData
 {
 public:
@@ -30,9 +30,7 @@ public:
 
     void Parse()
     {
-
-
-        this->started_at_line = text_event->started_at_line;
+        //this->started_at_line = text_event->started_at_line;
         auto event_tokens = text_event->event_values[0];
 
         // event_tokens[0] I  line num (always zero in file)
@@ -169,12 +167,11 @@ public:
     int    nrTracks;           //59 I  number of tracks in this event, including event history
 
     /// Collection of primary vertexes (that came from a generator)
-    std::vector<BeagleParticle *> particles; // Primary particles (that comes from a generator)
+    std::vector<std::unique_ptr<BeagleParticle>> particles; // Primary particles (that comes from a generator)
 
     std::unique_ptr<g4e::TextFileEvent> text_event;
     bool is_parsed = false;
 private:
 };
-}
 
 #endif //EJANA_JLEIC_GEANT_EVENT_H

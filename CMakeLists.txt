@@ -103,6 +103,7 @@ include_directories(
             ${PROJECT_SOURCE_DIR}/src/io/hepmc2
             ${PROJECT_SOURCE_DIR}/src/io/pythia
             ${PROJECT_SOURCE_DIR}/src/io/generic_lund
+            ${PROJECT_SOURCE_DIR}/src/io/root_output
             ${PROJECT_SOURCE_DIR}/src/helpers
 
         SYSTEM

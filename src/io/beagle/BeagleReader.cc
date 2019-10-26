@@ -71,7 +71,7 @@ void g4e::BeagleReader::Open(const std::string& fileName) {
 }
 
 
-std::unique_ptr<BeagleEventData> g4e::BeagleReader::ReadNextEvent() {
+std::unique_ptr<g4e::BeagleEventData> g4e::BeagleReader::ReadNextEvent() {
     uint line_count = 0;
     // Read file lines until full event is read
     while(!fLundReader->IsNewEventReady())
@@ -94,7 +94,7 @@ std::unique_ptr<BeagleEventData> g4e::BeagleReader::ReadNextEvent() {
         }
     }
 
-    auto event = new BeagleEventData();
+    std::unique_ptr<g4e::BeagleEventData> event(new BeagleEventData());
     event->text_event = fLundReader->GetEvent();
     event->Parse();
     event->particles = BeagleParticle::ParseParticles(event->text_event->particle_values);

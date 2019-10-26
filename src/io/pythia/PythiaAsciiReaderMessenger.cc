@@ -27,7 +27,7 @@
 #include "G4UIcmdWithoutParameter.hh"
 #include "G4UIcmdWithAString.hh"
 #include "G4UIcmdWithAnInteger.hh"
-#include "BeagleInterfaceMessenger.hh"
+#include "PythiaAsciiReaderMessenger.hh"
 #include "PythiaAsciiReader.hh"
 
 

@@ -90,7 +90,7 @@ namespace g4e {
      *
      * @param [in,out] s - std::string that will be trimmed
      */
-    void Trim( std::string& s )
+    inline void Trim( std::string& s )
     {
         // Remove leading and trailing whitespace
         static const char whitespace[] = CCDB_BLANK_CHARACTERS;

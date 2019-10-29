@@ -28,7 +28,7 @@
 //
 // $Id: PythiaAsciiReader.cc 77801 2013-11-28 13:33:20Z gcosmo $
 //
-#include "G4ParticleTable.hh"
+
 #include "PythiaAsciiReader.hh"
 #include "PythiaAsciiReaderMessenger.hh"
 #include "G4SystemOfUnits.hh"
@@ -47,20 +47,19 @@ double TBUNCH;                     ///< Time Between Bunches
 double GEN_VERBOSITY;
 //----------------------
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
 PythiaAsciiReader::PythiaAsciiReader()
         : filename("xxx.dat"), verbose(0) {
-
     messenger = new PythiaAsciiReaderMessenger(this);
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
 PythiaAsciiReader::~PythiaAsciiReader() {
     gif.close();
     delete messenger;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
 void PythiaAsciiReader::Initialize() {
     //=====================  open pythia file =========================
     gif.close();
@@ -78,7 +77,6 @@ void PythiaAsciiReader::Initialize() {
 }
 
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 PythiaAsciiReader *PythiaAsciiReader::GeneratePythiaEvent() {
 
 
@@ -98,21 +96,21 @@ PythiaAsciiReader *PythiaAsciiReader::GeneratePythiaEvent() {
                 lundUserDefined.push_back(tmp);
             }
         }
-	// 11    0    1        2112        0        0       -1.332584       -0.299053       31.538593       31.582129        0.939570        0.000000        0.000000        0.000000
-	//	printf("=====> LUND 1  !!!! npart=%d dCone=%f dmyMom=%f \n", nparticles, dCone, dmyMom);
-	printf("=====> LUND 1  !!!! npart=%d \n", nparticles);
+        // 11    0    1        2112        0        0       -1.332584       -0.299053       31.538593       31.582129        0.939570        0.000000        0.000000        0.000000
+        //	printf("=====> LUND 1  !!!! npart=%d dCone=%f dmyMom=%f \n", nparticles, dCone, dmyMom);
+        printf("=====> LUND 1  !!!! npart=%d \n", nparticles);
         N = 0;
         pyEvt.clear();
 
         if (nparticles < 0) { //--- generate particles in CONE ---
 
-	  double dCone;
-	  gif >> dCone;
-	  double dmyMom;
-	  gif >> dmyMom;
+            double dCone;
+            gif >> dCone;
+            double dmyMom;
+            gif >> dmyMom;
 
 
-           nparticles = -nparticles;
+            nparticles = -nparticles;
             for (int kp = 0; kp < nparticles; kp++) {
 
                 //--- GEMC version of LUND ---
@@ -152,38 +150,40 @@ PythiaAsciiReader *PythiaAsciiReader::GeneratePythiaEvent() {
                     Theta = acos(pz / ptot);
 
                     //double dTheta = (0.5 - G4UniformRand()) * 2. * dCone; // --- flat
-		    //  Theta += dTheta;
-		    double dTheta = G4RandGauss::shoot(0,dCone); 
+                    //  Theta += dTheta;
+                    double dTheta = G4RandGauss::shoot(0, dCone);
 
                     //double rpz  = (0.5-G4UniformRand())*2.*0.05 * pz*GeV;
                     //double rpz = ptot * cos(Theta);
 
                     Phi = atan2(py, px);
-                    double phi0 = G4UniformRand()*2.*pi; // --- flat in phi
+                    double phi0 = G4UniformRand() * 2. * pi; // --- flat in phi
 
-		    G4ThreeVector dir(std::sin(dTheta)*std::cos(phi0),std::sin(dTheta)*std::sin(phi0),std::cos(dTheta));
-		    dir.rotateY(Theta); dir.rotateZ(Phi);
+                    G4ThreeVector dir(std::sin(dTheta) * std::cos(phi0), std::sin(dTheta) * std::sin(phi0),
+                                      std::cos(dTheta));
+                    dir.rotateY(Theta);
+                    dir.rotateZ(Phi);
 
-		    ptot = G4RandGauss::shoot(ptot,dmyMom); 
-		    dir.setMag(ptot); //- new ptot Gauss !!!
-		    //dir.setMag(etot);  //--- use energi as momentum !!!! for beam protons !!! if beam is defined by momentum !!!!
+                    ptot = G4RandGauss::shoot(ptot, dmyMom);
+                    dir.setMag(ptot); //- new ptot Gauss !!!
+                    //dir.setMag(etot);  //--- use energi as momentum !!!! for beam protons !!! if beam is defined by momentum !!!!
 
                     //--- recalculate etot if PROTON !!!
-		    double proton_mass=0.938272;
-		 //JF
-		   etot=sqrt(ptot*ptot+proton_mass*proton_mass);
-		  //  etot=sqrt(DMptot*DMptot+proton_mass*proton_mass);
+                    double proton_mass = 0.938272;
+                    //JF
+                    etot = sqrt(ptot * ptot + proton_mass * proton_mass);
+                    //  etot=sqrt(DMptot*DMptot+proton_mass*proton_mass);
 
-		    /*
-                    Phi += dPhi;
-                    double rpt = ptot * sin(Theta);
-                    double rpx = rpt * cos(Phi);
-                    double rpy = rpt * sin(Phi);
-		    */
-		    double rpz=dir.z();
-		    double rpx=dir.x();
-		    double rpy=dir.y();
-		    
+                    /*
+                            Phi += dPhi;
+                            double rpt = ptot * sin(Theta);
+                            double rpx = rpt * cos(Phi);
+                            double rpy = rpt * sin(Phi);
+                    */
+                    double rpz = dir.z();
+                    double rpx = dir.x();
+                    double rpy = dir.y();
+
                     std::cout << "G4LorentzVector px= " << rpx << " py= " << rpy << " pz= " << rpz << std::endl;
                     /*
                     double rpt = sqrt(px*px + py*py);
@@ -208,7 +208,7 @@ PythiaAsciiReader *PythiaAsciiReader::GeneratePythiaEvent() {
                     double dVz = G4RandGauss::shoot(0,Vz);
                     G4LorentzVector v(dVx * mm, dVy * mm, dVz * mm, Vt * mm / c_light);
                     std::cout << "G4LorentzVector p= " << p << std::endl;
-                    
+
                     ptrk.P = p;
                     ptrk.V = v;
                     pyEvt.push_back(ptrk);
@@ -227,15 +227,15 @@ PythiaAsciiReader *PythiaAsciiReader::GeneratePythiaEvent() {
                 double px, py, pz, etot, mass;
                 int parent = 0, daughter1 = 0, daughter2 = 0;
                 // i,icharge,flag,PID,K(I,4),K(I,5) P(I,1),P(I,2),P(I,3),P(I,4),P(I,5)  V(I,1)*0.1,V(I,2)*0.1,VZoffSet*0.1
-                int ip, icharge, itype, iPDG, K4, K5; //, pPDG=0;
+                int ip, itype, iPDG, K4, K5; //, pPDG=0;
                 double charge;
-		//             gif >> ip >> icharge >> itype >> iPDG >> K4 >> K5 >> px >> py >> pz >> etot >> mass >> Vx >> Vy >> Vz;
-		//             printf("read: i=%3d Charge=%2d  Sts=%d  PDG=%5d  K4=%3d  K5=%3d    P=(%8.3f,%8.3f,%8.3f,%8.3f,%8.3f)    Vtx=(%f,%f,%f) \n",
+                //             gif >> ip >> icharge >> itype >> iPDG >> K4 >> K5 >> px >> py >> pz >> etot >> mass >> Vx >> Vy >> Vz;
+                //             printf("read: i=%3d Charge=%2d  Sts=%d  PDG=%5d  K4=%3d  K5=%3d    P=(%8.3f,%8.3f,%8.3f,%8.3f,%8.3f)    Vtx=(%f,%f,%f) \n",
                 //       ip, icharge, itype, iPDG, K4, K5, px, py, pz, etot, mass, Vx, Vy, Vz);
-                 gif >> ip >> charge >> itype >> iPDG >> K4 >> K5 >> px >> py >> pz >> etot >> mass >> Vx >> Vy >> Vz;
-                 printf("read LUND: i=%3d Charge=%f  Sts=%d  PDG=%5d  K4=%3d  K5=%3d    P=(%8.3f,%8.3f,%8.3f,%8.3f,%8.3f)    Vtx=(%f,%f,%f) \n",
+                gif >> ip >> charge >> itype >> iPDG >> K4 >> K5 >> px >> py >> pz >> etot >> mass >> Vx >> Vy >> Vz;
+                printf("read LUND: i=%3d Charge=%f  Sts=%d  PDG=%5d  K4=%3d  K5=%3d    P=(%8.3f,%8.3f,%8.3f,%8.3f,%8.3f)    Vtx=(%f,%f,%f) \n",
                        ip, charge, itype, iPDG, K4, K5, px, py, pz, etot, mass, Vx, Vy, Vz);
-               Vt = 0;
+                Vt = 0;
                 daughter1 = K4;
                 daughter2 = K5;
 

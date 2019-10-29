@@ -378,6 +378,7 @@ G4bool JLeicVertexSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
         mRootEventsOut->AddHit(
                  mHitsCount,  /* aHitId */
                  curTrackID,  /* aTrackId */
+                 0,
                  xstep / mm,  /* aX */
                  ystep / mm,  /* aY */
                  zstep / mm,  /* aZ */

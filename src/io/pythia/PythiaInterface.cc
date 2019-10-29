@@ -29,7 +29,7 @@
 // $Id: PythiaInterface.cc 77801 2013-11-28 13:33:20Z gcosmo $
 //
 #include "PythiaAsciiReader.hh"
-#include "PythiaInterface.hh"
+#include "PythialeInterface.hh"
 
 #include "G4RunManager.hh"
 #include "G4Event.hh"

@@ -32,7 +32,7 @@
 #ifndef PYTHIA_ASCII_READER_H
 #define PYTHIA_ASCII_READER_H
 
-#include "PythiaInterface.hh"
+#include "PythialeInterface.hh"
 #include <fstream>
 
 class PythiaAsciiReaderMessenger;

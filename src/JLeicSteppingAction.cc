@@ -37,7 +37,7 @@
 #include "G4SteppingManager.hh"
 #include "G4TrackVector.hh"
 #include "JLeicSteppingAction.hh"
-#include "JLeicPrimaryGeneratorAction.hh"
+#include "PrimaryGeneratorAction.hh"
 #include "JLeicEventAction.hh"
 #include "JLeicRunAction.hh"
 #include "G4Event.hh"
@@ -452,7 +452,7 @@ if(evno!=myevno) {
 
     if (IDnow != IDold) {
         IDold = IDnow;
-        //printf(" primary=%s\n",JLeicPrimaryGeneratorAction::GetPrimaryName().c_str());
+        //printf(" primary=%s\n",PrimaryGeneratorAction::GetPrimaryName().c_str());
         //-----------------
         //-- e+ e- vertex
         if (
@@ -644,7 +644,7 @@ if(evno!=myevno) {
               (aStep->GetTrack()->GetParentID() == 0)) ||
              (aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->
                      GetParticleName() ==
-              JLeicPrimaryGeneratorAction::GetPrimaryName()))
+              PrimaryGeneratorAction::GetPrimaryName()))
             &&
             (aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName() == "pxdPixel" ||
              aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName() == "Absorber")
@@ -670,7 +670,7 @@ if(evno!=myevno) {
             (((aStep->GetTrack()->GetTrackID() == 1) &&
               (aStep->GetTrack()->GetParentID() == 0)) ||
              (aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName() ==
-              JLeicPrimaryGeneratorAction::GetPrimaryName()))
+              PrimaryGeneratorAction::GetPrimaryName()))
             &&
             (aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName() == "pxdPixel" ||
              aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName() == "Absorber") &&

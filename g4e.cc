@@ -34,7 +34,7 @@
 
 #include "JLeicDetectorConstruction.hh"
 #include "JLeicPhysicsList.hh"
-#include "JLeicPrimaryGeneratorAction.hh"
+#include "PrimaryGeneratorAction.hh"
 #include "JLeicRunAction.hh"
 #include "JLeicEventAction.hh"
 #include "JLeicSteppingAction.hh"
@@ -125,7 +125,7 @@ int main(int argc, char **argv)
     runManager->SetUserAction(runAction);
 
     // Primary Generator
-    auto pgAction = new JLeicPrimaryGeneratorAction(detector, runAction);
+    auto pgAction = new PrimaryGeneratorAction(detector, runAction);
     runManager->SetUserAction(pgAction);
 
     // Event action

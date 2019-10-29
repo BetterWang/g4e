@@ -35,7 +35,7 @@
 #include "JLeicRunAction.hh"
 #include "JLeicRunMessenger.hh"
 #include "JLeicDetectorConstruction.hh"
-#include "JLeicPrimaryGeneratorAction.hh"
+#include "PrimaryGeneratorAction.hh"
 
 #include "G4Run.hh"
 #include "G4UImanager.hh"
@@ -540,16 +540,16 @@ void JLeicRunAction::BeginOfRunAction(const G4Run* aRun)
  
 void JLeicRunAction::SetName() {
 
-  sprintf(FileName,"%s_%s%.fGeV_%s_d%.f:%.1fmm_r%.fcm_m%d"
-	  ,detector->fSetUp.c_str() 
-	  ,JLeicPrimaryGeneratorAction::GetPrimaryName().c_str()
-	  ,JLeicPrimaryGeneratorAction::GetPrimaryEnergy()/GeV
+  sprintf(FileName, "%s_%s%.fGeV_%s_d%.f:%.1fmm_r%.fcm_m%d"
+	  , detector->fSetUp.c_str() 
+	  , PrimaryGeneratorAction::GetPrimaryName().c_str()
+	  , PrimaryGeneratorAction::GetPrimaryEnergy() / GeV
 	  //,particleGun->GetParticleDefinition()->GetParticleName()
-	  ,detector->fAbsorberMaterial->GetName().c_str() 
-	  ,detector->fConfig.ci_TRD.fAbsorberThickness
-	  ,detector->fadc_slice
+	  , detector->fAbsorberMaterial->GetName().c_str() 
+	  , detector->fConfig.ci_TRD.fAbsorberThickness
+	  , detector->fadc_slice
 	  ,detector->fConfig.ci_TRD.fRadThick/cm
-	  ,detector->fModuleNumber
+	  , detector->fModuleNumber
 	  );
 
   sprintf(RootFileName,"%s.root",FileName);

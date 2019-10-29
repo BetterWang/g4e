@@ -29,8 +29,8 @@
 // $Id: ExN04PrimaryGeneratorMessenger.hh 77801 2013-11-28 13:33:20Z gcosmo $
 //
 
-#ifndef EXN04_PRIMARY_GENERATOR_MESSENGER_H
-#define EXN04_PRIMARY_GENERATOR_MESSENGER_H
+#ifndef PRIMARY_GENERATOR_MESSENGER_H
+#define PRIMARY_GENERATOR_MESSENGER_H
 
 #include "globals.hh"
 #include "G4UImessenger.hh"
@@ -38,21 +38,20 @@
 class G4UIdirectory;
 class G4UIcommand;
 class G4UIcmdWithoutParameter;
-class G4UIcmdWithABool;
 class G4UIcmdWithAnInteger;
 class G4UIcmdWithAString;
-class JLeicPrimaryGeneratorAction;
+class PrimaryGeneratorAction;
 
-class JLeicPrimaryGeneratorMessenger : public G4UImessenger {
+class PrimaryGeneratorMessenger : public G4UImessenger {
 public:
-  JLeicPrimaryGeneratorMessenger(JLeicPrimaryGeneratorAction* genaction);
-  ~JLeicPrimaryGeneratorMessenger();
+  PrimaryGeneratorMessenger(PrimaryGeneratorAction* genaction);
+  ~PrimaryGeneratorMessenger();
 
   void SetNewValue(G4UIcommand* command, G4String newValues);
   G4String GetCurrentValue(G4UIcommand* command);
 
 private:
-  JLeicPrimaryGeneratorAction* primaryAction;
+  PrimaryGeneratorAction* primaryAction;
 
   G4UIdirectory* dir;
   G4UIdirectory* mydetdir;

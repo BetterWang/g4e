@@ -41,7 +41,7 @@ g4e::BeagleInterfaceMessenger::BeagleInterfaceMessenger(BeagleInterface *interfa
     fVerboseCmd->SetParameterName("verboseLevel", false, false);
     fVerboseCmd->SetRange("verboseLevel>=0 && verboseLevel<=1");
 
-    fOpenCmd = new G4UIcmdWithAString("/generator/generator/open", this);
+    fOpenCmd = new G4UIcmdWithAString("/generator/beagle/open", this);
     fOpenCmd->SetGuidance("(re)open data file (Beagle Ascii format)");
     fOpenCmd->SetParameterName("input ascii file", true, true);
 }

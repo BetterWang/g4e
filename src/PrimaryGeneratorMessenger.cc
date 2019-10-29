@@ -36,12 +36,12 @@
 #include "G4UIcmdWithAString.hh"
 #include "G4UIdirectory.hh"
 #include "G4UIparameter.hh"
-#include "JLeicPrimaryGeneratorMessenger.hh"
-#include "JLeicPrimaryGeneratorAction.hh"
+#include "PrimaryGeneratorMessenger.hh"
+#include "PrimaryGeneratorAction.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-JLeicPrimaryGeneratorMessenger::JLeicPrimaryGeneratorMessenger
-                                (JLeicPrimaryGeneratorAction* genaction)
+PrimaryGeneratorMessenger::PrimaryGeneratorMessenger
+                                (PrimaryGeneratorAction* genaction)
   : primaryAction(genaction)
 {
   mydetdir = new G4UIdirectory("/mydet/");
@@ -53,15 +53,15 @@ JLeicPrimaryGeneratorMessenger::JLeicPrimaryGeneratorMessenger
   select= new G4UIcmdWithAString("/generator/select", this);
   select-> SetGuidance("select generator type");
   select-> SetParameterName("generator_type", false, false);
-  select-> SetCandidates("particleGun pythia hepmcAscii pythiaAscii");
+  select-> SetCandidates("particleGun pythia hepmcAscii pythiaAscii beagle");
   select-> SetDefaultValue("particleGun");
 
-  printf("JLeicPrimaryGeneratorMessenger:: \n");
+  printf("PrimaryGeneratorMessenger:: \n");
 
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-JLeicPrimaryGeneratorMessenger::~JLeicPrimaryGeneratorMessenger()
+PrimaryGeneratorMessenger::~PrimaryGeneratorMessenger()
 {
   delete select;
   delete mydetdir;
@@ -69,20 +69,20 @@ JLeicPrimaryGeneratorMessenger::~JLeicPrimaryGeneratorMessenger()
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void JLeicPrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command,
-                                              G4String newValues)
+void PrimaryGeneratorMessenger::SetNewValue(G4UIcommand* command,
+                                            G4String newValues)
 {
   if ( command == select ) {
-    primaryAction-> SetGenerator(newValues);
+      primaryAction->SelectGenerator(newValues);
     G4cout << "current generator type: "
             << primaryAction-> GetGeneratorName() << G4endl;
   }
-  printf("JLeicPrimaryGeneratorMessenger:: SetNewValue %s \n",newValues.c_str());
+  printf("PrimaryGeneratorMessenger:: SetNewValue %s \n",newValues.c_str());
 }
 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-G4String JLeicPrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand* command)
+G4String PrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand* command)
 {
   G4String cv, st;
   if ( command == select ) {

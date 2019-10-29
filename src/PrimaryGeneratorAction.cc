@@ -30,60 +30,55 @@
 //
 
 #include "JLeicRunAction.hh"
-#include "JLeicPrimaryGeneratorAction.hh"
-#include "JLeicPrimaryGeneratorMessenger.hh"
+#include "PrimaryGeneratorAction.hh"
+#include "PrimaryGeneratorMessenger.hh"
 
 #include "G4Event.hh"
 #include "G4ParticleGun.hh"
 #include "PythiaAsciiReader.hh"
 #include "HepMCG4AsciiReader.hh"
 #include "HepMCG4PythiaInterface.hh"
+#include "BeagleInterface.hh"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-JLeicPrimaryGeneratorAction::JLeicPrimaryGeneratorAction(JLeicDetectorConstruction* DET, JLeicRunAction* RA)
-:G4VUserPrimaryGeneratorAction()
-{
-  // default generator is particle gun.
-  currentGenerator = particleGun= new G4ParticleGun();
-  currentGeneratorName = "particleGun";
-  hepmcAscii = new HepMCG4AsciiReader();
-  pythiaAscii = new PythiaAsciiReader();
-#ifdef G4LIB_USE_PYTHIA
-  pythiaGen = new HepMCG4PythiaInterface();
-#else
-  pythiaGen = 0;
-#endif
-  gentypeMap["particleGun"] = particleGun;
-  gentypeMap["hepmcAscii"] = hepmcAscii;
-  gentypeMap["pythiaAscii"] = pythiaAscii;
-  gentypeMap["pythia"] = pythiaGen;
+PrimaryGeneratorAction::PrimaryGeneratorAction(JLeicDetectorConstruction *DET, JLeicRunAction *RA)
+        : G4VUserPrimaryGeneratorAction() {
+    // default generator is particle gun.
+    currentGenerator = fParticleGunGenerator = new G4ParticleGun();
+    currentGeneratorName = "particleGun";
+    fHepMcAsciiGenerator = new HepMCG4AsciiReader();
+    fPythiaAsciiGenerator = new PythiaAsciiReader();
+    fBeagleGenerator = new g4e::BeagleInterface();
 
-  messenger= new JLeicPrimaryGeneratorMessenger(this);
+    gentypeMap["particleGun"] = fParticleGunGenerator;
+    gentypeMap["hepmcAscii"] = fHepMcAsciiGenerator;
+    gentypeMap["pythiaAscii"] = fPythiaAsciiGenerator;
+    gentypeMap["beagle"] = fBeagleGenerator;
+
+    messenger = new PrimaryGeneratorMessenger(this);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-JLeicPrimaryGeneratorAction::~JLeicPrimaryGeneratorAction()
-{
-  delete messenger;
+PrimaryGeneratorAction::~PrimaryGeneratorAction() {
+    delete messenger;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-void JLeicPrimaryGeneratorAction::GeneratePrimaries(G4Event* anEvent)
-{
+void PrimaryGeneratorAction::GeneratePrimaries(G4Event *anEvent) {
 
-  printf("JLeicPrimaryGeneratorAction:: Next event \n");
-  if(currentGenerator)
-    currentGenerator-> GeneratePrimaryVertex(anEvent);
-  else
-    G4Exception("JLeicPrimaryGeneratorAction::GeneratePrimaries",
-                "PrimaryGeneratorAction001", FatalException,
-                "generator is not instanciated." );
+    printf("PrimaryGeneratorAction:: Next event \n");
+    if (currentGenerator)
+        currentGenerator->GeneratePrimaryVertex(anEvent);
+    else
+        G4Exception("PrimaryGeneratorAction::GeneratePrimaries",
+                    "PrimaryGeneratorAction001", FatalException,
+                    "generator is not instanciated.");
 }
-G4String JLeicPrimaryGeneratorAction::GetPrimaryName()
-{
-   return "hepmc";
+
+G4String PrimaryGeneratorAction::GetPrimaryName() {
+    return "hepmc";
 }
-G4double JLeicPrimaryGeneratorAction::GetPrimaryEnergy()
-{
-   return 555;
+
+G4double PrimaryGeneratorAction::GetPrimaryEnergy() {
+    return 555;
 }

@@ -29,8 +29,8 @@
 // $Id: ExN04PrimaryGeneratorAction.hh 77801 2013-11-28 13:33:20Z gcosmo $
 //
 
-#ifndef JLeicPrimaryGeneratorAction_h
-#define JLeicPrimaryGeneratorAction_h 1
+#ifndef PRIMARY_GENERATOR_ACTION_HEADER
+#define PRIMARY_GENERATOR_ACTION_HEADER 1
 
 #include <map>
 #include "globals.hh"
@@ -38,19 +38,19 @@
 
 class G4Event;
 class G4VPrimaryGenerator;
-class JLeicPrimaryGeneratorMessenger;
+class PrimaryGeneratorMessenger;
 class JLeicRunAction;
 class JLeicDetectorConstruction;
 
-class JLeicPrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction {
+class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction {
 public:
-  JLeicPrimaryGeneratorAction(JLeicDetectorConstruction*,JLeicRunAction*);
-  ~JLeicPrimaryGeneratorAction();
+  PrimaryGeneratorAction(JLeicDetectorConstruction*, JLeicRunAction*);
+  ~PrimaryGeneratorAction();
 
   virtual void GeneratePrimaries(G4Event* anEvent);
 
   void SetGenerator(G4VPrimaryGenerator* gen);
-  void SetGenerator(G4String genname);
+  void SelectGenerator(G4String genname);
 
   G4VPrimaryGenerator* GetGenerator() const;
   G4String GetGeneratorName() const;
@@ -59,41 +59,40 @@ public:
 
 
 private:
-  G4VPrimaryGenerator* particleGun;
-  G4VPrimaryGenerator* hepmcAscii;
-  G4VPrimaryGenerator* pythiaAscii;
-  G4VPrimaryGenerator* pythiaGen;
+  G4VPrimaryGenerator* fParticleGunGenerator;       // Particle gun
+  G4VPrimaryGenerator* fHepMcAsciiGenerator;        // Herwig, Pythia 8 and other HepMC ascii
+  G4VPrimaryGenerator* fPythiaAsciiGenerator;       // Pythia 6 lund format
+  G4VPrimaryGenerator* fBeagleGenerator;            // Beagle Shmeagle
 
   G4VPrimaryGenerator* currentGenerator;
   G4String currentGeneratorName;
   std::map<G4String, G4VPrimaryGenerator*> gentypeMap;
 
-  JLeicPrimaryGeneratorMessenger* messenger;
+  PrimaryGeneratorMessenger* messenger;
 
 };
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-inline void JLeicPrimaryGeneratorAction::SetGenerator(G4VPrimaryGenerator* gen)
+inline void PrimaryGeneratorAction::SetGenerator(G4VPrimaryGenerator* gen)
 {
   currentGenerator = gen;
 }
 
-inline void JLeicPrimaryGeneratorAction::SetGenerator(G4String genname)
+inline void PrimaryGeneratorAction::SelectGenerator(G4String genname)
 {
-  std::map<G4String, G4VPrimaryGenerator*>::iterator pos =
-                                            gentypeMap.find(genname);
+  auto pos = gentypeMap.find(genname);
   if ( pos != gentypeMap.end() ) {
     currentGenerator = pos->second;
     currentGeneratorName = genname;
   }
 }
 
-inline G4VPrimaryGenerator* JLeicPrimaryGeneratorAction::GetGenerator() const
+inline G4VPrimaryGenerator* PrimaryGeneratorAction::GetGenerator() const
 {
   return currentGenerator;
 }
 
-inline G4String JLeicPrimaryGeneratorAction::GetGeneratorName() const
+inline G4String PrimaryGeneratorAction::GetGeneratorName() const
 {
   return currentGeneratorName;
 }

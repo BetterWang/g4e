@@ -95,7 +95,7 @@
 
 #define USE_CB_EMCAL
 #define USE_CB_HCAL
-#define USE_CB_HCAL_D // hcal detector
+#define USE_CB_HCAL_D // hcal detector ( granularity)
 
 //==============================================
 //--------H-encap------
@@ -694,7 +694,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     };
     fConfig.ffi_TRKD2.RIn = 0 * cm;
     fConfig.ffi_TRKD2.ROut = fSolid_BigDi_ffqsRinDi[mydipole_ffi_trk2] * cm;
-    fConfig.ffi_TRKD2.SizeZ = fSolid_BigDi_ffqsSizeZDi[mydipole_ffi_trk2] * m;
+    fConfig.ffi_TRKD2.SizeZ = fSolid_BigDi_ffqsSizeZDi[mydipole_ffi_trk2] * m -2.*cm;
 
     ffi_TRKD2.Construct(fConfig.ffi_TRKD2, World_Material, fPhysics_BigDi_m[mydipole_ffi_trk2]);
     ffi_TRKD2.ConstructDetectors();

@@ -23,10 +23,6 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file eventgenerator/HepMC/HepMCEx01/src/ExN04PrimaryGeneratorAction.cc
-/// \brief Implementation of the ExN04PrimaryGeneratorAction class
-//
-// $Id: ExN04PrimaryGeneratorAction.cc 77801 2013-11-28 13:33:20Z gcosmo $
 //
 
 #include "JLeicRunAction.hh"
@@ -37,15 +33,13 @@
 #include "G4ParticleGun.hh"
 #include "PythiaAsciiReader.hh"
 #include "HepMCG4AsciiReader.hh"
-#include "HepMCG4PythiaInterface.hh"
 #include "BeagleInterface.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-PrimaryGeneratorAction::PrimaryGeneratorAction(JLeicDetectorConstruction *DET, JLeicRunAction *RA)
-        : G4VUserPrimaryGeneratorAction() {
+
+PrimaryGeneratorAction::PrimaryGeneratorAction(): G4VUserPrimaryGeneratorAction()
+{
     // default generator is particle gun.
-    currentGenerator = fParticleGunGenerator = new G4ParticleGun();
-    currentGeneratorName = "particleGun";
+    fParticleGunGenerator = new G4ParticleGun();
     fHepMcAsciiGenerator = new HepMCG4AsciiReader();
     fPythiaAsciiGenerator = new PythiaAsciiReader();
     fBeagleGenerator = new g4e::BeagleInterface();
@@ -58,12 +52,12 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(JLeicDetectorConstruction *DET, J
     messenger = new PrimaryGeneratorMessenger(this);
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
 PrimaryGeneratorAction::~PrimaryGeneratorAction() {
     delete messenger;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event *anEvent) {
 
     printf("PrimaryGeneratorAction:: Next event \n");

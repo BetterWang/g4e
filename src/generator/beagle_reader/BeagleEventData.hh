@@ -32,7 +32,7 @@ namespace g4e {
             this->crang = std::stod(event_tokens[9]);    // D crossing-angle (mr). crang = (1000*) atan(px/pz) for the beam momentum with nonzero px. Note: we assume one of the beams has px=py=0 and the other py=0.
             this->crori = std::stoi(event_tokens[10]);    // 10 I  crossing angle orientation. lepton beam defines \pm\hat{z} direction. \pm 2 hadron/ion beam defines
             //    \pm\hat{z} direction. 0 means no crossing angle.
-            this->subprocess = std::stoi(event_tokens[11]);      //11 I   pythia subprocess (MSTI(1)), for details see PYTHIA
+            this->subprocess = std::stoi(event_tokens[11]);      //11 I   pythia_ascii_reader subprocess (MSTI(1)), for details see PYTHIA
             this->nucleon = std::stoi(event_tokens[12]);         //12 I   hadron beam type (MSTI(12))
             this->targetparton = std::stoi(event_tokens[13]);    //13 I  parton hit in the target (MSTI(16))
             this->xtargparton = std::stod(event_tokens[14]);     //14 D  x of target parton (PARI(34))
@@ -101,7 +101,7 @@ namespace g4e {
         int crori;     // 10 I  crossing angle orientation. lepton beam defines \pm\hat{z} direction. \pm 2 hadron/ion beam defines
         // \pm\hat{z} direction. 0 means no crossing angle.
 
-        int subprocess;         //11 I   pythia subprocess (MSTI(1)), for details see PYTHIA
+        int subprocess;         //11 I   pythia_ascii_reader subprocess (MSTI(1)), for details see PYTHIA
         int nucleon;            //12 I   hadron beam type (MSTI(12))
         int targetparton;       //13 I  parton hit in the target (MSTI(16))
         double xtargparton;        //14 D  x of target parton (PARI(34))

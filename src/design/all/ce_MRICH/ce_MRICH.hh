@@ -25,8 +25,6 @@ struct ce_MRICH_Config {
     double mod_Thickness = 10. * cm;
     double mod_Width = 10. * cm;
     double mod_Gap = 1 * cm;
-
-
 };
 
 
@@ -47,8 +45,6 @@ public:
 
         Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, cfg.PosZ), "ce_MRICH_GVol_Phys", Logic,
                                               motherVolume, false, 0);
-
-
     };
 
     inline void ConstructModules() {
@@ -120,9 +116,9 @@ public:
 
     };
 
-    G4Tubs *Solid;      //pointer to the solid
-    G4LogicalVolume *Logic;    //pointer to the logical
-    G4VPhysicalVolume *Phys;  //pointer to the physical
+    G4Tubs *Solid;              //pointer to the solid
+    G4LogicalVolume *Logic;     //pointer to the logical
+    G4VPhysicalVolume *Phys;    //pointer to the physical
 
     /// Parameters that was used in the moment of construction
     ce_MRICH_Config  ConstructionConfig;

@@ -23,71 +23,41 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file eventgenerator/HepMC/HepMCEx01/include/HepMCG4AsciiReader.hh
-/// \brief Definition of the HepMCG4AsciiReader class
-//
-// $Id: HepMCG4AsciiReader.hh 73446 2013-08-27 11:32:59Z gcosmo $
-//
 
-#ifndef HEPMC_G4_ASCII_READER_H
-#define HEPMC_G4_ASCII_READER_H
+/**
+ * This messenger defines the next commands:
+ *  /generator/                           # G4UIdirectory - Control commands for primary generator
+ *  /generator/select <generator type>    # Select generator type such as beagle, pythia6, hepmc2, etc...
+ *
+ *  The default selected generator is particleGun
+ */
 
-#include "HepMCG4Interface.hh"
-#include "HepMC/IO_GenEvent.h"
+#ifndef PRIMARY_GENERATOR_MESSENGER_H
+#define PRIMARY_GENERATOR_MESSENGER_H
 
-class HepMCG4AsciiReaderMessenger;
+#include "globals.hh"
+#include "G4UImessenger.hh"
 
-class HepMCG4AsciiReader : public HepMCG4Interface
-{
-protected:
-    G4String filename;
-    HepMC::IO_GenEvent *asciiInput;
+class G4UIdirectory;
+class G4UIcommand;
+class G4UIcmdWithoutParameter;
+class G4UIcmdWithAnInteger;
+class G4UIcmdWithAString;
+class PrimaryGeneratorAction;
 
-    G4int verbose;
-    HepMCG4AsciiReaderMessenger *messenger;
-
-    virtual HepMC::GenEvent *GenerateHepMCEvent();
-
+class PrimaryGeneratorMessenger : public G4UImessenger {
 public:
-    HepMCG4AsciiReader();
+  explicit PrimaryGeneratorMessenger(PrimaryGeneratorAction* genaction);
+  ~PrimaryGeneratorMessenger() override;
 
-    ~HepMCG4AsciiReader();
+  void SetNewValue(G4UIcommand* command, G4String newValues) override;
+  G4String GetCurrentValue(G4UIcommand* command) override;
 
-    // set/get methods
-    void SetFileName(G4String name);
+private:
+  PrimaryGeneratorAction* fGeneratorAction;
 
-    G4String GetFileName() const;
-
-    void SetVerboseLevel(G4int i);
-
-    G4int GetVerboseLevel() const;
-
-    // methods...
-    void Initialize();
+  G4UIdirectory* fDirectory;
+  G4UIcmdWithAString* fSelectCmd;
 };
-
-// ====================================================================
-// inline functions
-// ====================================================================
-
-inline void HepMCG4AsciiReader::SetFileName(G4String name)
-{
-    filename = name;
-}
-
-inline G4String HepMCG4AsciiReader::GetFileName() const
-{
-    return filename;
-}
-
-inline void HepMCG4AsciiReader::SetVerboseLevel(G4int i)
-{
-    verbose = i;
-}
-
-inline G4int HepMCG4AsciiReader::GetVerboseLevel() const
-{
-    return verbose;
-}
 
 #endif

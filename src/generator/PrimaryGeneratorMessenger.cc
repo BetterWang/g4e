@@ -23,55 +23,49 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file eventgenerator/HepMC/HepMCEx01/src/HepMCG4AsciiReader.cc
-/// \brief Implementation of the HepMCG4AsciiReader class
-//
-// $Id: HepMCG4AsciiReader.cc 77801 2013-11-28 13:33:20Z gcosmo $
-//
 
-#include "HepMCG4AsciiReader.hh"
-#include "HepMCG4AsciiReaderMessenger.hh"
 
-#include <iostream>
-#include <fstream>
+#include "G4UIcommand.hh"
+#include "G4UIcmdWithAString.hh"
+#include "G4UIdirectory.hh"
+#include "G4UIparameter.hh"
+#include "PrimaryGeneratorMessenger.hh"
+#include "PrimaryGeneratorAction.hh"
 
-HepMCG4AsciiReader::HepMCG4AsciiReader()
-        : filename(), verbose(0)
-{
-    asciiInput = new HepMC::IO_GenEvent(filename.c_str(), std::ios::in);
 
-    messenger = new HepMCG4AsciiReaderMessenger(this);
+PrimaryGeneratorMessenger::PrimaryGeneratorMessenger(PrimaryGeneratorAction *genaction) : fGeneratorAction(genaction) {
+
+    fDirectory = new G4UIdirectory("/generator/");
+    fDirectory->SetGuidance("Control commands for primary generator");
+
+    fSelectCmd = new G4UIcmdWithAString("/generator/select", this);
+    fSelectCmd->SetGuidance("Select generator type");
+    fSelectCmd->SetParameterName("generator_type", false, false);
+    fSelectCmd->SetCandidates("particleGun hepmcAscii pythiaAscii beagle");
+    fSelectCmd->SetDefaultValue("particleGun");
 }
 
 
-HepMCG4AsciiReader::~HepMCG4AsciiReader()
-{
-    delete asciiInput;
-    delete messenger;
+PrimaryGeneratorMessenger::~PrimaryGeneratorMessenger() {
+    delete fSelectCmd;
+    delete fDirectory;
 }
 
 
-void HepMCG4AsciiReader::Initialize()
-{
-    delete asciiInput;
+void PrimaryGeneratorMessenger::SetNewValue(G4UIcommand *command, G4String newValues) {
+    // generator/select
+    if (command == fSelectCmd) {
+        fGeneratorAction->SelectGenerator(newValues);
+        G4cout << "PrimaryGeneratorMessenger:: current generator type: " << fGeneratorAction->GetGeneratorName() << G4endl;
+    }
+}
 
-    // Test that file exists. The {braces} to auto close infile
-    {
-        std::ifstream infile(filename);
-        if(!infile.good()) throw std::runtime_error("HepMCG4AsciiReader:: Can't open input file. It doesn't exists or this proc have no rights/access");
+
+G4String PrimaryGeneratorMessenger::GetCurrentValue(G4UIcommand *command) {
+    G4String cv, st;
+    if (command == fSelectCmd) {
+        cv = fGeneratorAction->GetGeneratorName();
     }
 
-    asciiInput = new HepMC::IO_GenEvent(filename.c_str(), std::ios::in);
-}
-
-
-HepMC::GenEvent *HepMCG4AsciiReader::GenerateHepMCEvent()
-{
-    HepMC::GenEvent *evt = asciiInput->read_next_event();
-
-    if (evt && verbose > 0) {
-        evt->print();
-    }
-
-    return evt;
+    return cv;
 }

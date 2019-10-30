@@ -23,38 +23,47 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file eventgenerator/HepMC/HepMCEx01/include/HepMCG4AsciiReaderMessenger.hh
-/// \brief Definition of the HepMCG4AsciiReaderMessenger class
 //
-// $Id: HepMCG4AsciiReaderMessenger.hh 77801 2013-11-28 13:33:20Z gcosmo $
 //
 
-#ifndef HEPMC_G4_ASCII_READER_MESSENGER_H
-#define HEPMC_G4_ASCII_READER_MESSENGER_H
+#include "HepMCG4AsciiReader.hh"
+#include "HepMCG4AsciiReaderMessenger.hh"
 
-#include "G4UImessenger.hh"
+#include <iostream>
 
-class HepMCG4AsciiReader;
-class G4UIdirectory;
-class G4UIcmdWithoutParameter;
-class G4UIcmdWithAString;
-class G4UIcmdWithAnInteger;
+HepMCG4AsciiReader::HepMCG4AsciiReader(): filename(), verbose(0)
+{
+    asciiInput = new HepMC::IO_GenEvent(filename.c_str(), std::ios::in);
+    messenger = new HepMCG4AsciiReaderMessenger(this);
+}
 
-class HepMCG4AsciiReaderMessenger : public G4UImessenger {
-public:
-  HepMCG4AsciiReaderMessenger(HepMCG4AsciiReader* agen);
-  ~HepMCG4AsciiReaderMessenger();
 
-  void SetNewValue(G4UIcommand* command, G4String newValues);
-  G4String GetCurrentValue(G4UIcommand* command);
+HepMCG4AsciiReader::~HepMCG4AsciiReader()
+{
+    delete asciiInput;
+    delete messenger;
+}
 
-private:
-  HepMCG4AsciiReader* gen;
 
-  G4UIdirectory* dir;
-  G4UIcmdWithAnInteger* verbose;
-  G4UIcmdWithAString* open;
+void HepMCG4AsciiReader::Open()
+{
+    delete asciiInput;
 
-};
+    // Test that file exists. The {braces} to auto close infile
+    {
+        std::ifstream infile(filename);
+        if(!infile.good()) {
+            auto message = "HepMCG4AsciiReader:: Can't open input file. It doesn't exists or this proc have no rights/access";
+            throw std::runtime_error(message);
+        }
+    }
 
-#endif
+    asciiInput = new HepMC::IO_GenEvent(filename.c_str(), std::ios::in);
+}
+
+
+HepMC::GenEvent *HepMCG4AsciiReader::GenerateHepMCEvent()
+{
+    HepMC::GenEvent *evt = asciiInput->read_next_event();
+    return evt;
+}

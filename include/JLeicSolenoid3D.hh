@@ -68,9 +68,8 @@ class JLeicSolenoid3D
   bool invertX, invertY, invertZ;
 
 public:
-  JLeicSolenoid3D(const char* filename, double zOffset, bool InvertZ);
-  void  GetFieldValue( const  double Point[4],
-		       double *Bfield          ) const;
+  JLeicSolenoid3D(const std::string& filename, double zOffset, bool InvertZ);
+  void  GetFieldValue( const  double Point[4], double *Bfield) const;
 };
 
 #endif //JLEIC_SOLENOID_3D_H

@@ -55,7 +55,7 @@ void g4e::BeagleReader::Open(const std::string& fileName) {
             fileName,
 
             [](uint64_t line_num, const std::string& line) {
-                // skip first 6 lines of beagle event and lines that starts with '====='
+                // skip first 6 lines of beagle_reader event and lines that starts with '====='
                 if(line_num<6 || StartsWith(line, "=")) return TextEventLineDecisions::Skip;
 
                 // Tokenize and process all other lines

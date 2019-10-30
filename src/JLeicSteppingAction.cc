@@ -24,30 +24,20 @@
 // ********************************************************************
 //
 //
-// $Id: JLeicSteppingAction.cc,v 1.6 2006-06-29 16:39:06 gunter Exp $
-// GEANT4 tag $Name: geant4-09-04-patch-01 $
-//
-// 
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
 #include "JLeicDetectorConstruction.hh"
-#include "G4EnergyLossTables.hh"
-#include "G4SteppingManager.hh"
-#include "G4TrackVector.hh"
 #include "JLeicSteppingAction.hh"
-#include "PrimaryGeneratorAction.hh"
+#include "generator/PrimaryGeneratorAction.hh"
 #include "JLeicEventAction.hh"
 #include "JLeicRunAction.hh"
-#include "G4Event.hh"
-#include "G4EventManager.hh"
 #include "JLeicSteppingMessenger.hh"
-#include "G4ios.hh"
+
+#include <G4ios.hh>
+#include <G4SystemOfUnits.hh>
+#include <G4SteppingManager.hh>
+#include <G4TrackVector.hh>
+
 #include <iomanip>
-#include "G4UImanager.hh"
-#include "G4SystemOfUnits.hh"
-#include "G4INCLGlobals.hh"
 
 #include "TLorentzVector.h"
 
@@ -57,7 +47,7 @@ int myevno=0;
 static double pt=0.,pz=0.,xL=0.;
 FILE *rc5;
 TLorentzVector ka;
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 JLeicSteppingAction::JLeicSteppingAction(JLeicDetectorConstruction *DET,
                                          JLeicEventAction *EA,
@@ -67,13 +57,13 @@ JLeicSteppingAction::JLeicSteppingAction(JLeicDetectorConstruction *DET,
     //steppingMessenger = new JLeicSteppingMessenger(this);
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 JLeicSteppingAction::~JLeicSteppingAction() {
     delete steppingMessenger;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep) {
 
@@ -743,5 +733,5 @@ if(evno!=myevno) {
     //------------------
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 

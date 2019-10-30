@@ -170,7 +170,7 @@
 #===================================================================
 /plots/sethistName      hist_jleic.root
 #
-#/generator/select particleGun
+#/generator/fSelectCmd particleGun
 #/gun/particle neutron
 #/gun/particle proton
 #--------------crossing angle 50mrad-------
@@ -189,7 +189,7 @@
 
 #
 #--------------------------------------------------------------------
-#/generator/select particleGun
+#/generator/fSelectCmd particleGun
 #/gun/particle proton
 #/gun/energy  200 GeV
 #/gun/momentum   0.   0.    200.
@@ -218,13 +218,13 @@
 #/gun/position  -1349.58247     0   41314.67469      mm
 
 # BEAGLE generator
-/generator/select beagle
+/generator/fSelectCmd beagle
 /generator/beagle/open BEAGLE.txt
 /generator/beagle/verbose 2
 
 #
 # GEMC/BNL version
-#/generator/select pythiaAscii
+#/generator/fSelectCmd pythiaAscii
 #/generator/pythiaAscii/verbose 1
 #/generator/pythiaAscii/open  pythia1pis.txt
 #/generator/pythiaAscii/open  /home/yulia/yulia/TestVTXhmc/build.newnewOK/pythiaBeautyDIS100.txt
@@ -285,7 +285,7 @@
 #--------------------------------------------------------------------
 
 # Open HepMc v2.x ascii files
-#/generator/select hepmcAscii
+#/generator/fSelectCmd hepmcAscii
 #/generator/hepmcAscii/open  /data/yulia/Herwig6/herwig6_P19104_Q10_N5e+06_e-p_5x100.hepmc
 
 #/generator/hepmcAscii/open pythia8_CCdis.hepmc

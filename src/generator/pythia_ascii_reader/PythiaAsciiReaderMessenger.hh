@@ -23,55 +23,41 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file electromagnetic/VertexEIC/src/JLeicCalorHit.cc
-/// \brief Implementation of the JLeicCalorHit class
-//
-//
-// $Id: JLeicCalorHit.cc 66241 2012-12-13 18:34:42Z gunter $
-//
-// 
+
+/**
+ * This messenger defines the next:
+ *     /generator/pythiaAscii/          # G4UIDirectory - Reading Pythia event from an Ascii file
+ *     /generator/pythiaAscii/verbose   # Set verbose level. 0=none, 1=info, 2=verbose
+ *     /generator/pythiaAscii/open      # (re)open data file (Pythia Ascii format)
+ */
 
 
+#ifndef PYTHIA_ASCII_READER_MESSENGER_H
+#define PYTHIA_ASCII_READER_MESSENGER_H
 
+#include "G4UImessenger.hh"
 
-#include "JLeicCalorHit.hh"
+class PythiaAsciiReader;
+class G4UIdirectory;
+class G4UIcmdWithAnInteger;
+class G4UIcmdWithAString;
 
-G4Allocator<JLeicCalorHit> JLeicCalorHitAllocator;
-
-
-
-JLeicCalorHit::JLeicCalorHit()
+class PythiaAsciiReaderMessenger : public G4UImessenger
 {
-   EdepAbs = 0.; TrackLengthAbs = 0.;
-   EdepGap = 0.; TrackLengthGap = 0.;
-}
+public:
+    explicit PythiaAsciiReaderMessenger(PythiaAsciiReader *pythiaAsciiReader);
 
+    ~PythiaAsciiReaderMessenger() override;
 
+    void SetNewValue(G4UIcommand *command, G4String newValues) override;
 
-JLeicCalorHit::~JLeicCalorHit()
-{;}
+    G4String GetCurrentValue(G4UIcommand *command) override;
 
+private:
+    PythiaAsciiReader *fReader;
+    G4UIdirectory *fDirectory;
+    G4UIcmdWithAnInteger *fVerboseCmd;
+    G4UIcmdWithAString *fOpenCmd;
+};
 
-/*
-JLeicCalorHit::JLeicCalorHit(const JLeicCalorHit& right)
-{
-  EdepAbs = right.EdepAbs; TrackLengthAbs = right.TrackLengthAbs;
-  EdepGap = right.EdepGap; TrackLengthGap = right.TrackLengthGap;
-}
-*/
-
-
-const JLeicCalorHit& JLeicCalorHit::operator=(const JLeicCalorHit& right)
-{
-  EdepAbs = right.EdepAbs; TrackLengthAbs = right.TrackLengthAbs;
-  EdepGap = right.EdepGap; TrackLengthGap = right.TrackLengthGap;
-  return *this;
-}
-
-
-
-void JLeicCalorHit::Print()
-{;}
-
-
-
+#endif

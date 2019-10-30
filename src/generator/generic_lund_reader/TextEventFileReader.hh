@@ -152,7 +152,7 @@ namespace g4e {
             return true;
         }
 
-        bool IsNewEventReady() { return compiled_event; }
+        bool IsNewEventReady() { return (bool)compiled_event;}
 
         std::unique_ptr<TextFileEvent> GetEvent() { return std::move(compiled_event); }
 

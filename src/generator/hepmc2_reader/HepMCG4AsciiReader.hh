@@ -23,40 +23,53 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file eventgenerator/HepMC/HepMCEx01/include/ExN04PrimaryGeneratorMessenger.hh
-/// \brief Definition of the ExN04PrimaryGeneratorMessenger class
-//
-// $Id: ExN04PrimaryGeneratorMessenger.hh 77801 2013-11-28 13:33:20Z gcosmo $
 //
 
-#ifndef PRIMARY_GENERATOR_MESSENGER_H
-#define PRIMARY_GENERATOR_MESSENGER_H
+#ifndef HEPMC_G4_ASCII_READER_H
+#define HEPMC_G4_ASCII_READER_H
 
-#include "globals.hh"
-#include "G4UImessenger.hh"
+#include "HepMCG4Interface.hh"
+#include "HepMC/IO_GenEvent.h"
 
-class G4UIdirectory;
-class G4UIcommand;
-class G4UIcmdWithoutParameter;
-class G4UIcmdWithAnInteger;
-class G4UIcmdWithAString;
-class PrimaryGeneratorAction;
+class HepMCG4AsciiReaderMessenger;
 
-class PrimaryGeneratorMessenger : public G4UImessenger {
+class HepMCG4AsciiReader : public HepMCG4Interface
+{
+protected:
+
+
+
 public:
-  PrimaryGeneratorMessenger(PrimaryGeneratorAction* genaction);
-  ~PrimaryGeneratorMessenger();
+    HepMCG4AsciiReader();
+    ~HepMCG4AsciiReader() override;
 
-  void SetNewValue(G4UIcommand* command, G4String newValues);
-  G4String GetCurrentValue(G4UIcommand* command);
+    void SetFileName(G4String name);        /// Sets a HEPMC2 file name to open
+    G4String GetFileName() const;           /// Gets a HEPMC2 file name
+    void Open();                            /// Actually opens the file
+
+    HepMC::GenEvent *GenerateHepMCEvent() override;     /// Reads the next event from a file
 
 private:
-  PrimaryGeneratorAction* primaryAction;
+    G4String filename;
+    HepMC::IO_GenEvent *asciiInput;
 
-  G4UIdirectory* dir;
-  G4UIdirectory* mydetdir;
-  G4UIcmdWithAString* select;
-
+    G4int verbose;
+    HepMCG4AsciiReaderMessenger *messenger;
 };
+
+// ====================================================================
+// inline functions
+// ====================================================================
+
+inline void HepMCG4AsciiReader::SetFileName(G4String name)
+{
+    filename = name;
+}
+
+inline G4String HepMCG4AsciiReader::GetFileName() const
+{
+    return filename;
+}
+
 
 #endif

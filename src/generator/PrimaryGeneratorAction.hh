@@ -23,14 +23,25 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file eventgenerator/HepMC/HepMCEx01/include/ExN04PrimaryGeneratorAction.hh
-/// \brief Definition of the ExN04PrimaryGeneratorAction class
-//
-// $Id: ExN04PrimaryGeneratorAction.hh 77801 2013-11-28 13:33:20Z gcosmo $
-//
+
+/**
+ * @file
+ *
+ * Defines PrimaryGeneratorAction which allows to select a primary generator
+ * such as:
+ *  - particle gun             // no comments
+ *  - hepmc                    // Herwig, Pythia 8 and other HepMC ascii
+ *  - lund                     // Pythia 6, and others sticking to lund format
+ *  - beagle                   // Beagle
+ *
+ * The class provides @see - SelectGenerator(G4String name) method to select the generator
+ * And is controlled by \sa PrimaryGeneratorMessenger commands
+ *
+ */
+
 
 #ifndef PRIMARY_GENERATOR_ACTION_HEADER
-#define PRIMARY_GENERATOR_ACTION_HEADER 1
+#define PRIMARY_GENERATOR_ACTION_HEADER
 
 #include <map>
 #include "globals.hh"
@@ -44,7 +55,7 @@ class JLeicDetectorConstruction;
 
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction {
 public:
-  PrimaryGeneratorAction(JLeicDetectorConstruction*, JLeicRunAction*);
+  PrimaryGeneratorAction();
   ~PrimaryGeneratorAction();
 
   virtual void GeneratePrimaries(G4Event* anEvent);
@@ -72,7 +83,7 @@ private:
 
 };
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+
 inline void PrimaryGeneratorAction::SetGenerator(G4VPrimaryGenerator* gen)
 {
   currentGenerator = gen;

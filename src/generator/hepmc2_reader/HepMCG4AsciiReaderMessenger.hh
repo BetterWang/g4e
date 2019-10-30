@@ -23,55 +23,38 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file electromagnetic/VertexEIC/src/JLeicCalorHit.cc
-/// \brief Implementation of the JLeicCalorHit class
+/// \file eventgenerator/HepMC/HepMCEx01/include/HepMCG4AsciiReaderMessenger.hh
+/// \brief Definition of the HepMCG4AsciiReaderMessenger class
 //
+// $Id: HepMCG4AsciiReaderMessenger.hh 77801 2013-11-28 13:33:20Z gcosmo $
 //
-// $Id: JLeicCalorHit.cc 66241 2012-12-13 18:34:42Z gunter $
-//
-// 
 
+#ifndef HEPMC_G4_ASCII_READER_MESSENGER_H
+#define HEPMC_G4_ASCII_READER_MESSENGER_H
 
+#include "G4UImessenger.hh"
 
+class HepMCG4AsciiReader;
+class G4UIdirectory;
+class G4UIcmdWithoutParameter;
+class G4UIcmdWithAString;
+class G4UIcmdWithAnInteger;
 
-#include "JLeicCalorHit.hh"
+class HepMCG4AsciiReaderMessenger : public G4UImessenger {
+public:
+  explicit HepMCG4AsciiReaderMessenger(HepMCG4AsciiReader* agen);
+  ~HepMCG4AsciiReaderMessenger() override;
 
-G4Allocator<JLeicCalorHit> JLeicCalorHitAllocator;
+  void SetNewValue(G4UIcommand* command, G4String newValues) override;
+  G4String GetCurrentValue(G4UIcommand* command) override;
 
+private:
+  HepMCG4AsciiReader* gen;
 
+  G4UIdirectory* dir;
+  G4UIcmdWithAnInteger* verbose;
+  G4UIcmdWithAString* open;
 
-JLeicCalorHit::JLeicCalorHit()
-{
-   EdepAbs = 0.; TrackLengthAbs = 0.;
-   EdepGap = 0.; TrackLengthGap = 0.;
-}
+};
 
-
-
-JLeicCalorHit::~JLeicCalorHit()
-{;}
-
-
-/*
-JLeicCalorHit::JLeicCalorHit(const JLeicCalorHit& right)
-{
-  EdepAbs = right.EdepAbs; TrackLengthAbs = right.TrackLengthAbs;
-  EdepGap = right.EdepGap; TrackLengthGap = right.TrackLengthGap;
-}
-*/
-
-
-const JLeicCalorHit& JLeicCalorHit::operator=(const JLeicCalorHit& right)
-{
-  EdepAbs = right.EdepAbs; TrackLengthAbs = right.TrackLengthAbs;
-  EdepGap = right.EdepGap; TrackLengthGap = right.TrackLengthGap;
-  return *this;
-}
-
-
-
-void JLeicCalorHit::Print()
-{;}
-
-
-
+#endif

@@ -23,39 +23,24 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file eventgenerator/HepMC/HepMCEx01/include/PythiaAsciiReaderMessenger.hh
-/// \brief Definition of the PythiaAsciiReaderMessenger class
+/// \file eventgenerator/HepMC/HepMCEx01/src/PythiaInterface.cc
+/// \brief Implementation of the PythiaInterface class
 //
-// $Id: PythiaAsciiReaderMessenger.hh 77801 2013-11-28 13:33:20Z gcosmo $
+// $Id: PythiaInterface.cc 77801 2013-11-28 13:33:20Z gcosmo $
 //
+#include "PythiaAsciiReader.hh"
+#include "PythialeInterface.hh"
 
-#ifndef PYTHIA_ASCII_READER_MESSENGER_H
-#define PYTHIA_ASCII_READER_MESSENGER_H
 
-#include "G4UImessenger.hh"
-
-class PythiaAsciiReader;
-class G4UIdirectory;
-class G4UIcmdWithoutParameter;
-class G4UIcmdWithAString;
-class G4UIcmdWithAnInteger;
-
-class PythiaAsciiReaderMessenger : public G4UImessenger
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+PythiaInterface::PythiaInterface()
 {
-public:
-    explicit PythiaAsciiReaderMessenger(PythiaAsciiReader *agen);
+}
 
-    ~PythiaAsciiReaderMessenger() override;
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
+PythiaInterface::~PythiaInterface()
+{
 
-    void SetNewValue(G4UIcommand *command, G4String newValues) override;
+}
 
-    G4String GetCurrentValue(G4UIcommand *command) override;
-
-private:
-    PythiaAsciiReader *gen;
-    G4UIdirectory *dir;
-    G4UIcmdWithAnInteger *verbose;
-    G4UIcmdWithAString *open;
-};
-
-#endif
+}

@@ -31,6 +31,12 @@
 
 #include "PythiaAsciiReader.hh"
 #include "PythiaAsciiReaderMessenger.hh"
+#include "G4RunManager.hh"
+#include "G4Event.hh"
+#include "G4PrimaryParticle.hh"
+#include "G4PrimaryVertex.hh"
+#include "G4TransportationManager.hh"
+#include "G4PhysicalConstants.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4PhysicalConstants.hh"
 #include "Randomize.hh"
@@ -61,7 +67,7 @@ PythiaAsciiReader::~PythiaAsciiReader() {
 
 
 void PythiaAsciiReader::Initialize() {
-    //=====================  open pythia file =========================
+    //=====================  open pythia_ascii_reader file =========================
     gif.close();
     gif.open(filename.c_str());
     if (!gif) {
@@ -78,8 +84,6 @@ void PythiaAsciiReader::Initialize() {
 
 
 PythiaAsciiReader *PythiaAsciiReader::GeneratePythiaEvent() {
-
-
     printf("Read lund\n");
     if ((gformat == "LUND" || gformat == "lund") && !gif.eof()) {
         //printf("=====> LUND 0 !!!!  \n");
@@ -115,7 +119,6 @@ PythiaAsciiReader *PythiaAsciiReader::GeneratePythiaEvent() {
 
                 //--- GEMC version of LUND ---
                 double px, py, pz, etot, mass;
-                double charge;
                 int parent = 0, daughter1 = 0, daughter2 = 0;
                 // i,icharge,flag,PID,K(I,4),K(I,5) P(I,1),P(I,2),P(I,3),P(I,4),P(I,5)  V(I,1)*0.1,V(I,2)*0.1,VZoffSet*0.1
                 int ip, icharge, itype, iPDG, K4, K5; //, pPDG=0;
@@ -166,7 +169,7 @@ PythiaAsciiReader *PythiaAsciiReader::GeneratePythiaEvent() {
 
                     ptot = G4RandGauss::shoot(ptot, dmyMom);
                     dir.setMag(ptot); //- new ptot Gauss !!!
-                    //dir.setMag(etot);  //--- use energi as momentum !!!! for beam protons !!! if beam is defined by momentum !!!!
+                    //fDirectory.setMag(etot);  //--- use energi as momentum !!!! for beam protons !!! if beam is defined by momentum !!!!
 
                     //--- recalculate etot if PROTON !!!
                     double proton_mass = 0.938272;
@@ -219,7 +222,7 @@ PythiaAsciiReader *PythiaAsciiReader::GeneratePythiaEvent() {
                 gif.seekg(0);
             }
 
-        } else { //-- read pythia record ---
+        } else { //-- read pythia_ascii_reader record ---
 
             for (int kp = 0; kp < nparticles; kp++) {
 
@@ -271,5 +274,72 @@ PythiaAsciiReader *PythiaAsciiReader::GeneratePythiaEvent() {
     } // end gformat
 
     return this;
+}
 
+
+
+G4bool PythiaAsciiReader::CheckVertexInsideWorld(const G4ThreeVector& pos) const
+{
+    G4Navigator* navigator= G4TransportationManager::GetTransportationManager()->GetNavigatorForTracking();
+
+    G4VPhysicalVolume* world= navigator-> GetWorldVolume();
+    G4VSolid* solid= world-> GetLogicalVolume()-> GetSolid();
+    EInside qinside= solid-> Inside(pos);
+
+    if( qinside != kInside) return false;
+    else return true;
+}
+
+
+void PythiaAsciiReader::PyMC2G4(const PythiaAsciiReader* py,
+                              G4Event* g4event)
+{
+    printf("=======> ENTER PyMC2G4 N part=%d vec=%ld<===============\n",py->N,py->pyEvt.size());
+
+    G4PrimaryVertex* g4vtx;
+    int Np = py->pyEvt.size(); // =py->N;
+
+    for(int ip=0; ip<Np; ip++) {  // loop for particles ...
+
+        // check world boundary
+        //G4LorentzVector XVtxVect(py->V[0][ip],py->V[1][ip],py->V[2][ip],py->V[3][ip]);
+        G4LorentzVector xvtx(py->pyEvt.at(ip).V);
+
+        if (! CheckVertexInsideWorld(xvtx.vect())) { printf("PyMC2G4: vtx outside world ip=%d\n",ip); continue;}
+
+        //if (ip==0) {
+        // create G4PrimaryVertex and associated G4PrimaryParticles
+        g4vtx = new G4PrimaryVertex(xvtx.x(), xvtx.y(), xvtx.z(), xvtx.t());
+        //}
+
+        //G4int pdgcode= py->K[2][ip];
+        G4int pdgcode= py->pyEvt.at(ip).K[2];
+        //G4LorentzVector p(py->P[0][ip],py->P[1][ip],py->P[2][ip],py->P[3][ip]);
+        G4LorentzVector p(py->pyEvt.at(ip).P);
+        G4PrimaryParticle* g4prim =  new G4PrimaryParticle(pdgcode, p.x(), p.y(), p.z());
+
+        printf("PyMC2G4:: PDG= %d vtx=(%f,%f,%f) mom=(%f,%f,%f) \n",pdgcode, xvtx.x()/mm, xvtx.y()/mm, xvtx.z()/mm, p.x()/GeV, p.y()/GeV, p.z()/GeV);
+
+        g4vtx-> SetPrimary(g4prim);
+        g4event-> AddPrimaryVertex(g4vtx);
+    }
+    //  g4event-> AddPrimaryVertex(g4vtx);
+
+}
+
+void PythiaAsciiReader::GeneratePrimaryVertex(G4Event* anEvent) {
+    // delete previous event object
+    // delete hepmcEvent;
+
+    // generate next event
+    PythiaAsciiReader *pyEvent = GeneratePythiaEvent();
+
+    printf("=======> return from GeneratePythiaEvent <===============\n");
+
+    if (!pyEvent) {
+        G4cout << "PythiaInterface: no generated particles. run terminated..." << G4endl;
+        G4RunManager::GetRunManager()->AbortRun();
+        return;
+    }
+    PyMC2G4(pyEvent, anEvent);
 }

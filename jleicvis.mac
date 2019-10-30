@@ -85,7 +85,7 @@
 #fsv /vis/filtering/trajectories/particleFilter-0/invert true
 #
 # Many other options are available with /vis/modeling and /vis/filtering.
-# For example, to select colour by particle ID:
+# For example, to fSelectCmd colour by particle ID:
 /vis/modeling/trajectories/create/drawByParticleID
 /vis/modeling/trajectories/list
 /vis/modeling/trajectories/drawByParticleID-0/set e- cyan

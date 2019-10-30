@@ -99,12 +99,14 @@ include_directories(
         BEFORE
             ${PROJECT_SOURCE_DIR}/include
             ${PROJECT_SOURCE_DIR}/src/design/all
-            ${PROJECT_SOURCE_DIR}/src/io/beagle
-            ${PROJECT_SOURCE_DIR}/src/io/hepmc2
-            ${PROJECT_SOURCE_DIR}/src/io/pythia
-            ${PROJECT_SOURCE_DIR}/src/io/generic_lund
-            ${PROJECT_SOURCE_DIR}/src/io/root_output
+            ${PROJECT_SOURCE_DIR}/src/generator
+            ${PROJECT_SOURCE_DIR}/src/generator/beagle_reader
+            ${PROJECT_SOURCE_DIR}/src/generator/hepmc2_reader
+            ${PROJECT_SOURCE_DIR}/src/generator/pythia_ascii_reader
+            ${PROJECT_SOURCE_DIR}/src/generator/generic_lund_reader
+            ${PROJECT_SOURCE_DIR}/src/generator/root_output
             ${PROJECT_SOURCE_DIR}/src/helpers
+            ${PROJECT_SOURCE_DIR}/src/root_output
 
         SYSTEM
             ${ROOT_INCLUDE_DIRS}
@@ -148,36 +150,39 @@ list(APPEND sources
 
 
         #
-        # I O
+        # Generator
         #
 
+        # Primary user action and a messenger
+        src/generator/PrimaryGeneratorAction.cc
+        src/generator/PrimaryGeneratorAction.hh
+        src/generator/PrimaryGeneratorMessenger.cc
+        src/generator/PrimaryGeneratorMessenger.hh
+
         # Generic lund reader
-        src/io/generic_lund/TextEventFileReader.hh
+        src/generator/generic_lund_reader/TextEventFileReader.hh
 
         # Beagle event generator reader
-        src/io/beagle/BeagleReader.cc
-        src/io/beagle/BeagleReader.hh
-        src/io/beagle/BeagleInterfaceMessenger.cc
-        src/io/beagle/BeagleInterfaceMessenger.hh
-        src/io/beagle/BeagleInterface.cc
-        src/io/beagle/BeagleInterface.hh
+        src/generator/beagle_reader/BeagleReader.cc
+        src/generator/beagle_reader/BeagleReader.hh
+        src/generator/beagle_reader/BeagleInterfaceMessenger.cc
+        src/generator/beagle_reader/BeagleInterfaceMessenger.hh
+        src/generator/beagle_reader/BeagleInterface.cc
+        src/generator/beagle_reader/BeagleInterface.hh
 
         # HepMC2 event generator reader
-        src/io/hepmc2/HepMCG4AsciiReader.cc
-        src/io/hepmc2/HepMCG4AsciiReader.hh
-        src/io/hepmc2/HepMCG4AsciiReaderMessenger.cc
-        src/io/hepmc2/HepMCG4AsciiReaderMessenger.hh
-        src/io/hepmc2/HepMCG4Interface.cc
-        src/io/hepmc2/HepMCG4Interface.hh
-        src/io/hepmc2/HepMCG4PythiaInterface.hh
+        src/generator/hepmc2_reader/HepMCG4AsciiReader.cc
+        src/generator/hepmc2_reader/HepMCG4AsciiReader.hh
+        src/generator/hepmc2_reader/HepMCG4AsciiReaderMessenger.cc
+        src/generator/hepmc2_reader/HepMCG4AsciiReaderMessenger.hh
+        src/generator/hepmc2_reader/HepMCG4Interface.cc
+        src/generator/hepmc2_reader/HepMCG4Interface.hh
 
         # Pythia 6 lund format reader
-        src/io/pythia/PythiaAsciiReaderMessenger.hh
-        src/io/pythia/PythiaAsciiReader.cc
-        src/io/pythia/PythiaAsciiReader.hh
-        src/io/pythia/PythiaAsciiReaderMessenger.cc
-        src/io/pythia/PythiaInterface.cc
-        src/io/pythia/PythialeInterface.hh
+        src/generator/pythia_ascii_reader/PythiaAsciiReaderMessenger.hh
+        src/generator/pythia_ascii_reader/PythiaAsciiReader.cc
+        src/generator/pythia_ascii_reader/PythiaAsciiReader.hh
+        src/generator/pythia_ascii_reader/PythiaAsciiReaderMessenger.cc
 
         )
 #----------------------------------------------------------------------------
@@ -212,6 +217,12 @@ foreach(_script ${JLEICgeant4_SCRIPTS})
     COPYONLY
     )
 endforeach()
+
+# Copy resources to a destination
+# https://stackoverflow.com/questions/13429656/how-to-copy-contents-of-a-directory-into-build-directory-after-make-with-cmake
+add_custom_command(TARGET g4e PRE_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/resources/ $<TARGET_FILE_DIR:g4e>)
 
 #----------------------------------------------------------------------------
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX

@@ -29,8 +29,8 @@
 //
 // 
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
+
 
 #include "JLeicEventAction.hh"
 
@@ -51,7 +51,7 @@
 #include "G4UnitsTable.hh"
 #include "Randomize.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 JLeicEventAction::JLeicEventAction(JLeicRunAction *JLeicRA)
         : calorimeterCollID(-1), vertexCollID(-1), eventMessenger(0),
@@ -63,14 +63,13 @@ JLeicEventAction::JLeicEventAction(JLeicRunAction *JLeicRA)
     mRootEventsOut=&runaction->mRootEventsOut;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 JLeicEventAction::~JLeicEventAction() {
-
     delete eventMessenger;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 void JLeicEventAction::BeginOfEventAction(const G4Event *evt) {
     G4int evtNb = evt->GetEventID();
@@ -108,7 +107,7 @@ void JLeicEventAction::BeginOfEventAction(const G4Event *evt) {
 
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
     G4HCofThisEvent *HCE = evt->GetHCofThisEvent();
@@ -222,39 +221,39 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
     }
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 G4int JLeicEventAction::GetEventno() {
     G4int evno = fpEventManager->GetConstCurrentEvent()->GetEventID();
     return evno;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 void JLeicEventAction::setEventVerbose(G4int level) {
     verboselevel = level;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 void JLeicEventAction::CountStepsCharged() {
     nstepCharged += 1.;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 void JLeicEventAction::CountStepsNeutral() {
     nstepNeutral += 1.;
 }
 
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 void JLeicEventAction::AddCharged() {
     Nch += 1.;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 void JLeicEventAction::AddNeutral() {
     Nne += 1.;
@@ -265,31 +264,31 @@ void JLeicEventAction::AddGammaDE(G4double de) {
     GamDE += de;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 void JLeicEventAction::AddE() {
     NE += 1.;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 void JLeicEventAction::AddP() {
     NP += 1.;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 void JLeicEventAction::SetTr() {
     Transmitted = 1.;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 void JLeicEventAction::SetRef() {
     Reflected = 1.;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
   
 
 

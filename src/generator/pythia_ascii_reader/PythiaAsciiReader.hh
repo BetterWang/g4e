@@ -32,29 +32,26 @@
 #ifndef PYTHIA_ASCII_READER_H
 #define PYTHIA_ASCII_READER_H
 
-#include "PythialeInterface.hh"
+#include <G4LorentzVector.hh>
+#include <G4VPrimaryGenerator.hh>
 #include <fstream>
+#include <vector>
 
 class PythiaAsciiReaderMessenger;
+class G4VPrimaryGenerator;
+
 
 class PyTrack {
-
 public:
-    int K[6];   //-- size [6] to keep fortran numbers 1..5;  [0] is not used;
-    int Status; //-- particle status (1=final state)
-    int PDG;    //-- particle id
+    int K[6]{};   //-- size [6] to keep fortran numbers 1..5;  [0] is not used;
+    int Status{}; //-- particle status (1=final state)
+    int PDG{};    //-- particle id
     G4LorentzVector P;  //-- 4 momentum
     G4LorentzVector V;  //-- Vertex and time
-
-    PyTrack() {
-
-    };
-
-    ~PyTrack() {};
 };
 
 
-class PythiaAsciiReader : public PythiaInterface {
+class PythiaAsciiReader : public G4VPrimaryGenerator {
 protected:
     G4String filename;
 
@@ -142,6 +139,11 @@ public:
     std::vector<PyTrack> pyEvt;
     int N;      // -- N particles
 
+    G4bool CheckVertexInsideWorld(const G4ThreeVector &pos) const;
+
+    void PyMC2G4(const PythiaAsciiReader *py, G4Event *g4event);
+
+    void GeneratePrimaryVertex(G4Event *anEvent);
 };
 
 // ====================================================================

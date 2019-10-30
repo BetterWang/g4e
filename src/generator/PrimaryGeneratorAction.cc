@@ -49,6 +49,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(): G4VUserPrimaryGeneratorAction(
     gentypeMap["pythiaAscii"] = fPythiaAsciiGenerator;
     gentypeMap["beagle"] = fBeagleGenerator;
 
+
     messenger = new PrimaryGeneratorMessenger(this);
 }
 

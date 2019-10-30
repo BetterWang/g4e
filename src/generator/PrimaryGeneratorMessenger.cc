@@ -43,6 +43,7 @@ PrimaryGeneratorMessenger::PrimaryGeneratorMessenger(PrimaryGeneratorAction *gen
     fSelectCmd->SetParameterName("generator_type", false, false);
     fSelectCmd->SetCandidates("particleGun hepmcAscii pythiaAscii beagle");
     fSelectCmd->SetDefaultValue("particleGun");
+    fGeneratorAction->SelectGenerator("particleGun");
 }
 
 

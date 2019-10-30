@@ -89,8 +89,6 @@
                                     beagleParticle->py * GeV,
                                     beagleParticle->pz * GeV);
 
-
-
             double vx = beagleParticle->vx;
             double vy = beagleParticle->vy;
             double vz = beagleParticle->vz;

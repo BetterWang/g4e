@@ -44,68 +44,79 @@
 #define PRIMARY_GENERATOR_ACTION_HEADER
 
 #include <map>
+#include <spdlog/spdlog.h>
 #include "globals.hh"
 #include "G4VUserPrimaryGeneratorAction.hh"
 
 class G4Event;
+
 class G4VPrimaryGenerator;
+
 class PrimaryGeneratorMessenger;
+
 class JLeicRunAction;
+
 class JLeicDetectorConstruction;
 
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction {
 public:
-  PrimaryGeneratorAction();
-  ~PrimaryGeneratorAction();
+    PrimaryGeneratorAction();
 
-  virtual void GeneratePrimaries(G4Event* anEvent);
+    ~PrimaryGeneratorAction();
 
-  void SetGenerator(G4VPrimaryGenerator* gen);
-  void SelectGenerator(G4String genname);
+    virtual void GeneratePrimaries(G4Event *anEvent);
 
-  G4VPrimaryGenerator* GetGenerator() const;
-  G4String GetGeneratorName() const;
-  static G4String GetPrimaryName();
-  static G4double GetPrimaryEnergy();
+    void SetGenerator(G4VPrimaryGenerator *gen);
+
+    void SelectGenerator(G4String name);
+
+    G4VPrimaryGenerator *GetGenerator() const;
+
+    G4String GetGeneratorName() const;
+
+    static G4String GetPrimaryName();
+
+    static G4double GetPrimaryEnergy();
 
 
 private:
-  G4VPrimaryGenerator* fParticleGunGenerator;       // Particle gun
-  G4VPrimaryGenerator* fHepMcAsciiGenerator;        // Herwig, Pythia 8 and other HepMC ascii
-  G4VPrimaryGenerator* fPythiaAsciiGenerator;       // Pythia 6 lund format
-  G4VPrimaryGenerator* fBeagleGenerator;            // Beagle Shmeagle
+    G4VPrimaryGenerator *fParticleGunGenerator;       // Particle gun
+    G4VPrimaryGenerator *fHepMcAsciiGenerator;        // Herwig, Pythia 8 and other HepMC ascii
+    G4VPrimaryGenerator *fPythiaAsciiGenerator;       // Pythia 6 lund format
+    G4VPrimaryGenerator *fBeagleGenerator;            // Beagle Shmeagle
 
-  G4VPrimaryGenerator* currentGenerator;
-  G4String currentGeneratorName;
-  std::map<G4String, G4VPrimaryGenerator*> gentypeMap;
+    G4VPrimaryGenerator *currentGenerator;
+    G4String currentGeneratorName;
+    std::map<G4String, G4VPrimaryGenerator *> gentypeMap;
 
-  PrimaryGeneratorMessenger* messenger;
+    PrimaryGeneratorMessenger *messenger;
 
 };
 
 
-inline void PrimaryGeneratorAction::SetGenerator(G4VPrimaryGenerator* gen)
-{
-  currentGenerator = gen;
+inline void PrimaryGeneratorAction::SetGenerator(G4VPrimaryGenerator *gen) {
+    currentGenerator = gen;
 }
 
-inline void PrimaryGeneratorAction::SelectGenerator(G4String genname)
-{
-  auto pos = gentypeMap.find(genname);
-  if ( pos != gentypeMap.end() ) {
+inline void PrimaryGeneratorAction::SelectGenerator(G4String name) {
+    auto pos = gentypeMap.find(name);
+
+    // Check we have such generator
+    if (pos == gentypeMap.end()) {
+        spdlog::error("PrimaryGeneratorAction::SelectGenerator no generator with name '{}'", name);
+        return;
+    }
+
     currentGenerator = pos->second;
-    currentGeneratorName = genname;
-  }
+    currentGeneratorName = name;
 }
 
-inline G4VPrimaryGenerator* PrimaryGeneratorAction::GetGenerator() const
-{
-  return currentGenerator;
+inline G4VPrimaryGenerator *PrimaryGeneratorAction::GetGenerator() const {
+    return currentGenerator;
 }
 
-inline G4String PrimaryGeneratorAction::GetGeneratorName() const
-{
-  return currentGeneratorName;
+inline G4String PrimaryGeneratorAction::GetGeneratorName() const {
+    return currentGeneratorName;
 }
 
 #endif

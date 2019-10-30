@@ -68,6 +68,10 @@ namespace g4e {
         uint64_t started_at_line = 0;
         std::vector<std::vector<std::string>> event_values;
         std::vector<std::vector<std::string>> particle_values;
+
+        ~TextFileEvent(){
+            std::cout<<"here"<<std::endl;
+        }
     };
 
     enum class TextEventLineDecisions {
@@ -112,7 +116,10 @@ namespace g4e {
                             TextEventFileReader::TokensRecognisionFunc token_reco_func_) :
                 file_name(input_file_name_arg),
                 line_reco_func(line_reco_func_),
-                token_reco_func(token_reco_func_) {
+                token_reco_func(token_reco_func_),
+                current_event(nullptr),
+                compiled_event(nullptr)
+        {
             input_file.open(file_name, std::ifstream::in);
             if (input_file.fail()) {
                 std::cerr << "Error: " << strerror(errno) << std::endl;
@@ -122,7 +129,6 @@ namespace g4e {
             if (!input_file.is_open()) {
                 throw std::runtime_error("File is not open;");
             }
-
         }
 
         /**
@@ -152,7 +158,7 @@ namespace g4e {
             return true;
         }
 
-        bool IsNewEventReady() { return (bool)compiled_event;}
+        bool IsNewEventReady() { return compiled_event.get()!=nullptr;}
 
         std::unique_ptr<TextFileEvent> GetEvent() { return std::move(compiled_event); }
 

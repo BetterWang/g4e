@@ -54,7 +54,7 @@ namespace g4e {
 
         // methods...
         void Open(const std::string &fileName);           /// Opens the file with
-        void Close() {fLundReader.reset(nullptr);}        /// Closes a file if something is opened
+        void Close() {fLundReader.reset(nullptr);}     /// Closes a file if something is opened
         bool IsOpened() { return (bool)fLundReader; }     /// True if some file is open
 
         /// Tries to read the next event. nullptr=no more events, throws on io errors

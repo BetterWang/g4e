@@ -218,7 +218,7 @@
 #/gun/position  -1349.58247     0   41314.67469      mm
 
 # BEAGLE generator
-/generator/fSelectCmd beagle
+/generator/select beagle
 /generator/beagle/open BEAGLE.txt
 /generator/beagle/verbose 2
 

@@ -56,7 +56,7 @@ void g4e::BeagleReader::Open(const std::string& fileName) {
 
             [](uint64_t line_num, const std::string& line) {
                 // skip first 6 lines of beagle_reader event and lines that starts with '====='
-                if(line_num<6 || StartsWith(line, "=")) return TextEventLineDecisions::Skip;
+                if(line_num<6 || StartsWith(line, "=") || StartsWith(line, " =")) return TextEventLineDecisions::Skip;
 
                 // Tokenize and process all other lines
                 return TextEventLineDecisions::Tokenize;
@@ -73,6 +73,13 @@ void g4e::BeagleReader::Open(const std::string& fileName) {
 
 std::unique_ptr<g4e::BeagleEventData> g4e::BeagleReader::ReadNextEvent() {
     uint line_count = 0;
+    if (!IsOpened())
+    {
+        auto message = fmt::format("ERROR. g4e::BeagleReader::ReadNextEvent() is called before any file is opened for read. "
+                                   "Possibly missing /generator/beagle/open <file-name> command? ");
+        throw std::runtime_error(message);
+    }
+
     // Read file lines until full event is read
     while(!fLundReader->IsNewEventReady())
     {
@@ -88,8 +95,9 @@ std::unique_ptr<g4e::BeagleEventData> g4e::BeagleReader::ReadNextEvent() {
 
         // Check if there is no new event for too long
         if (line_count++ > 1000) {
-            auto message = fmt::format("ERROR. {} lines where read from file and no new/end of event found. "
-                                       "This error often means, that this is not BeAGLE file");
+            auto message = fmt::format("ERROR. "
+                                       "{} lines where read from file and no new/end of event found. "
+                              "This error often means, that this is not BeAGLE file", line_count);
             throw std::runtime_error(message);
         }
     }

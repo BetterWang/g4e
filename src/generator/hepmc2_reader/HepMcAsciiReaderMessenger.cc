@@ -32,11 +32,11 @@
 #include "G4UIcmdWithoutParameter.hh"
 #include "G4UIcmdWithAString.hh"
 #include "G4UIcmdWithAnInteger.hh"
-#include "HepMCG4AsciiReaderMessenger.hh"
-#include "HepMCG4AsciiReader.hh"
+#include "HepMcAsciiReaderMessenger.hh"
+#include "HepMcAsciiGenerator.hh"
 
 
-HepMCG4AsciiReaderMessenger::HepMCG4AsciiReaderMessenger(HepMCG4AsciiReader *agen)
+HepMcAsciiReaderMessenger::HepMcAsciiReaderMessenger(HepMcAsciiGenerator *agen)
         : gen(agen)
 {
     dir = new G4UIdirectory("/generator/hepmcAscii/");
@@ -53,7 +53,7 @@ HepMCG4AsciiReaderMessenger::HepMCG4AsciiReaderMessenger(HepMCG4AsciiReader *age
 }
 
 
-HepMCG4AsciiReaderMessenger::~HepMCG4AsciiReaderMessenger()
+HepMcAsciiReaderMessenger::~HepMcAsciiReaderMessenger()
 {
     delete verbose;
     delete open;
@@ -61,7 +61,7 @@ HepMCG4AsciiReaderMessenger::~HepMCG4AsciiReaderMessenger()
 }
 
 
-void HepMCG4AsciiReaderMessenger::SetNewValue(G4UIcommand *command, G4String newValues)
+void HepMcAsciiReaderMessenger::SetNewValue(G4UIcommand *command, G4String newValues)
 {
     if (command == verbose) {
         int level = G4UIcmdWithAnInteger::GetNewIntValue(newValues);
@@ -75,7 +75,7 @@ void HepMCG4AsciiReaderMessenger::SetNewValue(G4UIcommand *command, G4String new
 }
 
 
-G4String HepMCG4AsciiReaderMessenger::GetCurrentValue(G4UIcommand *command)
+G4String HepMcAsciiReaderMessenger::GetCurrentValue(G4UIcommand *command)
 {
     if (command == verbose) {
         return G4UIcmdWithAnInteger::ConvertToString(gen->GetVerboseLevel());

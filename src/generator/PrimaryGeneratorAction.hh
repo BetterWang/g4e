@@ -68,7 +68,7 @@ public:
 
     void SetGenerator(G4VPrimaryGenerator *gen);
 
-    void SelectGenerator(G4String name);
+    void SelectGenerator(const G4String& name);
 
     G4VPrimaryGenerator *GetGenerator() const;
 
@@ -98,7 +98,7 @@ inline void PrimaryGeneratorAction::SetGenerator(G4VPrimaryGenerator *gen) {
     currentGenerator = gen;
 }
 
-inline void PrimaryGeneratorAction::SelectGenerator(G4String name) {
+inline void PrimaryGeneratorAction::SelectGenerator(const G4String& name) {
     auto pos = gentypeMap.find(name);
 
     // Check we have such generator

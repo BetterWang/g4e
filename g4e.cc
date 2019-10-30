@@ -80,6 +80,7 @@ int main(int argc, char **argv)
     spdlog::default_logger()->sinks().clear();
     spdlog::default_logger()->sinks().push_back(osink);
     spdlog::info("Initialized G4E sink");
+    spdlog::set_level(spdlog::level::debug);
 
 
     ProgramArgConfig config;
@@ -134,17 +135,19 @@ int main(int argc, char **argv)
 
     // set macro path from environment if it is set
     const char* macroPathCstr = std::getenv("G4E_MACRO_PATH");
-    spdlog::info("ENV:G4E_MACRO_PATH: '{}'", macroPathCstr);
+    spdlog::info("ENV:G4E_MACRO_PATH: '{}'", macroPathCstr? macroPathCstr: "");
     if(macroPathCstr) {
         UI->ApplyCommand(format("/control/macroPath {}", macroPathCstr));
     }
 
-    // Users have files
-    if (!config.FileNames.empty())      // We have some user defined file
-    {
-        std::string fileName(argv[1]);
-        std::string command("/control/execute " + fileName);
-        UI->ApplyCommand(command);
+    // We have some user defined file
+    if (!config.FileNames.empty()) {
+        spdlog::debug("Executing files provided as args:");
+        for(const auto& fileName: config.FileNames) {
+            std::string command = "/control/execute " + fileName;
+            spdlog::debug("   {}", command);
+            UI->ApplyCommand(command);
+        }
     }
 
     // We start visual mode if no files provided or if --gui flag is given
@@ -178,7 +181,5 @@ int main(int argc, char **argv)
 
 
 std::string GetResourceDir() {
-
-
 
 }

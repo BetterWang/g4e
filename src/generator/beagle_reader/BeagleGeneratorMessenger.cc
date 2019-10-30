@@ -26,11 +26,11 @@
 #include "G4UIdirectory.hh"
 #include "G4UIcmdWithAString.hh"
 #include "G4UIcmdWithAnInteger.hh"
-#include "BeagleInterfaceMessenger.hh"
-#include "BeagleInterface.hh"
+#include "BeagleGeneratorMessenger.hh"
+#include "BeagleGenerator.hh"
 
 
-g4e::BeagleInterfaceMessenger::BeagleInterfaceMessenger(BeagleInterface *interface)
+g4e::BeagleGeneratorMessenger::BeagleGeneratorMessenger(BeagleGenerator *interface)
         : fBeagleInterface(interface)
 {
     fDirectoryCmd = new G4UIdirectory("/generator/beagle_reader/");
@@ -47,14 +47,14 @@ g4e::BeagleInterfaceMessenger::BeagleInterfaceMessenger(BeagleInterface *interfa
 }
 
 
-g4e::BeagleInterfaceMessenger::~BeagleInterfaceMessenger() {
+g4e::BeagleGeneratorMessenger::~BeagleGeneratorMessenger() {
     delete fVerboseCmd;
     delete fOpenCmd;
     delete fDirectoryCmd;
 }
 
 
-void g4e::BeagleInterfaceMessenger::SetNewValue(G4UIcommand *command, G4String newValues) {
+void g4e::BeagleGeneratorMessenger::SetNewValue(G4UIcommand *command, G4String newValues) {
     // verbosity level
     if (command == fVerboseCmd) {
         int level = G4UIcmdWithAnInteger::GetNewIntValue(newValues);
@@ -68,7 +68,7 @@ void g4e::BeagleInterfaceMessenger::SetNewValue(G4UIcommand *command, G4String n
 }
 
 
-G4String g4e::BeagleInterfaceMessenger::GetCurrentValue(G4UIcommand *command) {
+G4String g4e::BeagleGeneratorMessenger::GetCurrentValue(G4UIcommand *command) {
     G4String value;
     if (command == fVerboseCmd) {
         value = G4UIcmdWithAnInteger::ConvertToString(fBeagleInterface->GetVerboseLevel());

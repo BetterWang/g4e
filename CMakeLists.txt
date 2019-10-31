@@ -231,3 +231,4 @@ add_custom_command(TARGET g4e PRE_BUILD
 #
 install(TARGETS g4e DESTINATION bin)
 
+add_subdirectory(test/unit_tests)

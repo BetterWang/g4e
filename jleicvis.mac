@@ -120,10 +120,10 @@
 
 /vis/scene/endOfEventAction accumulate 10
 
-/vis/viewer/set/cutawayMode intersection
+#/vis/viewer/set/cutawayMode intersection
 
 ##/vis/viewer/addCutawayPlane 0  30  0  cm  0. -100 0
-/vis/viewer/addCutawayPlane 0  1  0  cm  0. -0.1 0
+#/vis/viewer/addCutawayPlane 0  1  0  cm  0. -0.1 0
 #/vis/viewer/addCutawayPlane 0  1  0  cm  0. -500. 1.
 #/vis/viewer/addCutawayPlane 0  1  0  cm  0. 100. 1.
 # XY 
@@ -132,6 +132,6 @@
 #/vis/viewer/addCutawayPlane 0  1  0  cm  -0.001 0  0
 #/vis/viewer/clearCutawayPlanes
 #/run/initialize
-/run/beamOn 1
+#/run/beamOn 1
 
 exit 

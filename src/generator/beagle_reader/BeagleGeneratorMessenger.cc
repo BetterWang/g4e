@@ -33,15 +33,15 @@
 g4e::BeagleGeneratorMessenger::BeagleGeneratorMessenger(BeagleGenerator *interface)
         : fBeagleInterface(interface)
 {
-    fDirectoryCmd = new G4UIdirectory("/generator/beagle_reader/");
+    fDirectoryCmd = new G4UIdirectory("/generator/beagle/");
     fDirectoryCmd->SetGuidance("Reading Beagle event from an Ascii file");
 
-    fVerboseCmd = new G4UIcmdWithAnInteger("/generator/beagle_reader/verbose", this);
+    fVerboseCmd = new G4UIcmdWithAnInteger("/generator/beagle/verbose", this);
     fVerboseCmd->SetGuidance("Set verbose level");
     fVerboseCmd->SetParameterName("verboseLevel", false, false);
-    fVerboseCmd->SetRange("verboseLevel>=0 && verboseLevel<=1");
+    fVerboseCmd->SetRange("verboseLevel>=0 && verboseLevel<=2");
 
-    fOpenCmd = new G4UIcmdWithAString("/generator/beagle_reader/open", this);
+    fOpenCmd = new G4UIcmdWithAString("/generator/beagle/open", this);
     fOpenCmd->SetGuidance("(re)open data file (Beagle Ascii format)");
     fOpenCmd->SetParameterName("input ascii file", true, true);
 }

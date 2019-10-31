@@ -219,7 +219,7 @@
 
 # BEAGLE generator
 /generator/select beagle
-/generator/beagle/open BEAGLE.txt
+/generator/beagle/open beagle_test_data.txt
 /generator/beagle/verbose 2
 
 #
@@ -301,5 +301,5 @@
 #/generator/hepmcAscii/verbose 1
 
 
-/run/beamOn 5
+#/run/beamOn
 exit

@@ -3,6 +3,9 @@ work/*.root
 work/g4_*.wrl
 build/*
 
+# Python virtual environment
+venv
+
 
 # CMake gitignore
 # https://github.com/github/gitignore/blob/master/CMake.gitignore

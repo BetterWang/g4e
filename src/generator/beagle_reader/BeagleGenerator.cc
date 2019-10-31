@@ -81,10 +81,20 @@
 
         auto beagleEvent = fReader->ReadNextEvent();
 
+        // generate next event
+        if (!beagleEvent) {
+            if(fVerbose) G4cout << "BeagleGenerator: End of file reached. Stopping the run..." << G4endl;
+            G4RunManager::GetRunManager()->AbortRun();
+            return;
+        }
+
         // TODO at this point we set primary vertex
         auto zeroVertex = new G4PrimaryVertex(0,0,0,0);
 
         for(const auto& beagleParticle: beagleEvent->particles) {
+
+            // Leave only stable particles
+            if(beagleParticle->ks_code != 1) continue;
 
             int pdg = beagleParticle->kf_code;
             auto *geantParticle = new G4PrimaryParticle(pdg,

@@ -183,6 +183,9 @@ list(APPEND sources
         src/generator/pythia_ascii_reader/PythiaAsciiReader.hh
         src/generator/pythia_ascii_reader/PythiaAsciiReaderMessenger.cc
 
+        # Flattened root IO
+        src/root_output/JLeicRootOutput.hh
+
         )
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries

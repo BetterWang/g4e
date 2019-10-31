@@ -31,7 +31,7 @@
 #include <cmath>
 
 #include "BeagleReader.hh"
-#include "BeagleInterface.hh"
+#include "BeagleGenerator.hh"
 
 #include "G4RunManager.hh"
 #include "G4Event.hh"
@@ -45,19 +45,19 @@
 #include <spdlog/fmt/fmt.h>
 
 
-    g4e::BeagleInterface::BeagleInterface()
+    g4e::BeagleGenerator::BeagleGenerator()
     {
         fReader = new BeagleReader();
-        fMessenger = new BeagleInterfaceMessenger(this);
+        fMessenger = new BeagleGeneratorMessenger(this);
         fVerbose=1;
     }
 
-    g4e::BeagleInterface::~BeagleInterface()
+    g4e::BeagleGenerator::~BeagleGenerator()
     {
 
     }
 
-    G4bool g4e::BeagleInterface::CheckVertexInsideWorld(const G4ThreeVector &pos) const {
+    G4bool g4e::BeagleGenerator::CheckVertexInsideWorld(const G4ThreeVector &pos) const {
         G4Navigator *navigator = G4TransportationManager::GetTransportationManager()->GetNavigatorForTracking();
 
         G4VPhysicalVolume *world = navigator->GetWorldVolume();
@@ -67,21 +67,34 @@
         return checkResult == kInside;
     }
 
-    void g4e::BeagleInterface::Open(const std::string &fileName) {
+    void g4e::BeagleGenerator::Open(const std::string &fileName) {
         fFileName = fileName;
-        G4cout << "Beagle input file: '" << fileName << "'" << G4endl;
+        if(fVerbose) {
+            G4cout << "Beagle input file: '" << fileName << "'" << G4endl;
+        }
+        fReader->Open(fileName);
     }
 
-    void g4e::BeagleInterface::GeneratePrimaryVertex(G4Event *event)
+    void g4e::BeagleGenerator::GeneratePrimaryVertex(G4Event *event)
     {
         using namespace fmt;
 
         auto beagleEvent = fReader->ReadNextEvent();
 
+        // generate next event
+        if (!beagleEvent) {
+            if(fVerbose) G4cout << "BeagleGenerator: End of file reached. Stopping the run..." << G4endl;
+            G4RunManager::GetRunManager()->AbortRun();
+            return;
+        }
+
         // TODO at this point we set primary vertex
         auto zeroVertex = new G4PrimaryVertex(0,0,0,0);
 
         for(const auto& beagleParticle: beagleEvent->particles) {
+
+            // Leave only stable particles
+            if(beagleParticle->ks_code != 1) continue;
 
             int pdg = beagleParticle->kf_code;
             auto *geantParticle = new G4PrimaryParticle(pdg,
@@ -103,7 +116,7 @@
                 // Check volume
                 if (!CheckVertexInsideWorld(G4ThreeVector(vx, vy, vz))) {
                     if(fVerbose > 1) {
-                        fmt::print("g4e::BeagleInterface::GeneratePrimaryVertex: vtx outside world ({},{},{})\n", vx, vy, vz);
+                        fmt::print("g4e::BeagleGenerator::GeneratePrimaryVertex: vtx outside world ({},{},{})\n", vx, vy, vz);
                     }
 
                     continue;

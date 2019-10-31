@@ -23,40 +23,47 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file eventgenerator/HepMC/HepMCEx01/include/BeagleAsciiReaderMessenger.hh
-/// \brief Definition of the BeagleAsciiReaderMessenger class
 //
-// $Id: BeagleReaderMessenger.hh 77801 2013-11-28 13:33:20Z gcosmo $
 //
 
-#ifndef BEAGLE_INTERFACE_MESSENGER_H
-#define BEAGLE_INTERFACE_MESSENGER_H
+#include "HepMcAsciiGenerator.hh"
+#include "HepMcAsciiReaderMessenger.hh"
 
-#include "G4UImessenger.hh"
+#include <iostream>
 
-class G4UIdirectory;
-class G4UIcmdWithoutParameter;
-class G4UIcmdWithAString;
-class G4UIcmdWithAnInteger;
-
-namespace g4e {
-    class BeagleInterface;
-
-    class BeagleInterfaceMessenger : public G4UImessenger
-            {
-    public:
-        explicit BeagleInterfaceMessenger(g4e::BeagleInterface *interface);
-        ~BeagleInterfaceMessenger() override;
-
-        void SetNewValue(G4UIcommand *command, G4String newValues) override;
-        G4String GetCurrentValue(G4UIcommand *command) override;
-
-    private:
-        g4e::BeagleInterface *fBeagleInterface;
-        G4UIdirectory *fDirectoryCmd;
-        G4UIcmdWithAnInteger *fVerboseCmd;
-        G4UIcmdWithAString *fOpenCmd;
-    };
+HepMcAsciiGenerator::HepMcAsciiGenerator(): filename(), verbose(0)
+{
+    asciiInput = new HepMC::IO_GenEvent(filename.c_str(), std::ios::in);
+    messenger = new HepMcAsciiReaderMessenger(this);
 }
 
-#endif
+
+HepMcAsciiGenerator::~HepMcAsciiGenerator()
+{
+    delete asciiInput;
+    delete messenger;
+}
+
+
+void HepMcAsciiGenerator::Open()
+{
+    delete asciiInput;
+
+    // Test that file exists. The {braces} to auto close infile
+    {
+        std::ifstream infile(filename);
+        if(!infile.good()) {
+            auto message = "HepMcAsciiGenerator:: Can't open input file. It doesn't exists or this proc have no rights/access";
+            throw std::runtime_error(message);
+        }
+    }
+
+    asciiInput = new HepMC::IO_GenEvent(filename.c_str(), std::ios::in);
+}
+
+
+HepMC::GenEvent *HepMcAsciiGenerator::GenerateHepMCEvent()
+{
+    HepMC::GenEvent *evt = asciiInput->read_next_event();
+    return evt;
+}

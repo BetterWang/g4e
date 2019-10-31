@@ -23,38 +23,40 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file eventgenerator/HepMC/HepMCEx01/include/HepMCG4AsciiReaderMessenger.hh
-/// \brief Definition of the HepMCG4AsciiReaderMessenger class
+/// \file eventgenerator/HepMC/HepMCEx01/include/BeagleAsciiReaderMessenger.hh
+/// \brief Definition of the BeagleAsciiReaderMessenger class
 //
-// $Id: HepMCG4AsciiReaderMessenger.hh 77801 2013-11-28 13:33:20Z gcosmo $
+// $Id: BeagleReaderMessenger.hh 77801 2013-11-28 13:33:20Z gcosmo $
 //
 
-#ifndef HEPMC_G4_ASCII_READER_MESSENGER_H
-#define HEPMC_G4_ASCII_READER_MESSENGER_H
+#ifndef BEAGLE_INTERFACE_MESSENGER_H
+#define BEAGLE_INTERFACE_MESSENGER_H
 
 #include "G4UImessenger.hh"
 
-class HepMCG4AsciiReader;
 class G4UIdirectory;
 class G4UIcmdWithoutParameter;
 class G4UIcmdWithAString;
 class G4UIcmdWithAnInteger;
 
-class HepMCG4AsciiReaderMessenger : public G4UImessenger {
-public:
-  explicit HepMCG4AsciiReaderMessenger(HepMCG4AsciiReader* agen);
-  ~HepMCG4AsciiReaderMessenger() override;
+namespace g4e {
+    class BeagleGenerator;
 
-  void SetNewValue(G4UIcommand* command, G4String newValues) override;
-  G4String GetCurrentValue(G4UIcommand* command) override;
+    class BeagleGeneratorMessenger : public G4UImessenger
+            {
+    public:
+        explicit BeagleGeneratorMessenger(g4e::BeagleGenerator *interface);
+        ~BeagleGeneratorMessenger() override;
 
-private:
-  HepMCG4AsciiReader* gen;
+        void SetNewValue(G4UIcommand *command, G4String newValues) override;
+        G4String GetCurrentValue(G4UIcommand *command) override;
 
-  G4UIdirectory* dir;
-  G4UIcmdWithAnInteger* verbose;
-  G4UIcmdWithAString* open;
-
-};
+    private:
+        g4e::BeagleGenerator *fBeagleInterface;
+        G4UIdirectory *fDirectoryCmd;
+        G4UIcmdWithAnInteger *fVerboseCmd;
+        G4UIcmdWithAString *fOpenCmd;
+    };
+}
 
 #endif

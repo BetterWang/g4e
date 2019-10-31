@@ -148,7 +148,6 @@ list(APPEND sources
         src/helpers/StringHelpers.cc
         src/helpers/StringHelpers.hh
 
-
         #
         # Generator
         #
@@ -165,24 +164,27 @@ list(APPEND sources
         # Beagle event generator reader
         src/generator/beagle_reader/BeagleReader.cc
         src/generator/beagle_reader/BeagleReader.hh
-        src/generator/beagle_reader/BeagleInterfaceMessenger.cc
-        src/generator/beagle_reader/BeagleInterfaceMessenger.hh
-        src/generator/beagle_reader/BeagleInterface.cc
-        src/generator/beagle_reader/BeagleInterface.hh
+        src/generator/beagle_reader/BeagleGeneratorMessenger.cc
+        src/generator/beagle_reader/BeagleGeneratorMessenger.hh
+        src/generator/beagle_reader/BeagleGenerator.cc
+        src/generator/beagle_reader/BeagleGenerator.hh
 
         # HepMC2 event generator reader
-        src/generator/hepmc2_reader/HepMCG4AsciiReader.cc
-        src/generator/hepmc2_reader/HepMCG4AsciiReader.hh
-        src/generator/hepmc2_reader/HepMCG4AsciiReaderMessenger.cc
-        src/generator/hepmc2_reader/HepMCG4AsciiReaderMessenger.hh
-        src/generator/hepmc2_reader/HepMCG4Interface.cc
-        src/generator/hepmc2_reader/HepMCG4Interface.hh
+        src/generator/hepmc2_reader/HepMcAsciiGenerator.cc
+        src/generator/hepmc2_reader/HepMcAsciiGenerator.hh
+        src/generator/hepmc2_reader/HepMcAsciiReaderMessenger.cc
+        src/generator/hepmc2_reader/HepMcAsciiReaderMessenger.hh
+        src/generator/hepmc2_reader/HepMcGeneratorInterface.cc
+        src/generator/hepmc2_reader/HepMcGeneratorInterface.hh
 
         # Pythia 6 lund format reader
         src/generator/pythia_ascii_reader/PythiaAsciiReaderMessenger.hh
         src/generator/pythia_ascii_reader/PythiaAsciiReader.cc
         src/generator/pythia_ascii_reader/PythiaAsciiReader.hh
         src/generator/pythia_ascii_reader/PythiaAsciiReaderMessenger.cc
+
+        # Flattened root IO
+        src/root_output/JLeicRootOutput.hh
 
         )
 #----------------------------------------------------------------------------

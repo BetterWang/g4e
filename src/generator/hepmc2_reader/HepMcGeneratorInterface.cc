@@ -26,10 +26,10 @@
 /// \file eventgenerator/HepMC/HepMCEx01/src/HepMCG4Interface.cc
 /// \brief Implementation of the HepMCG4Interface class
 //
-// $Id: HepMCG4Interface.cc 77801 2013-11-28 13:33:20Z gcosmo $
+// $Id: HepMcGeneratorInterface.cc 77801 2013-11-28 13:33:20Z gcosmo $
 //
 
-#include "HepMCG4Interface.hh"
+#include "HepMcGeneratorInterface.hh"
 
 #include "G4RunManager.hh"
 #include "G4LorentzVector.hh"
@@ -41,17 +41,17 @@
 #include "G4SystemOfUnits.hh"
 
 
-HepMCG4Interface::HepMCG4Interface()
+HepMcGeneratorInterface::HepMcGeneratorInterface()
         : hepmcEvent(0) {
 }
 
 
-HepMCG4Interface::~HepMCG4Interface() {
+HepMcGeneratorInterface::~HepMcGeneratorInterface() {
     delete hepmcEvent;
 }
 
 
-G4bool HepMCG4Interface::CheckVertexInsideWorld(const G4ThreeVector &pos) const {
+G4bool HepMcGeneratorInterface::CheckVertexInsideWorld(const G4ThreeVector &pos) const {
     G4Navigator *navigator = G4TransportationManager::GetTransportationManager()->GetNavigatorForTracking();
 
     G4VPhysicalVolume *world = navigator->GetWorldVolume();
@@ -62,7 +62,7 @@ G4bool HepMCG4Interface::CheckVertexInsideWorld(const G4ThreeVector &pos) const 
 }
 
 
-void HepMCG4Interface::HepMC2G4(const HepMC::GenEvent *hepmcevt, G4Event *g4event) {
+void HepMcGeneratorInterface::HepMC2G4(const HepMC::GenEvent *hepmcevt, G4Event *g4event) {
     std::cout << "======= START HEPMC EVENT =======" << std::endl;
 
     for (auto vitr = hepmcevt->vertices_begin(); vitr != hepmcevt->vertices_end(); ++vitr) { // loop for vertex ...
@@ -122,7 +122,7 @@ void HepMCG4Interface::HepMC2G4(const HepMC::GenEvent *hepmcevt, G4Event *g4even
     std::cout << "======= END HEPMC EVENT =======" << std::endl;
 }
 
-void HepMCG4Interface::GeneratePrimaryVertex(G4Event *anEvent) {
+void HepMcGeneratorInterface::GeneratePrimaryVertex(G4Event *anEvent) {
     // delete previous event object
     delete hepmcEvent;
 

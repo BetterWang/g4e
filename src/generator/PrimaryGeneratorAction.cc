@@ -32,17 +32,17 @@
 #include "G4Event.hh"
 #include "G4ParticleGun.hh"
 #include "PythiaAsciiReader.hh"
-#include "HepMCG4AsciiReader.hh"
-#include "BeagleInterface.hh"
+#include "HepMcAsciiGenerator.hh"
+#include "BeagleGenerator.hh"
 
 
 PrimaryGeneratorAction::PrimaryGeneratorAction(): G4VUserPrimaryGeneratorAction()
 {
     // default generator is particle gun.
     fParticleGunGenerator = new G4ParticleGun();
-    fHepMcAsciiGenerator = new HepMCG4AsciiReader();
+    fHepMcAsciiGenerator = new HepMcAsciiGenerator();
     fPythiaAsciiGenerator = new PythiaAsciiReader();
-    fBeagleGenerator = new g4e::BeagleInterface();
+    fBeagleGenerator = new g4e::BeagleGenerator();
 
     gentypeMap["particleGun"] = fParticleGunGenerator;
     gentypeMap["hepmcAscii"] = fHepMcAsciiGenerator;

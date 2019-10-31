@@ -24,46 +24,52 @@
 // ********************************************************************
 //
 //
-//
 
-#include "HepMCG4AsciiReader.hh"
-#include "HepMCG4AsciiReaderMessenger.hh"
+#ifndef HEPMC_G4_ASCII_READER_H
+#define HEPMC_G4_ASCII_READER_H
 
-#include <iostream>
+#include "HepMcGeneratorInterface.hh"
+#include "HepMC/IO_GenEvent.h"
 
-HepMCG4AsciiReader::HepMCG4AsciiReader(): filename(), verbose(0)
+class HepMcAsciiReaderMessenger;
+
+class HepMcAsciiGenerator : public HepMcGeneratorInterface
 {
-    asciiInput = new HepMC::IO_GenEvent(filename.c_str(), std::ios::in);
-    messenger = new HepMCG4AsciiReaderMessenger(this);
+protected:
+
+
+
+public:
+    HepMcAsciiGenerator();
+    ~HepMcAsciiGenerator() override;
+
+    void SetFileName(G4String name);        /// Sets a HEPMC2 file name to open
+    G4String GetFileName() const;           /// Gets a HEPMC2 file name
+    void Open();                            /// Actually opens the file
+
+    HepMC::GenEvent *GenerateHepMCEvent() override;     /// Reads the next event from a file
+
+private:
+    G4String filename;
+    HepMC::IO_GenEvent *asciiInput;
+
+    G4int verbose;
+    HepMcAsciiReaderMessenger *messenger;
+};
+
+// ====================================================================
+// inline functions
+// ====================================================================
+
+inline void HepMcAsciiGenerator::SetFileName(G4String name)
+{
+    filename = name;
+}
+
+inline G4String HepMcAsciiGenerator::GetFileName() const
+{
+    return filename;
 }
 
 
-HepMCG4AsciiReader::~HepMCG4AsciiReader()
-{
-    delete asciiInput;
-    delete messenger;
-}
-
-
-void HepMCG4AsciiReader::Open()
-{
-    delete asciiInput;
-
-    // Test that file exists. The {braces} to auto close infile
-    {
-        std::ifstream infile(filename);
-        if(!infile.good()) {
-            auto message = "HepMCG4AsciiReader:: Can't open input file. It doesn't exists or this proc have no rights/access";
-            throw std::runtime_error(message);
-        }
-    }
-
-    asciiInput = new HepMC::IO_GenEvent(filename.c_str(), std::ios::in);
-}
-
-
-HepMC::GenEvent *HepMCG4AsciiReader::GenerateHepMCEvent()
-{
-    HepMC::GenEvent *evt = asciiInput->read_next_event();
-    return evt;
-}
+#endif

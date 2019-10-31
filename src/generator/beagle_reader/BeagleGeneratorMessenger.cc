@@ -22,68 +22,58 @@
 // * use  in  resulting  scientific  publications,  and indicate your *
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
-//
-/// \file eventgenerator/HepMC/HepMCEx01/src/HepMCG4AsciiReaderMessenger.cc
-/// \brief Implementation of the HepMCG4AsciiReaderMessenger class
-//
-// $Id: HepMCG4AsciiReaderMessenger.cc 77801 2013-11-28 13:33:20Z gcosmo $
-//
+
 #include "G4UIdirectory.hh"
-#include "G4UIcmdWithoutParameter.hh"
 #include "G4UIcmdWithAString.hh"
 #include "G4UIcmdWithAnInteger.hh"
-#include "HepMCG4AsciiReaderMessenger.hh"
-#include "HepMCG4AsciiReader.hh"
+#include "BeagleGeneratorMessenger.hh"
+#include "BeagleGenerator.hh"
 
 
-HepMCG4AsciiReaderMessenger::HepMCG4AsciiReaderMessenger(HepMCG4AsciiReader *agen)
-        : gen(agen)
+g4e::BeagleGeneratorMessenger::BeagleGeneratorMessenger(BeagleGenerator *interface)
+        : fBeagleInterface(interface)
 {
-    dir = new G4UIdirectory("/generator/hepmcAscii/");
-    dir->SetGuidance("Reading HepMC event from an Ascii file");
+    fDirectoryCmd = new G4UIdirectory("/generator/beagle/");
+    fDirectoryCmd->SetGuidance("Reading Beagle event from an Ascii file");
 
-    verbose = new G4UIcmdWithAnInteger("/generator/hepmcAscii/verbose", this);
-    verbose->SetGuidance("Set verbose level");
-    verbose->SetParameterName("verboseLevel", false, false);
-    verbose->SetRange("verboseLevel>=0 && verboseLevel<=1");
+    fVerboseCmd = new G4UIcmdWithAnInteger("/generator/beagle/verbose", this);
+    fVerboseCmd->SetGuidance("Set verbose level");
+    fVerboseCmd->SetParameterName("verboseLevel", false, false);
+    fVerboseCmd->SetRange("verboseLevel>=0 && verboseLevel<=2");
 
-    open = new G4UIcmdWithAString("/generator/hepmcAscii/open", this);
-    open->SetGuidance("(re)open data file (HepMC Ascii format)");
-    open->SetParameterName("input ascii file", true, true);
+    fOpenCmd = new G4UIcmdWithAString("/generator/beagle/open", this);
+    fOpenCmd->SetGuidance("(re)open data file (Beagle Ascii format)");
+    fOpenCmd->SetParameterName("input ascii file", true, true);
 }
 
 
-HepMCG4AsciiReaderMessenger::~HepMCG4AsciiReaderMessenger()
-{
-    delete verbose;
-    delete open;
-    delete dir;
+g4e::BeagleGeneratorMessenger::~BeagleGeneratorMessenger() {
+    delete fVerboseCmd;
+    delete fOpenCmd;
+    delete fDirectoryCmd;
 }
 
 
-void HepMCG4AsciiReaderMessenger::SetNewValue(G4UIcommand *command, G4String newValues)
-{
-    if (command == verbose) {
+void g4e::BeagleGeneratorMessenger::SetNewValue(G4UIcommand *command, G4String newValues) {
+    // verbosity level
+    if (command == fVerboseCmd) {
         int level = G4UIcmdWithAnInteger::GetNewIntValue(newValues);
-        gen->SetVerboseLevel(level);
+        fBeagleInterface->SetVerboseLevel(level);
     }
-    else if (command == open) {
-        gen->SetFileName(newValues);
-        G4cout << "HepMC Ascii inputfile: "<< gen->GetFileName() << G4endl;
-        gen->Open();
+
+    // open command
+    else if (command == fOpenCmd) {
+        fBeagleInterface->Open(newValues);
     }
 }
 
 
-G4String HepMCG4AsciiReaderMessenger::GetCurrentValue(G4UIcommand *command)
-{
-    if (command == verbose) {
-        return G4UIcmdWithAnInteger::ConvertToString(gen->GetVerboseLevel());
+G4String g4e::BeagleGeneratorMessenger::GetCurrentValue(G4UIcommand *command) {
+    G4String value;
+    if (command == fVerboseCmd) {
+        value = G4UIcmdWithAnInteger::ConvertToString(fBeagleInterface->GetVerboseLevel());
+    } else if (command == fOpenCmd) {
+        value = fBeagleInterface->GetFileName();
     }
-
-    if (command == open) {
-        return gen->GetFileName();
-    }
-
-    return G4String();
+    return value;
 }

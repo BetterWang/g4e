@@ -35,7 +35,7 @@
 #include "G4PhysicalConstants.hh"
 
 #include "BeagleReader.hh"
-#include "BeagleInterfaceMessenger.hh"
+#include "BeagleGeneratorMessenger.hh"
 #include "BeagleEventData.hh"
 
 #include <StringHelpers.hh>

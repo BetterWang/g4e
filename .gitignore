@@ -176,3 +176,5 @@ src/paw.metafile
 *.backup
 
 tmp
+
+docs/build/

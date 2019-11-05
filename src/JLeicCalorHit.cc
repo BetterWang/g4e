@@ -31,14 +31,14 @@
 //
 // 
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
+
 
 #include "JLeicCalorHit.hh"
 
 G4Allocator<JLeicCalorHit> JLeicCalorHitAllocator;
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 JLeicCalorHit::JLeicCalorHit()
 {
@@ -46,12 +46,12 @@ JLeicCalorHit::JLeicCalorHit()
    EdepGap = 0.; TrackLengthGap = 0.;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 JLeicCalorHit::~JLeicCalorHit()
 {;}
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 /*
 JLeicCalorHit::JLeicCalorHit(const JLeicCalorHit& right)
 {
@@ -59,7 +59,7 @@ JLeicCalorHit::JLeicCalorHit(const JLeicCalorHit& right)
   EdepGap = right.EdepGap; TrackLengthGap = right.TrackLengthGap;
 }
 */
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 const JLeicCalorHit& JLeicCalorHit::operator=(const JLeicCalorHit& right)
 {
@@ -68,10 +68,10 @@ const JLeicCalorHit& JLeicCalorHit::operator=(const JLeicCalorHit& right)
   return *this;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 void JLeicCalorHit::Print()
 {;}
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 

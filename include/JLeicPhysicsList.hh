@@ -33,7 +33,7 @@
 #ifndef JLeicPhysicsList_h
 #define JLeicPhysicsList_h 1
 
-#include "G4VUserPhysicsList.hh"
+//#include "G4VUserPhysicsList.hh"
 #include "G4VModularPhysicsList.hh"
 #include "globals.hh"
 
@@ -42,9 +42,9 @@ class JLeicStepCut;
 class JLeicDetectorConstruction;
 class JLeicPhysicsListMessenger;
 class G4ProductionCuts;
+class JLeicXTRphysics;
 
-
-class JLeicPhysicsList: public G4VModularPhysicsList  // G4VUserPhysicsList
+class JLeicPhysicsList: public G4VModularPhysicsList
 {
 public:
   JLeicPhysicsList( JLeicDetectorConstruction*);
@@ -53,41 +53,13 @@ public:
 
   // Construct particle and physics
   void ConstructParticle();
-  void ConstructProcess();
+  //void ConstructProcess();
  
   void SetCuts();
 
 private:
-    // these methods Construct particles 
-  void ConstructBosons();
-  void ConstructLeptons();
-  void ConstructMesons();
-  void ConstructBarions();
-
-  // these methods Construct physics processes and register them
-
-  void AddParameterisation();
-  void ConstructGeneral();
-  void ConstructEM();
-  void ConstructHAD();
 
 public:
-
-  void SetGammaCut(G4double);
-  void SetElectronCut(G4double);
-
-  void SetRegGammaCut(G4double    cut){fGammaCut    = cut;};
-  void SetRegElectronCut(G4double cut){fElectronCut = cut;};
-  void SetRegPositronCut(G4double cut){fPositronCut = cut;};
-
-  void SetRadiatorCuts();
-  void SetDetectorCuts();
-
-  void SetMaxStep(G4double);
-  void SetXTRModel(G4String model) {
-      fXTRModel = model;
-      G4cout<<fXTRModel<<G4endl;
-  };
 
 private:
 
@@ -102,6 +74,7 @@ private:
   G4double cutForElectron, cutForPositron;
 
   JLeicDetectorConstruction* pDet;
+  JLeicXTRphysics  * XTRphys;
 
   JLeicPhysicsListMessenger* physicsListMessenger;
 

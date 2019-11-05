@@ -3,6 +3,9 @@ work/*.root
 work/g4_*.wrl
 build/*
 
+# Python virtual environment
+venv
+
 
 # CMake gitignore
 # https://github.com/github/gitignore/blob/master/CMake.gitignore
@@ -145,3 +148,31 @@ work/jleic-g4\.C~
 \.idea/deployment\.xml
 
 *.gdml
+
+work/
+
+*.txt~
+
+*.srv
+
+*.old
+
+*.hh~
+
+*.usr
+
+src/BeagleEventData.h.example
+
+src/BeagleParticle.h.example
+
+*.cc_4Debug
+
+*.cc~
+
+src/last.kumac
+
+src/paw.metafile
+
+*.backup
+
+tmp

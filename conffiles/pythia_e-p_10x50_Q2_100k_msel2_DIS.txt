@@ -1,1 +1,0 @@
-/data/yulia/yulia-PCbackup/EIC-soft/pythia_jlab_v2/pythia/work/pythia_e-p_10x50_Q2_100k_msel2_DIS.txt

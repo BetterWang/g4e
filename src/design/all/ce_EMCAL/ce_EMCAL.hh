@@ -84,7 +84,10 @@ public:
 
 //============  For sectors =====
             for (int j = 0; j < 50; j++) {
-                y_C -= ce_EMCAL_detPWO_Width + ce_EMCAL_detPWO_Gap;
+                if(j==0) { y_C = ce_EMCAL_detPWO_Gap; }
+                else { y_C -= ce_EMCAL_detPWO_Width + ce_EMCAL_detPWO_Gap ; };
+
+
                 x_C = (ce_EMCAL_detPWO_Width + ce_EMCAL_detPWO_Gap) * 0.5;
 
                 for (int i = 0; i < 50; i++) {
@@ -161,7 +164,8 @@ public:
 
 //============  For sectors =====
         for (int j = 0; j < 50; j++) {
-            y_C -= ce_EMCAL_detGLASS_Width + ce_EMCAL_detGLASS_Gap;
+            if(j==0) { y_C=ce_EMCAL_detGLASS_Gap;}
+            else { y_C -= ce_EMCAL_detGLASS_Width + ce_EMCAL_detGLASS_Gap;}
             x_C = (ce_EMCAL_detGLASS_Width + ce_EMCAL_detGLASS_Gap) * 0.5;
 
             for ( int i = 0; i < 50; i++) {

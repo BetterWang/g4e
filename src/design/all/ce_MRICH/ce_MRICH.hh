@@ -25,8 +25,6 @@ struct ce_MRICH_Config {
     double mod_Thickness = 10. * cm;
     double mod_Width = 10. * cm;
     double mod_Gap = 1 * cm;
-
-
 };
 
 
@@ -47,8 +45,6 @@ public:
 
         Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, cfg.PosZ), "ce_MRICH_GVol_Phys", Logic,
                                               motherVolume, false, 0);
-
-
     };
 
     inline void ConstructModules() {
@@ -75,7 +71,8 @@ public:
 
 //============  For MRICH sectors =====
         for ( int j = 0; j < 10; j++) {
-            y_mrich -= (cfg.mod_Width + cfg.mod_Gap);
+            if(j==0){y_mrich= cfg.mod_Gap;}
+            else {y_mrich -= (cfg.mod_Width + cfg.mod_Gap);}
             x_mrich = (cfg.mod_Width + cfg.mod_Gap) * 0.5;
             // printf("MRICH0:: x_mrich =%f,  y_mrich=%f\n", x_mrich, y_mrich);
             for (int i = 0; i < 10; i++) {
@@ -119,9 +116,9 @@ public:
 
     };
 
-    G4Tubs *Solid;      //pointer to the solid
-    G4LogicalVolume *Logic;    //pointer to the logical
-    G4VPhysicalVolume *Phys;  //pointer to the physical
+    G4Tubs *Solid;              //pointer to the solid
+    G4LogicalVolume *Logic;     //pointer to the logical
+    G4VPhysicalVolume *Phys;    //pointer to the physical
 
     /// Parameters that was used in the moment of construction
     ce_MRICH_Config  ConstructionConfig;

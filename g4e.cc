@@ -34,7 +34,7 @@
 
 #include "JLeicDetectorConstruction.hh"
 #include "JLeicPhysicsList.hh"
-#include "JLeicPrimaryGeneratorAction.hh"
+#include "PrimaryGeneratorAction.hh"
 #include "JLeicRunAction.hh"
 #include "JLeicEventAction.hh"
 #include "JLeicSteppingAction.hh"
@@ -55,44 +55,47 @@
 
 //-- physics processes --
 #include "FTFP_BERT.hh"
+#include "QGSP_BIC.hh"
 
 #include "clara.hh"
+
+static std::string GetResourceDir();
+
 
 /// Program Configuration provided by arguments
 struct ProgramArgConfig
 {
     bool ShowGui = false;
     std::vector<std::string> FileNames;
-    std::string HepMcInFile;
 };
 
 
 int main(int argc, char **argv)
 {
-
     using namespace clara;
+    using namespace fmt;
 
     spdlog::info("Initializing g4e, parsing arguments...");
-    //auto stdout_sink = spdlog::sinks::stdout_sink_mt::instance();
-    //stdout_sink->set_level(spdlog::level::info);
-
     auto osink = std::make_shared<spdlog::sinks::ostream_sink_mt> (G4cout);
     spdlog::default_logger()->sinks().clear();
     spdlog::default_logger()->sinks().push_back(osink);
-
+    spdlog::info("Initialized G4E sink");
+    spdlog::set_level(spdlog::level::debug);
 
 
     ProgramArgConfig config;
     bool showHelp = false;
     auto parser = Help( showHelp )
-            | Opt( config.ShowGui)
-                ["--gui"]["-g"]("Shows Geant4 GUI" )
-            | Opt(config.HepMcInFile,"Process hepmc files") ["--hepmc-in"]
-            | Arg( config.FileNames, "<your>.mac" )
-                ( "Runs Geant4 with this file" );
+            | Opt( config.ShowGui)["--gui"]["-g"]("Shows Geant4 GUI" )
+            | Arg( config.FileNames, "<your>.mac" )( "Runs Geant4 with this file" );
+            //| Opt(config.HepMcInFile,"Process hepmc files") ["--hepmc-in"]
 
     parser.parse(Args(argc, argv));
 
+    // Do we have a home environment variable?
+    const char* home_cstr = std::getenv("G4E_HOME");
+    std::string homeDir(home_cstr ? home_cstr : "");
+    spdlog::info("ENV:G4E_HOME: '{}'", home_cstr);
 
     //choose the Random engine
     CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine);
@@ -105,20 +108,15 @@ int main(int argc, char **argv)
 
     auto detector = new JLeicDetectorConstruction();
 
-    // ALICEDetectorConstruction* detector;
-    // detector = new ALICEDetectorConstruction;
-
     runManager->SetUserInitialization(detector);
     runManager->SetUserInitialization(new JLeicPhysicsList(detector));
-
-    // == - set user action classes - ==
 
     // RUN action
     auto runAction = new JLeicRunAction(detector);
     runManager->SetUserAction(runAction);
 
     // Primary Generator
-    auto pgAction = new JLeicPrimaryGeneratorAction(detector, runAction);
+    auto pgAction = new PrimaryGeneratorAction();
     runManager->SetUserAction(pgAction);
 
     // Event action
@@ -135,11 +133,21 @@ int main(int argc, char **argv)
 
     G4UImanager *UI = G4UImanager::GetUIpointer();
 
-    if (!config.FileNames.empty())      // We have some user defined file
-    {
-        std::string fileName(argv[1]);
-        std::string command("/control/execute " + fileName);
-        UI->ApplyCommand(command);
+    // set macro path from environment if it is set
+    const char* macroPathCstr = std::getenv("G4E_MACRO_PATH");
+    spdlog::info("ENV:G4E_MACRO_PATH: '{}'", macroPathCstr? macroPathCstr: "");
+    if(macroPathCstr) {
+        UI->ApplyCommand(format("/control/macroPath {}", macroPathCstr));
+    }
+
+    // We have some user defined file
+    if (!config.FileNames.empty()) {
+        spdlog::debug("Executing files provided as args:");
+        for(const auto& fileName: config.FileNames) {
+            std::string command = "/control/execute " + fileName;
+            spdlog::debug("   {}", command);
+            UI->ApplyCommand(command);
+        }
     }
 
     // We start visual mode if no files provided or if --gui flag is given
@@ -169,4 +177,9 @@ int main(int argc, char **argv)
     delete runManager;
 
     return 0;
+}
+
+
+std::string GetResourceDir() {
+
 }

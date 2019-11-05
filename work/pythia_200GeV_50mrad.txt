@@ -1,1 +1,0 @@
-../conffiles/pythia_200GeV_50mrad.txt

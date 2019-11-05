@@ -48,12 +48,12 @@ message(DEBUG "g4e: Geant4_LIBS  :${Geant4_LIBRARIES}" )
 
 print_header(">>>>    V G M     <<<<" )
 
-if(EXISTS ${VGM_DIRECTORY})
-    message(STATUS "jleic-geant: cmake VGM_DIRECTORY provided: ${VGM_DIRECTORY}")
-elseif(EXISTS $ENV{VGM_DIRECTORY})
+if(DEFINED VGM_DIRECTORY)
+    message(STATUS "g4e: cmake VGM_DIRECTORY provided: ${VGM_DIRECTORY}")
+elseif(DEFINED ENV{VGM_DIRECTORY})
     set(VGM_DIRECTORY $ENV{VGM_DIRECTORY})
     message(STATUS "g4e: VGM_DIRECTORY set from environemnt ${VGM_DIRECTORY}")
-elseif(EXISTS $ENV{VGM_DIR})
+elseif(DEFINED ENV{VGM_DIR})
     set(VGM_DIRECTORY $ENV{VGM_DIR})
     message(STATUS "g4e: VGM_DIRECTORY set from environemnt ${VGM_DIRECTORY}")
 else()
@@ -89,9 +89,9 @@ print_grand_header("    G E N E R A L   C O N F I G U R A T I O N    ")
 # C++ standard to use (controlled with -DCPP_STANDARD flag)
 if(NOT DEFINED CMAKE_CXX_STANDARD)
     SET(CMAKE_CXX_STANDARD 11)
-    message(STATUS "ejana: Setting default to ${CPP_STANDARD}")
+    message(STATUS "g4e: Setting default to ${CPP_STANDARD}")
 endif()
-message(STATUS "ejana: CMAKE_CXX_STANDARD: ${CMAKE_CXX_STANDARD}")
+message(STATUS "g4e: CMAKE_CXX_STANDARD: ${CMAKE_CXX_STANDARD}")
 
 # General include directories
 # TODO move to targets whatever is possible
@@ -99,6 +99,15 @@ include_directories(
         BEFORE
             ${PROJECT_SOURCE_DIR}/include
             ${PROJECT_SOURCE_DIR}/src/design/all
+            ${PROJECT_SOURCE_DIR}/src/generator
+            ${PROJECT_SOURCE_DIR}/src/generator/beagle_reader
+            ${PROJECT_SOURCE_DIR}/src/generator/hepmc2_reader
+            ${PROJECT_SOURCE_DIR}/src/generator/pythia_ascii_reader
+            ${PROJECT_SOURCE_DIR}/src/generator/generic_lund_reader
+            ${PROJECT_SOURCE_DIR}/src/generator/root_output
+            ${PROJECT_SOURCE_DIR}/src/helpers
+            ${PROJECT_SOURCE_DIR}/src/root_output
+
         SYSTEM
             ${ROOT_INCLUDE_DIRS}
             ${PROJECT_SOURCE_DIR}/src/external/spdlog/include
@@ -133,11 +142,55 @@ ENDIF("${isSystemDir}" STREQUAL "-1")
 # TODO this is terrible!
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
+list(APPEND sources
 
+        #    H E L P E R S
+        src/helpers/StringHelpers.cc
+        src/helpers/StringHelpers.hh
+
+        #
+        # Generator
+        #
+
+        # Primary user action and a messenger
+        src/generator/PrimaryGeneratorAction.cc
+        src/generator/PrimaryGeneratorAction.hh
+        src/generator/PrimaryGeneratorMessenger.cc
+        src/generator/PrimaryGeneratorMessenger.hh
+
+        # Generic lund reader
+        src/generator/generic_lund_reader/TextEventFileReader.hh
+
+        # Beagle event generator reader
+        src/generator/beagle_reader/BeagleReader.cc
+        src/generator/beagle_reader/BeagleReader.hh
+        src/generator/beagle_reader/BeagleGeneratorMessenger.cc
+        src/generator/beagle_reader/BeagleGeneratorMessenger.hh
+        src/generator/beagle_reader/BeagleGenerator.cc
+        src/generator/beagle_reader/BeagleGenerator.hh
+
+        # HepMC2 event generator reader
+        src/generator/hepmc2_reader/HepMcAsciiGenerator.cc
+        src/generator/hepmc2_reader/HepMcAsciiGenerator.hh
+        src/generator/hepmc2_reader/HepMcAsciiReaderMessenger.cc
+        src/generator/hepmc2_reader/HepMcAsciiReaderMessenger.hh
+        src/generator/hepmc2_reader/HepMcGeneratorInterface.cc
+        src/generator/hepmc2_reader/HepMcGeneratorInterface.hh
+
+        # Pythia 6 lund format reader
+        src/generator/pythia_ascii_reader/PythiaAsciiReaderMessenger.hh
+        src/generator/pythia_ascii_reader/PythiaAsciiReader.cc
+        src/generator/pythia_ascii_reader/PythiaAsciiReader.hh
+        src/generator/pythia_ascii_reader/PythiaAsciiReaderMessenger.cc
+
+        # Flattened root IO
+        src/root_output/JLeicRootOutput.hh
+
+        )
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
-add_executable(g4e g4e.cc ${sources} ${headers} include/JLeicRootOutput.hh)
+add_executable(g4e g4e.cc ${sources} ${headers})
 target_link_libraries(g4e
         ${Geant4_LIBRARIES}
         ${HEPMC_LIBRARIES}
@@ -167,8 +220,15 @@ foreach(_script ${JLEICgeant4_SCRIPTS})
     )
 endforeach()
 
+# Copy resources to a destination
+# https://stackoverflow.com/questions/13429656/how-to-copy-contents-of-a-directory-into-build-directory-after-make-with-cmake
+add_custom_command(TARGET g4e PRE_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/resources/ $<TARGET_FILE_DIR:g4e>)
+
 #----------------------------------------------------------------------------
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
 #
 install(TARGETS g4e DESTINATION bin)
 
+add_subdirectory(test/unit_tests)

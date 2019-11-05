@@ -29,14 +29,15 @@
 //
 // 
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
+
 
 #include "JLeicEventAction.hh"
 
 #include "JLeicRunAction.hh"
 
 #include "JLeicCalorHit.hh"
+#include "JLeicVTXHit.hh"
 #include "JLeicEventActionMessenger.hh"
 
 #include "G4Event.hh"
@@ -50,25 +51,31 @@
 #include "G4UnitsTable.hh"
 #include "Randomize.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 JLeicEventAction::JLeicEventAction(JLeicRunAction *JLeicRA)
-        : calorimeterCollID(-1), eventMessenger(0),
+        : calorimeterCollID(-1), vertexCollID(-1), eventMessenger(0),
           runaction(JLeicRA), verboselevel(0), drawFlag("all"), printModulo(10000) {
     eventMessenger = new JLeicEventActionMessenger(this);
     printf("JLeicEventAction:: Constructor \n");
+
+    mHitsFile = runaction->mHitsFile;
+    mRootEventsOut=&runaction->mRootEventsOut;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 JLeicEventAction::~JLeicEventAction() {
     delete eventMessenger;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 void JLeicEventAction::BeginOfEventAction(const G4Event *evt) {
     G4int evtNb = evt->GetEventID();
+
+    mRootEventsOut->ClearForNewEvent();
+
     if (evtNb % printModulo == 0)
         G4cout << "\n---> Begin of Event: " << evtNb << G4endl;
 
@@ -78,6 +85,10 @@ void JLeicEventAction::BeginOfEventAction(const G4Event *evt) {
     if (calorimeterCollID == -1) {
         G4SDManager *SDman = G4SDManager::GetSDMpointer();
         calorimeterCollID = SDman->GetCollectionID("CalCollection");
+    }
+    if (vertexCollID == -1) {
+        G4SDManager *SDman = G4SDManager::GetSDMpointer();
+        vertexCollID = SDman->GetCollectionID("VTXCollection");
     }
 
     nstep = 0.;
@@ -91,12 +102,12 @@ void JLeicEventAction::BeginOfEventAction(const G4Event *evt) {
     Transmitted = 0.;
     Reflected = 0.;
 
-    if (evtNb == 0) printf("---> Begin of Event: %d \n", evtNb);
+    if (evtNb == 0) printf("----> Begin of Event: %d \n", evtNb);
 
 
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
     G4HCofThisEvent *HCE = evt->GetHCofThisEvent();
@@ -120,9 +131,57 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
             totEAbs += (*CHC)[i]->GetEdepAbs();
             totLAbs += (*CHC)[i]->GetTrakAbs();
         }
+
+    
         if (verboselevel >= 1)
             G4cout
-                    << "   Absorber: total energy: " << std::setw(7) <<
+                    << " CAL::  Absorber: total energy: " << std::setw(7) <<
+                    G4BestUnit(totEAbs, "Energy")
+                    << "       total track length: " << std::setw(7) <<
+                    G4BestUnit(totLAbs, "Length")
+                    << G4endl;
+
+        // count event, add deposits to the sum ...
+        runaction->CountEvent();
+        runaction->AddTrackLength(totLAbs);
+        runaction->AddnStepsCharged(nstepCharged);
+        runaction->AddnStepsNeutral(nstepNeutral);
+        if (verboselevel == 2)
+            G4cout << " Ncharged=" << Nch << "  ,   Nneutral=" << Nne << G4endl;
+        runaction->CountParticles(Nch, Nne);
+        runaction->AddEP(NE, NP);
+        runaction->AddTrRef(Transmitted, Reflected);
+        runaction->AddEdeps(totEAbs);
+        runaction->FillEn(totEAbs);
+        //runaction->FillGamDE(GamDE) ;; // move to step action
+
+        nstep = nstepCharged + nstepNeutral;
+        runaction->FillNbOfSteps(nstep);
+
+	mRootEventsOut->FillEvent((uint64_t)evt->GetEventID());
+
+    }
+
+    JLeicVTXHitsCollection *VCH = 0;
+    if (HCE)
+        VCH = (JLeicVTXHitsCollection *) (HCE->GetHC(vertexCollID));
+
+    if (VCH) {
+        int n_hit = VCH->entries();
+        if (verboselevel >= 1)
+            G4cout << "     " << n_hit
+                   << " hits are stored in JLeicVTXHitsCollection." << G4endl;
+
+        G4double totEAbs = 0, totLAbs = 0;
+        for (int i = 0; i < n_hit; i++) {
+            totEAbs += (*VCH)[i]->GetEdepAbs();
+            totLAbs += (*VCH)[i]->GetTrakAbs();
+        }
+
+    
+        if (verboselevel >= 1)
+            G4cout
+                    << "  VTX::  Absorber: total energy: " << std::setw(7) <<
                     G4BestUnit(totEAbs, "Energy")
                     << "       total track length: " << std::setw(7) <<
                     G4BestUnit(totLAbs, "Length")
@@ -146,6 +205,7 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
         runaction->FillNbOfSteps(nstep);
     }
 
+
     if (verboselevel > 0)
         G4cout << "<<< Event  " << evt->GetEventID() << " ended." << G4endl;
 
@@ -161,39 +221,39 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
     }
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 G4int JLeicEventAction::GetEventno() {
     G4int evno = fpEventManager->GetConstCurrentEvent()->GetEventID();
     return evno;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 void JLeicEventAction::setEventVerbose(G4int level) {
     verboselevel = level;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 void JLeicEventAction::CountStepsCharged() {
     nstepCharged += 1.;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 void JLeicEventAction::CountStepsNeutral() {
     nstepNeutral += 1.;
 }
 
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 void JLeicEventAction::AddCharged() {
     Nch += 1.;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 void JLeicEventAction::AddNeutral() {
     Nne += 1.;
@@ -204,31 +264,31 @@ void JLeicEventAction::AddGammaDE(G4double de) {
     GamDE += de;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 void JLeicEventAction::AddE() {
     NE += 1.;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 void JLeicEventAction::AddP() {
     NP += 1.;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 void JLeicEventAction::SetTr() {
     Transmitted = 1.;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 void JLeicEventAction::SetRef() {
     Reflected = 1.;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
   
 
 

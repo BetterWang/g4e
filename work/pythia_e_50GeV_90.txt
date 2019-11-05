@@ -1,1 +1,0 @@
-../conffiles/pythia_e_50GeV_90.txt

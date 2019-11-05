@@ -35,7 +35,7 @@
 #include "JLeicRunAction.hh"
 #include "JLeicRunMessenger.hh"
 #include "JLeicDetectorConstruction.hh"
-#include "JLeicPrimaryGeneratorAction.hh"
+#include "PrimaryGeneratorAction.hh"
 
 #include "G4Run.hh"
 #include "G4UImanager.hh"
@@ -52,9 +52,12 @@ static TH1D *histo1,*histo2,*histo3,*histo4,*histo5,*histo6,*histo7,*histo8,*his
 //static TH2D* d2_pos_ffq1;
 const int NHIST=50;
 static TH1D* hist[NHIST];
+
 static TH1D* HLikelihood[NHIST];
 static char Hname[256];
 static TH2D* d2_hist[NHIST];
+
+
 static char RootFileName[256];
 static char FileName[256];
 static int NumRow=10;
@@ -215,21 +218,55 @@ void JLeicRunAction::bookHisto()
   d2_hist[3] = new TH2D("Hist2d3","dE/dx  vs energy STRIP",1000, 0., 1000.,1000, 0., 5000.); 
  
   // ---- position at the  entrance of dipole -----
-  d2_hist[4] = new TH2D("d2_pos_iBDS1a_in"," d2_pos_iBDS1a_in ",100,-1500.,1000.,100,-20.,20.); 
-  d2_hist[5] = new TH2D("d2_pos_iBDS1b_in"," d2_pos_iBDS1b_in ",100,-1500.,0.,100,-20.,20.); 
-  d2_hist[6] = new TH2D("d2_pos_iBDS2_in"," d2_pos_iBDS2_in ",100,-3500.,3500.,100,-20.,20.); 
-  d2_hist[7] = new TH2D("d2_pos_iBDS3_in"," d2_pos_iBDS3_in ",100,-3500.,3500.,100,-20.,20.); 
+  int dminY=40, nbinY=dminY*2,dmaxY;
+  int nbinX=0,dminX,dmaxX, dmX=0;
+
+  dmX=500; nbinX=dmX*2; dminX=-254-dmX; dmaxX=-254+dmX;
+  dminY=-dmX; dmaxY=dmX;nbinY=dmX*2;
+  d2_hist[4] = new TH2D("d2_hist4_iBDS1a_in"," d2_pos_iBDS1a_in ",nbinX,dminX,dmaxX,nbinY,dminY,dmaxY);
+  dmX=500; nbinX=dmX*2; dminX=-254-dmX; dmaxX=-254+dmX; dminY=-dmX; dmaxY=dmX;nbinY=dmX*2;
+  d2_hist[5] = new TH2D("d2_hist5_iBDS1b_in"," d2_pos_iBDS1b_in ",nbinX,dminX,dmaxX,nbinY,dminY,dmaxY);
+  dmX=400; nbinX=dmX*2; dminX=-1163-dmX; dmaxX=-1163+dmX;dminY=-dmX; dmaxY=dmX;nbinY=dmX*2;
+  d2_hist[6] = new TH2D("d2_hist6_iBDS2_in"," d2_pos_iBDS2_in ",nbinX,dminX,dmaxX,nbinY,dminY,dmaxY);
+  dmX=50; nbinX=dmX*2; dminX=-1358-dmX; dmaxX=-1358+dmX;dminY=-dmX; dmaxY=dmX;nbinY=dmX*2;
+  d2_hist[7] = new TH2D("d2_hist7_iBDS3_in"," d2_pos_iBDS3_in ",nbinX,dminX,dmaxX,nbinY,dminY,dmaxY);
 
   // ---- position at the entrance of quadr -----
+  dmX=100; nbinX=dmX*2; dminX=-360-dmX; dmaxX=-360+dmX;dminY=-dmX; dmaxY=dmX;nbinY=dmX*2;
+  d2_hist[8] = new TH2D("d2_hist8_iQDS1a_in"," d2_pos_iQDS1a_in ",nbinX,dminX,dmaxX,nbinY,dminY,dmaxY);
+  d2_hist[9] = new TH2D("d2_hist9_iQDS1S_in"," d2_pos_iQDS1S_in ",nbinX,dminX,dmaxX,nbinY,dminY,dmaxY);
+  dmX=140; nbinX=dmX*2; dminX=-532-dmX; dmaxX=-532+dmX;dminY=-dmX; dmaxY=dmX;nbinY=dmX*2;
+  d2_hist[10] = new TH2D("d2_hist10_iQDS1b_in"," d2_pos_iQDS1b_in ",nbinX,dminX,dmaxX,nbinY,dminY,dmaxY);
+  d2_hist[11] = new TH2D("d2_hist11_iQDS2S_in"," d2_pos_iQDS2S_in ",nbinX,-670.,-610.,nbinY,dminY,dmaxY);
+  dmX=200; nbinX=dmX*2; dminX=-709-dmX; dmaxX=-709+dmX;dminY=-dmX; dmaxY=dmX;nbinY=dmX*2;
+  d2_hist[12] = new TH2D("d2_hist12_iQDS2_in"," d2_pos_iQDS2_in ",nbinX,dminX,dmaxX,nbinY,dminY,dmaxY);
+  d2_hist[13] = new TH2D("d2_hist13_iQDS3S_in"," d2_pos_iQDS3S_in ",nbinX,-960.,-900.,nbinY,dminY,dmaxY);
+  d2_hist[14] = new TH2D("d2_hist14_iQDS4_in"," d2_pos_iQDS4_in ",nbinX,-1800.,-1700.,nbinY,dminY,dmaxY);
 
-  d2_hist[8] = new TH2D("d2_pos_iQDS1a_in"," d2_pos_iQDS1a_in ",100,-500.,0.,100,-20.,20.); 
-  d2_hist[9] = new TH2D("d2_pos_iQDS1S_in"," d2_pos_iQDS1S_in ",100,-1500.,0.,100,-20.,20.); 
-  d2_hist[10] = new TH2D("d2_pos_iQDS1b_in"," d2_pos_iQDS1b_in ",100,-1500.,0.,100,-20.,20.); 
-  d2_hist[11] = new TH2D("d2_pos_iQDS2S_in"," d2_pos_iQDS2S_in ",100,-1500.,0.,100,-20.,20.); 
-  d2_hist[12] = new TH2D("d2_pos_iQDS2_in"," d2_pos_iQDS2_in ",100,-1500.,0.,100,-20.,20.); 
-  d2_hist[13] = new TH2D("d2_pos_iQDS3S_in"," d2_pos_iQDS3S_in ",100,-1500.,0.,100,-20.,20.); 
+  d2_hist[20] = new TH2D("pt_at_RP"," pt at Roman pot",100,0.99,1.,200,0.,10.);
 
-for (int in=0;in<12;in++) {    
+  //--------------------------------------------
+  // ---- position at the  EXIT  of dipole -----
+  dmX=500; nbinX=dmX*2; dminX=-333-dmX; dmaxX=-333+dmX;dminY=-dmX; dmaxY=dmX;nbinY=dmX*2;
+  d2_hist[24] = new TH2D("d2_hist24_iBDS1a_out"," d2_pos_iBDS1a_out ",nbinX,dminX,dmaxX,nbinY,dminY,dmaxY);
+  d2_hist[25] = new TH2D("d2_hist25_iBDS1b_out"," d2_pos_iBDS1b_out ",nbinX,-380.,-320.,nbinY,dminY,dmaxY);
+  dmX=400; nbinX=dmX*2; dminX=-1368-dmX; dmaxX=-1368+dmX;dminY=-dmX; dmaxY=dmX;nbinY=dmX*2;
+  d2_hist[26] = new TH2D("d2_hist26_iBDS2_out"," d2_pos_iBDS2_out ",nbinX,dminX,dmaxX,nbinY,dminY,dmaxY);
+  dmX=50; nbinX=dmX*2*10; dminX=-1525-dmX; dmaxX=-1525+dmX;dminY=-dmX; dmaxY=dmX;nbinY=dmX*2*10;
+  d2_hist[27] = new TH2D("d2_hist27_iBDS3_out"," d2_pos_iBDS3_out ",nbinX,dminX,dmaxX,nbinY,dminY,dmaxY);
+  // ---- position at the EXIT of quadr -----
+   dmX=100; nbinX=dmX*2; dminX=-483-dmX; dmaxX=-483+dmX;dminY=-dmX; dmaxY=dmX;nbinY=dmX*2;
+  d2_hist[28] = new TH2D("d2_hist28_iQDS1a_out"," d2_pos_iQDS1a_out ",nbinX,dminX,dmaxX,nbinY,dminY,dmaxY);
+  d2_hist[29] = new TH2D("d2_hist29_iQDS1S_out"," d2_pos_iQDS1S_out ",nbinX,-550.,-490.,nbinY,dminY,dmaxY);
+  dmX=140; nbinX=dmX*2; dminX=-658-dmX; dmaxX=-658+dmX;dminY=-dmX; dmaxY=dmX;nbinY=dmX*2;
+  d2_hist[30] = new TH2D("d2_hist30_iQDS1b_out"," d2_pos_iQDS1b_out ",nbinX,dminX,dmaxX,nbinY,dminY,dmaxY);
+  d2_hist[31] = new TH2D("d2_hist31_iQDS2S_out"," d2_pos_iQDS2S_out ",nbinX,-720.,-660.,nbinY,dminY,dmaxY);
+  dmX=200; nbinX=dmX*2; dminX=-955-dmX; dmaxX=-955+dmX;dminY=-dmX; dmaxY=dmX;nbinY=dmX*2;
+  d2_hist[32] = new TH2D("d2_hist32_iQDS2_out"," d2_pos_iQDS2_out ",nbinX,dminX,dmaxX,nbinY,dminY,dmaxY);
+  d2_hist[33] = new TH2D("d2_hist33_iQDS3S_out"," d2_pos_iQDS3S_out ",nbinX,-1180.,-1120.,nbinY,dminY,dmaxY);
+  d2_hist[34] = new TH2D("d2_hist34_iQDS4_out"," d2_pos_iQDS4_out ",nbinX,-2100.,-1700.,nbinY,dminY,dmaxY);
+
+    for (int in=0;in<12;in++) {
     sprintf(myname,"hmatrixOccup1_%d",in);
     hmatrixOccup[in]= new TH2F(myname,myname,NumCol,-0.5,NumCol-0.5,NumRow,-0.5,NumRow-0.5);
     sprintf(myname,"hmatrixOccupCM1_%d",in);
@@ -339,7 +376,11 @@ void JLeicRunAction::BeginOfRunAction(const G4Run* aRun)
 
   if(pVVisManager)    UI->ApplyCommand("/vis/scene/notifyHandlers");
 
-  printf("RunAction:: 1\n");
+  //char rootfilename[]="g4e_output_VTX.root";
+  printf("RunAction:: open output roort file 1\n");
+  mHitsFile = new TFile("g4e_output_evt.root", "RECREATE");
+  mRootEventsOut.Initialize(mHitsFile);
+
       
   EnergySumAbs = 0. ;
   EnergySquareSumAbs = 0.;
@@ -499,16 +540,16 @@ void JLeicRunAction::BeginOfRunAction(const G4Run* aRun)
  
 void JLeicRunAction::SetName() {
 
-  sprintf(FileName,"%s_%s%.fGeV_%s_d%.f:%.1fmm_r%.fcm_m%d"
-	  ,detector->fSetUp.c_str() 
-	  ,JLeicPrimaryGeneratorAction::GetPrimaryName().c_str()
-	  ,JLeicPrimaryGeneratorAction::GetPrimaryEnergy()/GeV
+  sprintf(FileName, "%s_%s%.fGeV_%s_d%.f:%.1fmm_r%.fcm_m%d"
+	  , detector->fSetUp.c_str() 
+	  , PrimaryGeneratorAction::GetPrimaryName().c_str()
+	  , PrimaryGeneratorAction::GetPrimaryEnergy() / GeV
 	  //,particleGun->GetParticleDefinition()->GetParticleName()
-	  ,detector->fAbsorberMaterial->GetName().c_str() 
-	  ,detector->fConfig.ci_TRD.fAbsorberThickness
-	  ,detector->fadc_slice
+	  , detector->fAbsorberMaterial->GetName().c_str() 
+	  , detector->fConfig.ci_TRD.fAbsorberThickness
+	  , detector->fadc_slice
 	  ,detector->fConfig.ci_TRD.fRadThick/cm
-	  ,detector->fModuleNumber
+	  , detector->fModuleNumber
 	  );
 
   sprintf(RootFileName,"%s.root",FileName);
@@ -1016,6 +1057,16 @@ void JLeicRunAction::EndOfRunAction(const G4Run*)
 
   printf(" Close file %s, f=%p \n",histName.c_str(),myRootfile);
   myRootfile->Close();
+
+
+    if(mHitsFile)
+    {
+        mHitsFile->cd();
+        mRootEventsOut.Write();
+        mHitsFile->Close();
+    }
+
+
 }
 
 ///////////////////////////////////////////////////////////////////////////

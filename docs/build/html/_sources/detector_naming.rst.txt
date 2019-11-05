@@ -1,7 +1,7 @@
 Detector naming convention
 ==========================
 
-.. image:: _static/detector_regions.png
+.. image:: _images/detector_regions.png
 
 1. Central Detector (c):
 

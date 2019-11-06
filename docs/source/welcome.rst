@@ -16,7 +16,8 @@ ejpm install g4e
 Manual installation
 
 
-## INTRODUCTION
+INTRODUCTION
+############
 
 
 

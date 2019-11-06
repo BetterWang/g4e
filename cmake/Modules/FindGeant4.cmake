@@ -25,27 +25,27 @@
 print_header(">>>>    G E A N T   4    <<<<")
 
 # Alternative paths which can be defined by user
-set(Geant4_DIR "" CACHE PATH "Directory where Geant4 is installed")
+set(GEANT4_DIR "" CACHE PATH "Directory where Geant4 is installed")
 set(GEANT4_INC_DIR "" CACHE PATH "Alternative directory for Geant4 includes")
 set(GEANT4_LIB_DIR "" CACHE PATH "Alternative directory for Geant4 libraries")
 set(GEANT4_SYSTEM "" CACHE PATH "Geant4 platform specification")
 
 # First search for Geant4Config.cmake on the path defined via user setting 
-# Geant4_DIR
+# GEANT4_DIR
 
-if(EXISTS ${Geant4_DIR}/Geant4Config.cmake)
-  include(${Geant4_DIR}/Geant4Config.cmake)
-  message(STATUS "Found Geant4 CMake configuration in ${Geant4_DIR}")
+if(EXISTS ${GEANT4_DIR}/Geant4Config.cmake)
+  include(${GEANT4_DIR}/Geant4Config.cmake)
+  message(STATUS "Found Geant4 CMake configuration in ${GEANT4_DIR}")
   # Geant4_INCLUDE_DIRS, Geant4_LIBRARIES are defined in Geant4Config
   set(Geant4_FOUND TRUE)
   return()
 endif()
 
-# If Geant4Config.cmake was not found in Geant4_DIR
+# If Geant4Config.cmake was not found in GEANT4_DIR
 # search for geant4-config executable on system path to get Geant4 installation directory 
 
 find_program(GEANT4_CONFIG_EXECUTABLE geant4-config PATHS
-  ${Geant4_DIR}/bin
+  ${GEANT4_DIR}/bin
   )
 
 if(GEANT4_CONFIG_EXECUTABLE)
@@ -60,20 +60,20 @@ if(GEANT4_CONFIG_EXECUTABLE)
     OUTPUT_STRIP_TRAILING_WHITESPACE)
 
   if(EXISTS ${G4PREFIX}/lib/Geant4-${GEANT4_VERSION}/Geant4Config.cmake)
-    set(Geant4_DIR ${G4PREFIX}/lib/Geant4-${GEANT4_VERSION})
-    include(${Geant4_DIR}/Geant4Config.cmake)
+    set(GEANT4_DIR ${G4PREFIX}/lib/Geant4-${GEANT4_VERSION})
+    include(${GEANT4_DIR}/Geant4Config.cmake)
     # Geant4_INCLUDE_DIRS, Geant4_LIBRARIES are defined in Geant4Config
     set(Geant4_FOUND TRUE)
-    message(STATUS "Found Geant4 CMake configuration in ${Geant4_DIR}")
+    message(STATUS "Found Geant4 CMake configuration in ${GEANT4_DIR}")
     return()
   endif()
 
   if(EXISTS ${G4PREFIX}/lib64/Geant4-${GEANT4_VERSION}/Geant4Config.cmake)
-    set(Geant4_DIR ${G4PREFIX}/lib64/Geant4-${GEANT4_VERSION})
-    include(${Geant4_DIR}/Geant4Config.cmake)
+    set(GEANT4_DIR ${G4PREFIX}/lib64/Geant4-${GEANT4_VERSION})
+    include(${GEANT4_DIR}/Geant4Config.cmake)
     # Geant4_INCLUDE_DIRS, Geant4_LIBRARIES are defined in Geant4Config
     set(Geant4_FOUND TRUE)
-    message(STATUS "Found Geant4 CMake configuration in ${Geant4_DIR}")
+    message(STATUS "Found Geant4 CMake configuration in ${GEANT4_DIR}")
     return()
   endif()
 
@@ -85,13 +85,13 @@ endif()
 if (NOT Geant4_FOUND)
   find_path(Geant4_INCLUDE_DIRS NAMES globals.hh PATHS
     ${GEANT4_INC_DIR}
-    ${Geant4_DIR}/include
+    ${GEANT4_DIR}/include
     $ENV{G4INSTALL}/include
     $ENV{G4INCLUDE}
   )
   find_path(GEANT4_LIBRARY_DIR NAMES libname.map PATHS
     ${GEANT4_LIB_DIR}
-    ${Geant4_DIR}/lib/${GEANT4_SYSTEM}
+    ${GEANT4_DIR}/lib/${GEANT4_SYSTEM}
     $ENV{G4INSTALL}/lib/$ENV{G4SYSTEM}
     $ENV{G4LIB}
   )

@@ -17,9 +17,20 @@ pip install m2r
 
 ## Building
 
-```
+```bash
 make html
 ```
+
+Or install Sphinx-Serve
+```bash
+pip install sphinx-serve
+```
+
+and run
+```bash
+sphinx-serve
+```
+
 
 ## Read the docs
 

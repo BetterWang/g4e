@@ -12,19 +12,21 @@ Welcome to Geant 4 EIC's documentation!
 
    Index <welcome>
    quick_start
+   install.md
    detector_naming
 
+.. toctree::
+   :maxdepth: 1
+   :caption: Links:
+
+   Open in gitlab <https://gitlab.com/jlab-eic/g4e>
 
 .. image:: _images/JLEICgeant4-v1a.png
    :name: JLEIC detector
 
 .. include:: welcome.rst
 
-.. toctree::
-   :maxdepth: 1
-   :caption: Links:
 
-   Source code <https://gitlab.com/jlab-eic/g4e>
 
 
 Indices and tables

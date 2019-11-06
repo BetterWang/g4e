@@ -12,7 +12,7 @@ Welcome to Geant 4 EIC's documentation!
 
    Index <welcome>
    quick_start
-   install.md
+   Install <install.md>
    detector_naming
 
 .. toctree::

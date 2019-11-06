@@ -169,7 +169,8 @@ if(evno!=myevno) {
             (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName() == "Physics_DIPOLE_m_iBDS2") ||
             (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName() == "Physics_DIPOLE_m_iBDS3") ||
             (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName() == "Physics_ASOLENOID_hd_m_iASUS") ||
-            (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName() == "Physics_QUADS_hd_m_iQDS4")
+            (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName() == "Physics_Chicane_m_eBDS1") ||
+                    (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName() == "Physics_DIPOLE")
 
 
 
@@ -271,6 +272,12 @@ if(evno!=myevno) {
             if (strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(),
                        "Physics_QUADS_hd_m_iQDS4") == 0) {
                 runaction->FillHist2d(14, aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(),
+                                      1.);
+
+            }
+            if (strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(),
+                       "Physics_Chicane_m_eBDS1") == 0) {
+                runaction->FillHist2d(15, aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(),
                                       1.);
 
             }

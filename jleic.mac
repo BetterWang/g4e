@@ -218,23 +218,35 @@
 #/gun/position  -1349.58247     0   41314.67469      mm
 
 # BEAGLE generator
-/generator/select beagle
-/generator/beagle/open beagle_test_data.txt
-/generator/beagle/verbose 2
+#/generator/select beagle
+#/generator/beagle/open BEAGLE.txt
+#/generator/beagle/open  GCF_boosted.txt
+#/generator/beagle/open  eD_5x50_Q2_1_10_y_0.01_0.95_tau_7_noquench_kt=ptfrag=0.32_Shd1_ShdFac=1.32_Jpsidifflept_test40k_fixpf_crang.txt
+#/generator/beagle/open  eD_5x100_Q2_1_max_y_0.01_0.95_10k_Shd3_tau7_kt=ptfrag=0.32_shdfac=1.32.Jpsidiffnodecay.Kongpf.txt
+#/generator/beagle/verbose 2
 
 #
 # GEMC/BNL version
-#/generator/fSelectCmd pythiaAscii
+/generator/select pythiaAscii
 #/generator/pythiaAscii/verbose 1
 #/generator/pythiaAscii/open  pythia1pis.txt
 #/generator/pythiaAscii/open  /home/yulia/yulia/TestVTXhmc/build.newnewOK/pythiaBeautyDIS100.txt
 #/generator/pythiaAscii/open  pythia_e-p_10x50_Q2_100k_msel2_DIS.txt
 #/generator/pythiaAscii/open  /home/yulia/GEMC/detectors/eic/script/pythia-PHP.txt
+#/generator/pythiaAscii/open /data/yulia/yulia-PCbackup/EIC-soft/pythia_jlab_v2/pythia/work/pythia_e-p_10x100_Q0_100k_msel2_PHP.txt
+#/generator/pythiaAscii/open  /data/yulia/yulia-PCbackup/EIC-soft/pythia_jlab/pythiaeRHIC/1.0.0/build_old2/pythia_PHP_Charm.txt
+#/generator/pythiaAscii/open  /data/yulia/yulia-PCbackup/EIC-soft/pythia_jlab/pythiaeRHIC/1.0.0/build_old2/pythia_PhP.txt
 
-##/generator/pythiaAscii/open  /data/yulia/yulia-PCbackup/EIC-soft/pythia_jlab/pythiaeRHIC/1.0.0/build_old2/pythia_PHP_Charm.txt
 
+#------ cone at 50mrad ----
+#---protons ---
+#/generator/pythiaAscii/open /data/yuliapc/home/yulia/work/g4e/resources/pythia/pythia_cone_p_200GeV_50mrad.txt
+#---neutrons ---
+#/generator/pythiaAscii/open /data/yuliapc/home/yulia/work/g4e/resources/pythia/pythia_cone_n_200GeV_50mrad.txt
+#---electrons ---
+#/generator/pythiaAscii/open /data/yuliapc/home/yulia/work/g4e/resources/pythia/pythia_cone_e_10GeV_0.txt
+/generator/pythiaAscii/open /data/yuliapc/home/yulia/work/g4e/resources/pythia/pythia_cone_e_10GeV_0_upstream.txt
 
-#
 #/generator/pythiaAscii/open  jpsi_10x200_mu_JF.txt
 #/generator/pythiaAscii/open pythia_200GeV_50mrad.txt
 #/generator/pythiaAscii/open pythia_200GeV_51mrad.txt

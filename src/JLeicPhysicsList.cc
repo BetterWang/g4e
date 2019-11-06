@@ -76,6 +76,7 @@
 #include "G4LFission.hh"
 #include "G4HadronCaptureProcess.hh"
 #include "G4NeutronHPCapture.hh"
+#include "G4Ions.hh"
 
 #include "G4HadronPhysicsQGSP_BIC_HP.hh"
 #include "G4EmStandardPhysics_option4.hh"
@@ -168,8 +169,12 @@ void JLeicPhysicsList::ConstructParticle()
   G4IonConstructor pIonConstructor;
   pIonConstructor.ConstructParticle();
 
+
+
   G4ShortLivedConstructor pShortLivedConstructor;
-  pShortLivedConstructor.ConstructParticle();  
+  pShortLivedConstructor.ConstructParticle();
+
+
 }
 
 ///////////////////////////////////////////////////////////////////////

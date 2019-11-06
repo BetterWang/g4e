@@ -45,6 +45,7 @@ namespace {
 JLeicSolenoid3D::JLeicSolenoid3D(const std::string& filename, double zOffset, bool zInvert) : fZoffset(zOffset), fZinvert(zInvert), invertX(false), invertY(false), invertZ(false) {
     //double lenUnit= meter;
     //double fieldUnit= tesla;
+    int debug=0;
     double lenUnit = cm;
     double fieldUnit = tesla;
     G4cout << "\n-----------------------------------------------------------" << "\n      Magnetic field" << "\n-----------------------------------------------------------";
@@ -81,7 +82,7 @@ JLeicSolenoid3D::JLeicSolenoid3D(const std::string& filename, double zOffset, bo
     zField.resize(nx);
     int ix, iy, iz;
     for (ix = 0; ix < nx; ix++) {
-        printf("JLeicSolenoid3D:: resize vectors:: ix=%d of %d \n", ix, nx);
+        if (debug > 2) printf("JLeicSolenoid3D:: resize vectors:: ix=%d of %d \n", ix, nx);
         xField[ix].resize(ny);
         yField[ix].resize(ny);
         zField[ix].resize(ny);
@@ -103,7 +104,7 @@ JLeicSolenoid3D::JLeicSolenoid3D(const std::string& filename, double zOffset, bo
     double xval, yval, zval, bx, by, bz;
     double permeability; // Not used in this example.
     for (ix = 0; ix < nx; ix++) {
-        printf("JLeicSolenoid3D:: read file:: ix=%d of %d \n", ix, nx);
+       if(debug>2) printf("JLeicSolenoid3D:: read file:: ix=%d of %d \n", ix, nx);
         for (iy = 0; iy < ny; iy++) {
             for (iz = 0; iz < nz; iz++) {
                 //file >> xval >> yval >> zval >> bx >> by >> bz >> permeability;

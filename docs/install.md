@@ -69,7 +69,7 @@ INSTALLED PACKETS: (*-active):
 
 
 
-## Build from CMake
+## CMake build
 
 ```bash
 git clone https://gitlab.com/jlab-eic/g4e.git
@@ -81,21 +81,23 @@ make
 
 ### Dependencies
 
-- Geant4
+- **Geant4**
    - CMake flag: `GEANT4_DIR`   
-- VGM
+- **VGM**  
+   Provides export to CERN.ROOT geometry
    - Env. variable: `VGM_DIRECTORY` or `VGM_DIR`
    - CMake flag: `VGM_DIRECTORY`
-- HEPMC (2)
+- **HEPMC2** (optional)  
+    Required to open Pythia8 and other HepMC2 compatible MC files   
    - Env. variable: `HEPMC_DIR` or `HEPMC_ROOT_DIR`
    - CMake flag: `HEPMC_DIRECTORY` or `HEPMC_DIR`
-- Cern ROOT
+- **Cern ROOT**  
+   Required for IO and some histogramming
    - Environment variable: `ROOTSYS`
    - CMake flag: `CERN_ROOT_DIRECTORY`
 
 
-
-### Flags
+### CMake flags
 
 Additional flags:
 `WITH_GEANT4_UIVIS` = ON Build with Geant4 UI and Vis drivers. Default
@@ -103,13 +105,5 @@ Additional flags:
 
 
 
-### Environment
 
-After installation, when running, g4e looks for:
-
-```G4E_HOME``` - which should point to a place, where 'resources' 
-folder is located
-
-```G4E_MACRO_PATH``` - allows to add aditional paths where *.mac files 
-are checked. The rule is the same as system PATH (colon separated list of pahts) 
 

@@ -9,6 +9,7 @@ Welcome to Geant 4 EIC's documentation!
 
    quick_start
    install
+   run
 
 .. toctree::
    :maxdepth: 2
@@ -16,6 +17,7 @@ Welcome to Geant 4 EIC's documentation!
 
    detector_naming
    detector_import
+   multithreading
 
 .. toctree::
    :maxdepth: 1

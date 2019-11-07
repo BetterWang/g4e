@@ -67,7 +67,7 @@ static std::string GetResourceDir();
 struct ProgramArguments
 {
     bool ShowGui = false;
-    bool IsMultiThreaded = false;
+    int ThreadsCount = 1;
     std::vector<std::string> FileNames;
 };
 
@@ -89,7 +89,7 @@ int main(int argc, char **argv)
     bool showHelp = false;
     auto parser = Help( showHelp )
             | Opt(args.ShowGui)["--gui"]["-g"]("Shows Geant4 GUI" )
-            | Opt(args.IsMultiThreaded)["--multi-thread"]["-m"]("Use Geant multi threaded mode" )
+            | Opt(args.ThreadsCount)["--threads"]["-t"]("Number of threads. Single threaded mode if 0 or 1" )
             | Arg(args.FileNames, "<your>.mac" )("Runs Geant4 with this file" );
             //| Opt(args.HepMcInFile,"Process hepmc files") ["--hepmc-in"]
 
@@ -107,7 +107,16 @@ int main(int argc, char **argv)
     G4VSteppingVerbose::SetInstance(new JLeicSteppingVerbose);
 
     // Construct the default run manager
-    auto runManager = args.IsMultiThreaded? new G4MTRunManager : new G4RunManager;
+    G4RunManager * runManager;
+    if(args.ThreadsCount > 1) {
+        // Multi-threaded run manager
+        auto mtRunManager = new G4MTRunManager;
+        mtRunManager->SetNumberOfThreads(args.ThreadsCount);
+        runManager = mtRunManager;
+    } else {
+        // Single threaded mode
+        runManager = new G4RunManager;
+    }
 
     auto detector = new JLeicDetectorConstruction();
 

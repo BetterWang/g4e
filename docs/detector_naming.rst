@@ -3,6 +3,8 @@ Detector naming convention
 
 .. image:: _images/detector_regions.png
 
+Detector tree : src/design/all/
+
 1. Central Detector (c):
 
    * Barrel (cb) == Central Barrel

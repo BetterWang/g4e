@@ -207,7 +207,7 @@ void JLeicXTRphysics::ConstructProcess()
     G4ProcessManager* pmanager = particle->GetProcessManager();
     G4String particleName = particle->GetParticleName();
 
-   // printf("JLeicXTRphysics::ConstructEM():: particle=%s \n",particle->GetParticleName().c_str());
+   printf("JLeicXTRphysics::ConstructEM():: particle=%s \n",particle->GetParticleName().c_str());
 
    if (particleName == "gamma")
     {

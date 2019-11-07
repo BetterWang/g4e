@@ -26,14 +26,14 @@ endif()
 # G E A N T 4
 # -----------
 # Can set WITH_GEANT4_UIVIS to OFF via the command line or ccmake/cmake-gui
-option(WITH_GEANT4_UIVIS "Build example with Geant4 UI and Vis drivers" ON)
+option(WITH_GEANT4_UIVIS "Build with Geant4 UI and Vis drivers" ON)
 
 if(WITH_GEANT4_UIVIS)
   find_package(Geant4 REQUIRED ui_all vis_all)
 else()
   find_package(Geant4 REQUIRED)
 endif()
-message(STATUS "g4e: Geant4_DIR: ${Geant4_DIR}")
+message(STATUS "g4e: GEANT4_DIR: ${GEANT4_DIR}")
 
 # Setup Geant4 include directories and compile definitions
 include(${Geant4_USE_FILE})
@@ -222,9 +222,9 @@ endforeach()
 
 # Copy resources to a destination
 # https://stackoverflow.com/questions/13429656/how-to-copy-contents-of-a-directory-into-build-directory-after-make-with-cmake
-add_custom_command(TARGET g4e PRE_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_SOURCE_DIR}/resources/ $<TARGET_FILE_DIR:g4e>)
+#add_custom_command(TARGET g4e PRE_BUILD
+#        COMMAND ${CMAKE_COMMAND} -E copy_directory
+#        ${CMAKE_SOURCE_DIR}/resources/ $<TARGET_FILE_DIR:g4e>)
 
 #----------------------------------------------------------------------------
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX

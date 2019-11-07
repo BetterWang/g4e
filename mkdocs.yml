@@ -1,0 +1,10 @@
+site_name: Geant 4 EIC
+nav:
+  - Home: index.md
+  - About: install.md
+theme:
+  name: readthedocs
+  highlightjs: true
+  hljs_languages:
+    - yaml
+    - rust

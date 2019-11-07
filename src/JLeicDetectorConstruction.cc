@@ -276,7 +276,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     spdlog::info("fConfig.World.SizeR={}", fConfig.World.SizeR);
     spdlog::info("fConfig.World.SizeZ={}", fConfig.World.SizeZ);
 
-    fConfig.World.SizeR /= 30.;
+    fConfig.World.SizeR /= 3.;
     fConfig.World.SizeZ /= 5.;
     printf("==>> create a world : xyz= %f %f %f [m]\n", fConfig.World.SizeR * 2 / m, fConfig.World.SizeR * 2 / m, fConfig.World.SizeZ / m);
     // World_Material    = Air;
@@ -1891,9 +1891,9 @@ void JLeicDetectorConstruction::CreateDipoleChicane(int j, char *ffqsNAME, float
     //-------------------------- Magnet iron------------------------
     sprintf(abname, "Solid_i_%s", ffqsNAME);
     fSolid_Chicane_ir[j] = new G4Box(abname, (double) ffqsRoutDi * cm, (double) ffqsRoutDi * cm, ((double) ffqsSizeZDi / 2.) * m);
-    sprintf(abname, "Logic_Chicane_i_%d", j);
+    sprintf(abname, "Logic_Chicane_i_%s", ffqsNAME);
     fLogic_Chicane_ir[j] = new G4LogicalVolume(fSolid_Chicane_ir[j], ffqsMaterial, abname);
-    sprintf(abname, "Physics_Chicane_i_%d", j);
+    sprintf(abname, "Physics_Chicane_i_%s", ffqsNAME);
     fPhysics_Chicane_ir[j] = new G4PVPlacement(0, G4ThreeVector(), abname, fLogic_Chicane_ir[j], fPhysics_Chicane_v[j], false, 0);
 
     vb1a = new G4VisAttributes(G4Color(0.2, 0.8, 0.2, 1.));
@@ -1904,9 +1904,9 @@ void JLeicDetectorConstruction::CreateDipoleChicane(int j, char *ffqsNAME, float
     sprintf(abname, "Solid_m_%s", ffqsNAME);
     //    fSolid_Chicane_m[j] = new G4Tubs(abname, 0., ffqsRinDi*cm,(ffqsSizeZDi/2.)*m,0.,360*deg);
     fSolid_Chicane_m[j] = new G4Box(abname, (double) ffqsRinDi * cm, (double) ffqsRinDi * cm, (double) (ffqsSizeZDi / 2.) * m);
-    sprintf(abname, "Logic_Chicane_m_%d", j);
+    sprintf(abname, "Logic_Chicane_m_%s", ffqsNAME);
     fLogic_Chicane_m[j] = new G4LogicalVolume(fSolid_Chicane_m[j], ffqsMaterial_G, abname);
-    sprintf(abname, "Physics_Chicane_m_%d", j);
+    sprintf(abname, "Physics_Chicane_m_%s", ffqsNAME);
     fPhysics_Chicane_m[j] = new G4PVPlacement(0, G4ThreeVector(), abname, fLogic_Chicane_m[j], fPhysics_Chicane_v[j], false, 0);
 
     vb1b = new G4VisAttributes(G4Color(1., 1., 0.8, 0.5));

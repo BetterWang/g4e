@@ -242,6 +242,8 @@ void JLeicRunAction::bookHisto()
   d2_hist[12] = new TH2D("d2_hist12_iQDS2_in"," d2_pos_iQDS2_in ",nbinX,dminX,dmaxX,nbinY,dminY,dmaxY);
   d2_hist[13] = new TH2D("d2_hist13_iQDS3S_in"," d2_pos_iQDS3S_in ",nbinX,-960.,-900.,nbinY,dminY,dmaxY);
   d2_hist[14] = new TH2D("d2_hist14_iQDS4_in"," d2_pos_iQDS4_in ",nbinX,-1800.,-1700.,nbinY,dminY,dmaxY);
+  dmX=100; nbinX=dmX*2; dminX=-dmX; dmaxX=dmX;dminY=-dmX; dmaxY=dmX;nbinY=dmX*2;
+  d2_hist[15] = new TH2D("d2_hist15_eBDS1_in"," d2_pos_eBDS1_in ",nbinX,dminX,dmaxX,nbinY,dminY,dmaxY);
 
   d2_hist[20] = new TH2D("pt_at_RP"," pt at Roman pot",100,0.99,1.,200,0.,10.);
 

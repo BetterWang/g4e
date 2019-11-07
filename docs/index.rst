@@ -20,6 +20,13 @@ Welcome to Geant 4 EIC's documentation!
    multithreading
 
 .. toctree::
+   :maxdepth: 2
+   :caption: Input files:
+    io_lund
+    io_hempc
+    io_beagle
+
+.. toctree::
    :maxdepth: 1
    :caption: Links:
 

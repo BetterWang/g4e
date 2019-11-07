@@ -61,21 +61,15 @@
 /control/verbose 2
 /run/verbose 2
 /geometry/navigator/verbose 0
-#
-# CERN test beam setup DEPFET/TRD      
-#
+#-------------------------------------------------------
+#  TRD  setup
+#-------------------------------------------------------
 /XTRdetector/setup  jleic2019
-#/XTRdetector/setup  vertex16
-#/XTRdetector/setup depfet09
-#/XTRdetector/setup fdc15
-#
-# these commands do not change energy cuts???
-#
+#-------------------------------------------------------
 # Set XTR model (default: transpM). Name list consits:
 # gammaR, gammaM, regR, regM, strawR, transpR, transpM
-#
 # R - XTR dE/dx models, M - XTR flux after radiator models
-#
+#-------------------------------------------------------
 /emphyslist/setXTRModel  transpM
 #/emphyslist/setXTRModel  transpR
 #/emphyslist/setXTRModel  gammaM
@@ -87,53 +81,19 @@
 #/emphyslist/eMinEnergy 100.  
 #/emphyslist/gMinEnergy 100.  
 #
-#
 #/run/particle/applyCuts
-#
-# set cuts in XTR radiator
-#
-/emphyslist/setGammaCut     0.11
-/emphyslist/setElectronCut  0.12
-/emphyslist/setPositronCut  0.13
+# ----------set cuts in XTR radiator -----
 /emphyslist/setRadiatorCuts 0.14
-#
-# set cuts in XTR detector
-#
 /emphyslist/setGammaCut    0.020
 /emphyslist/setElectronCut 0.020
 /emphyslist/setPositronCut 0.020
-#
 /emphyslist/setDetectorCuts 0.020
-#
-#
 /run/initialize
 #
 #--------------------------------------------------------------------
 
 #--------------------------------------------------------------------
 /plots/sethistName hist.root
-#
-#/gun/random on
-
-#
-#--------------------------------------------------------------------
-#  CERN 2009 2011
-#--------------------------------------------------------------------
-#
-#/gun/particle mu-
-#/gun/energy 120 GeV
-#/plots/sethistName hist_41_20_15v3_mu120G.root
-#
-#/gun/particle pi-
-#/gun/energy 100 GeV
-#/plots/sethistName hist_41_20_15v3_pi1100G_50um.root
-#
-#/gun/particle e-
-#/gun/energy 10 GeV
-
-
-#/plots/sethistName hist_41_20_15v4_e100G_50um.root
-#
 #--------------------------------------------------------------------
 #  DESY 09
 #--------------------------------------------------------------------
@@ -141,12 +101,7 @@
 #/gun/particle e-
 #/gun/energy 5000.0 MeV
 #/plots/sethistName hist_41_20_16v4n2_e5G.root
-#
-#--------------------------------------------------------------------
-#  Gamma sources Cd109=26 keV, Am241=59.5 keV
-#--------------------------------------------------------------------
-#/gun/particle gamma
-#/gun/energy 59.5 keV
+
 #--------------------------------------------------------------------
 #  IONs
 #--------------------------------------------------------------------
@@ -169,40 +124,21 @@
 #                  J L E I C  
 #===================================================================
 /plots/sethistName      hist_jleic.root
-#
+
+
+
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#^^^^^       single particle gun
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 #/generator/fSelectCmd particleGun
-#/gun/particle neutron
+
+#------------     run protons   ------------------------------------
 #/gun/particle proton
-#--------------crossing angle 50mrad-------
-#/gun/energy  200 GeV
-#------------ 50 mrad ---
+#...............crossing angle 50mrad...............................
 #/gun/momentum   -9.995833854   0.    199.7500520
-#-------------53 mrad-----
+#...............crossing angle 53 mrad .............................
 #/gun/momentum   -10.5950381303   0.    199.719165748
-#--- origin /gun/position  -458.554187  0  9238.165900 mm
-#/gun/position  -458.554187  0  6988.165900 mm
-#/gun/position -349.824490 -2.097512 6990.769847 mm
-#/gun/position -352.9979921  0. 6980.769847 mm
-#/gun/energy  100 GeV
-#/gun/momentum   -4.9979169   0.       99.875 
-#/gun/momentum   -0.49979169   0.       9.9875 
-
-#
-#--------------------------------------------------------------------
-#/generator/fSelectCmd particleGun
-#/gun/particle proton
-#/gun/energy  200 GeV
-#/gun/momentum   0.   0.    200.
-#************************************************
-#----------- 0.050 angle -------
-#/gun/momentum   -9.995833854   0.    199.7500521
-#--- at 0
-#/gun/position 0.     0.    0.  m
-#/gun/position -0.249895846     0   4.993751302   m
-#************************************************
-#----------- 0.053 angle -------
-#/gun/momentum   -10.59503813   0.    199.7191657
-
+#................ origin Vertex ....................................
 ####--- after iBDS1
 #/gun/position -0.327111674     0   6.491761992  m
 ####--- before iQDS2
@@ -217,18 +153,36 @@
 ####-- This location is before entering D3 ---
 #/gun/position  -1349.58247     0   41314.67469      mm
 
-# BEAGLE generator
-#/generator/select beagle
+#------------     run neutrons -------------------------------------
+#/gun/particle neutron
+
+#------    run gammas  Gamma sources Cd109=26 keV, Am241=59.5 keV-------
+#/gun/particle gamma
+#/gun/energy 59.5 keV
+#------     run electrons -------------------------------------------
+#/gun/particle e-
+#/gun/particle pi-
+
+
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#^^^^^^       BEAGLE generator
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/generator/select beagle
+#/generator/beagle/verbose 2
+#----------------- file examples ----
 #/generator/beagle/open BEAGLE.txt
 #/generator/beagle/open  GCF_boosted.txt
 #/generator/beagle/open  eD_5x50_Q2_1_10_y_0.01_0.95_tau_7_noquench_kt=ptfrag=0.32_Shd1_ShdFac=1.32_Jpsidifflept_test40k_fixpf_crang.txt
 #/generator/beagle/open  eD_5x100_Q2_1_max_y_0.01_0.95_10k_Shd3_tau7_kt=ptfrag=0.32_shdfac=1.32.Jpsidiffnodecay.Kongpf.txt
-#/generator/beagle/verbose 2
+#/generator/beagle/open eD_5x200_Q2_1_80_y_0.01_0.95_10k_Shd3_tau7_kt=ptfrag=0.32_shdfac=1.32.JpsidiffdecayLeptons.Kongpf.txt
+/generator/beagle/open  eD_5x50_Q2_1_10_y_0.01_0.95_tau_7_noquench_kt=ptfrag=0.32_Shd1_ShdFac=1.32_Jpsidifflept_test40k_wrongpf_crang.txt
 
-#
-# GEMC/BNL version
-/generator/select pythiaAscii
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#^^^^^^      Pythia6  GEMC/BNL version
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#/generator/select pythiaAscii
 #/generator/pythiaAscii/verbose 1
+#----------------- file examples ----
 #/generator/pythiaAscii/open  pythia1pis.txt
 #/generator/pythiaAscii/open  /home/yulia/yulia/TestVTXhmc/build.newnewOK/pythiaBeautyDIS100.txt
 #/generator/pythiaAscii/open  pythia_e-p_10x50_Q2_100k_msel2_DIS.txt
@@ -236,8 +190,15 @@
 #/generator/pythiaAscii/open /data/yulia/yulia-PCbackup/EIC-soft/pythia_jlab_v2/pythia/work/pythia_e-p_10x100_Q0_100k_msel2_PHP.txt
 #/generator/pythiaAscii/open  /data/yulia/yulia-PCbackup/EIC-soft/pythia_jlab/pythiaeRHIC/1.0.0/build_old2/pythia_PHP_Charm.txt
 #/generator/pythiaAscii/open  /data/yulia/yulia-PCbackup/EIC-soft/pythia_jlab/pythiaeRHIC/1.0.0/build_old2/pythia_PhP.txt
+#/generator/pythiaAscii/open  /home/yulia/GEMC/detectors/eic/script/jpsi_ee.txt
+#/generator/pythiaAscii/open  synch2.dat
+#/generator/pythiaAscii/open  synch14.dat
+#/generator/pythiaAscii/open  synch100.dat
 
 
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#^^^^^^      Pythia6  cone  - file examples
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 #------ cone at 50mrad ----
 #---protons ---
 #/generator/pythiaAscii/open /data/yuliapc/home/yulia/work/g4e/resources/pythia/pythia_cone_p_200GeV_50mrad.txt
@@ -245,72 +206,22 @@
 #/generator/pythiaAscii/open /data/yuliapc/home/yulia/work/g4e/resources/pythia/pythia_cone_n_200GeV_50mrad.txt
 #---electrons ---
 #/generator/pythiaAscii/open /data/yuliapc/home/yulia/work/g4e/resources/pythia/pythia_cone_e_10GeV_0.txt
-/generator/pythiaAscii/open /data/yuliapc/home/yulia/work/g4e/resources/pythia/pythia_cone_e_10GeV_0_upstream.txt
+#/generator/pythiaAscii/open /data/yuliapc/home/yulia/work/g4e/resources/pythia/pythia_cone_e_10GeV_0_upstream.txt
 
-#/generator/pythiaAscii/open  jpsi_10x200_mu_JF.txt
-#/generator/pythiaAscii/open pythia_200GeV_50mrad.txt
-#/generator/pythiaAscii/open pythia_200GeV_51mrad.txt
-#/generator/pythiaAscii/open pythia_200GeV_50mrad0.txt
-#/generator/pythiaAscii/open pythia_200GeV_neutron_50mrad.txt
-#/generator/pythiaAscii/open  BEAGLE.txt
-#
-#/generator/pythiaAscii/open  pythia_TRK_10.txt
-#/generator/pythiaAscii/open  pythia_TRK_30.txt
-#/generator/pythiaAscii/open  pythia_TRK_40.txt
-##/generator/pythiaAscii/open  pythia_TRK.txt
-#----------electrons 
-#/generator/pythiaAscii/open  pythia_10GeV_e_php.txt
-#------------pions--------------
-#/generator/pythiaAscii/open  pythia_100MeV_90.txt
-#/generator/pythiaAscii/open  pythia_1GeV_90.txt
-#/generator/pythiaAscii/open  pythia_3GeV_90.txt
-#/generator/pythiaAscii/open  pythia_5GeV_90.txt
-#/generator/pythiaAscii/open  pythia_10GeV_90.txt
-#/generator/pythiaAscii/open  pythia_15GeV_90.txt
-#/generator/pythiaAscii/open  pythia_20GeV_90.txt
-#/generator/pythiaAscii/open  pythia_50GeV_90.txt
-#/generator/pythiaAscii/open  pythia_100GeV_90.txt
-#------ for roman pots------
-#/generator/pythiaAscii/open  pythia_50GeV_50mrad.txt
-#/generator/pythiaAscii/open  pythia_100GeV_50mrad.txt
-#/generator/pythiaAscii/open  pythia_200GeV_50mrad.txt
-#/generator/pythiaAscii/open  pythia_200GeV_50mrad_n.txt
-#----------electrons-----------
-#/generator/pythiaAscii/open  pythia_e_50GeV_90.txt
-#/generator/pythiaAscii/open  pythia_e_10GeV_90.txt
-#/generator/pythiaAscii/open  pythia_e_10GeV_90x.txt
-#/generator/pythiaAscii/open  pythia_e_1GeV_90.txt
-#/generator/pythiaAscii/open  pythia_e_1GeV_90x.txt
-#--------------------------------------
-#/generator/pythiaAscii/open  pythia_10GeV_4.txt
-#/generator/pythiaAscii/open  pythia_100GeV_90.txt
-#/generator/pythiaAscii/open  pythia_10GeV_45.txt
-#/generator/pythiaAscii/open  pythia_100GeV_45.txt
 
-#/generator/pythiaAscii/open  /home/yulia/GEMC/detectors/eic/script/jpsi_ee.txt
-#
-#/generator/pythiaAscii/open  synch2.dat
-#/generator/pythiaAscii/open  synch14.dat
-#/generator/pythiaAscii/open  synch100.dat
-#/generator/pythiaAscii/verbose 1
-#
-#--------------------------------------------------------------------
 
-# Open HepMc v2.x ascii files
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#^^^^^        HepMc v2.x ascii files
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 #/generator/fSelectCmd hepmcAscii
-#/generator/hepmcAscii/open  /data/yulia/Herwig6/herwig6_P19104_Q10_N5e+06_e-p_5x100.hepmc
+#/generator/hepmcAscii/verbose 1
 
+#---- Herwig Charm------
+#/generator/hepmcAscii/open  /data/yulia/Herwig6/herwig6_P19104_Q10_N5e+06_e-p_5x100.hepmc
+#---- Pythia6 Charged current ------
 #/generator/hepmcAscii/open pythia8_CCdis.hepmc
 #/generator/hepmcAscii/open  /data/yulia/Herwig6/herwig6_P19010_Q100_N1e+06_e+p_5x200.hepmc
-#---------old------------------
-#/generator/hepmcAscii/open   /home/yulia/work/Herwig6_HepMC/DATA/herwig6_P19000_Q10_N1e+05_e-p10x100.hepmc
-#/generator/hepmcAscii/open  /home/yulia/work/Herwig6_HepMC/DATA/herwig6_P19000_Q2_N1e+06_e-p10x100.hepmc
-#/generator/hepmcAscii/open /home/yulia/work/Herwig6_HepMC/DATA/
-#/generator/hepmcAscii/open  /home/yulia/work/Herwig6_HepMC/DATA/herwig6_P19105_Q2_N1e+06.hepmc
-###/generator/hepmcAscii/open  /home/yulia/yulia/EIC-soft/pythia8219/DIRE-1.500/myoutput.hepmc
-#/generator/hepmcAscii/open  /home/yulia/work/Herwig6_HepMC/DATA/herwig6_P19000_Q50_N1e+06_e+p10x60.hepmc
-#/generator/hepmcAscii/open /home/yulia/work/Herwig6_HepMC/DATA/herwig6_P19000_Q100_N1e+06_e+p_10x100.hepmc
-#/generator/hepmcAscii/verbose 1
+
 
 
 #/run/beamOn

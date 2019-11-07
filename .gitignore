@@ -177,4 +177,6 @@ src/paw.metafile
 
 tmp
 
-docs/build/
+docs_old/build/
+
+docs/_build/

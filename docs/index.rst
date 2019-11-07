@@ -1,5 +1,5 @@
 .. Geant 4 EIC documentation master file, created by
-   sphinx-quickstart on Tue Nov  5 03:10:29 2019.
+   sphinx-quickstart on Wed Nov  6 22:26:46 2019.
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
@@ -8,18 +8,24 @@ Welcome to Geant 4 EIC's documentation!
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :caption: Getting Started:
 
-   Index <welcome>
-   quick_start
-   Install <install.md>
+   install
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Design:
+
    detector_naming
+   detector_import
 
 .. toctree::
    :maxdepth: 1
    :caption: Links:
 
-   Open in gitlab <https://gitlab.com/jlab-eic/g4e>
+   GitLab <https://gitlab.com/jlab-eic/g4e>
+   Issues <https://gitlab.com/eic/ejpm/issues>
+
 
 .. image:: _images/JLEICgeant4-v1a.png
    :name: JLEIC detector
@@ -27,7 +33,7 @@ Welcome to Geant 4 EIC's documentation!
 .. include:: welcome.rst
 
 
-
+.. include:: quick_start.rst
 
 Indices and tables
 ==================

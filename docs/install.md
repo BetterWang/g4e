@@ -2,8 +2,12 @@
 
 ## Use ejpm
 
+ejpm is EIC software centric package/build manager. It helps building
+EIC software stack with some its dependencies and later manage the packages
+
 First, install ejpm itself:
-```
+
+```bash
 pip install --user ejpm
 ```
 (If you have certificate problems (JLab issue), don't have pip, or have other problems, 
@@ -13,7 +17,7 @@ Install g4e and possible other EIC packets (ejana, eic-smear, etc.)
 ```bash
 # 1. System prerequesties
 ejpm req centos g4e      # get list of required OS packets. Use `ubuntu` on debian  
-sudo yum install ...     # install watever 'ejpm req' shows
+sudo yum install ...     # install watever 'ejpm req' tells you
 
 # 2. Where to install
 ejpm --top-dir=<where-to>   # Directory where packets will be installed
@@ -26,21 +30,42 @@ source ~/.local/share/ejpm/env.sh  # Use *.csh file for tcsh
 ```
 
 You have ROOT and Geant4 and don't want EJPM to build them?  
-(Use your ROOT and Geant)
+(Use your installations of ROOT and Geant4)
 
 ```
-# Before running ejpm install g4e
-ejpm set root `$ROOTSYS`    # (optional) if you have CERN.ROOT or other monster packets:
-ejpm set geant <path>       # Path to your geant4 installation   
+# Before running 'ejpm install g4e'
+ejpm set root `$ROOTSYS`    # Path to ROOT installation
+ejpm set geant <path>       # Path to Geant4 installation   
 ```
 
 Hint (!). Run ejpm to overview all isntalled packets, environment and status by 'ejpm' command
 
 ```
 > ejpm
-```
 
-# 
+# Here is the sample output:
+EJPM v0.01.19
+top dir :
+  $HOME/eic
+state db :
+  ~/.local/share/ejpm/db.json  (users are encouraged to inspect/edit it)
+env files :
+  ~/.local/share/ejpm/env.sh
+  ~/.local/share/ejpm/env.csh
+
+INSTALLED PACKETS: (*-active):
+ vgm:
+  * ~/eic/vgm/vgm-v4-5 (owned) 
+ root:
+  * ~/eic/root/root-v6-16-00 (owned)
+ geant:
+    ~/eic/geant/geant-v10.5.0 (owned)
+  * ~/eic/geant4-10.6-betta
+ hepmc:
+  * /home/romanov/eic/hepmc/hepmc-HEPMC_02_06_09 (owned) 
+ g4e:
+  * ~/eic/g4e/g4e-dev (owned)
+```
 
 
 
@@ -69,11 +94,14 @@ make
    - CMake flag: `CERN_ROOT_DIRECTORY`
 
 
+
 ### Flags
 
 Additional flags:
 `WITH_GEANT4_UIVIS` = ON Build with Geant4 UI and Vis drivers. Default
 `CMAKE_CXX_STANDARD` = 11 - C++ standard used.
+
+
 
 ### Environment
 

@@ -1,7 +1,4 @@
-.. Geant 4 EIC documentation master file, created by
-   sphinx-quickstart on Wed Nov  6 22:26:46 2019.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+.. Geant 4 EIC documentation master file
 
 Welcome to Geant 4 EIC's documentation!
 =======================================
@@ -10,6 +7,7 @@ Welcome to Geant 4 EIC's documentation!
    :maxdepth: 2
    :caption: Getting Started:
 
+   quick_start
    install
 
 .. toctree::
@@ -23,7 +21,7 @@ Welcome to Geant 4 EIC's documentation!
    :maxdepth: 1
    :caption: Links:
 
-   GitLab <https://gitlab.com/jlab-eic/g4e>
+   GitHub <https://gitlab.com/jlab-eic/g4e>
    Issues <https://gitlab.com/eic/ejpm/issues>
 
 
@@ -35,9 +33,12 @@ Welcome to Geant 4 EIC's documentation!
 
 .. include:: quick_start.rst
 
+
+
 Indices and tables
 ==================
 
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+

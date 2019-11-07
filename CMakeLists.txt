@@ -111,6 +111,7 @@ include_directories(
         SYSTEM
             ${ROOT_INCLUDE_DIRS}
             ${PROJECT_SOURCE_DIR}/src/external/spdlog/include
+            ${PROJECT_SOURCE_DIR}/src/external/argparse
             ${Geant4_INCLUDE_DIR}
             ${HEPMC_INCLUDE_DIR}
             ${VGM_DIRECTORY}/include

@@ -24,16 +24,14 @@ Welcome to Geant 4 EIC's documentation!
    :caption: Links:
 
    GitHub <https://gitlab.com/jlab-eic/g4e>
-   Issues <https://gitlab.com/eic/ejpm/issues>
+   Issues? Help is here <https://gitlab.com/eic/ejpm/issues>
 
 
 .. image:: _images/JLEICgeant4-v1a.png
    :name: JLEIC detector
 
-.. include:: welcome.rst
 
-
-.. include:: quick_start.rst
+.. include:: quick_start.md
 
 
 

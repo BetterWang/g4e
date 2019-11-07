@@ -7,14 +7,16 @@ Run
     g4e
 
 
-Required environment
---------------------
+Environment variables
+---------------------
 
-.. include::environment
+
+.. include:: environment.rst
 
 
 Flags
 -----
 
-.. include::arguments
+
+.. include:: arguments.rst
 

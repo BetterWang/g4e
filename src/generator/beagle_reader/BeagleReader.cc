@@ -40,7 +40,7 @@
 
 #include <StringHelpers.hh>
 #include <TextEventFileReader.hh>
-#include <spdlog/fmt/bundled/format.h>
+#include <spdlog/spdlog.h>
 
 
 void g4e::BeagleReader::Open(const std::string& fileName) {

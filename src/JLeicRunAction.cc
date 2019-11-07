@@ -376,7 +376,7 @@ void JLeicRunAction::BeginOfRunAction(const G4Run* aRun)
    
   G4VVisManager* pVVisManager = G4VVisManager::GetConcreteInstance();
 
-  if(pVVisManager)    UI->ApplyCommand("/vis/scene/notifyHandlers");
+  if(pVVisManager) UI->ApplyCommand("/vis/scene/notifyHandlers");
 
   //char rootfilename[]="g4e_output_VTX.root";
   printf("RunAction:: open output roort file 1\n");

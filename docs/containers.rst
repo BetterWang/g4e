@@ -8,7 +8,8 @@ Docker quick start
 
 .. code:: bash
 
-   docker run --rm -it -p 8888:8888 electronioncollider/epic:latest
+    docker run --rm -it -p 8888:8888 electronioncollider/epic:latest
+
 
 The command will start the jupyter lab server with example files. After running this command,
 open your browser
@@ -45,6 +46,7 @@ You can start the docker without Jupyter Lab running:
 Later you can still run jupyter lab by
 
 .. code:: bash
+
     jlab    # It is Jupyter Lab here, not Jefferson
 
 

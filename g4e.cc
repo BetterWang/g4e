@@ -25,6 +25,7 @@
 //
 
 
+#include <G4MTRunManager.hh>
 #include "G4RunManager.hh"
 #include "G4UImanager.hh"
 #include "Randomize.hh"
@@ -63,9 +64,10 @@ static std::string GetResourceDir();
 
 
 /// Program Configuration provided by arguments
-struct ProgramArgConfig
+struct ProgramArguments
 {
     bool ShowGui = false;
+    bool IsMultiThreaded = false;
     std::vector<std::string> FileNames;
 };
 
@@ -83,12 +85,13 @@ int main(int argc, char **argv)
     spdlog::set_level(spdlog::level::debug);
 
 
-    ProgramArgConfig config;
+    ProgramArguments args;
     bool showHelp = false;
     auto parser = Help( showHelp )
-            | Opt( config.ShowGui)["--gui"]["-g"]("Shows Geant4 GUI" )
-            | Arg( config.FileNames, "<your>.mac" )( "Runs Geant4 with this file" );
-            //| Opt(config.HepMcInFile,"Process hepmc files") ["--hepmc-in"]
+            | Opt(args.ShowGui)["--gui"]["-g"]("Shows Geant4 GUI" )
+            | Opt(args.IsMultiThreaded)["--multi-thread"]["-m"]("Use Geant multi threaded mode" )
+            | Arg(args.FileNames, "<your>.mac" )("Runs Geant4 with this file" );
+            //| Opt(args.HepMcInFile,"Process hepmc files") ["--hepmc-in"]
 
     parser.parse(Args(argc, argv));
 
@@ -104,7 +107,7 @@ int main(int argc, char **argv)
     G4VSteppingVerbose::SetInstance(new JLeicSteppingVerbose);
 
     // Construct the default run manager
-    auto runManager = new G4RunManager;
+    auto runManager = args.IsMultiThreaded? new G4MTRunManager : new G4RunManager;
 
     auto detector = new JLeicDetectorConstruction();
 
@@ -141,9 +144,9 @@ int main(int argc, char **argv)
     }
 
     // We have some user defined file
-    if (!config.FileNames.empty()) {
+    if (!args.FileNames.empty()) {
         spdlog::debug("Executing files provided as args:");
-        for(const auto& fileName: config.FileNames) {
+        for(const auto& fileName: args.FileNames) {
             std::string command = "/control/execute " + fileName;
             spdlog::debug("   {}", command);
             UI->ApplyCommand(command);
@@ -151,7 +154,7 @@ int main(int argc, char **argv)
     }
 
     // We start visual mode if no files provided or if --gui flag is given
-    if(config.FileNames.empty() || config.ShowGui)
+    if(args.FileNames.empty() || args.ShowGui)
     {
 #ifdef G4VIS_USE
         auto visManager = new G4VisExecutive;
@@ -177,9 +180,4 @@ int main(int argc, char **argv)
     delete runManager;
 
     return 0;
-}
-
-
-std::string GetResourceDir() {
-
 }

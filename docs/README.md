@@ -6,13 +6,11 @@ To Build the documentation:
 
 - [Sphinx](http://www.sphinx-doc.org/en/master/) - Python documentation generator
 - [Read the Docs Sphinx Theme](https://sphinx-rtd-theme.readthedocs.io/en/stable/) - Theme for final output
-- [m2r](https://github.com/miyakogi/m2r) - Markdown to reStructuredText
+- [recommonmark](https://github.com/miyakogi/m2r) - Markdown to reStructuredText
 
 
 ```
-pip install sphinx
-pip install sphinx_rtd_theme
-pip install m2r
+pip install sphinx sphinx_rtd_theme recommonmark
 ```
 
 ## Building

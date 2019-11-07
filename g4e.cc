@@ -25,6 +25,7 @@
 //
 
 
+#include <G4MTRunManager.hh>
 #include "G4RunManager.hh"
 #include "G4UImanager.hh"
 #include "Randomize.hh"
@@ -57,22 +58,58 @@
 #include "FTFP_BERT.hh"
 #include "QGSP_BIC.hh"
 
-#include "clara.hh"
+#include <argparse.hh>
 
-static std::string GetResourceDir();
 
 
 /// Program Configuration provided by arguments
-struct ProgramArgConfig
+struct ProgramArguments
 {
     bool ShowGui = false;
-    std::vector<std::string> FileNames;
+    int ThreadsCount = 1;
+    std::vector<std::string> MacroFileNames;
+    std::string MacroPath;      /// G4E_MACRO_PATH
+    bool IsSetMacroPath;        /// true if macro path was defined in environment variables
+    std::string HomePath;       /// G4E_HOME
+    bool IsSetHomePath;         /// true if G4E_HOME was determined
 };
+
+
+/// Processes both program arguments and environment variables to build the right ProgramArguments
+ProgramArguments ParseArgEnv(int argc, char **argv) {
+    ArgumentParser parser("g4e - Geant 4 Electron Ion COllider");
+    parser.add_argument("-g", "--gui", "Shows Geant4 GUI", false);
+    parser.add_argument("-t", "--threads", "Number of threads. Single threaded mode if 0 or 1", false);
+    parser.add_argument("--files", "input files", false);
+
+    try {
+        parser.parse(argc, argv);
+    } catch (const ArgumentParser::ArgumentNotFound& ex) {
+        std::cout << ex.what() << std::endl;
+        throw;
+    }
+
+    ProgramArguments result;
+    result.MacroFileNames = parser.getv<std::string>("");
+
+    // G4E_MACRO_PATH
+    const char* macroPathCstr = std::getenv("G4E_MACRO_PATH");
+    result.IsSetMacroPath = macroPathCstr != nullptr;
+    result.MacroPath = macroPathCstr? macroPathCstr: "";
+    spdlog::info("ENV:G4E_MACRO_PATH:  is-set={}, value='{}'",  result.IsSetMacroPath, result.MacroPath );
+
+    // G4E_HOME
+    const char* homeCstr = std::getenv("G4E_HOME");
+    result.IsSetHomePath = homeCstr != nullptr;
+    result.HomePath = homeCstr ? homeCstr : "";
+    spdlog::info("ENV:G4E_HOME: is-set={}, value='{}'", result.IsSetHomePath, result.HomePath);
+
+    return result;
+}
 
 
 int main(int argc, char **argv)
 {
-    using namespace clara;
     using namespace fmt;
 
     spdlog::info("Initializing g4e, parsing arguments...");
@@ -83,19 +120,7 @@ int main(int argc, char **argv)
     spdlog::set_level(spdlog::level::debug);
 
 
-    ProgramArgConfig config;
-    bool showHelp = false;
-    auto parser = Help( showHelp )
-            | Opt( config.ShowGui)["--gui"]["-g"]("Shows Geant4 GUI" )
-            | Arg( config.FileNames, "<your>.mac" )( "Runs Geant4 with this file" );
-            //| Opt(config.HepMcInFile,"Process hepmc files") ["--hepmc-in"]
-
-    parser.parse(Args(argc, argv));
-
-    // Do we have a home environment variable?
-    const char* home_cstr = std::getenv("G4E_HOME");
-    std::string homeDir(home_cstr ? home_cstr : "");
-    spdlog::info("ENV:G4E_HOME: '{}'", home_cstr);
+    ProgramArguments args = ParseArgEnv(argc, argv);
 
     //choose the Random engine
     CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine);
@@ -104,7 +129,16 @@ int main(int argc, char **argv)
     G4VSteppingVerbose::SetInstance(new JLeicSteppingVerbose);
 
     // Construct the default run manager
-    auto runManager = new G4RunManager;
+    G4RunManager * runManager;
+    if(args.ThreadsCount > 1) {
+        // Multi-threaded run manager
+        auto mtRunManager = new G4MTRunManager;
+        mtRunManager->SetNumberOfThreads(args.ThreadsCount);
+        runManager = mtRunManager;
+    } else {
+        // Single threaded mode
+        runManager = new G4RunManager;
+    }
 
     auto detector = new JLeicDetectorConstruction();
 
@@ -134,16 +168,15 @@ int main(int argc, char **argv)
     G4UImanager *UI = G4UImanager::GetUIpointer();
 
     // set macro path from environment if it is set
-    const char* macroPathCstr = std::getenv("G4E_MACRO_PATH");
-    spdlog::info("ENV:G4E_MACRO_PATH: '{}'", macroPathCstr? macroPathCstr: "");
-    if(macroPathCstr) {
-        UI->ApplyCommand(format("/control/macroPath {}", macroPathCstr));
+
+    if(args.IsSetMacroPath) {
+        UI->ApplyCommand(format("/control/macroPath {}", args.MacroPath));
     }
 
     // We have some user defined file
-    if (!config.FileNames.empty()) {
+    if (!args.MacroFileNames.empty()) {
         spdlog::debug("Executing files provided as args:");
-        for(const auto& fileName: config.FileNames) {
+        for(const auto& fileName: args.MacroFileNames) {
             std::string command = "/control/execute " + fileName;
             spdlog::debug("   {}", command);
             UI->ApplyCommand(command);
@@ -151,7 +184,7 @@ int main(int argc, char **argv)
     }
 
     // We start visual mode if no files provided or if --gui flag is given
-    if(config.FileNames.empty() || config.ShowGui)
+    if(args.MacroFileNames.empty() || args.ShowGui)
     {
 #ifdef G4VIS_USE
         auto visManager = new G4VisExecutive;
@@ -177,9 +210,4 @@ int main(int argc, char **argv)
     delete runManager;
 
     return 0;
-}
-
-
-std::string GetResourceDir() {
-
 }

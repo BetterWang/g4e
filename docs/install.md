@@ -2,8 +2,15 @@
 
 ## Use ejpm
 
-ejpm is EIC software centric package/build manager. It helps building
-EIC software stack with some its dependencies and later manage the packages
+ejpm is EIC software centric package/build manager. It is the designed
+to be the default tool to build G4E on users machine, as it helps with:
+
+- building dependent packages (with "right" compilation flags)
+- setup environment variables to run everything 
+- what packages to install by system packet manager
+- rebuild/update/remove/clean existing packages
+
+> Still, ejpm is not a requirement. 
 
 First, install ejpm itself:
 
@@ -102,8 +109,3 @@ make
 Additional flags:
 `WITH_GEANT4_UIVIS` = ON Build with Geant4 UI and Vis drivers. Default
 `CMAKE_CXX_STANDARD` = 11 - C++ standard used.
-
-
-
-
-

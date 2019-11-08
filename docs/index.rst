@@ -15,16 +15,17 @@ Welcome to Geant 4 EIC's documentation!
    :maxdepth: 2
    :caption: Design:
 
+   generators
    detector_naming
    detector_import
    multithreading
 
 .. toctree::
    :maxdepth: 2
-   :caption: Input files:
-    io_lund
-    io_hempc
-    io_beagle
+   :caption: How to:
+
+   howto_process_mc_files
+
 
 .. toctree::
    :maxdepth: 1
@@ -37,8 +38,6 @@ Welcome to Geant 4 EIC's documentation!
 .. image:: _images/JLEICgeant4-v1a.png
    :name: JLEIC detector
 
-
-.. include:: quick_start.md
 
 
 

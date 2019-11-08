@@ -18,7 +18,7 @@ possible values:
 BeAGLE format
 -------------
 
-BeAGLE - **B**enchmark **eA** **G**enerator for **LE**ptoproduction
+BeAGLE - Benchmark eA Generator for LEptoproduction
 
 BeAGLE, a Fortran program designed as a general purpose eA Monte-Carlo generator,
 was based on DPMJetHybrid, but has been upgraded to improve various aspects.

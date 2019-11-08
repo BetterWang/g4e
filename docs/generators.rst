@@ -69,26 +69,7 @@ Control commands:
 Sample configuration
 --------------------
 
-.. code:: yaml
-
-    #------------------------------------------------------------------------
-    # Macro file for opening MC files
-    #------------------------------------------------------------------------
-    #
-
-    # Include default setup
-    # Use jleic.mac for headless mode or jleicvis.mac for GUI visualization
-    /control/execute jleic.mac
-
-    # Select Beagle generator
-    /generator/select beagle
-
-    # Open file and run some MC file
-    /generator/beagle/open beagle_test_data.txt
-    /generator/beagle/verbose 2
-
-    /run/beamOn 1
-    exit
+.. include:: example_process_mc.rst
 
 
 See also :doc:`Howto process MC files <howto_process_mc_files>`

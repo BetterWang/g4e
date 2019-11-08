@@ -60,21 +60,22 @@ class JLeicDetectorMessenger: public G4UImessenger
   private:
     JLeicDetectorConstruction*   JLeicDetector;
     
-    G4UIdirectory*             JLeicdetDir;
+    //  ------- Initial beam energy settings -------
+    G4UIdirectory*             DetDir;
+    G4UIcmdWithAnInteger* EbeamECmd;
+    G4UIcmdWithAnInteger* PbeamECmd;
+    //--------- For TRD----------------
+    G4UIdirectory*             TRDdetDir;
 
     G4UIcmdWithAnInteger*       ModelCmd;
     G4UIcmdWithAnInteger*       FoilNumCmd;
-
     G4UIcmdWithAString*        AbsMaterCmd;
     G4UIcmdWithAString*        DetectorSetUpCmd;
     G4UIcmdWithADoubleAndUnit* AbsThickCmd;
     G4UIcmdWithADoubleAndUnit* AbsRadCmd;
-
     G4UIcmdWithAString*        RadiatorMaterCmd;
     G4UIcmdWithADoubleAndUnit* RadiatorThickCmd;
-
     G4UIcmdWithADoubleAndUnit* GasGapThickCmd;
-
     G4UIcmdWithADoubleAndUnit* AbsZposCmd;
 
     G4UIcmdWithAString*        WorldMaterCmd;

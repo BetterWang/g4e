@@ -103,6 +103,9 @@ public:
     ~JLeicDetectorConstruction();
 
 public:
+    void  SetElectronBeamEnergy(G4int);
+
+    void  SetIonBeamEnergy(G4int);
 
     void SetAbsorberMaterial(G4String);
 
@@ -135,9 +138,9 @@ public:
 
     void UpdateGeometry();
 
-    void Read_Di_File();
+    void Read_ion_beam_lattice();
 
-    void Read_dE_File();
+    void Read_electron_beam_lattice();
 
 
     void CreateQuad(int i, char *MyChar, float ffqsSizeZDi, float ffqsRinDiG, float ffqsRinDi, float ffqsRoutDi,

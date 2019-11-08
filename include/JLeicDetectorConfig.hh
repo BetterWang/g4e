@@ -35,6 +35,8 @@
 
 
 struct JLeicDetectorConfig {
+    int ElectronBeamEnergy =10;
+    int IonBeamEnergy =100;
 
     struct World_Config {
         double ShiftVTX = 40. * cm;

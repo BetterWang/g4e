@@ -103,8 +103,7 @@
 //------- subdetector-volumes H-encap -----
 #define USE_CI_GEM
 #define USE_CI_DRICH
-//#define USE_CI_TRD
-//#define USE_CI_TRD_D  // -detector and radiator
+#define USE_CI_TRD
 #define USE_CI_EMCAL
 #define USE_CI_HCAL
 #define USE_CI_HCAL_D
@@ -249,7 +248,7 @@ void JLeicDetectorConstruction::Create_ce_Endcap(JLeicDetectorConfig::ce_Endcap_
 }
 
 //==========================================================================================================
-//                              JLEIC 2018
+//                              JLEIC 2019
 //==========================================================================================================
 
 /////////////////////////////////////////////////////////////////////////////////
@@ -293,6 +292,15 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     printf("World_Solid->GetCubicVolume() %f \n", World_Solid->GetCubicVolume());
     printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!! SizeR %f \n", fConfig.World.SizeR);
     printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!! SizeZ %f \n", fConfig.World.SizeZ);
+
+
+   //===================================================================================
+   //                          START placement of BEAM ELEMENTS                       ==
+   //===================================================================================
+    #ifdef USE_FFQs
+    Read_ion_beam_lattice();
+    Read_electron_beam_lattice();
+    #endif
 
     //=========================================================================
     //                    Sensitive
@@ -401,16 +409,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 #endif // end HCAL
 
 
-//===================================================================================
-//                          START placement of BEAM ELEMENTS                       ==
-//===================================================================================
-#ifdef USE_FFQs
 
-
-    Read_Di_File();
-    Read_dE_File();
-
-#endif
 
     //***********************************************************************************
     //***********************************************************************************
@@ -1268,6 +1267,20 @@ void JLeicDetectorConstruction::SetWorldMaterial(G4String materialChoice) {
 }
 
 ///////////////////////////////////////////////////////////////////////////
+//                  Set beam energy settings
+//
+void JLeicDetectorConstruction::SetElectronBeamEnergy(G4int  val) {
+    //  electron beam energy settings
+    fConfig.ElectronBeamEnergy = val;
+     printf("ElectronBeamEnergy =%d \n",fConfig.ElectronBeamEnergy);
+}
+void JLeicDetectorConstruction::SetIonBeamEnergy(G4int  val) {
+    // Ion beam energy settings
+    fConfig.IonBeamEnergy = val;
+    printf("IonBeamEnergy =%d \n",fConfig.IonBeamEnergy);
+}
+
+///////////////////////////////////////////////////////////////////////////
 //
 //
 
@@ -1467,7 +1480,7 @@ void JLeicDetectorConstruction::UpdateGeometry() {
 
 
 
-void JLeicDetectorConstruction::Read_Di_File() {
+void JLeicDetectorConstruction::Read_ion_beam_lattice() {
     //Downstream elements
 //Element name	Type	   Length [m] Good_field half-aperture [cm]
 //                                           Inner Half-A [cm]
@@ -1495,18 +1508,6 @@ void JLeicDetectorConstruction::Read_Di_File() {
     //iQDS4	QUADRUPOLE	0.8	3	4	30	0	0	144.1	0	0	0	-1.875	0	52.890	-0.056	0
     FILE *rc;
     char buffer[512];
-/*
-    char ffqnameDi[20][128];
-    char ffqnameDi[20][128];
-    double  ffqsRinDi[20];
-    double  ffqsRoutDi[20];
-    double ffqsSizeZDi[20];
-    double ffqsZ1Di[20];
-    double ffqsX1Di[20];
-    double colorDi[20];
-    double qFIELDx[20];
-    double qFIELDy[20];
-*/
     char ffqtype[256];
     char mychar[40];
     char ffqnameDi[256];
@@ -1527,22 +1528,25 @@ void JLeicDetectorConstruction::Read_Di_File() {
     float ffqsPhi;
     int iqmax_i;
 
-
+   printf("DetectorConstruction::Read_ion_beam_lattice. %d \n",fConfig.IonBeamEnergy);
     // If G4E_HOME is set get a file from resources, otherwise try to open what we have
-    std::string fileName("ion_ir_02oct19.txt");
+
+    std::string fileName = fmt::format("ion_ir_{}.txt",fConfig.IonBeamEnergy);
+      spdlog::debug("DetectorConstruction::Read_ion_beam_lattice. Opening file: '{}'", fileName);
+
     const char* home_cstr = std::getenv("G4E_HOME");
     if(home_cstr){
         fileName = fmt::format("{}/resources/jleic_md_interface/{}", home_cstr, fileName);
     }
 
-    spdlog::info("DetectorConstruction::Read_Di_File. Opening file: '{}'", fileName);
+    spdlog::info("DetectorConstruction::Read_ion_beam_lattice. Opening file: '{}'", fileName);
 
     rc = fopen(fileName.c_str(), "r");
     if (rc == nullptr) {
-        spdlog::warn("DetectorConstruction::Read_Di_File. fopen returned NULLPTR on file: '{}'", fileName);
+        spdlog::warn("DetectorConstruction::Read_ion_beam_lattice. fopen returned NULLPTR on file: '{}'", fileName);
         return;
     }
-    spdlog::debug("DetectorConstruction::Read_Di_File. Opened file: '{}'", fileName);
+    spdlog::debug("DetectorConstruction::Read_ion_beam_lattice. Opened file: '{}'", fileName);
 
 
     // int iq=0,ik=0,is=0;
@@ -1597,7 +1601,7 @@ void JLeicDetectorConstruction::Read_Di_File() {
 }
 
 
-void JLeicDetectorConstruction::Read_dE_File() {
+void JLeicDetectorConstruction::Read_electron_beam_lattice() {
     //Downstream elements
     // Element name	Type	   Length [m] Good_field half-aperture [cm]
     // Inner Half-A [cm]
@@ -1632,10 +1636,15 @@ void JLeicDetectorConstruction::Read_dE_File() {
     float ffqsTheta;
     float ffqsPhi;
 
-    printf("read dE file\n");
+
+    printf("DetectorConstruction::Read_electron_beam_lattice. %d \n",fConfig.ElectronBeamEnergy);
+    // If G4E_HOME is set get a file from resources, otherwise try to open what we have
+
+    std::string fileName = fmt::format("e_ir_{}.txt",fConfig.ElectronBeamEnergy);
+      spdlog::debug("DetectorConstruction::Read_electron_beam_lattice. Opening file: '{}'", fileName);
 
     // If G4E_HOME is set get a file from resources, otherwise try to open what we have
-    std::string fileName("e_ir.txt");
+    //std::string fileName("e_ir.txt");
     const char* home_cstr = std::getenv("G4E_HOME");
     if(home_cstr){
         fileName = fmt::format("{}/resources/jleic_md_interface/{}", home_cstr, fileName);
@@ -1644,14 +1653,12 @@ void JLeicDetectorConstruction::Read_dE_File() {
     // Opening the file
     rc = fopen(fileName.c_str(), "r");
     if (rc == nullptr) {
-        spdlog::warn("DetectorConstruction::Read_Di_File. fopen returned NULLPTR on file: '{}'", fileName);
+        spdlog::warn("DetectorConstruction::Read_electron_beam_lattice. fopen returned NULLPTR on file: '{}'", fileName);
         return;
     }
-    spdlog::debug("DetectorConstruction::Read_Di_File. Opened file: '{}'", fileName);
+    spdlog::debug("DetectorConstruction::Read_electron_beam_lattice. Opened file: '{}'", fileName);
 
-    //int iq=0,ik=0,is=0;
-    printf("read Di file %s\n", fname);
-    while (fgets(buffer, 512, (FILE *) rc)) {
+     while (fgets(buffer, 512, (FILE *) rc)) {
 
         printf("Read_dE*********************************************************************************\n");
         printf("Read_dE %s\n", buffer);

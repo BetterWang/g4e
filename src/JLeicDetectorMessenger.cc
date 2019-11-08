@@ -33,6 +33,7 @@
 
 #include "JLeicDetectorMessenger.hh"
 
+
 #include "JLeicDetectorConstruction.hh"
 #include "G4UIdirectory.hh"
 #include "G4UIcmdWithAString.hh"
@@ -45,10 +46,26 @@
 JLeicDetectorMessenger::JLeicDetectorMessenger(JLeicDetectorConstruction * JLeicDet)
 :G4UImessenger(),
  JLeicDetector(JLeicDet)
-{ 
-  JLeicdetDir = new G4UIdirectory("/XTRdetector/");
-  JLeicdetDir->SetGuidance("JLeic detector control.");
-      
+{
+  DetDir = new G4UIdirectory("/detsetup/");
+  DetDir->SetGuidance("Detector control.");
+
+  EbeamECmd = new G4UIcmdWithAnInteger("/detsetup/eBeam",this);
+  EbeamECmd->SetGuidance("Electron beam energy settings");
+  EbeamECmd->SetParameterName("EbeamE",false,false);
+  EbeamECmd->SetDefaultValue(10);
+  EbeamECmd->AvailableForStates(G4State_PreInit,G4State_Idle);
+
+  PbeamECmd = new G4UIcmdWithAnInteger("/detsetup/pBeam",this);
+  PbeamECmd->SetGuidance("Ion/proton beam energy settings");
+  PbeamECmd->SetParameterName("PbeamE",false,false);
+  PbeamECmd->SetDefaultValue(10);
+  PbeamECmd->AvailableForStates(G4State_PreInit,G4State_Idle);
+
+  TRDdetDir = new G4UIdirectory("/XTRdetector/");
+  TRDdetDir->SetGuidance("TRD detector control.");
+
+
   AbsMaterCmd = new G4UIcmdWithAString("/XTRdetector/setAbsMat",this);
   AbsMaterCmd->SetGuidance("Select Material of the Absorber.");
   AbsMaterCmd->SetParameterName("choice",true);
@@ -191,7 +208,13 @@ JLeicDetectorMessenger::~JLeicDetectorMessenger()
   delete WorldRCmd;
   delete UpdateCmd;
   delete MagFieldCmd;
-  delete JLeicdetDir;
+
+  delete TRDdetDir;
+  delete EbeamECmd;
+  delete PbeamECmd;
+
+  delete DetDir;
+
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -219,7 +242,12 @@ void JLeicDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
 //  {
 //    JLeicDetector->SetFoilNumber(FoilNumCmd->GetNewIntValue(newValue));
 //  }
-  if( command == AbsMaterCmd )
+    if( command ==  EbeamECmd)
+    { JLeicDetector->SetElectronBeamEnergy(EbeamECmd->GetNewIntValue(newValue));}
+    if( command ==  PbeamECmd)
+    { JLeicDetector->SetIonBeamEnergy(PbeamECmd->GetNewIntValue(newValue));}
+
+    if( command == AbsMaterCmd )
    { JLeicDetector->SetAbsorberMaterial(newValue);}
 
   if( command == DetectorSetUpCmd )

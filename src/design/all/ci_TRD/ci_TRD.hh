@@ -27,7 +27,7 @@ struct ci_TRD_Config {
     double fRadThick = NAN;
     int fFoilNumber = NAN;
     //----------------------------
-    double det_RIn = 50 * cm;
+    double det_RIn = 20 * cm;
     double det_ROut = 100 * cm;
     double det_ThicknessZ = 2.5 * cm;
     double det_PosZ;
@@ -154,7 +154,7 @@ public:
 
         foilGasRatio = cfg.fRadThickness / (cfg.fRadThickness + cfg.fGasGap);
 
-        fSolidRadiator = new G4Tubs("ci_TRD_Radiator_Solid", 50 * cm, 100 * cm, 0.5 * cfg.fRadThick, 0., 360 * deg);
+        fSolidRadiator = new G4Tubs("ci_TRD_Radiator_Solid", cfg.det_RIn, cfg.det_ROut, 0.5 * cfg.fRadThick, 0., 360 * deg);
         fLogicRadiator = new G4LogicalVolume(fSolidRadiator, cfg.fRadiatorMat,
                                              "ci_TRD_Radiator_Logic");
 

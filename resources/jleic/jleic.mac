@@ -1,7 +1,5 @@
-#
-#  Macro file 'jleic.mac'
-#  PLOT: energy deposit distribution in absorber (g4.11)
-#
+# Default parameters for JLEIC detectors
+
 #------------------------------------------------------------------------
 # Macro file for the initialization phase
 #------------------------------------------------------------------------
@@ -100,10 +98,10 @@
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 #^^^^^^       BEAGLE generator
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-/generator/select beagle
+#/generator/select beagle
 #/generator/beagle/verbose 2
 #----------------- file examples ----
-/generator/beagle/open BEAGLE.txt
+#/generator/beagle/open BEAGLE.txt
 #/generator/beagle/open  GCF_boosted.txt
 #/generator/beagle/open  eD_5x50_Q2_1_10_y_0.01_0.95_tau_7_noquench_kt=ptfrag=0.32_Shd1_ShdFac=1.32_Jpsidifflept_test40k_fixpf_crang.txt
 #/generator/beagle/open  eD_5x100_Q2_1_max_y_0.01_0.95_10k_Shd3_tau7_kt=ptfrag=0.32_shdfac=1.32.Jpsidiffnodecay.Kongpf.txt

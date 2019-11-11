@@ -14,7 +14,6 @@ possible values:
 * ``beagle`` - Beagle reader
 
 
-
 BeAGLE format
 -------------
 
@@ -30,6 +29,8 @@ Control commands:
 ``/generator/beagle/verbose <level>`` - Set verbose level 0 = nothing, 1 = info, 2 = debug
 
 ``/generator/beagle/open <file name>`` - Opens a beagle event file to read
+
+`Example of BeAGLE file (3 events) <https://gitlab.com/jlab-eic/g4e/raw/master/test/beagle/beagle_test_data.txt>`_
 
 
 
@@ -47,7 +48,7 @@ Control commands:
 
 ``/generator/hepmcAscii/verbose <level>`` - Set verbose level 0 = nothing, 1 = info, 2 = debug
 
-``/generator/hepmcAscii/open <file name>`` - Opens a beagle event file to read
+``/generator/hepmcAscii/open <file name>`` - Opens a HepMC2 event file to read
 
 
 
@@ -62,7 +63,7 @@ Control commands:
 
 ``/generator/pythiaAscii/verbose <level>`` - Set verbose level 0 = nothing, 1 = info, 2 = debug
 
-``/generator/pythiaAscii/open <file name>`` - Opens a beagle event file to read
+``/generator/pythiaAscii/open <file name>`` - Opens a Pythia6 event file to read
 
 
 

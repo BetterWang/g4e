@@ -191,7 +191,7 @@ list(APPEND sources
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
-add_executable(g4e g4e.cc ${sources} ${headers})
+add_executable(g4e src/g4e.cc ${sources} ${headers})
 target_link_libraries(g4e
         ${Geant4_LIBRARIES}
         ${HEPMC_LIBRARIES}
@@ -209,8 +209,8 @@ target_link_libraries(g4e
 # relies on these scripts being in the current working directory.
 #
 set(g4e_SCRIPTS
-       jleic.mac
-       jleicvis.mac
+        resources/jleic/jleic.mac
+        resources/jleic/jleicvis.mac
   )
 
 foreach(_script ${JLEICgeant4_SCRIPTS})

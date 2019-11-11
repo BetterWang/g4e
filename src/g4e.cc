@@ -57,12 +57,14 @@
 //-- physics processes --
 #include "FTFP_BERT.hh"
 #include "QGSP_BIC.hh"
+#include "StringHelpers.hh"
 
 #include <argparse.hh>
 
 
 
-/// Program Configuration provided by arguments
+
+/// Program Configuration provided by arguments or environment variables
 struct ProgramArguments
 {
     bool ShowGui = false;
@@ -72,6 +74,7 @@ struct ProgramArguments
     bool IsSetMacroPath;        /// true if macro path was defined in environment variables
     std::string HomePath;       /// G4E_HOME
     bool IsSetHomePath;         /// true if G4E_HOME was determined
+    std::string ResourcePath;   /// Path to resources directory
 };
 
 
@@ -82,6 +85,7 @@ ProgramArguments ParseArgEnv(int argc, char **argv) {
     parser.add_argument("-t", "--threads", "Number of threads. Single threaded mode if 0 or 1", false);
     parser.add_argument("--files", "input files", false);
 
+    // Now parse the arguments
     try {
         parser.parse(argc, argv);
     } catch (const ArgumentParser::ArgumentNotFound& ex) {
@@ -89,20 +93,63 @@ ProgramArguments ParseArgEnv(int argc, char **argv) {
         throw;
     }
 
-    ProgramArguments result;
+    // User wants just help
+    if(parser.is_help()) {
+        fmt::print("Detector simulation tool for EIC\n");
+        exit(1);
+    }
+
+    ProgramArguments result;        // This function result
+
+    // Open GUI arguments:
+    result.ShowGui = parser.get<bool>("g");
+    fmt::print("ARG:ShowGui = {}\n", result.ShowGui);
+
+    // Number of threads
+    if(parser.exists("t")) {
+        result.ThreadsCount = parser.get<int>("t");
+    }
+    fmt::print("ARG:ThreadsCount = {}\n", result.ThreadsCount);
+
+
+    // Macro files:
     result.MacroFileNames = parser.getv<std::string>("");
 
-    // G4E_MACRO_PATH
-    const char* macroPathCstr = std::getenv("G4E_MACRO_PATH");
-    result.IsSetMacroPath = macroPathCstr != nullptr;
-    result.MacroPath = macroPathCstr? macroPathCstr: "";
-    spdlog::info("ENV:G4E_MACRO_PATH:  is-set={}, value='{}'",  result.IsSetMacroPath, result.MacroPath );
+    // Print file names if apply
+    if(!result.MacroFileNames.empty()) {
+        fmt::print("ARG:Macro files:\n");
+        for(const auto& fileName: result.MacroFileNames) {
+            fmt::print("   {}\n", fileName);
+        }
+    }
 
     // G4E_HOME
     const char* homeCstr = std::getenv("G4E_HOME");
     result.IsSetHomePath = homeCstr != nullptr;
     result.HomePath = homeCstr ? homeCstr : "";
-    spdlog::info("ENV:G4E_HOME: is-set={}, value='{}'", result.IsSetHomePath, result.HomePath);
+    fmt::print("ENV:G4E_HOME: is-set={}, value='{}'\n", result.IsSetHomePath, result.HomePath);
+
+    // WARN user if G4E_HOME is not set
+    if(!result.IsSetHomePath) {
+        spdlog::warn("Environment variable 'G4E_HOME' is not set (!!!). G4E will try to find resources in your current dir (and fail, most probably)");
+    } else {
+        result.ResourcePath = result.HomePath + "/resources";
+    }
+
+    // G4E_MACRO_PATH
+    const char* macroPathCstr = std::getenv("G4E_MACRO_PATH");
+    result.IsSetMacroPath = macroPathCstr != nullptr;
+    result.MacroPath = macroPathCstr? macroPathCstr: "";
+
+    // Add JLeic detector to default Macro Path
+    std::vector<std::string> paths;
+    if(result.IsSetMacroPath) {
+        result.MacroPath += ":"+result.ResourcePath+"/jleic";
+    } else {
+        result.MacroPath = result.ResourcePath+"/jleic";
+    }
+
+    fmt::print("ENV:G4E_MACRO_PATH:  is-set={}, value='{}'",  result.IsSetMacroPath, result.MacroPath );
 
     return result;
 }
@@ -169,9 +216,7 @@ int main(int argc, char **argv)
 
     // set macro path from environment if it is set
 
-    if(args.IsSetMacroPath) {
-        UI->ApplyCommand(format("/control/macroPath {}", args.MacroPath));
-    }
+    UI->ApplyCommand(format("/control/macroPath {}", args.MacroPath));
 
     // We have some user defined file
     if (!args.MacroFileNames.empty()) {

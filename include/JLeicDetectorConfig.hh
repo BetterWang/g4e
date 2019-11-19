@@ -33,6 +33,7 @@
 #include "ffi_RPOT_D2/ffi_RPOT_D2.hh"         // Far-forward Ion   -Roman Pots before D3
 #include "ffi_RPOT_D3/ffi_RPOT_D3.hh"         // Far-forward Ion   -Roman Pots after D3
 
+#include "ir_Beampipe/ir_Beampipe.hh" // -------beampipe---------------
 
 struct JLeicDetectorConfig {
     int ElectronBeamEnergy =10;
@@ -95,7 +96,8 @@ struct JLeicDetectorConfig {
     ffi_ZDC_Config  ffi_ZDC;
     ffi_RPOT_D2_Config  ffi_RPOT_D2;
     ffi_RPOT_D3_Config  ffi_RPOT_D3;
-
+   //---------------Beampipe------------------------
+     ir_Beampipe_Config ir_Beampipe;
 } ;
 
 #endif //G4E_JLeicDetectorParameters_HH

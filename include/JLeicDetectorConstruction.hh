@@ -90,7 +90,10 @@
 #include "ffi_ZDC/ffi_ZDC.hh"         // Far-forward Ion   - HCAL ZDC
 #include "ffi_RPOT_D2/ffi_RPOT_D2.hh"         // Far-forward Ion   - RomanPots system
 #include "ffi_RPOT_D3/ffi_RPOT_D3.hh"         // Far-forward Ion   - RomanPots system
+//---------Beam lattice ------------------------
 #include "ir_Lattice/ir_Lattice.hh"     // IR Lattice import from file
+#include "ir_Beampipe/ir_Beampipe.hh"     // IR Lattice import from file
+
 
 class JLeicCalorimeterSD;
 class JLeicVertexSD;
@@ -108,21 +111,23 @@ public:
     //--------BARREL------
     bool USE_BARREL = true;
     bool USE_BARREL_det =true;
-    //bool USE_BEAMPIPE 1 // beampipe 
+    bool USE_BEAMPIPE =false; // beampipe
     //------- subdetector-volumes  barrel ----- 
     
     bool USE_CB_VTX = true;
     //bool  USE_VTX0 1   // for simple vtx geom
     bool USE_CB_VTX_LADDERS = true;
-    //bool  USE_CB_VTX_ENDCAPS    // for vxt endcaps ladders
+    bool  USE_CB_VTX_ENDCAPS = false;  // for vxt endcaps ladders
     //bool  USE_VTX_DISKS    // for vxt disks along beampipe
     //bool USE_VTX_E 1   // for vxt endcaps 
     
     
     bool USE_CB_CTD = true;
-    bool USE_CB_CTD_Si   = true;// silicon version of CTD
-    //bool USE_CB_CTD_Straw 1 // straw version of CTD
-    
+    // -------- use one of the following options for CTD ---------------
+    bool USE_CB_CTD_Si   = true;//  silicon version of CTD
+    bool USE_CB_CTD_Straw = false; // straw version of CTD
+    //--------------------------------------------------------
+
     bool USE_CB_DIRC = true;
     bool USE_CB_DIRC_bars = true;  // bars for DIRC
     
@@ -152,7 +157,7 @@ public:
     bool  USE_CE_MRICH = true;
     
     //==============================================
-    //bool  USE_FFE_CPOL
+    bool  USE_FFE_CPOL = false;
     //--------FARFORWARD HADRON------
     //bool USE_DIPOLE1_SI
     //
@@ -295,6 +300,7 @@ private:
     G4Material *World_Material;
 
     ir_LatticeDesign ir_Lattice;
+    ir_Beampipe_Design ir_Beampipe;
 
 //-----------------Hadron ENDCAP volume--------------------
     G4VisAttributes *attr_ci_ENDCAP_GVol;
@@ -311,7 +317,7 @@ private:
     //----------------BARREL -----------------------
     cb_Solenoid_Design cb_Solenoid;
     //----------------VTX  volume ------------------
-    //cb_VTX_Design      cb_VTX;
+   // cb_VTX_Design      cb_VTX;
     //----------------CTD  volume -------------------
     cb_CTD_Design      cb_CTD;
     //----------------DIRC  volume -------------------
@@ -513,64 +519,6 @@ private:
     //--------------------------------------------------------------
 
 
-
-    //----------------BEAMPIPE elements ----------------------------------------------
-    G4Material *fBeampipeVacuum;
-
-    // ------------inner Be beampipe ------------
-    G4double fBeamSizeRinBe;
-    G4double fBeamSizeRoutBe;
-    G4double fBeamSizeZ_Be;
-    G4Material *fBeamPipeMaterialBe;
-
-    //------------Volume -----------
-    G4Tubs *fSolidBeamBe;    //pointer to the solid World
-    G4LogicalVolume *fLogicBeamBe;    //pointer to the logical World
-    G4VPhysicalVolume *fPhysicsBeamBe;    //pointer to the physical World
-
-    //------------Wall -----------
-    G4Tubs *fSolidBeamBe1;    //pointer to the solid World
-    G4LogicalVolume *fLogicBeamBe1;    //pointer to the logical World
-    G4VPhysicalVolume *fPhysicsBeamBe1;    //pointer to the physical World
-    //------------Vacuum-----------
-    G4Tubs *fSolidBeamBe2;    //pointer to the solid World
-    G4LogicalVolume *fLogicBeamBe2;    //pointer to the logical World
-    G4VPhysicalVolume *fPhysicsBeamBe2;    //pointer to the physical World
-
-    //-----------------------------------------------
-    // ------------HAdron beampipe ------------
-    G4double fBeamSizeRinH;
-    G4double fBeamSizeRoutH;
-    G4double fBeamSizeZ_H;
-    G4Material *fBeamPipeMaterialH;
-
-    //------------Volume -----------
-    G4Tubs *fSolidBeamH;    //pointer to the solid World
-    G4LogicalVolume *fLogicBeamH;    //pointer to the logical World
-    G4VPhysicalVolume *fPhysicsBeamH;    //pointer to the physical World
-
-    // ------------Cone inner  beampipe ------------
-    G4double fBeamSizeRin;
-    G4double fBeamSizeRout;
-    G4double fBeamSizeZ;
-    G4Material *fBeamPipeMaterial;
-
-
-    G4double fBeamSizeRin1Cone;
-    G4double fBeamSizeRin2Cone;
-    G4double fBeamSizeRout1Cone;
-    G4double fBeamSizeRout2Cone;
-    G4double fBeamSizeZCone;
-    G4Material *fBeamPipeConeMaterial;
-
-    G4Polycone *fSolidBeamCone;    //pointer to the solid World
-    G4LogicalVolume *fLogicBeamCone;    //pointer to the logical World
-    G4VPhysicalVolume *fPhysicsBeamCone;    //pointer to the physical World
-
-
-    G4Cons *fSolidBeamCone2;    //pointer to the solid World
-    G4LogicalVolume *fLogicBeamCone2;    //pointer to the logical World
-    G4VPhysicalVolume *fPhysicsBeamCone2;    //pointer to the physical World
 
 
     // TR radiator volumes and dimensions

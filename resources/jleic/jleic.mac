@@ -4,12 +4,15 @@
 # Macro file for the initialization phase
 #------------------------------------------------------------------------
 #
-/control/verbose 2
-/run/verbose 2
+/control/verbose 0
+/run/verbose 0
 /geometry/navigator/verbose 0
+
 #-------- SETUP BEAM ENERGY-------
+
 /detsetup/eBeam 10
 /detsetup/pBeam 200
+
 #--------Detector construction ------------------
 #-------------------------------------------------------
 #  TRD  setup

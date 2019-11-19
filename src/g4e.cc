@@ -42,14 +42,12 @@
 #include "JLeicSteppingVerbose.hh"
 #include "JLeicTrackingAction.hh"
 
+#undef G4VIS_USE
+#define G4VIS_USE (1)
+
 #ifdef G4VIS_USE
 
 #include "G4VisExecutive.hh"
-
-#endif
-
-#ifdef G4UI_USE
-
 #include "G4UIExecutive.hh"
 
 #endif
@@ -60,8 +58,6 @@
 #include "StringHelpers.hh"
 
 #include <argparse.hh>
-
-
 
 
 /// Program Configuration provided by arguments or environment variables
@@ -211,6 +207,9 @@ int main(int argc, char **argv)
     // Tracking action
     auto trackingAction = new JLeicTrackingAction();
     runManager->SetUserAction(trackingAction);
+    auto visManager = new G4VisExecutive;
+    visManager->Initialize();
+    auto *ui = new G4UIExecutive(argc, argv);
 
     G4UImanager *UI = G4UImanager::GetUIpointer();
 
@@ -228,31 +227,6 @@ int main(int argc, char **argv)
         }
     }
 
-    // We start visual mode if no files provided or if --gui flag is given
-    if(args.MacroFileNames.empty() || args.ShowGui)
-    {
-#ifdef G4VIS_USE
-        auto visManager = new G4VisExecutive;
-        visManager->Initialize();
-#endif
-
-#ifdef G4UI_USE
-        auto *ui = new G4UIExecutive(argc, argv);
-    #ifdef G4VIS_USE
-            UI->ApplyCommand("/control/execute jleicvis.mac");
-    #endif
-        ui->SessionStart();
-        delete ui;
-#endif
-
-#ifdef G4VIS_USE
-        delete visManager;
-#endif
-    }
-
-    // job termination
-    //
-    delete runManager;
-
+    ui->SessionStart();
     return 0;
 }

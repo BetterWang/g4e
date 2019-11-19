@@ -191,7 +191,7 @@ list(APPEND sources
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
-add_executable(g4e src/g4e.cc ${sources} ${headers})
+add_executable(g4e src/g4e.cc ${sources} ${headers} )
 target_link_libraries(g4e
         ${Geant4_LIBRARIES}
         ${HEPMC_LIBRARIES}

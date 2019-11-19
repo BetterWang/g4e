@@ -85,7 +85,7 @@ public:
             // Do we have common resources?
             const char* home_cstr = std::getenv("G4E_HOME");
             if(home_cstr){
-                fileName = fmt::format("{}/resources/jleic_md_interface/{}", home_cstr, fileName);
+                fileName = fmt::format("{}/resources/jleic/mdi/{}", home_cstr, fileName);
             }
 
             // Build 3d solenoid

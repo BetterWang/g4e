@@ -42,7 +42,6 @@
 #include "JLeicSteppingVerbose.hh"
 #include "JLeicTrackingAction.hh"
 
-<<<<<<< HEAD
 #include <G4MTRunManager.hh>
 #include <G4RunManager.hh>
 #include <G4UImanager.hh>
@@ -53,24 +52,7 @@
 //-- physics processes --
 #include <FTFP_BERT.hh>
 #include <QGSP_BIC.hh>
-=======
-#undef G4VIS_USE
-#define G4VIS_USE (1)
 
-#ifdef G4VIS_USE
-
-#include "G4VisExecutive.hh"
-#include "G4UIExecutive.hh"
-
-#endif
-
-//-- physics processes --
-#include "FTFP_BERT.hh"
-#include "QGSP_BIC.hh"
-#include "StringHelpers.hh"
-
-#include <argparse.hh>
->>>>>>> yulia
 
 
 /// Program Configuration provided by arguments or environment variables
@@ -278,7 +260,6 @@ int main(int argc, char **argv)
 
 
     // set macro path from environment if it is set
-
     ui->ApplyCommand(format("/control/macroPath {}", args.MacroPath));
 
     // We have some user defined file
@@ -289,7 +270,7 @@ int main(int argc, char **argv)
         args.MacroFileNames.push_back(defaultMacro);
     }
 
-<<<<<<< HEAD
+
     // Execute all macros
     fmt::print("Executing macro files:");
     for(const auto& fileName: args.MacroFileNames) {
@@ -302,8 +283,6 @@ int main(int argc, char **argv)
     if(args.ShowGui && uiExec) {
         uiExec->SessionStart();
     }
-=======
-    ui->SessionStart();
->>>>>>> yulia
+
     return 0;
 }

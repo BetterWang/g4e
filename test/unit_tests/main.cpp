@@ -12,8 +12,6 @@ unsigned int Factorial( unsigned int number ) {
 struct TestHit {
     double x;
     double y;
-    int tail;
-
 };
 
 class TestRootIo {

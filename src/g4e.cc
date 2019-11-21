@@ -25,13 +25,13 @@
 //
 
 
-#include <G4MTRunManager.hh>
-#include "G4RunManager.hh"
-#include "G4UImanager.hh"
-#include "Randomize.hh"
 
 #include "spdlog/spdlog.h"
 #include "spdlog/sinks/ostream_sink.h"
+
+#include <argparse.hh>
+
+#include "StringHelpers.hh"
 
 #include "JLeicDetectorConstruction.hh"
 #include "JLeicPhysicsList.hh"
@@ -42,34 +42,30 @@
 #include "JLeicSteppingVerbose.hh"
 #include "JLeicTrackingAction.hh"
 
-#ifdef G4VIS_USE
-
-#include "G4VisExecutive.hh"
-
-#endif
-
-#ifdef G4UI_USE
-
-#include "G4UIExecutive.hh"
-
-#endif
+#include <G4MTRunManager.hh>
+#include <G4RunManager.hh>
+#include <G4UImanager.hh>
+#include <Randomize.hh>
+#include <G4VisExecutive.hh>
+#include <G4UIExecutive.hh>
 
 //-- physics processes --
-#include "FTFP_BERT.hh"
-#include "QGSP_BIC.hh"
-#include "StringHelpers.hh"
-
-#include <argparse.hh>
-
-
+#include <FTFP_BERT.hh>
+#include <QGSP_BIC.hh>
 
 
 /// Program Configuration provided by arguments or environment variables
+/// This class provides all needed dynamic information about flags and
+/// environment variables provided by users
 struct ProgramArguments
 {
     bool ShowGui = false;
     int ThreadsCount = 1;
     std::vector<std::string> MacroFileNames;
+    std::vector<std::string> SourceFileNames;       /// The list of input files
+    std::string SourceGenerator;            /// The generator to use
+    bool IsSetSources = false;              /// true - users provided source
+
     std::string MacroPath;      /// G4E_MACRO_PATH
     bool IsSetMacroPath;        /// true if macro path was defined in environment variables
     std::string HomePath;       /// G4E_HOME
@@ -83,6 +79,9 @@ ProgramArguments ParseArgEnv(int argc, char **argv) {
     ArgumentParser parser("g4e - Geant 4 Electron Ion COllider");
     parser.add_argument("-g", "--gui", "Shows Geant4 GUI", false);
     parser.add_argument("-t", "--threads", "Number of threads. Single threaded mode if 0 or 1", false);
+    parser.add_argument("-s", "--source",
+                       "Source files to process. "
+                       "Should start with generator name. Like --source=beagle:/path/to/file.txt:path/to/another.txt", false);
     parser.add_argument("--files", "input files", false);
 
     // Now parse the arguments
@@ -148,8 +147,40 @@ ProgramArguments ParseArgEnv(int argc, char **argv) {
     } else {
         result.MacroPath = result.ResourcePath+"/jleic";
     }
-
     fmt::print("ENV:G4E_MACRO_PATH:  is-set={}, value='{}'",  result.IsSetMacroPath, result.MacroPath );
+
+    // SOURCES
+    if(parser.exists("s")) {
+        auto rawSources = parser.get<std::string>("s");
+
+        // Check we have something
+        if(rawSources.empty()) {
+            fmt::print("ERROR. Flag --source aka -s is provided but the value is not set\n");
+            parser.print_help();
+            exit(1);
+        }
+
+        auto tokens = g4e::Split(rawSources, ":");
+
+
+        // The first should go a generator:
+        result.SourceGenerator = tokens[0];
+        fmt::print("ARG:SourceGenerator = {}", result.SourceGenerator);
+
+        // Then there should be input files (or at least one!)
+        if(tokens.size()<2){
+            fmt::print("ERROR. No source file provided. See '--source' flag usage\n");
+            parser.print_help();
+            exit(1);
+        }
+
+        // If we are here, the sources are OK
+        result.IsSetSources = true;
+        for(size_t i=1; i < tokens.size(); i++ ) {
+            result.SourceFileNames.push_back(tokens[i]);
+        }
+    }
+
 
     return result;
 }
@@ -212,47 +243,41 @@ int main(int argc, char **argv)
     auto trackingAction = new JLeicTrackingAction();
     runManager->SetUserAction(trackingAction);
 
-    G4UImanager *UI = G4UImanager::GetUIpointer();
+    G4UImanager *ui = G4UImanager::GetUIpointer();
+    G4UIExecutive* uiExec = nullptr;
+
+    // We show GUI if user didn't provided any macros of if he has --gui/-g flag
+    if(args.MacroFileNames.empty() || args.ShowGui) {
+        args.ShowGui = true;
+        auto visManager = new G4VisExecutive;
+        visManager->Initialize();
+        uiExec = new G4UIExecutive(argc, argv);
+    }
+
 
     // set macro path from environment if it is set
 
-    UI->ApplyCommand(format("/control/macroPath {}", args.MacroPath));
+    ui->ApplyCommand(format("/control/macroPath {}", args.MacroPath));
 
     // We have some user defined file
-    if (!args.MacroFileNames.empty()) {
-        spdlog::debug("Executing files provided as args:");
-        for(const auto& fileName: args.MacroFileNames) {
-            std::string command = "/control/execute " + fileName;
-            spdlog::debug("   {}", command);
-            UI->ApplyCommand(command);
-        }
+    if (args.MacroFileNames.empty()) {
+        // We don't have any macros set.
+        // Now use jleic if no GUI or jleicvis for GUI
+        std::string defaultMacro = args.ShowGui? "jleicvis.mac":"jleic.mac";
+        args.MacroFileNames.push_back(defaultMacro);
+    }
+
+    // Execute all macros
+    fmt::print("Executing macro files:");
+    for(const auto& fileName: args.MacroFileNames) {
+        std::string command = "/control/execute " + fileName;
+        fmt::print("   {}", command);
+        ui->ApplyCommand(command);
     }
 
     // We start visual mode if no files provided or if --gui flag is given
-    if(args.MacroFileNames.empty() || args.ShowGui)
-    {
-#ifdef G4VIS_USE
-        auto visManager = new G4VisExecutive;
-        visManager->Initialize();
-#endif
-
-#ifdef G4UI_USE
-        auto *ui = new G4UIExecutive(argc, argv);
-    #ifdef G4VIS_USE
-            UI->ApplyCommand("/control/execute jleicvis.mac");
-    #endif
-        ui->SessionStart();
-        delete ui;
-#endif
-
-#ifdef G4VIS_USE
-        delete visManager;
-#endif
+    if(args.ShowGui && uiExec) {
+        uiExec->SessionStart();
     }
-
-    // job termination
-    //
-    delete runManager;
-
     return 0;
 }

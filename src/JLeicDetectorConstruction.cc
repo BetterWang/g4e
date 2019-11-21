@@ -65,85 +65,6 @@
 #include "JLeicSolenoid3D.hh"
 
 #define USE_TGEOM 1
-//--------BEAM elements------
-#define USE_FFQs
-//#define USE_FFQs_iu
-//#define USE_FFQs_ed
-//#define USE_FFQs_eu
-
-//===========================================
-//--------BARREL------
-#define USE_BARREL
-#define USE_BARREL_det
-//#define USE_BEAMPIPE 1 // beampipe 
-//------- subdetector-volumes  barrel ----- 
-
-#define USE_CB_VTX
-//#define  USE_VTX0 1   // for simple vtx geom
-#define USE_CB_VTX_LADDERS
-//#define  USE_CB_VTX_ENDCAPS    // for vxt endcaps ladders
-//#define  USE_VTX_DISKS    // for vxt disks along beampipe
-//#define USE_VTX_E 1   // for vxt endcaps 
-
-
-#define USE_CB_CTD
-#define USE_CB_CTD_Si  1 // silicon version of CTD
-//#define USE_CB_CTD_Straw 1 // straw version of CTD
-
-#define USE_CB_DIRC
-#define USE_CB_DIRC_bars  1 // bars for DIRC
-
-#define USE_CB_EMCAL
-#define USE_CB_HCAL
-#define USE_CB_HCAL_D // hcal detector ( granularity)
-
-//==============================================
-//--------H-encap------
-#define USE_CI_ENDCAP
-//------- subdetector-volumes H-encap -----
-#define USE_CI_GEM
-#define USE_CI_DRICH
-#define USE_CI_TRD
-#define USE_CI_EMCAL
-#define USE_CI_HCAL
-#define USE_CI_HCAL_D
-//--------- Forward D1
-//#define USE_FI_EMCAL
-#define USE_FI_TRKD1
-// ==============================================
-//--------E-encap------
-#define USE_E_ENDCAP
-//------- subdetector-volumes E-encap ----- 
-#define  USE_CE_GEM
-#define  USE_CE_EMCAL
-#define  USE_CE_MRICH
-
-//==============================================
-//#define  USE_FFE_CPOL
-//--------FARFORWARD HADRON------
-//#define USE_DIPOLE1_SI
-//
-//#define USE_FI_DIPOLE1_B
-//#define USE_FI_DIPOLE2
-
-#define USE_FFI_TRKD2
-#define USE_FFI_ZDC
-#define USE_FFI_RPOT_D2
-#define USE_FFI_RPOT_D3
-//#define USE_FARFORWARD_GEM
-//#define USE_FARFORWARD_VP
-
-//--------barrel------
-//#define  USE_VTX0 1   // for simple vtx geom
-//#define USE_VTX_E 1   // for vxt endcaps 
-//-------------CTD----------
-//#define  USE_CB_EMCAL 1
-//--------Endcap ------
-//#define USE_ENDCAP 1
-//#define  USE_EMCALe
-//#define  USE_VTXB 1
-
-
 #ifdef USE_TGEOM
 // VGM demo
 #include "Geant4GM/volumes/Factory.h"
@@ -297,13 +218,16 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
    //===================================================================================
    //                          START placement of BEAM ELEMENTS                       ==
    //===================================================================================
-    #ifdef USE_FFQs
-    Read_ion_beam_lattice();
-    Read_electron_beam_lattice();
-    #endif
+
+    ir_Lattice.SetMotherParams(World_Phys, World_Material);
+    ir_Lattice.SetIonBeamEnergy(fConfig.IonBeamEnergy);
+    ir_Lattice.SetElectronBeamEnergy(fConfig.ElectronBeamEnergy);
+
+    ir_Lattice.Read_ion_beam_lattice();
+    ir_Lattice.Read_electron_beam_lattice();
 
     //=========================================================================
-    //                    Sensitive
+    //                    Sensitive detectors
     //=========================================================================
 
     G4SDManager *SDman = G4SDManager::GetSDMpointer();
@@ -317,32 +241,30 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 
         fVertexSD = new JLeicVertexSD("VertexSD", this);
         SDman->AddNewDetector(fVertexSD);
+        printf("VertexSD done\n");
     }
 
-    printf("VertexSD done\n");
 
 
-#ifdef  USE_BARREL
-    //----------------------CREATE SOLENOID ------------------------
+
+if(USE_BARREL) {
+    //----------------------CREATE SOLENOID ---------------------------------------------
     fConfig.cb_Solenoid.ShiftZ = fConfig.World.ShiftVTX;
     cb_Solenoid.Construct(fConfig.cb_Solenoid, World_Material, World_Phys);
+}
 
-#endif
 
-#ifdef USE_E_ENDCAP
-
+if(USE_E_ENDCAP) {
+// ------------------ create electon endcap ---------------------------------------------
 
     fConfig.ce_Endcap.ROut = fConfig.cb_Solenoid.ROut - 1 * cm;
     fConfig.ce_Endcap.PosZ = -fConfig.ce_Endcap.SizeZ / 2 - fConfig.cb_Solenoid.SizeZ / 2 + fConfig.World.ShiftVTX;
 
     Create_ce_Endcap(fConfig.ce_Endcap);
+}
 
-#endif
-
-    //===================================================================================
-    //==                           HCAL  BARREL                            ==
-    //===================================================================================
-#ifdef USE_CB_HCAL
+if( USE_CB_HCAL) {
+    //----------------create  HCAL ( Iron  BARREL) ---------------------------------------
     fConfig.cb_HCAL.RIn = fConfig.cb_Solenoid.ROut;
     fConfig.cb_HCAL.ROut = fConfig.cb_Solenoid.ROut + fConfig.cb_HCAL.Thickness;
     fConfig.cb_HCAL.SizeZ = fConfig.cb_Solenoid.SizeZ + fConfig.ce_Endcap.SizeZ;
@@ -352,63 +274,42 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
 
     //  fConfig.cb_HCAL.ShiftZ = fConfig.World.ShiftVTX;
     cb_HCAL.Construct(fConfig.cb_HCAL, World_Material, World_Phys);
+    //----------create a layered structure for the Iron ----------------------------------------
+    if(USE_CB_HCAL_D)  { cb_HCAL.ConstructLayers();  }
 
-#ifdef USE_CB_HCAL_D
-    cb_HCAL.ConstructLayers();
-
-#endif // end HCALbdet
-
-#endif // end HCALb
-    //===================================================================================
+}
 
 
-#ifdef USE_CI_ENDCAP
-    //===================================================================================
-    //==                           HADRON-ENDCAP                                       ==
-    //===================================================================================
-
-#ifdef USE_CB_HCAL
-
-    fConfig.ci_Endcap.ROut = fConfig.cb_HCAL.ROut;
-#else
-    fConfig.ci_Endcap.ROut = fConfig.cb_Solenoid.ROut +  100 * cm;
-#endif
+if(USE_CI_ENDCAP) {
+    //----------------- create Hadron endcap (ci_Endcap) ----------------------------------------
+    if (USE_CB_HCAL) {
+        fConfig.ci_Endcap.ROut = fConfig.cb_HCAL.ROut;
+    } else {
+        fConfig.ci_Endcap.ROut = fConfig.cb_Solenoid.ROut + 100 * cm;
+    }
 
 
     fConfig.ci_Endcap.PosZ = fConfig.cb_Solenoid.SizeZ / 2. + fConfig.World.ShiftVTX + fConfig.ci_Endcap.ShiftZ + fConfig.ci_Endcap.SizeZ / 2.;
     Create_ci_Endcap(fConfig.ci_Endcap);
 
+    //------------------ create    HCAL in hadron endcap ---------------------------------------
 
-#endif
+    if (USE_CI_HCAL) {
+        // G4double ci_HCAL_GVol_RIn[2]={60*cm, 70*cm } ;
+        //  G4double ci_HCAL_GVol_RIn[2]={0*cm, 0*cm }
+        // G4double ci_HCAL_GVol_ROut[2]={cb_HCAL_GVol_ROut,cb_HCAL_GVol_ROut };
 
+        if (USE_CB_HCAL) { fConfig.ci_HCAL.ROut = fConfig.cb_HCAL.ROut; }
+        else { fConfig.ci_HCAL.ROut = 300 * cm; }
 
+        fConfig.ci_HCAL.PosZ = fConfig.ci_Endcap.PosZ + fConfig.ci_Endcap.SizeZ / 2 + fConfig.ci_HCAL.ShiftZ + fConfig.ci_HCAL.SizeZ / 2;
+        ci_HCAL.Construct(fConfig.ci_HCAL, World_Material, World_Phys);
 
+        //---------------------------- HCAL IRON--------------------------------------
+        if (USE_CI_HCAL_D) { ci_HCAL.ConstructDetectors(); };
 
-//===================================================================================
-
-    //===================================================================================
-    //==                          HADRON-ENDCAP    HCAL   DETECTOR VOLUME              ==
-    //===================================================================================
-#ifdef USE_CI_HCAL
-    // G4double ci_HCAL_GVol_RIn[2]={60*cm, 70*cm } ;
-    //  G4double ci_HCAL_GVol_RIn[2]={0*cm, 0*cm }
-    // G4double ci_HCAL_GVol_ROut[2]={cb_HCAL_GVol_ROut,cb_HCAL_GVol_ROut };
-
-#ifdef USE_CB_HCAL
-    fConfig.ci_HCAL.ROut = fConfig.cb_HCAL.ROut;
-#else
-    fConfig.ci_HCAL.ROut=300*cm;
-#endif
-    fConfig.ci_HCAL.PosZ = fConfig.ci_Endcap.PosZ + fConfig.ci_Endcap.SizeZ / 2 + fConfig.ci_HCAL.ShiftZ + fConfig.ci_HCAL.SizeZ / 2;
-    ci_HCAL.Construct(fConfig.ci_HCAL, World_Material, World_Phys);
-    //---------------------------- HCAL IRON--------------------------------------
-
-#ifdef USE_CI_HCAL_D
-    ci_HCAL.ConstructDetectors();
-#endif // end HCAL
-#endif // end HCAL
-
-
+    }
+}
 
 
     //***********************************************************************************
@@ -418,181 +319,174 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     //***********************************************************************************
 
 
-#ifdef  USE_BARREL_det
+if(USE_BARREL_det) {
     //===================================================================================
     //==                          VERTEX DETECTOR VOLUME                               ==
     //===================================================================================
 
-#ifdef  USE_CB_VTX
+    if (USE_CB_VTX) {
 
-    fConfig.cb_VTX.ShiftZ = -fConfig.World.ShiftVTX;
-    cb_VTX.Construct(fConfig.cb_VTX, World_Material, cb_Solenoid.Phys);
+        fConfig.cb_VTX.ShiftZ = -fConfig.World.ShiftVTX;
+        cb_VTX.Construct(fConfig.cb_VTX, World_Material, cb_Solenoid.Phys);
 
-#ifdef  USE_CB_VTX_LADDERS
-    //----------vtx barrel ladder geometry--------------
-    cb_VTX.ConstructLaddersCentral();
-    for (int lay = 0; lay < cb_VTX.Lays.size(); lay++) {
-        if (cb_VTX.cb_VTX_ladder_Logic) { cb_VTX.cb_VTX_ladder_Logic[lay]->SetSensitiveDetector(fVertexSD); }
+        if (USE_CB_VTX_LADDERS) {
+            //----------vtx barrel ladder geometry--------------
+            cb_VTX.ConstructLaddersCentral();
+            for (int lay = 0; lay < cb_VTX.Lays.size(); lay++) {
+                if (cb_VTX.cb_VTX_ladder_Logic) { cb_VTX.cb_VTX_ladder_Logic[lay]->SetSensitiveDetector(fVertexSD); }
+            }
+        }
+        if (USE_CB_VTX_ENDCAPS) {
+            cb_VTX.ConstructLaddersEndcaps();
+            //         if (fLogicVTXEndH[lay]) { fLogicVTXEndH[lay]->SetSensitiveDetector(fCalorimeterSD); }
+        }
+
+    };    // end VTX detector
+
+    //===================================================================================
+    //==                         CTD DETECTOR                                          ==
+    //===================================================================================
+    if (USE_CB_CTD) {
+
+        fConfig.cb_CTD.SizeZ = fConfig.cb_Solenoid.SizeZ - fConfig.cb_CTD.SizeZCut;
+        cb_CTD.Construct(fConfig.cb_CTD, World_Material, cb_Solenoid.Phys);
+
+        if (USE_CB_CTD_Si) { cb_CTD.ConstructLadders(); }
+        else if (USE_CB_CTD_Straw) { cb_CTD.ConstructStraws(); };
+
+    };// end CTD detector
+
+
+    //===================================================================================
+    //==                         RICH DETECTOR                                         ==
+    //===================================================================================
+    if (USE_CB_DIRC) {
+
+        fConfig.cb_DIRC.RIn = fConfig.cb_CTD.ROut + 1 * cm;
+        // for new magnet
+        //   cb_DIRC_GVol_ROut = 95 * cm;
+        // for CLEO and BABAR DIRC
+        fConfig.cb_DIRC.ROut = fConfig.cb_DIRC.RIn + 10 * cm;
+        //   cb_DIRC_GVol_SizeZ = SizeZ;
+        fConfig.cb_DIRC.SizeZ = fConfig.cb_CTD.SizeZ;
+
+        cb_DIRC.Construct(fConfig.cb_DIRC, World_Material, cb_Solenoid.Phys);
+
+        if (USE_CB_DIRC_bars) { cb_DIRC.ConstructBars(); }
+
+
+    }; // end DIRC detector
+
+
+    //===================================================================================
+    //==                         EMCAL DETECTOR VOLUME                                 ==
+    //===================================================================================
+
+    if (USE_CB_EMCAL) {
+
+        fConfig.cb_EMCAL.ROut = fConfig.cb_Solenoid.ROut - fConfig.cb_EMCAL.ROutshift;
+        fConfig.cb_EMCAL.RIn = fConfig.cb_EMCAL.ROut - fConfig.cb_EMCAL.Thickness;
+        // cb_EMCAL_GVol_SizeZ=SizeZ -30*cm;
+
+        cb_EMCAL.Construct(fConfig.cb_EMCAL, fConfig.cb_Solenoid, World_Material, cb_Solenoid.Phys);
+        cb_EMCAL.ConstructBars();
     }
-#endif
-#ifdef  USE_CB_VTX_ENDCAPS
-    cb_VTX.ConstructLaddersEndcaps();
-  //         if (fLogicVTXEndH[lay]) { fLogicVTXEndH[lay]->SetSensitiveDetector(fCalorimeterSD); }
-
-#endif
-
-#endif  // end VTX
-
-    //===================================================================================
-    //==                         CTD DETECTOR                                  ==
-    //===================================================================================
-#ifdef  USE_CB_CTD
-
-    fConfig.cb_CTD.SizeZ = fConfig.cb_Solenoid.SizeZ - fConfig.cb_CTD.SizeZCut;
-
-    cb_CTD.Construct(fConfig.cb_CTD, World_Material, cb_Solenoid.Phys);
-
-#ifdef USE_CB_CTD_Si
-    cb_CTD.ConstructLadders();
-#endif
-#ifdef  USE_CB_CTD_Straw
-    cb_CTD.ConstructStraws();
-#endif
-#endif  // end CTD
 
 
-    //===================================================================================
-    //==                         RICH DETECTOR                                  ==
-    //===================================================================================
-#ifdef  USE_CB_DIRC
-
-    fConfig.cb_DIRC.RIn = fConfig.cb_CTD.ROut + 1 * cm;
-    // for new magnet
-    //   cb_DIRC_GVol_ROut = 95 * cm;
-    // for CLEO and BABAR DIRC
-    fConfig.cb_DIRC.ROut = fConfig.cb_DIRC.RIn + 10 * cm;
-    //   cb_DIRC_GVol_SizeZ = SizeZ;
-    fConfig.cb_DIRC.SizeZ = fConfig.cb_CTD.SizeZ;
-
-    cb_DIRC.Construct(fConfig.cb_DIRC, World_Material, cb_Solenoid.Phys);
-
-#ifdef  USE_CB_DIRC_bars
-    cb_DIRC.ConstructBars();
-#endif
-
-
-#endif  // end DIRC
-
-
-    //===================================================================================
-    //==                         EMCAL DETECTOR VOLUME                                   ==
-    //===================================================================================
-
-#ifdef  USE_CB_EMCAL
-
-    fConfig.cb_EMCAL.ROut = fConfig.cb_Solenoid.ROut - fConfig.cb_EMCAL.ROutshift;
-    fConfig.cb_EMCAL.RIn = fConfig.cb_EMCAL.ROut - fConfig.cb_EMCAL.Thickness;
-    // cb_EMCAL_GVol_SizeZ=SizeZ -30*cm;
-
-    cb_EMCAL.Construct(fConfig.cb_EMCAL, fConfig.cb_Solenoid, World_Material, cb_Solenoid.Phys);
-    cb_EMCAL.ConstructBars();
-#endif  // end cb_EMCAL
-
-#endif   // end Barrel
+}  // end Barrel
 
 
 
 // ***********************************************************************************
 //                       CE_ENDCAP
 // ***********************************************************************************
-#ifdef USE_E_ENDCAP
+if(USE_E_ENDCAP) {
 
 
 //===================================================================================
 // ==                      GEM     Hadron endcap                                ==
 //==================================================================================
 
-#ifdef USE_CE_GEM
-    fConfig.ce_GEM.PosZ = -fConfig.cb_Solenoid.SizeZ / 2 + fConfig.ce_GEM.SizeZ / 2;
+    if (USE_CE_GEM) {
+        fConfig.ce_GEM.PosZ = -fConfig.cb_Solenoid.SizeZ / 2 + fConfig.ce_GEM.SizeZ / 2;
 
-    ce_GEM.Construct(fConfig.ce_GEM, World_Material, cb_Solenoid.Phys);
-    ce_GEM.ConstructDetectors();
-    //   for (int lay = 0; lay < fConfig.ce_GEM.Nlayers; lay++) {
-    //       if (ce_GEM.lay_Logic[lay]) ce_GEM.lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD);
-    //   }
+        ce_GEM.Construct(fConfig.ce_GEM, World_Material, cb_Solenoid.Phys);
+        ce_GEM.ConstructDetectors();
+        //   for (int lay = 0; lay < fConfig.ce_GEM.Nlayers; lay++) {
+        //       if (ce_GEM.lay_Logic[lay]) ce_GEM.lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD);
+        //   }
 
 //    for (int lay = 0; lay < fConfig.ce_GEM.Nlayers; lay++) {
 //        if (ce_GEM.lay_Logic[lay]) ce_GEM.lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD);
-    //   }
-#endif  // end USE_CI_GEM
+        //   }
+    }  // end USE_CI_GEM
 
 //===================================================================================
 //                         mRICH
 //===================================================================================
 
-#ifdef USE_CE_MRICH
-    fConfig.ce_MRICH.PosZ = fConfig.ce_Endcap.SizeZ / 2 - fConfig.ce_MRICH.SizeZ / 2 - 2 * cm;
+    if (USE_CE_MRICH) {
+        fConfig.ce_MRICH.PosZ = fConfig.ce_Endcap.SizeZ / 2 - fConfig.ce_MRICH.SizeZ / 2 - 2 * cm;
 
-    ce_MRICH.Construct(fConfig.ce_MRICH, World_Material, ce_ENDCAP_GVol_Phys);
+        ce_MRICH.Construct(fConfig.ce_MRICH, World_Material, ce_ENDCAP_GVol_Phys);
 
-    ce_MRICH.ConstructModules();
+        ce_MRICH.ConstructModules();
 
-#endif
+    }
 //===================================================================================
 //                         CE_EMCAL
 //===================================================================================
-#ifdef USE_CE_EMCAL
-    fConfig.ce_EMCAL.PosZ = -fConfig.ce_Endcap.SizeZ / 2 + fConfig.ce_EMCAL.Thickness / 2.;
-    fConfig.ce_EMCAL.ROut = fConfig.ce_Endcap.ROut;
-    ce_EMCAL.Construct(fConfig.ce_EMCAL, World_Material, ce_ENDCAP_GVol_Phys);
-    ce_EMCAL.ConstructCrystals(); // --- inner detector with Crystals
-    ce_EMCAL.ConstructGlass();    // --- outer part with Glass
+    if (USE_CE_EMCAL) {
+        fConfig.ce_EMCAL.PosZ = -fConfig.ce_Endcap.SizeZ / 2 + fConfig.ce_EMCAL.Thickness / 2.;
+        fConfig.ce_EMCAL.ROut = fConfig.ce_Endcap.ROut;
+        ce_EMCAL.Construct(fConfig.ce_EMCAL, World_Material, ce_ENDCAP_GVol_Phys);
+        ce_EMCAL.ConstructCrystals(); // --- inner detector with Crystals
+        ce_EMCAL.ConstructGlass();    // --- outer part with Glass
 
-#endif
+    }
 
-#endif //end USE_E_ENDCAP
-
-
+} //------------------end USE_E_ENDCAP -----------------------------------------------
+//
+//
 // ***********************************************************************************
 //                       CI_ENDCAP
 // ***********************************************************************************
-#   ifdef USE_CI_ENDCAP
-
+if(USE_CI_ENDCAP) {
 
 //===================================================================================
 // ==                      GEM     Hadron endcap                                ==
 //==================================================================================
 
-#ifdef USE_CI_GEM
-    fConfig.ci_GEM.PosZ = fConfig.cb_Solenoid.SizeZ / 2 - fConfig.ci_GEM.SizeZ / 2;   // --- need to find out why this 5 cm are needed
-    fConfig.ci_GEM.PosX = -5 * cm;
-    ci_GEM.Construct(fConfig.ci_GEM, World_Material, cb_Solenoid.Phys);
-    ci_GEM.ConstructDetectors();
-    for (int lay = 0; lay < fConfig.ci_GEM.Nlayers; lay++) {
-        if (ci_GEM.lay_Logic[lay]) ci_GEM.lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD);
-    }
-#endif  // end USE_CI_GEM
+    if (USE_CI_GEM) {
+        fConfig.ci_GEM.PosZ = fConfig.cb_Solenoid.SizeZ / 2 - fConfig.ci_GEM.SizeZ / 2;   // --- need to find out why this 5 cm are needed
+        fConfig.ci_GEM.PosX = -5 * cm;
+        ci_GEM.Construct(fConfig.ci_GEM, World_Material, cb_Solenoid.Phys);
+        ci_GEM.ConstructDetectors();
+        for (int lay = 0; lay < fConfig.ci_GEM.Nlayers; lay++) {
+            if (ci_GEM.lay_Logic[lay]) ci_GEM.lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD);
+        }
+    }  // end USE_CI_GEM
 
-#ifdef USE_CI_DRICH
-//===================================================================================
-// ==                       dRICH     Hadron endcap                                ==
-//==================================================================================
-    fConfig.ci_DRICH.RIn = fConfig.ci_Endcap.RIn;
+    if (USE_CI_DRICH) {
+        //===================================================================================
+        // ==                       dRICH     Hadron endcap                                ==
+        //==================================================================================
+        fConfig.ci_DRICH.RIn = fConfig.ci_Endcap.RIn;
 
-    fConfig.ci_DRICH.PosZ = -fConfig.ci_Endcap.SizeZ / 2. + fConfig.ci_DRICH.ThicknessZ / 2.;
-    //    double ci_DRICH_GVol_PosZ= 0*cm;
-    ci_DRICH.Construct(fConfig.ci_DRICH, World_Material, ci_ENDCAP_GVol_Phys);
-    ci_DRICH.ConstructDetectors();
+        fConfig.ci_DRICH.PosZ = -fConfig.ci_Endcap.SizeZ / 2. + fConfig.ci_DRICH.ThicknessZ / 2.;
+        //    double ci_DRICH_GVol_PosZ= 0*cm;
+        ci_DRICH.Construct(fConfig.ci_DRICH, World_Material, ci_ENDCAP_GVol_Phys);
+        ci_DRICH.ConstructDetectors();
 
-//===================================================================================
-#endif // end USE_CI_DRICH
+        //===================================================================================
+    } // end USE_CI_DRICH
 
 
-#ifdef USE_CI_TRD
-    //===================================================================================
-    // ==                       TRD     Hadron endcap                                ==
-    //==================================================================================
-     //   ci_TRD_GVol_PosZ = -fConfig.ci_Endcap.SizeZ / 2 + fConfig.ci_DRICH.ThicknessZ + ci_TRD_GVol_ThicknessZ/2.;
+    if (USE_CI_TRD) {
+        //===================================================================================
+        // ==                       TRD     Hadron endcap                                ==
+        //==================================================================================
+        //   ci_TRD_GVol_PosZ = -fConfig.ci_Endcap.SizeZ / 2 + fConfig.ci_DRICH.ThicknessZ + ci_TRD_GVol_ThicknessZ/2.;
 
         fConfig.ci_TRD.RIn = fConfig.ci_Endcap.RIn;
 
@@ -601,34 +495,38 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
         ci_TRD.Construct(fConfig.ci_TRD, World_Material, ci_ENDCAP_GVol_Phys);
 
         ci_TRD.ConstructDetectors();
-        printf("FoilNumbers=%d (%d) \n",fConfig.ci_TRD.fFoilNumber,ci_TRD.ConstructionConfig.fFoilNumber); // --- ????????? ---
+        printf("FoilNumbers=%d (%d) \n", fConfig.ci_TRD.fFoilNumber, ci_TRD.ConstructionConfig.fFoilNumber); // --- ????????? ---
         //ci_TRD.ConstructionConfig.fFoilNumber
-    //===================================================================================
-#endif // end USE_CI_TRD
+        //===================================================================================
+    }// end USE_CI_TRD
 
-#ifdef USE_CI_EMCAL
+    if (USE_CI_EMCAL) {
+       //===================================================================================
+        // ==                      EMCAL    Hadron endcap                                ==
+        //==================================================================================
 
-    fConfig.ci_EMCAL.PosZ = -fConfig.ci_Endcap.SizeZ / 2 + fConfig.ci_DRICH.ThicknessZ + fConfig.ci_TRD.ThicknessZ + fConfig.ci_EMCAL.ThicknessZ / 2;
-    ci_EMCAL.Construct(fConfig.ci_EMCAL, World_Material, ci_ENDCAP_GVol_Phys);
-    ci_EMCAL.ConstructDetectors();    // --- outer part with Glass
+        fConfig.ci_EMCAL.PosZ = -fConfig.ci_Endcap.SizeZ / 2 + fConfig.ci_DRICH.ThicknessZ + fConfig.ci_TRD.ThicknessZ + fConfig.ci_EMCAL.ThicknessZ / 2;
+        ci_EMCAL.Construct(fConfig.ci_EMCAL, World_Material, ci_ENDCAP_GVol_Phys);
+        ci_EMCAL.ConstructDetectors();    // --- outer part with Glass
 
-#endif // end USE_CI_EMCAL
-#endif  // ============end USE_CI_ENDCAP  ===================================
+    } // end USE_CI_EMCAL
+} // ============end USE_CI_ENDCAP  ===================================
 
 
     //====================================================================================
     //==                          DIPOLE-1 Tracker and EMCAL                            ==
     //====================================================================================
 
-#ifdef USE_FI_TRKD1
+if(USE_FI_TRKD1) {
     //-------------------------------------------------------------------------------
     //                      Place Si_disks inside D1a
     //-------------------------------------------------------------------------------
     int mydipole_fi_trk1 = -1;
 
     for (int id = 0; id < 20; id++) {
-        if (strcmp(fSolid_BigDi_ffqsNAME[id], "iBDS1a") == 0) {
-            printf("found D21=%s  Z=%f dZ=%f Rout=%f \n", fSolid_BigDi_ffqsNAME[id], fSolid_BigDi_ffqsZ[id], fSolid_BigDi_ffqsSizeZDi[id], fSolid_BigDi_ffqsRinDi[id]);
+        if (strcmp(ir_Lattice.fSolid_BigDi_ffqsNAME[id], "iBDS1a") == 0) {
+            printf("found D21=%s  Z=%f dZ=%f Rout=%f \n", ir_Lattice.fSolid_BigDi_ffqsNAME[id], ir_Lattice.fSolid_BigDi_ffqsZ[id], ir_Lattice.fSolid_BigDi_ffqsSizeZDi[id],
+                   ir_Lattice.fSolid_BigDi_ffqsRinDi[id]);
             mydipole_fi_trk1 = id;
         };
     };
@@ -639,56 +537,56 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
         exit(1);
     }
 
-    fConfig.fi_TRKD1.ROut = fSolid_BigDi_ffqsRinDi[mydipole_fi_trk1] * cm;
-    fConfig.fi_TRKD1.Zpos = (fSolid_BigDi_ffqsSizeZDi[mydipole_fi_trk1] / 2.) * cm - fConfig.fi_TRKD1.SizeZ / 2.;
-    fi_TRKD1.ConstructA(fConfig.fi_TRKD1, World_Material, fPhysics_BigDi_m[mydipole_fi_trk1]);
+    fConfig.fi_TRKD1.ROut = ir_Lattice.fSolid_BigDi_ffqsRinDi[mydipole_fi_trk1] * cm;
+    fConfig.fi_TRKD1.Zpos = (ir_Lattice.fSolid_BigDi_ffqsSizeZDi[mydipole_fi_trk1] / 2.) * cm - fConfig.fi_TRKD1.SizeZ / 2.;
+    fi_TRKD1.ConstructA(fConfig.fi_TRKD1, World_Material, ir_Lattice.fPhysics_BigDi_m[mydipole_fi_trk1]);
     fi_TRKD1.ConstructDetectorsA();
+
 
     // fi_TRKD1.ConstructDetectorsB();
     //  if (f1_D1A_Lay_Logic) f1_D1A_Lay_Logic->SetSensitiveDetector(fCalorimeterSD);
 
-
-
-#endif
+}
 //------------------------------------------------
-#ifdef USE_CI_HCAL
+if(USE_CI_HCAL) {
 
-#ifdef USE_FI_EMCAL
-    // Ecal module  AFTER !!!   Dipole1
+    if (USE_FI_EMCAL) {
+        // Ecal module  AFTER !!!   Dipole1
 
-    fConfig.fi_EMCAL.Zpos = - fConfig.ci_HCAL.SizeZ/ 2 + fConfig.fi_EMCAL.SizeZ / 2;
+        fConfig.fi_EMCAL.Zpos = -fConfig.ci_HCAL.SizeZ / 2 + fConfig.fi_EMCAL.SizeZ / 2;
 
-    fConfig.fi_EMCAL.rot_matx.rotateY(fConfig.fi_EMCAL.Angle * rad);
-    fi_EMCAL.Construct(fConfig.fi_EMCAL, World_Material, ci_HCAL.Phys);
+        fConfig.fi_EMCAL.rot_matx.rotateY(fConfig.fi_EMCAL.Angle * rad);
+        fi_EMCAL.Construct(fConfig.fi_EMCAL, World_Material, ci_HCAL.Phys);
 
 
-#endif
-#endif
+    }
+}
 
-    int mydipole_ffi_trk2;
     //====================================================================================
     //==                    Far-Forward Area    D2, D3  ZDC. Roman Pots                 ==
     //====================================================================================
-#ifdef USE_FFI_TRKD2
-    for (int id = 0; id < 20; id++) {
-        if (strcmp(fSolid_BigDi_ffqsNAME[id], "iBDS2") == 0) {
-            printf("fi_D2_GVol :: found D2=%s  Z=%f dZ=%f Rout=%f \n", fSolid_BigDi_ffqsNAME[id], fSolid_BigDi_ffqsZ[id], fSolid_BigDi_ffqsSizeZDi[id], fSolid_BigDi_ffqsRinDi[id]);
-            mydipole_ffi_trk2 = id;
+    int mydipole_ffi_trk2;
+    if(USE_FFI_TRKD2) {
+        for (int id = 0; id < 20; id++) {
+            if (strcmp(ir_Lattice.fSolid_BigDi_ffqsNAME[id], "iBDS2") == 0) {
+                printf("fi_D2_GVol :: found D2=%s  Z=%f dZ=%f Rout=%f \n", ir_Lattice.fSolid_BigDi_ffqsNAME[id], ir_Lattice.fSolid_BigDi_ffqsZ[id],
+                       ir_Lattice.fSolid_BigDi_ffqsSizeZDi[id], ir_Lattice.fSolid_BigDi_ffqsRinDi[id]);
+                mydipole_ffi_trk2 = id;
+            };
         };
-    };
-    fConfig.ffi_TRKD2.RIn = 0 * cm;
-    fConfig.ffi_TRKD2.ROut = fSolid_BigDi_ffqsRinDi[mydipole_ffi_trk2] * cm;
-    fConfig.ffi_TRKD2.SizeZ = fSolid_BigDi_ffqsSizeZDi[mydipole_ffi_trk2] * m - 2. * cm;
+        fConfig.ffi_TRKD2.RIn = 0 * cm;
+        fConfig.ffi_TRKD2.ROut = ir_Lattice.fSolid_BigDi_ffqsRinDi[mydipole_ffi_trk2] * cm;
+        fConfig.ffi_TRKD2.SizeZ = ir_Lattice.fSolid_BigDi_ffqsSizeZDi[mydipole_ffi_trk2] * m - 2. * cm;
 
-    ffi_TRKD2.Construct(fConfig.ffi_TRKD2, World_Material, fPhysics_BigDi_m[mydipole_ffi_trk2]);
-    ffi_TRKD2.ConstructDetectors();
-    //   for (int lay = 0; lay < fConfig.ffi_TRKD2.Nlayers; lay++) {
-    if (ffi_TRKD2.lay_Logic) ffi_TRKD2.lay_Logic->SetSensitiveDetector(fCalorimeterSD);
-    //   }
+        ffi_TRKD2.Construct(fConfig.ffi_TRKD2, World_Material, ir_Lattice.fPhysics_BigDi_m[mydipole_ffi_trk2]);
+        ffi_TRKD2.ConstructDetectors();
+        //   for (int lay = 0; lay < fConfig.ffi_TRKD2.Nlayers; lay++) {
+        if (ffi_TRKD2.lay_Logic) ffi_TRKD2.lay_Logic->SetSensitiveDetector(fCalorimeterSD);
+        //   }
 
-#endif
+    }
     //------------------------------------------------
-#ifdef USE_FFI_ZDC
+if(USE_FFI_ZDC) {
     fConfig.ffi_ZDC.rot_matx.rotateY(fConfig.ffi_ZDC.Angle * rad);
     fConfig.ffi_ZDC.Zpos = 4000 * cm;
     fConfig.ffi_ZDC.Xpos = -190 * cm;
@@ -697,10 +595,10 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     ffi_ZDC.ConstructTowels();
     if (ffi_ZDC.Logic) ffi_ZDC.Logic->SetSensitiveDetector(fCalorimeterSD);
 
-#endif // end ffi_ZDC
+} // end ffi_ZDC
 
     //------------------------------------------------
-#ifdef USE_FFI_RPOT_D2
+if(USE_FFI_RPOT_D2) {
     fConfig.ffi_RPOT_D2.rot_matx.rotateY(fConfig.ffi_RPOT_D2.Angle * rad);
     fConfig.ffi_RPOT_D2.PosZ = 3100 * cm;
     fConfig.ffi_RPOT_D2.PosX = -170 * cm;
@@ -708,9 +606,9 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     ffi_RPOT_D2.Construct(fConfig.ffi_RPOT_D2, World_Material, World_Phys);
     if (ffi_RPOT_D2.Logic) ffi_RPOT_D2.Logic->SetSensitiveDetector(fCalorimeterSD);
 
-#endif // end ffi_RPOT_D2
+} // end ffi_RPOT_D2
     //------------------------------------------------
-#ifdef USE_FFI_RPOT_D3
+if(USE_FFI_RPOT_D3) {
     fConfig.ffi_RPOT_D3.Angle = -0.053;
     fConfig.ffi_RPOT_D3.rot_matx.rotateY(fConfig.ffi_RPOT_D3.Angle * rad);
     fConfig.ffi_RPOT_D3.PosZ = 5000 * cm;
@@ -719,145 +617,21 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     ffi_RPOT_D3.Construct(fConfig.ffi_RPOT_D3, World_Material, World_Phys);
     if (ffi_RPOT_D3.Logic) ffi_RPOT_D3.Logic->SetSensitiveDetector(fCalorimeterSD);
 
-#endif // end ffi_RPOT_D3
+} // end ffi_RPOT_D3
 
     //===================================================================================
     //==                        Compton Polarimeter                                  ==
     //===================================================================================
-#ifdef  USE_FFE_CPOL
+if(USE_FFE_CPOL) {
 
     ffe_CPOL.Construct(fConfig.ffe_CPOL, World_Material, World_Phys);
-#endif // end ffe_CPOL
+} // end ffe_CPOL
 
 
-#ifdef  USE_BEAMPIPE
-                                                                                                                            //===================================================================================
- //==                          BEAMPIPE                                             ==
- //===================================================================================
- /*----------Beampipe barrel--------------*/
-  fBeamSizeRinBe=3.114*cm;
-  fBeamSizeRoutBe=3.115*cm;
-  // fBeamSizeZ_Be=cb_VTX_GVol_SizeZ;
-  fBeamSizeZ_Be=1600*cm;
+if(USE_BEAMPIPE) {
+ 
 
-  /*--------------------------------------*/;
-  /*-------Volume for Inner Berilium------*/;
-  fBeampipeVacuum  = fMat->GetMaterial("G4_Galactic");
-  fSolidBeamBe = new G4Tubs("BeampipeBe", 0,fBeamSizeRoutBe,fBeamSizeZ_Be/2.,0.,360*deg);
-  fLogicBeamBe = new G4LogicalVolume(fSolidBeamBe, fBeampipeVacuum ,  "BeampipeBe");
-
-  G4RotationMatrix  bpr_h;
-  bpr_h.rotateY((-0.05*180/3.1415)*deg);
-
-  fPhysicsBeamBe = new G4PVPlacement(G4Transform3D(bpr_h, G4ThreeVector(0,0,-World_ShiftVTX)), "BeampipeBe1-b",fLogicBeamBe,
-                                  Phys, false,  0 );
-
-   vb1= new G4VisAttributes(G4Color(0.4, 0.4, 0.5,1.));
-   vb1->SetForceSolid(true); fLogicBeamBe->SetVisAttributes(vb1);
-  //-------Wall------
-
-   /*
-   //  fBeamPipeMaterialBe = fMat->GetMaterial("Be");
-   fBeamPipeMaterialBe = fMat->GetMaterial("G4_Galactic");
-  fSolidBeamBe1 = new G4Tubs("BeampipeBe_wall",  fBeamSizeRinBe,fBeamSizeRoutBe,fBeamSizeZ_Be/2.,0.,360*deg);
-  fLogicBeamBe1 = new G4LogicalVolume(fSolidBeamBe1,  fBeamPipeMaterialBe,  "BeampipeBe_wall");
-
-  fPhysicsBeamBe1 = new G4PVPlacement(0, G4ThreeVector(), "BeampipeBe_wall",fLogicBeamBe1,
-                                   fPhysicsBeamBe, false,  0 );
-
-
- //-------Vacuum------
-
-   fBeampipeVacuum  = fMat->GetMaterial("G4_Galactic");
-   fSolidBeamBe2 = new G4Tubs("BeampipeBe_vac", 0.0,fBeamSizeRinBe,fBeamSizeZ_Be/2.,0.,360*deg);
-  fLogicBeamBe2 = new G4LogicalVolume(fSolidBeamBe2,  fBeampipeVacuum,  "BeampipeBe_vac");
-
-  fPhysicsBeamBe2 = new G4PVPlacement(0, G4ThreeVector(), "BeampipeBe_vac",fLogicBeamBe2,
-                                  fPhysicsBeamBe, false,  0 );
-
-
-  //-------End -Volume for Inner Berilium-------
-  //--------------------------------------------
-
-  //--------------------------------------
-  //-------Beampipe Hadrons---------------
-  //--------------------------------------
- fBeamSizeRoutH=3.3*cm; fBeamSizeZ_H=3200.*cm;
-  fSolidBeamH = new G4Tubs("BeampipeH", 0,fBeamSizeRoutH,fBeamSizeZ_H/2.,0.,360*deg);
-  fLogicBeamH = new G4LogicalVolume(fSolidBeamH, fBeamPipeMaterialBe,  "BeampipeH");
-  G4RotationMatrix  bpr_h;
-  //   bpr_h.rotateY(-2.5*deg);
-  bpr_h.rotateY((-0.05*180/3.1415)*deg);
-  // bpr_h.rotateY(-2.5*deg);
-  fPhysicsBeamH = new G4PVPlacement(G4Transform3D(bpr_h, G4ThreeVector(0,0,-World_ShiftVTX)), "BeampipeH",fLogicBeamH,
-                                  Phys, false,  0 );
-
-   vb1= new G4VisAttributes(G4Color(0.5, 0., 0.3,1.));
-   vb1->SetForceSolid(true);  fLogicBeamH->SetVisAttributes(vb1);
-
-
-   //--------------------------------------
-  //--------------------cone-------------------------------
-  //--------------------------------------
-
- fBeamPipeConeMaterial = fMat->GetMaterial("G4_Galactic");
- G4RotationMatrix bpr1,bpr2,bpr;
- double xPos=-2*cm;
-
-
-  fBeamSizeZCone=100*cm;
-  double fBeamSizeZCone2=155*cm;
-  fBeamSizeRin1Cone=3.115*cm;
-  fBeamSizeRin2Cone=fBeamSizeRin1Cone +0.025*(fBeamSizeZCone);
-
-  G4double R_cone[4]={ 0.*cm, 3.5*cm , 15.*cm, 0.*cm};
-  G4double Z_cone[4]={ 0.*cm,  0.*cm,  (SizeZ/2),  (SizeZ/2)};
-  //World_ShiftVTX
-  // Z1=  fBeamSizeZ_Be
-
-  //  printf("zPos=%f,fBeamSizeRin2Cone=%f fBeamSizeRout2Cone=%f fBeamSizeZCone+zPos=%f\n",zPos,
-  //       fBeamSizeRin2Cone,fBeamSizeRout2Cone,fBeamSizeZCone+zPos);
-
-  fSolidBeamCone = new G4Polycone("BeampipeCone", 0., 360., 4, R_cone , Z_cone );
-
-   fLogicBeamCone = new G4LogicalVolume(fSolidBeamCone,  fBeamPipeConeMaterial,  "BeampipeCone");
-
-   //  fPhysicsBeamCone = new G4PVPlacement(0, G4ThreeVector(0,0,-30*cm), "BeampipeCone",fLogicBeamCone,
-   //                           Phys, false,    0 );
-
-
-
-   bpr1.rotateY(-2.5*deg);
-  fPhysicsBeamCone = new G4PVPlacement(G4Transform3D(bpr1, G4ThreeVector(0,0,0*cm)), "BeampipeCone",fLogicBeamCone,
-                              Phys, false,    0 );
-
-  vb1= new G4VisAttributes(G4Color(1.0, 1.0, 0.1,1));
-
-  */;
-
-  /*
-
-
-   double zPos2=(fBeamSizeZCone2/2)+ 25*cm;
-
-  fSolidBeamCone2 = new G4Cons("VTX1pipeCone2",  fBeamSizeRin1Cone, fBeamSizeRout1Cone,
-                            fBeamSizeRin2Cone,fBeamSizeRout2Cone,fBeamSizeZCone2/2.,0.,360*deg);
-
-  fLogicBeamCone2 = new G4LogicalVolume(fSolidBeamCone2,  fBeamPipeConeMaterial,  "Beam2Cone");
-
-
-  brm.rotateY((180.-0.026*180/3.1415)*deg);
-  xPos= 2*cm;
-   fPhysicsBeamCone2 = new G4PVPlacement(G4Transform3D(brm, G4ThreeVector(xPos,0,-zPos2)), "Beam2Cone",fLogicBeamCone2,
-                                 Phys, false,  0 );
-
-
-   vb1->SetForceSolid(true); fLogicBeamCone2->SetVisAttributes(vb1);fLogicBeamCone->SetVisAttributes(vb1);
-
-
-  */
-
-#endif
+} // ---- end beampipe ------
 
 
 #ifdef USE_FI_DIPOLE1_B
@@ -1349,123 +1123,8 @@ void JLeicDetectorConstruction::SetAbsorberZpos(G4double val) {
     // ComputeCalorParameters();
 }
 
-//////////////////////////////////////////////////////////////////////////////
-//
-//
-
-void JLeicDetectorConstruction::SetMagField(G4double) {
-    //apply a global uniform magnetic field along X axis
-
-    /* *********************************************************
-
-  G4FieldManager* fieldMgr
-   = G4TransportationManager::GetTransportationManager()->GetFieldManager();
-
-  if(magField) delete magField;		//delete the existing magn field
-
-  if(fieldValue!=0.)			// create a new one if non nul
-  {
-    magField = new G4UniformMagField(G4ThreeVector(fieldValue,0.,0.));
-    fieldMgr->SetDetectorField(magField);
-    fieldMgr->CreateChordFinder(magField);
-  }
-  else
-  {
-    magField = 0;
-    fieldMgr->SetDetectorField(magField);
-  }
-
-  *************************************************************** */
-
-}
 
 
-///////////////////////////////////////////////////////////////////////////////
-//
-//
-G4FieldManager *JLeicDetectorConstruction::SetQMagField(float field, float skew, float theta, G4ThreeVector fieldorigin)
-//
-//
-////////////////////////////////////////////////////////////////////////////
-
-{
-    G4RotationMatrix *qrm_f;
-    printf("SetQMagField:: got parameters %f %f \n", field, skew);
-
-    //G4double fGradient = -223.*tesla/m;
-    G4double fGradient = sqrt(field * field + skew * skew) * tesla / m;
-    fGradient = copysign(fGradient, field);
-    G4double angle = atan2(skew, fabs(field)); //--   atan2(y,x);
-    printf("SetQMagField():: angle=%f(%f) theta=%f(%f) rad(deg) \n", angle, angle / deg, theta, theta / deg);
-
-    qrm_f = new G4RotationMatrix();
-    qrm_f->rotateZ(angle * rad);
-    qrm_f->rotateY(-theta * rad);
-    //--------------------------
-
-    //G4ThreeVector fieldValue = G4ThreeVector( fGradient_x,fGradient_y,fGradient_z);
-    // old  G4QuadrupoleMagField* pipeField = new G4QuadrupoleMagField(fGradient);
-
-    // G4ThreeVector fieldorigin = G4ThreeVector(0,0,0);
-
-    G4QuadrupoleMagField *pipeField = new G4QuadrupoleMagField(fGradient, fieldorigin, qrm_f);
-
-
-#if 1
-
-    G4Mag_UsualEqRhs *myEquation = new G4Mag_UsualEqRhs(pipeField);
-    G4MagIntegratorStepper *myStepper = new G4ClassicalRK4(myEquation);
-    G4ChordFinder *myChordFinder = new G4ChordFinder(pipeField, 0.1 * mm, myStepper);
-
-    G4FieldManager *fieldMgr = new G4FieldManager(pipeField, myChordFinder, false);
-
-#else
-    G4FieldManager *fieldMgr = new G4FieldManager(pipeField);
-    fieldMgr->SetDetectorField(pipeField);
-    fieldMgr->CreateChordFinder(pipeField);
-    //G4double minEps = 1.0e-5; // Minimum & value for smallest steps
-    //G4double maxEps = 1.0e-4; // Maximum & value for largest steps
-    //fieldMgr->SetMinimumEpsilonStep(minEps);
-    //fieldMgr->SetMaximumEpsilonStep(maxEps);
-    //fieldMgr->SetDeltaOneStep(0.5 * um); // 0.5 micrometer
-#endif
-
-    //logicSpace_Pipe->SetFieldManager(fieldMgr,true);
-
-/*
-G4Box *solidB = new G4Bo"solidB", 1*m, 1*m, 1*m);
-G4LogicalVolume* logicB = new G4LogicalVolume(solidB, Mat("G4_Galactic"), "logicB",fieldMgrq);
-new G4PVPlacement(0, G4ThreeVector(5*m,5*m,-7*m), logicB,
-                                           "physiB", world->getLogic(), false, 0);
-*/
-    //delete qrm_f;
-    return fieldMgr;
-}
-
-
-G4FieldManager *JLeicDetectorConstruction::SetDipoleMagField(G4double fx, G4double fy, G4double fz, float theta) {
-    // G4Box  *sMagField = new G4Bo "dipole_magfield", 10/2*cm, 10/2*cm, 10/2*cm);
-    //  G4LogicalVolume  *lMagField = new G4LogicalVolume(sMagField, World_Material, "logical_magnet");
-
-    double ffx, ffy, ffz;
-    ffx = fx * cos(theta * rad) + fz * sin(theta * rad);
-    ffy = fy;
-    ffz = -fx * sin(theta * rad) + fz * cos(theta * rad);
-
-    G4ThreeVector fieldValue = G4ThreeVector(ffx * tesla, ffy * tesla, ffz * tesla);
-    G4UniformMagField *magField = new G4UniformMagField(fieldValue);
-    G4FieldManager *fieldMgr = new G4FieldManager(magField);
-    fieldMgr->SetDetectorField(magField);
-    fieldMgr->CreateChordFinder(magField);
-    //accuracy mag.
-    G4double minEps = 1.0e-5; // Minimum & value for smallest steps
-    G4double maxEps = 1.0e-4; // Maximum & value for largest steps
-    fieldMgr->SetMinimumEpsilonStep(minEps);
-    fieldMgr->SetMaximumEpsilonStep(maxEps);
-    fieldMgr->SetDeltaOneStep(0.5 * um); // 0.5 micrometer
-    return fieldMgr;
-//  new G4PVPlacement(0, G4ThreeVector(0,0,ZPosVect*cm), lMagField, "Magnet",World_Logic, false, 0);
-}
 ///////////////////////////////////////////////////////////////////////////////
 //
 //
@@ -1480,6 +1139,7 @@ void JLeicDetectorConstruction::UpdateGeometry() {
 
 
 
+<<<<<<< HEAD
 void JLeicDetectorConstruction::Read_ion_beam_lattice() {
     //Downstream elements
 //Element name	Type	   Length [m] Good_field half-aperture [cm]
@@ -2010,6 +1670,8 @@ void JLeicDetectorConstruction::CreateASolenoid(int j, char *ffqsNAME, float ffq
 }
 
 
+=======
+>>>>>>> yulia
 //==============================================================================================================
 
 void JLeicDetectorConstruction::checkVolumeOverlap() {

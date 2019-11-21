@@ -286,7 +286,10 @@ void JLeicDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
    { JLeicDetector->UpdateGeometry(); }
 
   if( command == MagFieldCmd )
-   { JLeicDetector->SetMagField(MagFieldCmd->GetNewDoubleValue(newValue));}
+   {
+      // TODO Remove it probably? Or make option for uniform magnetic field
+      //JLeicDetector->SetMagField(MagFieldCmd->GetNewDoubleValue(newValue));
+   }
   /*
   if( command == ElectronCutCmd )
   { 

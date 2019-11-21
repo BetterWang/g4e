@@ -90,6 +90,9 @@
 #include "ffi_ZDC/ffi_ZDC.hh"         // Far-forward Ion   - HCAL ZDC
 #include "ffi_RPOT_D2/ffi_RPOT_D2.hh"         // Far-forward Ion   - RomanPots system
 #include "ffi_RPOT_D3/ffi_RPOT_D3.hh"         // Far-forward Ion   - RomanPots system
+//---------Beam lattice ------------------------
+#include "ir_Lattice/ir_Lattice.hh"     // IR Lattice import from file
+#include "ir_Beampipe/ir_Beampipe.hh"     // IR Lattice import from file
 
 
 class JLeicCalorimeterSD;
@@ -97,6 +100,86 @@ class JLeicVertexSD;
 
 class JLeicDetectorConstruction : public G4VUserDetectorConstruction {
 public:
+
+    //--------BEAM elements------
+    bool USE_FFQs = true;
+    //bool USE_FFQs_iu
+    //bool USE_FFQs_ed
+    //bool USE_FFQs_eu
+    
+    //===========================================
+    //--------BARREL------
+    bool USE_BARREL = true;
+    bool USE_BARREL_det =true;
+    bool USE_BEAMPIPE =false; // beampipe
+    //------- subdetector-volumes  barrel ----- 
+    
+    bool USE_CB_VTX = true;
+    //bool  USE_VTX0 1   // for simple vtx geom
+    bool USE_CB_VTX_LADDERS = true;
+    bool  USE_CB_VTX_ENDCAPS = false;  // for vxt endcaps ladders
+    //bool  USE_VTX_DISKS    // for vxt disks along beampipe
+    //bool USE_VTX_E 1   // for vxt endcaps 
+    
+    
+    bool USE_CB_CTD = true;
+    // -------- use one of the following options for CTD ---------------
+    bool USE_CB_CTD_Si   = true;//  silicon version of CTD
+    bool USE_CB_CTD_Straw = false; // straw version of CTD
+    //--------------------------------------------------------
+
+    bool USE_CB_DIRC = true;
+    bool USE_CB_DIRC_bars = true;  // bars for DIRC
+    
+    bool USE_CB_EMCAL = true;
+    bool USE_CB_HCAL = true;
+    bool USE_CB_HCAL_D = true; // hcal detector ( granularity)
+    
+    //==============================================
+    //--------H-encap------
+    bool USE_CI_ENDCAP = true;
+    //------- subdetector-volumes H-encap -----
+    bool USE_CI_GEM = true;
+    bool USE_CI_DRICH = true;
+    bool USE_CI_TRD = true;
+    bool USE_CI_EMCAL = true;
+    bool USE_CI_HCAL = true;
+    bool USE_CI_HCAL_D = true;
+    //--------- Forward D1
+    bool USE_FI_EMCAL = false;
+    bool USE_FI_TRKD1 = true;
+    // ==============================================
+    //--------E-encap------
+    bool USE_E_ENDCAP = true;
+    //------- subdetector-volumes E-encap ----- 
+    bool  USE_CE_GEM = true;
+    bool  USE_CE_EMCAL = true;
+    bool  USE_CE_MRICH = true;
+    
+    //==============================================
+    bool  USE_FFE_CPOL = false;
+    //--------FARFORWARD HADRON------
+    //bool USE_DIPOLE1_SI
+    //
+    //bool USE_FI_DIPOLE1_B
+    //bool USE_FI_DIPOLE2
+    
+    bool USE_FFI_TRKD2 = true;
+    bool USE_FFI_ZDC = true;
+    bool USE_FFI_RPOT_D2 = true;
+    bool USE_FFI_RPOT_D3 = true;
+    //bool USE_FARFORWARD_GEM
+    //bool USE_FARFORWARD_VP
+    
+    //--------barrel------
+    //bool  USE_VTX0 1   // for simple vtx geom
+    //bool USE_VTX_E 1   // for vxt endcaps 
+    //-------------CTD----------
+    //bool  USE_CB_EMCAL 1
+    //--------Endcap ------
+    //bool USE_ENDCAP 1
+    //bool  USE_EMCALe
+    //bool  USE_VTXB 1
 
     JLeicDetectorConstruction();
 
@@ -132,36 +215,9 @@ public:
     void SetDetectorSetUp(G4String setUp) { fSetUp = setUp; };
 
 
-    void SetMagField(G4double);
-
     G4VPhysicalVolume *Construct();
 
     void UpdateGeometry();
-
-    void Read_ion_beam_lattice();
-
-    void Read_electron_beam_lattice();
-
-
-    void CreateQuad(int i, char *MyChar, float ffqsSizeZDi, float ffqsRinDiG, float ffqsRinDi, float ffqsRoutDi,
-                    float qFIELDx, float qFIELDy, float qFIELQn, float qFIELQs, float qFIELSek, float qFIELSol,
-                    float ffqsX, float ffqsY, float ffqsZ, float ffqsTheta, float ffqsPhi);
-
-    void CreateDipole(int i, char *MyChar, float ffqsSizeZDi, float ffqsRinDiG, float ffqsRinDi, float ffqsRoutDi,
-                      float qFIELDx, float qFIELDy, float qFIELQn, float qFIELQs, float qFIELSek, float qFIELSol,
-                      float ffqsX, float ffqsY, float ffqsZ, float ffqsTheta, float ffqsPhi);
-
-    void
-    CreateDipoleChicane(int i, char *MyChar, float ffqsSizeZDi, float ffqsRinDiG, float ffqsRinDi, float ffqsRoutDi,
-                        float qFIELDx, float qFIELDy, float qFIELQn, float qFIELQs, float qFIELSek, float qFIELSol,
-                        float ffqsX, float ffqsY, float ffqsZ, float ffqsTheta, float ffqsPhi);
-
-    void CreateASolenoid(int i, char *MyChar, float ffqsSizeZDi, float ffqsRinDiG, float ffqsRinDi, float ffqsRoutDi,
-                         float qFIELDx, float qFIELDy, float qFIELQn, float qFIELQs, float qFIELSek, float qFIELSol,
-                         float ffqsX, float ffqsY, float ffqsZ, float ffqsTheta, float ffqsPhi);
-
-    int iq = 0, ik = 0, is = 0;
-
 
 public:
 
@@ -243,6 +299,9 @@ private:
     G4VPhysicalVolume *World_Phys;    //pointer to the physical World
     G4Material *World_Material;
 
+    ir_LatticeDesign ir_Lattice;
+    ir_Beampipe_Design ir_Beampipe;
+
 //-----------------Hadron ENDCAP volume--------------------
     G4VisAttributes *attr_ci_ENDCAP_GVol;
     G4Tubs *ci_ENDCAP_GVol_Solid;    //pointer to the solid  ENDCAP-H volume
@@ -258,7 +317,7 @@ private:
     //----------------BARREL -----------------------
     cb_Solenoid_Design cb_Solenoid;
     //----------------VTX  volume ------------------
-    //cb_VTX_Design      cb_VTX;
+   // cb_VTX_Design      cb_VTX;
     //----------------CTD  volume -------------------
     cb_CTD_Design      cb_CTD;
     //----------------DIRC  volume -------------------
@@ -460,123 +519,6 @@ private:
     //--------------------------------------------------------------
 
 
-    //----------------BEAM  elements ----------------------------------------------
-    /*
-      char ffqnameDi[20][128];
-      double  ffqsRinDi[20];
-      double  ffqsRoutDi[20];
-      double ffqsSizeZDi[20];
-      double ffqsZ1Di[20];
-      double ffqsX1Di[20];
-      double colorDi[20];
-      double qFIELDx[20];
-      double qFIELDy[20];
-    */
-
-    G4Material *ffqsMaterial;
-    G4VisAttributes *vb1, *vb1a, *vb1b, *vb1as;
-    G4Material *ffqsMaterial_G;
-    double fZ1;
-    //---------------- BEAM QUADS -------------------------------------------
-    G4Tubs *fSolid_QUADS_hd_v[100], *fSolid_QUADS_hd_ir[100], *fSolid_QUADS_hd_m[100];
-    G4LogicalVolume *fLogic_QUADS_hd_v[100], *fLogic_QUADS_hd_ir[100], *fLogic_QUADS_hd_m[100];
-    G4PVPlacement *fPhysics_QUADS_hd_v[100], *fPhysics_QUADS_hd_ir[100], *fPhysics_QUADS_hd_m[100];
-    G4FieldManager *fieldMgr_QUADS_hd[100];
-    G4RotationMatrix brm_hd[100];
-
-    char fSolid_ffqsNAME[100][256];
-    float fSolid_ffqsSizeZ[100], fSolid_ffqsRin[100], fSolid_ffqsRout[100];
-    float fSolid_ffqsX[100], fSolid_ffqsY[100], fSolid_ffqsZ[100];
-
-
-//---------------- BEAM ASOLENOID -------------------------------------------
-    G4Tubs *fSolid_ASOLENOID_hd_v[40], *fSolid_ASOLENOID_hd_ir[40], *fSolid_ASOLENOID_hd_m[40];
-    G4LogicalVolume *fLogic_ASOLENOID_hd_v[40], *fLogic_ASOLENOID_hd_ir[40], *fLogic_ASOLENOID_hd_m[40];
-    G4PVPlacement *fPhysics_ASOLENOID_hd_v[40], *fPhysics_ASOLENOID_hd_ir[40], *fPhysics_ASOLENOID_hd_m[40];
-    G4FieldManager *fieldMgr_ASOLENOID_hd[40];
-    G4UniformMagField *fMagField_ASOLENOID[40];
-    //  G4UniformMagField* fMagField_ASOLENOID[40];      //pointer to the magnetic field
-    G4FieldManager *fieldMgrAS[40];
-    G4RotationMatrix brm_as[40];
-
-    //---------------- BEAM KICKERS/DIPOLES -------------------------------------------
-    G4Tubs *fSolid_BigDi_v[20], *fSolid_BigDi_ir[20], *fSolid_BigDi_m[20];
-    //  G4Box *fSolid_BigDi_v[20],*fSolid_BigDi_ir[20],*fSolid_BigDi_m[20];
-    G4LogicalVolume *fLogic_BigDi_v[20], *fLogic_BigDi_ir[20], *fLogic_BigDi_m[20];
-    G4PVPlacement *fPhysics_BigDi_v[20], *fPhysics_BigDi_ir[20], *fPhysics_BigDi_m[20];
-    G4RotationMatrix brmBigDi[20];
-    G4FieldManager *fieldMgr_BigDi[20];
-    float fSolid_BigDi_ffqsX[20], fSolid_BigDi_ffqsY[20], fSolid_BigDi_ffqsZ[20];
-    float fSolid_BigDi_ffqsSizeZDi[20], fSolid_BigDi_ffqsRinDi[20], fSolid_BigDi_ffqsRoutDi[20];
-    char fSolid_BigDi_ffqsNAME[20][256];
-    //----------------DIPOLES CHICANE -------------------------------------------
-    G4Box *fSolid_Chicane_v[20], *fSolid_Chicane_ir[20], *fSolid_Chicane_m[20];
-    G4LogicalVolume *fLogic_Chicane_v[20], *fLogic_Chicane_ir[20], *fLogic_Chicane_m[20];
-    G4PVPlacement *fPhysics_Chicane_v[20], *fPhysics_Chicane_ir[20], *fPhysics_Chicane_m[20];
-    G4RotationMatrix brmChicane[20];
-    G4FieldManager *fieldMgr_Chicane[20];
-
-
-    G4RotationMatrix brm_hk[20];
-
-
-    //----------------BEAMPIPE elements ----------------------------------------------
-    G4Material *fBeampipeVacuum;
-
-    // ------------inner Be beampipe ------------
-    G4double fBeamSizeRinBe;
-    G4double fBeamSizeRoutBe;
-    G4double fBeamSizeZ_Be;
-    G4Material *fBeamPipeMaterialBe;
-
-    //------------Volume -----------
-    G4Tubs *fSolidBeamBe;    //pointer to the solid World
-    G4LogicalVolume *fLogicBeamBe;    //pointer to the logical World
-    G4VPhysicalVolume *fPhysicsBeamBe;    //pointer to the physical World
-
-    //------------Wall -----------
-    G4Tubs *fSolidBeamBe1;    //pointer to the solid World
-    G4LogicalVolume *fLogicBeamBe1;    //pointer to the logical World
-    G4VPhysicalVolume *fPhysicsBeamBe1;    //pointer to the physical World
-    //------------Vacuum-----------
-    G4Tubs *fSolidBeamBe2;    //pointer to the solid World
-    G4LogicalVolume *fLogicBeamBe2;    //pointer to the logical World
-    G4VPhysicalVolume *fPhysicsBeamBe2;    //pointer to the physical World
-
-    //-----------------------------------------------
-    // ------------HAdron beampipe ------------
-    G4double fBeamSizeRinH;
-    G4double fBeamSizeRoutH;
-    G4double fBeamSizeZ_H;
-    G4Material *fBeamPipeMaterialH;
-
-    //------------Volume -----------
-    G4Tubs *fSolidBeamH;    //pointer to the solid World
-    G4LogicalVolume *fLogicBeamH;    //pointer to the logical World
-    G4VPhysicalVolume *fPhysicsBeamH;    //pointer to the physical World
-
-    // ------------Cone inner  beampipe ------------
-    G4double fBeamSizeRin;
-    G4double fBeamSizeRout;
-    G4double fBeamSizeZ;
-    G4Material *fBeamPipeMaterial;
-
-
-    G4double fBeamSizeRin1Cone;
-    G4double fBeamSizeRin2Cone;
-    G4double fBeamSizeRout1Cone;
-    G4double fBeamSizeRout2Cone;
-    G4double fBeamSizeZCone;
-    G4Material *fBeamPipeConeMaterial;
-
-    G4Polycone *fSolidBeamCone;    //pointer to the solid World
-    G4LogicalVolume *fLogicBeamCone;    //pointer to the logical World
-    G4VPhysicalVolume *fPhysicsBeamCone;    //pointer to the physical World
-
-
-    G4Cons *fSolidBeamCone2;    //pointer to the solid World
-    G4LogicalVolume *fLogicBeamCone2;    //pointer to the logical World
-    G4VPhysicalVolume *fPhysicsBeamCone2;    //pointer to the physical World
 
 
     // TR radiator volumes and dimensions
@@ -590,10 +532,6 @@ private:
     G4VPhysicalVolume *fPhysicRadRing;   // pointer to the physical R-slide
 
   //   G4Box *fSolidRadiator;
-
-
-
-
 
 
 

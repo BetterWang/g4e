@@ -33,7 +33,7 @@
 
 #include "StringHelpers.hh"
 
-#include "JLeicDetectorConstruction.hh"
+#include "design_main/jleic/JLeicDetectorConstruction.hh"
 #include "JLeicPhysicsList.hh"
 #include "PrimaryGeneratorAction.hh"
 #include "JLeicRunAction.hh"

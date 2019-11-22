@@ -25,7 +25,7 @@
 //
 //
 
-#include "JLeicDetectorConstruction.hh"
+#include "design_main/jleic/JLeicDetectorConstruction.hh"
 #include "JLeicSteppingAction.hh"
 #include "generator/PrimaryGeneratorAction.hh"
 #include "JLeicEventAction.hh"

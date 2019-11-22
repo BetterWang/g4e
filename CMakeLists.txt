@@ -98,7 +98,7 @@ message(STATUS "g4e: CMAKE_CXX_STANDARD: ${CMAKE_CXX_STANDARD}")
 include_directories(
         BEFORE
             ${PROJECT_SOURCE_DIR}/include
-            ${PROJECT_SOURCE_DIR}/src/design/all
+        ${PROJECT_SOURCE_DIR}/src/design_subdetectors/all
             ${PROJECT_SOURCE_DIR}/src/generator
             ${PROJECT_SOURCE_DIR}/src/generator/beagle_reader
             ${PROJECT_SOURCE_DIR}/src/generator/hepmc2_reader

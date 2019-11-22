@@ -34,7 +34,7 @@
 
 #include "JLeicRunAction.hh"
 #include "JLeicRunMessenger.hh"
-#include "JLeicDetectorConstruction.hh"
+#include "design_main/jleic/JLeicDetectorConstruction.hh"
 #include "PrimaryGeneratorAction.hh"
 
 #include "G4Run.hh"

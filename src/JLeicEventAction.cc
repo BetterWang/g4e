@@ -36,8 +36,8 @@
 
 #include "JLeicRunAction.hh"
 
-#include "JLeicCalorHit.hh"
-#include "JLeicVTXHit.hh"
+#include "design_main/jleic/JLeicCalorHit.hh"
+#include "design_main/jleic/JLeicVTXHit.hh"
 #include "JLeicEventActionMessenger.hh"
 
 #include "G4Event.hh"

@@ -31,7 +31,7 @@
 //
 
 #include "JLeicPhysicsList.hh"
-#include "JLeicDetectorConstruction.hh"
+#include "design_main/jleic/JLeicDetectorConstruction.hh"
 #include "JLeicPhysicsListMessenger.hh"
 
 #include "G4ParticleDefinition.hh"
@@ -81,7 +81,7 @@
 #include "G4HadronPhysicsQGSP_BIC_HP.hh"
 #include "G4EmStandardPhysics_option4.hh"
 #include "G4DecayPhysics.hh"
-#include "JLeicXTRphysics.hh"
+#include "design_main/jleic/JLeicXTRphysics.hh"
 
 /////////////////////////////////////////////////////////////
 //

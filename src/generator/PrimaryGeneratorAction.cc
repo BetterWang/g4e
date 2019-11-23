@@ -69,11 +69,3 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event *anEvent) {
                     "PrimaryGeneratorAction001", FatalException,
                     "generator is not instanciated.");
 }
-
-G4String PrimaryGeneratorAction::GetPrimaryName() {
-    return "hepmc";
-}
-
-G4double PrimaryGeneratorAction::GetPrimaryEnergy() {
-    return 555;
-}

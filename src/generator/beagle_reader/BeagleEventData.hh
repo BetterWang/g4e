@@ -4,7 +4,7 @@
 #ifndef EJANA_BeagleEventData_H
 #define EJANA_BeagleEventData_H
 
-#include <TextEventFileReader.hh>
+#include <generic_lund_reader/TextEventFileReader.hh>
 
 #include "BeagleParticle.hh"
 

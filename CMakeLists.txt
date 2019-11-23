@@ -8,7 +8,6 @@ include(cmake/target_sources_local.cmake)            # Add relative source path 
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules ${CMAKE_MODULE_PATH} )
 
 
-
 # -----------------------------------------------------------------
 print_grand_header("    F I N D   B A S I C   P A C K A G E S    ")
 # -----------------------------------------------------------------
@@ -93,30 +92,6 @@ if(NOT DEFINED CMAKE_CXX_STANDARD)
 endif()
 message(STATUS "g4e: CMAKE_CXX_STANDARD: ${CMAKE_CXX_STANDARD}")
 
-# General include directories
-# TODO move to targets whatever is possible
-include_directories(
-        BEFORE
-            ${PROJECT_SOURCE_DIR}/include
-        ${PROJECT_SOURCE_DIR}/src/design_subdetectors/all
-            ${PROJECT_SOURCE_DIR}/src/generator
-            ${PROJECT_SOURCE_DIR}/src/generator/beagle_reader
-            ${PROJECT_SOURCE_DIR}/src/generator/hepmc2_reader
-            ${PROJECT_SOURCE_DIR}/src/generator/pythia_ascii_reader
-            ${PROJECT_SOURCE_DIR}/src/generator/generic_lund_reader
-            ${PROJECT_SOURCE_DIR}/src/generator/root_output
-            ${PROJECT_SOURCE_DIR}/src/helpers
-            ${PROJECT_SOURCE_DIR}/src/root_output
-
-        SYSTEM
-            ${ROOT_INCLUDE_DIRS}
-            ${PROJECT_SOURCE_DIR}/src/external/spdlog/include
-            ${PROJECT_SOURCE_DIR}/src/external/argparse
-            ${Geant4_INCLUDE_DIR}
-            ${HEPMC_INCLUDE_DIR}
-            ${VGM_DIRECTORY}/include
-            ${VGM_DIRECTORY}/test/include
-)
 
 # use, i.e. don't skip the full RPATH for the build tree
 SET(CMAKE_SKIP_BUILD_RPATH  FALSE)
@@ -139,61 +114,11 @@ IF("${isSystemDir}" STREQUAL "-1")
 ENDIF("${isSystemDir}" STREQUAL "-1")
 
 
-
-# TODO this is terrible!
-file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
-file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
-list(APPEND sources
-
-        #    H E L P E R S
-        src/helpers/StringHelpers.cc
-        src/helpers/StringHelpers.hh
-
-        #
-        # Generator
-        #
-
-        # Primary user action and a messenger
-        src/generator/PrimaryGeneratorAction.cc
-        src/generator/PrimaryGeneratorAction.hh
-        src/generator/PrimaryGeneratorMessenger.cc
-        src/generator/PrimaryGeneratorMessenger.hh
-
-        # Generic lund reader
-        src/generator/generic_lund_reader/TextEventFileReader.hh
-
-        # Beagle event generator reader
-        src/generator/beagle_reader/BeagleReader.cc
-        src/generator/beagle_reader/BeagleReader.hh
-        src/generator/beagle_reader/BeagleGeneratorMessenger.cc
-        src/generator/beagle_reader/BeagleGeneratorMessenger.hh
-        src/generator/beagle_reader/BeagleGenerator.cc
-        src/generator/beagle_reader/BeagleGenerator.hh
-
-        # HepMC2 event generator reader
-        src/generator/hepmc2_reader/HepMcAsciiGenerator.cc
-        src/generator/hepmc2_reader/HepMcAsciiGenerator.hh
-        src/generator/hepmc2_reader/HepMcAsciiReaderMessenger.cc
-        src/generator/hepmc2_reader/HepMcAsciiReaderMessenger.hh
-        src/generator/hepmc2_reader/HepMcGeneratorInterface.cc
-        src/generator/hepmc2_reader/HepMcGeneratorInterface.hh
-
-        # Pythia 6 lund format reader
-        src/generator/pythia_ascii_reader/PythiaAsciiReaderMessenger.hh
-        src/generator/pythia_ascii_reader/PythiaAsciiReader.cc
-        src/generator/pythia_ascii_reader/PythiaAsciiReader.hh
-        src/generator/pythia_ascii_reader/PythiaAsciiReaderMessenger.cc
-
-        # Flattened root IO
-        src/root_output/JLeicRootOutput.hh
-        )
-
-
-
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
-add_executable(g4e src/g4e.cc ${sources} ${headers} )
+add_executable(g4e)
+
 target_link_libraries(g4e
         ${Geant4_LIBRARIES}
         ${HEPMC_LIBRARIES}
@@ -204,7 +129,18 @@ target_link_libraries(g4e
         ${ROOT_LIBRARIES}
         )
 
-add_subdirectory(sub_dir)
+target_include_directories(g4e
+        PUBLIC
+        SYSTEM
+            ${ROOT_INCLUDE_DIRS}
+            ${Geant4_INCLUDE_DIR}
+            ${HEPMC_INCLUDE_DIR}
+            ${VGM_DIRECTORY}/include
+            ${VGM_DIRECTORY}/test/include
+        )
+
+# All sources and includes for the project are there:
+add_subdirectory(src)
 
 #${HEPMC_FIO_LIBRARIES}
 #----------------------------------------------------------------------------

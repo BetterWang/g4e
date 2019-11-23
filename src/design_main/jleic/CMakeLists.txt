@@ -1,0 +1,26 @@
+target_sources_local(g4e
+        PRIVATE
+            JLeicCalorHit.cc
+            JLeicCalorHit.hh
+            JLeicCalorimeterSD.cc
+            JLeicCalorimeterSD.hh
+            JLeicDetectorConfig.hh
+            JLeicDetectorConstruction.cc
+            JLeicDetectorConstruction.hh
+            JLeicDetectorMessenger.cc
+            JLeicDetectorMessenger.hh
+            JLeicSolenoid3D.cc
+            JLeicSolenoid3D.hh
+            JLeicVertexSD.cc
+            JLeicVertexSD.hh
+            JLeicVTXHit.cc
+            JLeicVTXHit.hh
+            JLeicXTRphysics.cc
+            JLeicXTRphysics.hh
+            JLeicXTRphysicsMessenger.cc
+            JLeicXTRphysicsMessenger.hh
+            JLeicXTRTransparentRegRadModel.cc
+            JLeicXTRTransparentRegRadModel.hh
+            TRTDetectorConstruction.hh
+            TRTMaterials.hh
+        )

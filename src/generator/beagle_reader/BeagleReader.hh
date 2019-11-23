@@ -38,7 +38,7 @@
 
 
 #include "BeagleEventData.hh"
-#include <TextEventFileReader.hh>
+#include <generic_lund_reader/TextEventFileReader.hh>
 #include <fstream>
 
 namespace g4e {

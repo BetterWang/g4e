@@ -80,6 +80,7 @@ ProgramArguments ParseArgEnv(int argc, char **argv) {
     ArgumentParser parser("g4e - Geant 4 Electron Ion COllider");
     parser.add_argument("-g", "--gui", "Shows Geant4 GUI", false);
     parser.add_argument("-t", "--threads", "Number of threads. Single threaded mode if 0 or 1", false);
+    parser.add_argument("-j", "--jobs", "(alias to -t flag) Number of threads. Single threaded mode if 0 or 1", false);
     parser.add_argument("-s", "--source",
                        "Source files to process. "
                        "Should start with generator name. Like --source=beagle:/path/to/file.txt:path/to/another.txt", false);
@@ -243,21 +244,21 @@ int main(int argc, char **argv)
     // Tracking action
     auto trackingAction = new JLeicTrackingAction();
     runManager->SetUserAction(trackingAction);
-    auto visManager = new G4VisExecutive;
-    visManager->Initialize();
-    auto *ui = new G4UIExecutive(argc, argv);
 
-    G4UImanager *ui = G4UImanager::GetUIpointer();
+    // Vis manager?
+    G4VisExecutive* visManager = nullptr;
     G4UIExecutive* uiExec = nullptr;
 
     // We show GUI if user didn't provided any macros of if he has --gui/-g flag
     if(args.MacroFileNames.empty() || args.ShowGui) {
         args.ShowGui = true;
-        auto visManager = new G4VisExecutive;
+        visManager = new G4VisExecutive;
         visManager->Initialize();
         uiExec = new G4UIExecutive(argc, argv);
     }
 
+    // auto *ui = new G4UIExecutive(argc, argv);
+    G4UImanager *ui = G4UImanager::GetUIpointer();
 
     // set macro path from environment if it is set
     ui->ApplyCommand(format("/control/macroPath {}", args.MacroPath));

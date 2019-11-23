@@ -24,5 +24,25 @@ if(NOT DEFINED ROOT_LIBRARIES)
 endif()
 
 #---Create  a main program using the library
-add_executable(unit_tests main.cpp catch.hh)
-target_link_libraries(unit_tests ${ROOT_LIBRARIES})
+add_executable(tests_g4e main.cpp catch.hh)
+target_link_libraries(tests_g4e ${ROOT_LIBRARIES})
+
+target_link_libraries(tests_g4e
+        ${Geant4_LIBRARIES}
+        ${HEPMC_LIBRARIES}
+        ${VGM_Geant4GM}
+        ${VGM_BaseVGM}
+        ${VGM_RootGM}
+        ${VGM_XmlVGM}
+        ${ROOT_LIBRARIES}
+        )
+
+target_include_directories(tests_g4e
+        PUBLIC
+        SYSTEM
+        ${ROOT_INCLUDE_DIRS}
+        ${Geant4_INCLUDE_DIR}
+        ${HEPMC_INCLUDE_DIR}
+        ${VGM_DIRECTORY}/include
+        ${VGM_DIRECTORY}/test/include
+        )

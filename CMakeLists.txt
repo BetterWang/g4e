@@ -186,8 +186,10 @@ list(APPEND sources
 
         # Flattened root IO
         src/root_output/JLeicRootOutput.hh
-
         )
+
+
+
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
@@ -201,6 +203,8 @@ target_link_libraries(g4e
         ${VGM_XmlVGM}
         ${ROOT_LIBRARIES}
         )
+
+add_subdirectory(sub_dir)
 
 #${HEPMC_FIO_LIBRARIES}
 #----------------------------------------------------------------------------

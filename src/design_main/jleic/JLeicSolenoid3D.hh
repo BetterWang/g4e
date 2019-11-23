@@ -47,29 +47,27 @@
 
 using namespace std;
 
-class JLeicSolenoid3D
-#ifndef STANDALONE
- : public G4MagneticField
-#endif
+class JLeicSolenoid3D: public G4MagneticField
 {
-  
-  // Storage space for the table
-  vector< vector< vector< double > > > xField;
-  vector< vector< vector< double > > > yField;
-  vector< vector< vector< double > > > zField;
-  // The dimensions of the table
-  int nx,ny,nz; 
-  // The physical limits of the defined region
-  double minx, maxx, miny, maxy, minz, maxz;
-  // The physical extent of the defined region
-  double dx, dy, dz;
-  double fZoffset;
-  bool fZinvert;
-  bool invertX, invertY, invertZ;
-
 public:
   JLeicSolenoid3D(const std::string& filename, double zOffset, bool InvertZ);
   void  GetFieldValue( const  double Point[4], double *Bfield) const;
+
+private:
+    // Storage space for the table
+    std::vector< std::vector< std::vector< double > > > xField;
+    std::vector< std::vector< std::vector< double > > > yField;
+    std::vector< std::vector< std::vector< double > > > zField;
+
+    // The dimensions of the table
+    int nx,ny,nz;
+    // The physical limits of the defined region
+    double minx, maxx, miny, maxy, minz, maxz;
+    // The physical extent of the defined region
+    double dx, dy, dz;
+    double fZoffset;
+    bool fZinvert;
+    bool invertX, invertY, invertZ;
 };
 
 #endif //JLEIC_SOLENOID_3D_H

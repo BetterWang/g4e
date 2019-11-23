@@ -27,10 +27,8 @@
 
 #include "design_main/jleic/JLeicDetectorConstruction.hh"
 #include "JLeicSteppingAction.hh"
-#include "generator/PrimaryGeneratorAction.hh"
 #include "JLeicEventAction.hh"
 #include "JLeicRunAction.hh"
-#include "JLeicSteppingMessenger.hh"
 
 #include <G4ios.hh>
 #include <G4SystemOfUnits.hh>
@@ -49,15 +47,13 @@ FILE *rc5;
 TLorentzVector ka;
 
 
-JLeicSteppingAction::JLeicSteppingAction(JLeicDetectorConstruction *DET, JLeicEventAction *EA, JLeicRunAction *RA) : detector(DET), eventaction(EA), runaction(RA), IDold(-1),
-                                                                                                                     evnoold(-1) {
+JLeicSteppingAction::JLeicSteppingAction(JLeicDetectorConstruction *detectorConstruction, JLeicEventAction *eventAction, JLeicRunAction *runAction) : detector(
+        detectorConstruction), eventaction(eventAction), runaction(runAction), IDold(-1), evnoold(-1) {
     //steppingMessenger = new JLeicSteppingMessenger(this);
 }
 
 
-JLeicSteppingAction::~JLeicSteppingAction() {
-    delete steppingMessenger;
-}
+JLeicSteppingAction::~JLeicSteppingAction() = default;
 
 
 void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep) {
@@ -418,8 +414,7 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep) {
 
     //----------------------------------------------------------------------------
     //-- STEP in pxdPixel
-    if (aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName() == "pxdPixel" ||
-        aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName() == "svdPixel" ||
+    if (aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName() == "pxdPixel" || aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName() == "svdPixel" ||
         aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName() == "Absorber") {
 
         printf("step in absorber de=%f  step=%f Particle=%s energy=%f [mev]\n", aStep->GetTotalEnergyDeposit() / keV, aStep->GetStepLength() / um,

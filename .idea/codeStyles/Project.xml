@@ -3,6 +3,9 @@
     <MarkdownNavigatorCodeStyleSettings>
       <option name="RIGHT_MARGIN" value="72" />
     </MarkdownNavigatorCodeStyleSettings>
+    <Objective-C>
+      <option name="FUNCTION_BRACE_PLACEMENT" value="5" />
+    </Objective-C>
     <Objective-C-extensions>
       <extensions>
         <pair source="cc" header="hh" fileNamingConvention="NONE" />
@@ -12,6 +15,7 @@
     <codeStyleSettings language="ObjectiveC">
       <option name="RIGHT_MARGIN" value="180" />
       <option name="KEEP_LINE_BREAKS" value="false" />
+      <option name="CLASS_BRACE_STYLE" value="5" />
     </codeStyleSettings>
   </code_scheme>
 </component>

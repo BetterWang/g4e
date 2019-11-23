@@ -52,14 +52,6 @@ JLeicEventActionMessenger::JLeicEventActionMessenger(JLeicEventAction* EvAct)
   setVerboseCmd->SetParameterName("level",true);
   setVerboseCmd->SetDefaultValue(0);
   
-  DrawCmd = new G4UIcmdWithAString("/event/drawTracks",this);
-  DrawCmd->SetGuidance("Draw the tracks in the event");
-  DrawCmd->SetGuidance("  Choice : none,charged, all");
-  DrawCmd->SetParameterName("choice",true);
-  DrawCmd->SetDefaultValue("all");
-  DrawCmd->SetCandidates("none charged all");
-  DrawCmd->AvailableForStates(G4State_Idle);
-  
   PrintCmd = new G4UIcmdWithAnInteger("/event/printModulo",this);
   PrintCmd->SetGuidance("Print events modulo n");
   PrintCmd->SetParameterName("EventNb",false);
@@ -82,9 +74,6 @@ void JLeicEventActionMessenger::SetNewValue(G4UIcommand * command,G4String newVa
 { 
   if(command == setVerboseCmd)
     {eventAction->setEventVerbose(setVerboseCmd->GetNewIntValue(newValue));}
-    
-  if(command == DrawCmd)
-    {eventAction->SetDrawFlag(newValue);}
     
   if(command == PrintCmd)
     {eventAction->SetPrintModulo(PrintCmd->GetNewIntValue(newValue));}               

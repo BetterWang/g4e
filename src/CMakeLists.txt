@@ -18,10 +18,13 @@ target_include_directories(g4e
 target_sources_local(g4e
         PRIVATE
 
+        g4e.cc
+        InputProcessor.hh
+
         helpers/StringHelpers.cc
         helpers/StringHelpers.hh
 
-        g4e.cc
+
         G4QuadrupoleMagField.cc
         G4QuadrupoleMagField.hh
 

@@ -54,8 +54,13 @@
 
 
 JLeicEventAction::JLeicEventAction(JLeicRunAction *JLeicRA)
-        : calorimeterCollID(-1), vertexCollID(-1), eventMessenger(0),
-          runaction(JLeicRA), verboselevel(0), drawFlag("all"), printModulo(10000) {
+        : calorimeterCollID(-1),
+          vertexCollID(-1),
+          eventMessenger(0),
+          runaction(JLeicRA),
+          verboselevel(0),
+          printModulo(10000)
+{
     eventMessenger = new JLeicEventActionMessenger(this);
     printf("JLeicEventAction:: Constructor \n");
 

@@ -140,7 +140,6 @@ public:
   G4String GetAnnFileName() {
     return AnnFileName;
   }
-  void SetName();
 
   //----- EVENT STRUCTURE -----
   g4e::RootOutput mRootEventsOut;

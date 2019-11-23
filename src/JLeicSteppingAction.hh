@@ -51,20 +51,19 @@ class JLeicSteppingMessenger;
 class JLeicSteppingAction : public G4UserSteppingAction
 {
   public:
-    JLeicSteppingAction(JLeicDetectorConstruction*, JLeicEventAction*,
-                      JLeicRunAction* );
+    JLeicSteppingAction(JLeicDetectorConstruction*, JLeicEventAction*, JLeicRunAction* );
    ~JLeicSteppingAction();
 
     void UserSteppingAction(const G4Step*);
    
-  FILE* rc;
+  FILE* rc{};
   private:
     JLeicDetectorConstruction* detector;
     JLeicEventAction*          eventaction;
     JLeicRunAction*            runaction;
-    JLeicSteppingMessenger*    steppingMessenger;
+    JLeicSteppingMessenger*    steppingMessenger{};
 
-    G4int IDnow,IDold;
+    G4int IDnow{},IDold;
     G4int evnoold ;
 
 };

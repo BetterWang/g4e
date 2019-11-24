@@ -43,7 +43,6 @@ target_sources_local(g4e
         JLeicPhysicsListMessenger.cc
         JLeicPhysicsListMessenger.hh
 
-        JLeicRootOutput.hh
         JLeicRunAction.cc
 
         JLeicRunAction.hh
@@ -56,8 +55,6 @@ target_sources_local(g4e
 
         JLeicSteppingAction.cc
         JLeicSteppingAction.hh
-
-        JLeicSteppingMessenger.hh
 
         JLeicSteppingVerbose.cc
         JLeicSteppingVerbose.hh

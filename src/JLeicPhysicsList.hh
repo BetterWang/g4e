@@ -67,8 +67,8 @@ private:
 
   G4ForwardXrayTR*       fForwardXrayTR ;
 
-  JLeicStepCut* theeminusStepCut ;
-  JLeicStepCut* theeplusStepCut ;
+  JLeicStepCut* fEMinusStepCut ;
+  JLeicStepCut* fEPlusStepCut ;
 
   G4double cutForGamma;
   G4double cutForElectron, cutForPositron;

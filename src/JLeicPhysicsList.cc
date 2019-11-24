@@ -87,66 +87,69 @@
 //
 //
 
-JLeicPhysicsList::JLeicPhysicsList(JLeicDetectorConstruction* p)
-  :  G4VModularPhysicsList(),
-     MaxChargedStep(DBL_MAX),
-     //MaxChargedStep(100*um),
-     theeminusStepCut(0),            theeplusStepCut(0),
-  fRadiatorCuts(0),fDetectorCuts(0),fXTRModel("transpM")
+JLeicPhysicsList::JLeicPhysicsList(JLeicDetectorConstruction *p) :
+        G4VModularPhysicsList(),
+        MaxChargedStep(DBL_MAX),
+        //MaxChargedStep(100*um),
+        fEMinusStepCut(nullptr),
+        fEPlusStepCut(nullptr),
+        fRadiatorCuts(nullptr),
+        fDetectorCuts(nullptr),
+        fXTRModel("transpM")
 {
-  pDet = p;
+    pDet = p;
 
-  // world cuts
+    // world cuts
 
-  SetVerboseLevel(0);
+    SetVerboseLevel(0);
 
-  defaultCutValue = 1.0*mm; 
-  //defaultCutValue = 0.001*mm;  // 1 um
+    defaultCutValue = 1.0 * mm;
+    //defaultCutValue = 0.001*mm;  // 1 um
 
 
-  /*
-    G4EmStandardPhysics
-    G4Decay
-    G4EmExtraPhysics
-    -- Eg: gamma-nuclear
-    G4HadronElasticPhysics
-    G4HadronInelasticPhysics
-    G4StoppingPhysics
-    -- For particle at rest
-    G4IonPhysics
-  */
+    /*
+      G4EmStandardPhysics
+      G4Decay
+      G4EmExtraPhysics
+      -- Eg: gamma-nuclear
+      G4HadronElasticPhysics
+      G4HadronInelasticPhysics
+      G4StoppingPhysics
+      -- For particle at rest
+      G4IonPhysics
+    */
 
-  //RegisterPhysics( new G4HadronPhysicsQGSP_BIC_HP()); //--- hadron physics !!! OFF by default
-  // all physics processes having to do with protons
-  //RegisterPhysics( new G4EmStandardPhysics_option4() );   //--- electrons physics  !!
-  // all physics processes having to do with electrons
-  RegisterPhysics( new G4DecayPhysics() );
-  // physics of unstable particles
+    //RegisterPhysics( new G4HadronPhysicsQGSP_BIC_HP()); //--- hadron physics !!! OFF by default
+    // all physics processes having to do with protons
+    //RegisterPhysics( new G4EmStandardPhysics_option4() );   //--- electrons physics  !!
+    // all physics processes having to do with electrons
+    RegisterPhysics(new G4DecayPhysics());
+    // physics of unstable particles
 
-  cutForGamma     = defaultCutValue;
-  cutForElectron  = defaultCutValue;
-  cutForPositron  = defaultCutValue;
+    cutForGamma = defaultCutValue;
+    cutForElectron = defaultCutValue;
+    cutForPositron = defaultCutValue;
 
-  // Region cuts
+    // Region cuts
 
-  fGammaCut    = defaultCutValue;
-  fElectronCut = defaultCutValue;
-  fPositronCut = defaultCutValue;
+    fGammaCut = defaultCutValue;
+    fElectronCut = defaultCutValue;
+    fPositronCut = defaultCutValue;
 
-  printf(" default:: Set cuts for XTR processes: gamma=%f (%p) , e- = %f, e+ = %f, \n",cutForGamma,&cutForGamma,cutForElectron,cutForPositron);
+    printf(" default:: Set cuts for XTR processes: gamma=%f (%p) , e- = %f, e+ = %f, \n", cutForGamma, &cutForGamma, cutForElectron, cutForPositron);
 
-  // Transition Radiation Physics
-  XTRphys = new JLeicXTRphysics(pDet,this,"XTRmodel");
-  RegisterPhysics(XTRphys);
+    // Transition Radiation Physics
+    XTRphys = new JLeicXTRphysics(pDet, this, "XTRmodel");
+    RegisterPhysics(XTRphys);
 
-  SetVerboseLevel(1);
-  physicsListMessenger = new JLeicPhysicsListMessenger(this);
-  printf(" end constr:: :: Set cuts for XTR processes: gamma=%f, e- = %f, e+ = %f, \n",cutForGamma,cutForElectron,cutForPositron);
+    SetVerboseLevel(1);
+    physicsListMessenger = new JLeicPhysicsListMessenger(this);
+    printf(" end constr:: :: Set cuts for XTR processes: gamma=%f, e- = %f, e+ = %f, \n", cutForGamma, cutForElectron, cutForPositron);
 }
 
 JLeicPhysicsList::~JLeicPhysicsList()
 {
-  delete physicsListMessenger; 
+    delete physicsListMessenger;
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -154,27 +157,23 @@ JLeicPhysicsList::~JLeicPhysicsList()
 //
 void JLeicPhysicsList::ConstructParticle()
 {
-  G4BosonConstructor  pBosonConstructor;
-  pBosonConstructor.ConstructParticle();
+    G4BosonConstructor pBosonConstructor;
+    pBosonConstructor.ConstructParticle();
 
-  G4LeptonConstructor pLeptonConstructor;
-  pLeptonConstructor.ConstructParticle();
+    G4LeptonConstructor pLeptonConstructor;
+    pLeptonConstructor.ConstructParticle();
 
-  G4MesonConstructor pMesonConstructor;
-  pMesonConstructor.ConstructParticle();
+    G4MesonConstructor pMesonConstructor;
+    pMesonConstructor.ConstructParticle();
 
-  G4BaryonConstructor pBaryonConstructor;
-  pBaryonConstructor.ConstructParticle();
+    G4BaryonConstructor pBaryonConstructor;
+    pBaryonConstructor.ConstructParticle();
 
-  G4IonConstructor pIonConstructor;
-  pIonConstructor.ConstructParticle();
+    G4IonConstructor pIonConstructor;
+    pIonConstructor.ConstructParticle();
 
-
-
-  G4ShortLivedConstructor pShortLivedConstructor;
-  pShortLivedConstructor.ConstructParticle();
-
-
+    G4ShortLivedConstructor pShortLivedConstructor;
+    pShortLivedConstructor.ConstructParticle();
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -195,28 +194,26 @@ void JLeicPhysicsList::ConstructProcess()
 
 void JLeicPhysicsList::SetCuts()
 {
-  // set cut values for gamma at first and for e- second and next for e+,
-  // because some processes for e+/e- need cut values for gamma
+    // set cut values for gamma at first and for e- second and next for e+,
+    // because some processes for e+/e- need cut values for gamma
 
-  SetCutsWithDefault();
-  if (verboseLevel > 0)
-  {
-    G4cout << "JLeicPhysicsList::SetCuts:";
-    G4cout << "CutLength for e-, e+ and gamma is: " 
-           << G4BestUnit(defaultCutValue,"Length") << G4endl;
-  }
-   // set cut values for gamma at first and for e- second and next for e+,
-  // because some processes for e+/e- need cut values for gamma
-  printf(" Set cuts for XTR processes: gamma=%f, e- = %f (%p) , e+ = %f, \n",cutForGamma,&cutForGamma,cutForElectron,cutForPositron);
+    SetCutsWithDefault();
+    if (verboseLevel > 0) {
+        G4cout << "JLeicPhysicsList::SetCuts:";
+        G4cout << "CutLength for e-, e+ and gamma is: " << G4BestUnit(defaultCutValue, "Length") << G4endl;
+    }
+    // set cut values for gamma at first and for e- second and next for e+,
+    // because some processes for e+/e- need cut values for gamma
+    printf(" Set cuts for XTR processes: gamma=%f, e- = %f (%p) , e+ = %f, \n", cutForGamma, &cutForGamma, cutForElectron, cutForPositron);
 
-  
-  SetCutValue(cutForGamma, "gamma", "DefaultRegionForTheWorld");
-  SetCutValue(cutForElectron, "e-", "DefaultRegionForTheWorld");
-  SetCutValue(cutForPositron, "e+", "DefaultRegionForTheWorld");
-  XTRphys->SetCuts();
-  
 
-  //if (verboseLevel > 1)     
+    SetCutValue(cutForGamma, "gamma", "DefaultRegionForTheWorld");
+    SetCutValue(cutForElectron, "e-", "DefaultRegionForTheWorld");
+    SetCutValue(cutForPositron, "e+", "DefaultRegionForTheWorld");
+    XTRphys->SetCuts();
+
+
+    //if (verboseLevel > 1)
     DumpCutValuesTable();
 }
 

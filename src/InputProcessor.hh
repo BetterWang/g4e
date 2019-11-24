@@ -4,6 +4,8 @@
 #include <vector>
 #include <string>
 
+#include <StringHelpers.hh>
+
 /** \file
  *  InputProcessor manage users inputs on program start:
  *      1. Program arguments
@@ -26,10 +28,11 @@ struct InputArguments
 {
     bool ShowGui = false;
     int ThreadsCount = 1;
-    std::vector<std::string> MacroFileNames;
-    std::vector<std::string> SourceFileNames;       /// The list of input files
+
+    std::vector<std::string> AllFileNames;          /// List of all arguments which are not flags=values (macro file names, input file names, etc.)
+    std::vector<std::string> MacroFileNames;        /// List of file names with .mac extension
+    std::vector<std::string> SourceFileNames;       /// The list of all other input files
     std::string SourceGenerator;                    /// The generator to use
-    bool IsSetSources = false;                      /// true - users provided source
 
     std::string MacroPath = "";      /// G4E_MACRO_PATH
     bool IsSetMacroPath = false;     /// true if macro path was defined in environment variables
@@ -44,9 +47,9 @@ struct InputArguments
 
 class InputProcessor
 {
+public:
 
-/// Processes both program arguments and environment variables to build the right ProgramArguments
-    ProgramArguments Parse(int argc, char **argv) {
+    static InputArguments Process(int argc, char **argv) {
         ArgumentParser parser("g4e - Geant 4 Electron Ion COllider");
         parser.add_argument("-g", "--gui", "Shows Geant4 GUI", false);
         parser.add_argument("-t", "--threads", "Number of threads. Single threaded mode if 0 or 1", false);
@@ -54,11 +57,12 @@ class InputProcessor
         parser.add_argument("-s", "--source", "Source files to process. "
                                               "Should start with generator name. "
                                               "Like --source=beagle:/path/to/file.txt:path/to/another.txt", false);
-        parser.add_argument("--files", "input files", false);
+        parser.add_argument("--files", "Input files. Macros (.mac) or generator files", false);
 
-        // Now parse the arguments
+
+        InputArguments result;                                          // This function result
         try {
-            parser.parse(argc, argv);
+            parser.parse(argc, argv);                                   // Now parse the arguments
         } catch (const ArgumentParser::ArgumentNotFound& ex) {
             std::cout << ex.what() << std::endl;
             throw;
@@ -70,21 +74,50 @@ class InputProcessor
             exit(1);
         }
 
-        ProgramArguments result;        // This function result
-
-        // Open GUI arguments:
+        //
+        // Open GUI?:
         result.ShowGui = parser.get<bool>("g");
         fmt::print("ARG:ShowGui = {}\n", result.ShowGui);
 
+        //
         // Number of threads
         if(parser.exists("t")) {
             result.ThreadsCount = parser.get<int>("t");
         }
+        if(parser.exists("j")) {                                // -j is the common alias to -t
+            result.ThreadsCount = parser.get<int>("j");
+        }
         fmt::print("ARG:ThreadsCount = {}\n", result.ThreadsCount);
 
+        //
+        // Input files (macros and data files)
+        result.AllFileNames = parser.getv<std::string>("");
+        ProcessFileNames(result);                               // Separate file names as macro / data files
 
-        // Macro files:
-        result.MacroFileNames = parser.getv<std::string>("");
+        // G4E_HOME
+        const char* homeCstr = std::getenv("G4E_HOME");
+        ProcessHomePath(result, homeCstr);
+
+        // G4E_MACRO_PATH
+        const char* macroPathCstr = std::getenv("G4E_MACRO_PATH");
+        ProcessMacroPath(result, macroPathCstr);
+
+        return result;
+    }
+
+private:
+
+
+    static void ProcessFileNames(InputArguments& result)
+    {
+        // Separate filenames to Mac and other files
+        for(const auto& name: result.MacroFileNames) {
+            if(g4e::EndsWith(name, ".mac")) {
+                result.MacroFileNames.push_back(name);
+            } else {
+                result.SourceFileNames.push_back(name);
+            }
+        }
 
         // Print file names if apply
         if(!result.MacroFileNames.empty()) {
@@ -94,8 +127,18 @@ class InputProcessor
             }
         }
 
-        // G4E_HOME
-        const char* homeCstr = std::getenv("G4E_HOME");
+        // Source file names:
+        if(!result.MacroFileNames.empty()) {
+            fmt::print("ARG:Source files:\n");
+            for(const auto& fileName: result.SourceFileNames) {
+                fmt::print("   {}\n", fileName);
+            }
+        }
+
+    }
+
+    static void ProcessHomePath(InputArguments& result, const char *homeCstr)
+    {
         result.IsSetHomePath = homeCstr != nullptr;
         result.HomePath = homeCstr ? homeCstr : "";
         fmt::print("ENV:G4E_HOME: is-set={}, value='{}'\n", result.IsSetHomePath, result.HomePath);
@@ -106,9 +149,10 @@ class InputProcessor
         } else {
             result.ResourcePath = result.HomePath + "/resources";
         }
+    }
 
-        // G4E_MACRO_PATH
-        const char* macroPathCstr = std::getenv("G4E_MACRO_PATH");
+    static void ProcessMacroPath(InputArguments& result, const char *macroPathCstr)
+    {
         result.IsSetMacroPath = macroPathCstr != nullptr;
         result.MacroPath = macroPathCstr? macroPathCstr: "";
 
@@ -121,41 +165,10 @@ class InputProcessor
         }
         fmt::print("ENV:G4E_MACRO_PATH:  is-set={}, value='{}'",  result.IsSetMacroPath, result.MacroPath );
 
-        // SOURCES
-        if(parser.exists("s")) {
-            auto rawSources = parser.get<std::string>("s");
-
-            // Check we have something
-            if(rawSources.empty()) {
-                fmt::print("ERROR. Flag --source aka -s is provided but the value is not set\n");
-                parser.print_help();
-                exit(1);
-            }
-
-            auto tokens = g4e::Split(rawSources, ":");
-
-
-            // The first should go a generator:
-            result.SourceGenerator = tokens[0];
-            fmt::print("ARG:SourceGenerator = {}", result.SourceGenerator);
-
-            // Then there should be input files (or at least one!)
-            if(tokens.size()<2){
-                fmt::print("ERROR. No source file provided. See '--source' flag usage\n");
-                parser.print_help();
-                exit(1);
-            }
-
-            // If we are here, the sources are OK
-            result.IsSetSources = true;
-            for(size_t i=1; i < tokens.size(); i++ ) {
-                result.SourceFileNames.push_back(tokens[i]);
-            }
-        }
-
-
-        return result;
     }
+
+/// Processes both program arguments and environment variables to build the right ProgramArguments
+
 
 };
 

@@ -1,24 +1,10 @@
-  #------------------------------------------------------------------------
-  # Macro file for the initialization phase
-  #------------------------------------------------------------------------
-  #
-/control/verbose 0
-/run/verbose 0
-/geometry/navigator/verbose 0
-/tracking/verbose 0
+#------------------------------------------------------------------------
+# Example macro. Process one of
+#------------------------------------------------------------------------
 
-/XTRdetector/setup  jleic2019
-/emphyslist/setXTRModel  transpM
-/emphyslist/setGammaCut     0.11
-/emphyslist/setElectronCut  0.12
-/emphyslist/setPositronCut  0.13
-/emphyslist/setRadiatorCuts 0.14
-/emphyslist/setGammaCut     0.020
-/emphyslist/setElectronCut  0.020
-/emphyslist/setPositronCut  0.020
-/emphyslist/setDetectorCuts 0.020
-/run/initialize
-
+# Include default setup
+# Use jleic.mac for headless mode or jleicvis.mac for GUI visualization
+/control/execute jleic.mac
 
 # BEAGLE generator
 /generator/select beagle

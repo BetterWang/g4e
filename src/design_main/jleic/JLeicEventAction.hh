@@ -40,51 +40,67 @@
 #include "JLeicRootOutput.hh"
 
 class JLeicRunAction;
+
 class JLeicEventActionMessenger;
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 class JLeicEventAction : public G4UserEventAction
 {
-  public:
-    JLeicEventAction(JLeicRunAction* JLeicRA);
-   ~JLeicEventAction();
+public:
+    JLeicEventAction(JLeicRunAction *JLeicRA);
 
-  public:
-    void BeginOfEventAction(const G4Event*);
-    void   EndOfEventAction(const G4Event*);
+    ~JLeicEventAction();
+
+public:
+    void BeginOfEventAction(const G4Event *);
+
+    void EndOfEventAction(const G4Event *);
+
     G4int GetEventno();
-    void setEventVerbose(G4int level);
-  void AddGammaDE(G4double de) ;   //---- fsv
-    void CountStepsCharged() ;
-    void CountStepsNeutral() ;
-    void AddCharged() ;
-    void AddNeutral() ;
-    void AddE();
-    void AddP();   
-    void SetTr();
-    void SetRef();
-    
-    void SetDrawFlag(G4String val)  {drawFlag = val;};
-    void SetPrintModulo(G4int val)  {printModulo = val;};
-        
-    //----- EVENT STRUCTURE -----
-    g4e::RootOutput* mRootEventsOut = nullptr;
-    TFile * mHitsFile = nullptr;
 
-  private:
-    G4int    calorimeterCollID;
-    G4int    vertexCollID;
-    JLeicEventActionMessenger*  eventMessenger;
-    JLeicRunAction* runaction;
-    G4int verboselevel;
-    G4double nstep,nstepCharged,nstepNeutral;
-  G4double Nch,Nne,GamDE;
-    G4double NE,NP;
-    G4double Transmitted,Reflected ;
-    
+    void SetVerbose(G4int level) { fVerbose = level; }    /// 0 = nothing, 1 = some, 2 = debug
+    G4int GetVerbose() { return fVerbose; }                /// 0 = nothing, 1 = some, 2 = debug
+
+    void AddGammaDE(G4double de);   //---- fsv
+    void CountStepsCharged();
+
+    void CountStepsNeutral();
+
+    void AddCharged();
+
+    void AddNeutral();
+
+    void AddE();
+
+    void AddP();
+
+    void SetTr();
+
+    void SetRef();
+
+    void SetDrawFlag(G4String val) { drawFlag = val; };
+
+    void SetPrintModulo(G4int val) { printModulo = val; }
+    G4int GetPrintModulo() { return printModulo; }
+
+    //----- EVENT STRUCTURE -----
+    g4e::RootOutput *mRootEventsOut = nullptr;
+    TFile *mHitsFile = nullptr;
+
+private:
+    G4int calorimeterCollID;
+    G4int vertexCollID;
+    JLeicEventActionMessenger *eventMessenger;
+    JLeicRunAction *runaction;
+    G4int fVerbose;
+    G4double nstep, nstepCharged, nstepNeutral;
+    G4double Nch, Nne, GamDE;
+    G4double NE, NP;
+    G4double Transmitted, Reflected;
+
     G4String drawFlag;
-    G4int    printModulo;             
+    G4int printModulo;
 };
 
 #endif

@@ -87,15 +87,10 @@
 //
 //
 
-JLeicPhysicsList::JLeicPhysicsList(JLeicDetectorConstruction *p) :
-        G4VModularPhysicsList(),
-        MaxChargedStep(DBL_MAX),
+JLeicPhysicsList::JLeicPhysicsList(JLeicDetectorConstruction *p) : G4VModularPhysicsList(), MaxChargedStep(DBL_MAX),
         //MaxChargedStep(100*um),
-        fEMinusStepCut(nullptr),
-        fEPlusStepCut(nullptr),
-        fRadiatorCuts(nullptr),
-        fDetectorCuts(nullptr),
-        fXTRModel("transpM")
+                                                                   fEMinusStepCut(nullptr), fEPlusStepCut(nullptr), fRadiatorCuts(nullptr), fDetectorCuts(nullptr),
+                                                                   fXTRModel("transpM")
 {
     pDet = p;
 

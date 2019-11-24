@@ -415,17 +415,17 @@ G4bool JLeicVertexSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
 
     if (jDebug > 2)
         printf("--> JLeicVertexSD::ProcessHits() Vol=(%s) %p Abs=%p \n", physVol->GetName().c_str(),
-               (void *) physVol, (void *) Detector->GetAbsorber());
+               (void *) physVol, (void *) Detector->GetAbsorberPhysicalVolume());
 
     if (HitID[JLeicNumber] == -1) {
         JLeicVTXHit *vtxHit = new JLeicVTXHit();
-        if (physVol == Detector->GetAbsorber()) vtxHit->AddAbs(edep, stepl);
+        if (physVol == Detector->GetAbsorberPhysicalVolume()) vtxHit->AddAbs(edep, stepl);
         HitID[JLeicNumber] = VTXCollection->insert(vtxHit) - 1;
         if (verboseLevel > 0)
             G4cout << " New Vertex Hit on JLeic: " << JLeicNumber << G4endl;
         //printf("--> JLeicVertexSD::ProcessHits()  New Vertex Hit on JLeic: %d de=%f\n",JLeicNumber,edep/keV);
     } else {
-        if (physVol == Detector->GetAbsorber())
+        if (physVol == Detector->GetAbsorberPhysicalVolume())
             (*VTXCollection)[HitID[JLeicNumber]]->AddAbs(edep, stepl);
         if (verboseLevel > 0)
             G4cout << " Energy added to JLeic: " << JLeicNumber << G4endl;

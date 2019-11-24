@@ -66,7 +66,8 @@ static TH2F *hmatrixOccupCM[120];
 //////////////////////////////////////////////////////////////////////////////
 
 JLeicRunAction::JLeicRunAction(JLeicDetectorConstruction *DET) : histName("histfile"), detector(DET), nbinStep(0), nbinEn(0), nbinTt(0), nbinTb(0), nbinTsec(0), nbinTh(0),
-                                                                 nbinThback(0), nbinR(0), nbinGamma(0), nbinvertexz(0) {
+                                                                 nbinThback(0), nbinR(0), nbinGamma(0), nbinvertexz(0)
+{
     runMessenger = new JLeicRunMessenger(this);
     saveRndm = 1;
 
@@ -74,13 +75,15 @@ JLeicRunAction::JLeicRunAction(JLeicDetectorConstruction *DET) : histName("histf
 
 ////////////////////////////////////////////////////////////////////////////
 
-JLeicRunAction::~JLeicRunAction() {
+JLeicRunAction::~JLeicRunAction()
+{
     delete runMessenger;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void JLeicRunAction::bookHisto() {
+void JLeicRunAction::bookHisto()
+{
     char myname[120];
     printf("Setup=%s \n", detector->fSetUp.c_str());
     G4cout << "Setup=" << detector->fSetUp;
@@ -355,57 +358,66 @@ void JLeicRunAction::bookHisto() {
 
 //////////////////////////////////////////////////////////////////////////////
 
-void JLeicRunAction::FillHLikelihood(int ihist, G4double val) {
+void JLeicRunAction::FillHLikelihood(int ihist, G4double val)
+{
 
     //printf("FillHLikelihood(%d, %f)  ptr=%p\n",ihist,val,HLikelihood[ihist]);
     if (ihist < NHIST && HLikelihood[ihist]) HLikelihood[ihist]->Fill(val);
 
 }
 
-void JLeicRunAction::FillHist(int ihist, G4double val) {
+void JLeicRunAction::FillHist(int ihist, G4double val)
+{
 
     if (hist[ihist]) hist[ihist]->Fill(val);
 
 }
 
-void JLeicRunAction::FillHist(int ihist, G4double val, G4double w) {
+void JLeicRunAction::FillHist(int ihist, G4double val, G4double w)
+{
 
     if (hist[ihist]) hist[ihist]->Fill(val, w);
 
 }
 
-void JLeicRunAction::FillHist(int ihist, int bin, G4double w) {
+void JLeicRunAction::FillHist(int ihist, int bin, G4double w)
+{
 
     if (hist[ihist]) hist[ihist]->Fill(bin, w);
 
 }
 
-void JLeicRunAction::ResetHist(int ihist) {
+void JLeicRunAction::ResetHist(int ihist)
+{
 
     if (hist[ihist]) hist[ihist]->Reset();
 
 }
 
 //---  2D ---
-void JLeicRunAction::FillHist2d(int ihist, G4double valx, G4double valy, G4double w) {
+void JLeicRunAction::FillHist2d(int ihist, G4double valx, G4double valy, G4double w)
+{
 
     if (d2_hist[ihist]) d2_hist[ihist]->Fill(valx, valy, w);
 
 }
 
-G4double JLeicRunAction::GetHist2d(int ihist, G4int ix, G4int iy) {
+G4double JLeicRunAction::GetHist2d(int ihist, G4int ix, G4int iy)
+{
 
     if (d2_hist[ihist]) return d2_hist[ihist]->GetBinContent(ix, iy);
 
 }
 
-void JLeicRunAction::ResetHist2d(int ihist) {
+void JLeicRunAction::ResetHist2d(int ihist)
+{
 
     if (d2_hist[ihist]) d2_hist[ihist]->Reset();
 
 }
 
-void JLeicRunAction::FillHistmatrixOccup(int ihist, G4double valx, G4double valy, G4double w) {
+void JLeicRunAction::FillHistmatrixOccup(int ihist, G4double valx, G4double valy, G4double w)
+{
 
     // printf("ihist= %d\n",ihist);
     //  if( hmatrixOccup[ihist])  hmatrixOccup[ihist]->Fill(valx,valy,w) ;
@@ -413,7 +425,8 @@ void JLeicRunAction::FillHistmatrixOccup(int ihist, G4double valx, G4double valy
 
 }
 
-void JLeicRunAction::FillHistmatrixOccupCM(int ihist, G4double valx, G4double valy, G4double w) {
+void JLeicRunAction::FillHistmatrixOccupCM(int ihist, G4double valx, G4double valy, G4double w)
+{
 
     // printf("ihist= %d\n",ihist);
     //  if( hmatrixOccup[ihist])  hmatrixOccup[ihist]->Fill(valx,valy,w) ;
@@ -423,7 +436,8 @@ void JLeicRunAction::FillHistmatrixOccupCM(int ihist, G4double valx, G4double va
 
 /////////////////////////////////////////////////////////////////////////////
 
-void JLeicRunAction::BeginOfRunAction(const G4Run *aRun) {
+void JLeicRunAction::BeginOfRunAction(const G4Run *aRun)
+{
     printf("RunAction:: Enter\n");
     G4cout << "### Run " << aRun->GetRunID() << " start." << G4endl;
 
@@ -586,7 +600,8 @@ void JLeicRunAction::BeginOfRunAction(const G4Run *aRun) {
 
 /////////////////////////////////////////////////////////////////////////////
 
-void JLeicRunAction::EndOfRunAction(const G4Run *) {
+void JLeicRunAction::EndOfRunAction(const G4Run *)
+{
     G4double sAbs, sigAbs, sigstep, sigcharged, signeutral;
 
 
@@ -1076,48 +1091,55 @@ void JLeicRunAction::EndOfRunAction(const G4Run *) {
 
 ///////////////////////////////////////////////////////////////////////////
 
-void JLeicRunAction::CountEvent() {
+void JLeicRunAction::CountEvent()
+{
     TotNbofEvents += 1.;
 }
 
 /////////////////////////////////////////////////////////////////////////
 
-void JLeicRunAction::AddnStepsCharged(G4double ns) {
+void JLeicRunAction::AddnStepsCharged(G4double ns)
+{
     nStepSumCharged += ns;
     nStepSum2Charged += ns * ns;
 }
 
 ////////////////////////////////////////////////////////////////////////
 
-void JLeicRunAction::AddnStepsNeutral(G4double ns) {
+void JLeicRunAction::AddnStepsNeutral(G4double ns)
+{
     nStepSumNeutral += ns;
     nStepSum2Neutral += ns * ns;
 }
 
 ////////////////////////////////////////////////////////////////////////////
 
-void JLeicRunAction::AddEdeps(G4double Eabs) {
+void JLeicRunAction::AddEdeps(G4double Eabs)
+{
     EnergySumAbs += Eabs;
     EnergySquareSumAbs += Eabs * Eabs;
 }
 
 /////////////////////////////////////////////////////////////////////////////
 
-void JLeicRunAction::AddTrackLength(G4double tlabs) {
+void JLeicRunAction::AddTrackLength(G4double tlabs)
+{
     tlSumAbs += tlabs;
     tlsquareSumAbs += tlabs * tlabs;
 }
 
 /////////////////////////////////////////////////////////////////////////////
 
-void JLeicRunAction::AddTrRef(G4double tr, G4double ref) {
+void JLeicRunAction::AddTrRef(G4double tr, G4double ref)
+{
     Transmitted += tr;
     Reflected += ref;
 }
 
 /////////////////////////////////////////////////////////////////////////////
 
-void JLeicRunAction::FillNbOfSteps(G4double ns) {
+void JLeicRunAction::FillNbOfSteps(G4double ns)
+{
 
     const G4double eps = 1.e-10;
     G4double n, bin;
@@ -1143,21 +1165,24 @@ void JLeicRunAction::FillNbOfSteps(G4double ns) {
 }
 //////////////////////////////////////////////////////////////////////////////
 
-void JLeicRunAction::FillGamAngle(G4double theta) {
+void JLeicRunAction::FillGamAngle(G4double theta)
+{
 
     if (histo13) histo13->Fill(theta / mrad);
 
 }
 //////////////////////////////////////////////////////////////////////////////
 
-void JLeicRunAction::FillGamDE(G4double de) {
+void JLeicRunAction::FillGamDE(G4double de)
+{
 
     if (histo11) histo11->Fill(de / keV);
 
 }
 //////////////////////////////////////////////////////////////////////////////
 
-void JLeicRunAction::FillEn(G4double En) {
+void JLeicRunAction::FillEn(G4double En)
+{
 
     // #ifndef G4NOHIST
 
@@ -1189,7 +1214,8 @@ void JLeicRunAction::FillEn(G4double En) {
 
 ////////////////////////////////////////////////////////////////////////////
 
-void JLeicRunAction::FillTt(G4double En) {
+void JLeicRunAction::FillTt(G4double En)
+{
 
     G4double bin;
     G4int ibin;
@@ -1216,7 +1242,8 @@ void JLeicRunAction::FillTt(G4double En) {
 
 //////////////////////////////////////////////////////////////////////////////
 
-void JLeicRunAction::FillTb(G4double En) {
+void JLeicRunAction::FillTb(G4double En)
+{
 
     G4double bin;
     G4int ibin;
@@ -1243,7 +1270,8 @@ void JLeicRunAction::FillTb(G4double En) {
 
 ///////////////////////////////////////////////////////////////////////////////
 
-void JLeicRunAction::FillTsec(G4double En) {
+void JLeicRunAction::FillTsec(G4double En)
+{
 
     G4double bin;
     G4int ibin;
@@ -1267,18 +1295,21 @@ void JLeicRunAction::FillTsec(G4double En) {
 }
 /////////////////////////////////////////////////////////////////////////////
 
-void JLeicRunAction::FillGammaInSpectrum(G4double En) {
+void JLeicRunAction::FillGammaInSpectrum(G4double En)
+{
     histo12->Fill(En / keV);
 }
 
-void JLeicRunAction::FillGammaEStep(G4double En) {
+void JLeicRunAction::FillGammaEStep(G4double En)
+{
 
     //printf("FillGammaEStep:: fill  E=%f\n",En/keV);
     histo14->Fill(En / keV);
 }
 /////////////////////////////////////////////////////////////////////////////
 
-void JLeicRunAction::FillGammaOutSpectrum(G4double En) {
+void JLeicRunAction::FillGammaOutSpectrum(G4double En)
+{
 
     G4double bin;
     G4int ibin;
@@ -1306,7 +1337,8 @@ void JLeicRunAction::FillGammaOutSpectrum(G4double En) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void JLeicRunAction::FillTh(G4double Th) {
+void JLeicRunAction::FillTh(G4double Th)
+{
 
     static const G4double cn = CLHEP::pi / (64800. * dTh);
     static const G4double cs = CLHEP::pi / (64800. * (std::cos(Thlow) - std::cos(Thlow + dTh)));
@@ -1345,7 +1377,8 @@ void JLeicRunAction::FillTh(G4double Th) {
 
 //////////////////////////////////////////////////////////////////////////
 
-void JLeicRunAction::FillThBack(G4double Th) {
+void JLeicRunAction::FillThBack(G4double Th)
+{
 
     static const G4double cn = CLHEP::pi / (64800. * dThback);
     static const G4double cs = CLHEP::pi / (64800. * (std::cos(Thlowback) - std::cos(Thlowback + dThback)));
@@ -1380,7 +1413,8 @@ void JLeicRunAction::FillThBack(G4double Th) {
 
 //////////////////////////////////////////////////////////////////////////
 
-void JLeicRunAction::FillR(G4double R) {
+void JLeicRunAction::FillR(G4double R)
+{
 
     G4double bin;
     G4int ibin;
@@ -1407,7 +1441,8 @@ void JLeicRunAction::FillR(G4double R) {
 
 /////////////////////////////////////////////////////////////////////////////
 
-void JLeicRunAction::Fillvertexz(G4double z) {
+void JLeicRunAction::Fillvertexz(G4double z)
+{
 
     G4double bin;
     G4int ibin;
@@ -1432,24 +1467,28 @@ void JLeicRunAction::Fillvertexz(G4double z) {
 
 //////////////////////////////////////////////////////////////////////////////
 
-void JLeicRunAction::SethistName(G4String name) {
+void JLeicRunAction::SethistName(G4String name)
+{
     histName = name;
     G4cout << " hist file = " << histName << G4endl;
 }
 
-void JLeicRunAction::SetnbinStep(G4int nbin) {
+void JLeicRunAction::SetnbinStep(G4int nbin)
+{
     nbinStep = nbin;
     if (nbinStep > 0)
         G4cout << " Nb of bins in #step plot = " << nbinStep << G4endl;
 }
 
-void JLeicRunAction::SetSteplow(G4double low) {
+void JLeicRunAction::SetSteplow(G4double low)
+{
     Steplow = low;
     if (nbinStep > 0)
         G4cout << " low  in the #step plot = " << Steplow << G4endl;
 }
 
-void JLeicRunAction::SetStephigh(G4double high) {
+void JLeicRunAction::SetStephigh(G4double high)
+{
     Stephigh = high;
     if (nbinStep > 0)
         G4cout << " high in the #step plot = " << Stephigh << G4endl;
@@ -1457,18 +1496,21 @@ void JLeicRunAction::SetStephigh(G4double high) {
 
 ////////////////////////////////////////////////////////////////////////
 
-void JLeicRunAction::SetnbinEn(G4int nbin) {
+void JLeicRunAction::SetnbinEn(G4int nbin)
+{
     nbinEn = nbin;
 
     if (nbinEn > 0) G4cout << " Nb of bins in Edep plot = " << nbinEn << G4endl;
 }
 
-void JLeicRunAction::SetEnlow(G4double Elow) {
+void JLeicRunAction::SetEnlow(G4double Elow)
+{
     Enlow = Elow;
     if (nbinEn > 0) G4cout << " Elow  in the  Edep plot = " << Enlow << G4endl;
 }
 
-void JLeicRunAction::SetEnhigh(G4double Ehigh) {
+void JLeicRunAction::SetEnhigh(G4double Ehigh)
+{
     Enhigh = Ehigh;
 
     if (nbinEn > 0) G4cout << " Ehigh in the  Edep plot = " << Enhigh << G4endl;
@@ -1476,158 +1518,184 @@ void JLeicRunAction::SetEnhigh(G4double Ehigh) {
 
 /////////////////////////////////////////////////////////////////////////
 
-void JLeicRunAction::SetnbinGamma(G4int nbin) {
+void JLeicRunAction::SetnbinGamma(G4int nbin)
+{
     nbinGamma = nbin;
     if (nbinGamma > 0)
         G4cout << " Nb of bins in gamma spectrum plot = " << nbinGamma << G4endl;
 }
 
-void JLeicRunAction::SetElowGamma(G4double Elow) {
+void JLeicRunAction::SetElowGamma(G4double Elow)
+{
     ElowGamma = Elow;
     if (nbinGamma > 0)
         G4cout << " Elow  in the gamma spectrum plot = " << ElowGamma << G4endl;
 }
 
-void JLeicRunAction::SetEhighGamma(G4double Ehigh) {
+void JLeicRunAction::SetEhighGamma(G4double Ehigh)
+{
     EhighGamma = Ehigh;
     if (nbinGamma > 0)
         G4cout << " Ehigh in the gamma spectrum plot = " << EhighGamma << G4endl;
 }
 
-void JLeicRunAction::SetnbinTt(G4int nbin) {
+void JLeicRunAction::SetnbinTt(G4int nbin)
+{
     nbinTt = nbin;
     if (nbinTt > 0)
         G4cout << " Nb of bins in Etransmisssion plot = " << nbinTt << G4endl;
 }
 
-void JLeicRunAction::SetTtlow(G4double Elow) {
+void JLeicRunAction::SetTtlow(G4double Elow)
+{
     Ttlow = Elow;
     if (nbinTt > 0)
         G4cout << " Elow  in the  Etransmission plot = " << Ttlow << G4endl;
 }
 
-void JLeicRunAction::SetTthigh(G4double Ehigh) {
+void JLeicRunAction::SetTthigh(G4double Ehigh)
+{
     Tthigh = Ehigh;
     if (nbinTt > 0)
         G4cout << " Ehigh in the  Etransmission plot = " << Tthigh << G4endl;
 }
 
-void JLeicRunAction::SetnbinTb(G4int nbin) {
+void JLeicRunAction::SetnbinTb(G4int nbin)
+{
     nbinTb = nbin;
     if (nbinTb > 0)
         G4cout << " Nb of bins in Ebackscattered plot = " << nbinTb << G4endl;
 }
 
-void JLeicRunAction::SetTblow(G4double Elow) {
+void JLeicRunAction::SetTblow(G4double Elow)
+{
     Tblow = Elow;
     if (nbinTb > 0)
         G4cout << " Elow  in the  Ebackscattered plot = " << Tblow << G4endl;
 }
 
-void JLeicRunAction::SetTbhigh(G4double Ehigh) {
+void JLeicRunAction::SetTbhigh(G4double Ehigh)
+{
     Tbhigh = Ehigh;
     if (nbinTb > 0)
         G4cout << " Ehigh in the  Ebackscattered plot = " << Tbhigh << G4endl;
 }
 
-void JLeicRunAction::SetnbinTsec(G4int nbin) {
+void JLeicRunAction::SetnbinTsec(G4int nbin)
+{
     nbinTsec = nbin;
     if (nbinTsec > 0)
         G4cout << " Nb of bins in Tsecondary  plot = " << nbinTsec << G4endl;
 }
 
-void JLeicRunAction::SetTseclow(G4double Elow) {
+void JLeicRunAction::SetTseclow(G4double Elow)
+{
     Tseclow = Elow;
     if (nbinTsec > 0)
         G4cout << " Elow  in the  Tsecondary plot = " << Tseclow << G4endl;
 }
 
-void JLeicRunAction::SetTsechigh(G4double Ehigh) {
+void JLeicRunAction::SetTsechigh(G4double Ehigh)
+{
     Tsechigh = Ehigh;
     if (nbinTsec > 0)
         G4cout << " Ehigh in the  Tsecondary plot = " << Tsechigh << G4endl;
 }
 
-void JLeicRunAction::SetnbinR(G4int nbin) {
+void JLeicRunAction::SetnbinR(G4int nbin)
+{
     nbinR = nbin;
     if (nbinR > 0)
         G4cout << " Nb of bins in R plot = " << nbinR << G4endl;
 }
 
-void JLeicRunAction::SetRlow(G4double rlow) {
+void JLeicRunAction::SetRlow(G4double rlow)
+{
     Rlow = rlow;
     if (nbinR > 0)
         G4cout << " Rlow  in the  R plot = " << Rlow << G4endl;
 }
 
-void JLeicRunAction::SetRhigh(G4double rhigh) {
+void JLeicRunAction::SetRhigh(G4double rhigh)
+{
     Rhigh = rhigh;
     if (nbinR > 0)
         G4cout << " Rhigh in the R plot = " << Rhigh << G4endl;
 }
 
-void JLeicRunAction::Setnbinzvertex(G4int nbin) {
+void JLeicRunAction::Setnbinzvertex(G4int nbin)
+{
     nbinvertexz = nbin;
     if (nbinvertexz > 0)
         G4cout << " Nb of bins in Z plot = " << nbinvertexz << G4endl;
 }
 
-void JLeicRunAction::Setzlow(G4double z) {
+void JLeicRunAction::Setzlow(G4double z)
+{
     zlow = z;
     if (nbinvertexz > 0)
         G4cout << " zlow  in the  Z plot = " << zlow << G4endl;
 }
 
-void JLeicRunAction::Setzhigh(G4double z) {
+void JLeicRunAction::Setzhigh(G4double z)
+{
     zhigh = z;
     if (nbinvertexz > 0)
         G4cout << " zhigh in the Z plot = " << zhigh << G4endl;
 }
 
-void JLeicRunAction::SetnbinTh(G4int nbin) {
+void JLeicRunAction::SetnbinTh(G4int nbin)
+{
     nbinTh = nbin;
     if (nbinTh > 0)
         G4cout << " Nb of bins in Theta plot = " << nbinTh << G4endl;
 }
 
-void JLeicRunAction::SetThlow(G4double Tlow) {
+void JLeicRunAction::SetThlow(G4double Tlow)
+{
     Thlow = Tlow;
     if (nbinTh > 0)
         G4cout << " Tlow  in the  Theta plot = " << Thlow << G4endl;
 }
 
-void JLeicRunAction::SetThhigh(G4double Thigh) {
+void JLeicRunAction::SetThhigh(G4double Thigh)
+{
     Thhigh = Thigh;
     if (nbinTh > 0)
         G4cout << " Thigh in the Theta plot = " << Thhigh << G4endl;
 }
 
-void JLeicRunAction::SetnbinThBack(G4int nbin) {
+void JLeicRunAction::SetnbinThBack(G4int nbin)
+{
     nbinThback = nbin;
     if (nbinThback > 0)
         G4cout << " Nb of bins in Theta plot = " << nbinThback << G4endl;
 }
 
-void JLeicRunAction::SetThlowBack(G4double Tlow) {
+void JLeicRunAction::SetThlowBack(G4double Tlow)
+{
     Thlowback = Tlow;
     if (nbinThback > 0)
         G4cout << " Tlow  in the  Theta plot = " << Thlowback << G4endl;
 }
 
-void JLeicRunAction::SetThhighBack(G4double Thigh) {
+void JLeicRunAction::SetThhighBack(G4double Thigh)
+{
     Thhighback = Thigh;
     if (nbinThback > 0)
         G4cout << " Thigh in the Theta plot = " << Thhighback << G4endl;
 }
 
-void JLeicRunAction::CountParticles(G4double nch, G4double nne) {
+void JLeicRunAction::CountParticles(G4double nch, G4double nne)
+{
     SumCharged += nch;
     SumNeutral += nne;
     Sum2Charged += nch * nch;
     Sum2Neutral += nne * nne;
 }
 
-void JLeicRunAction::AddEP(G4double nele, G4double npos) {
+void JLeicRunAction::AddEP(G4double nele, G4double npos)
+{
     Selectron += nele;
     Spositron += npos;
 }

@@ -52,15 +52,17 @@ class JLeicSteppingVerbose;
 
 #include "G4SteppingVerbose.hh"
 
-class JLeicSteppingVerbose : public G4SteppingVerbose 
+class JLeicSteppingVerbose : public G4SteppingVerbose
 {
-  public:   
-         // Constructor/Destructor
+public:
+    // Constructor/Destructor
 
     JLeicSteppingVerbose();
-   ~JLeicSteppingVerbose();
+
+    ~JLeicSteppingVerbose();
 
     void StepInfo();
+
     void TrackingStarted();
 
 };

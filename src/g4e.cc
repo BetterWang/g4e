@@ -38,7 +38,7 @@
 #include "JLeicPhysicsList.hh"
 #include "PrimaryGeneratorAction.hh"
 #include "JLeicRunAction.hh"
-#include "JLeicEventAction.hh"
+#include "MulticastEventAction.hh"
 #include "JLeicSteppingAction.hh"
 #include "JLeicSteppingVerbose.hh"
 #include "JLeicTrackingAction.hh"
@@ -59,6 +59,13 @@
 int main(int argc, char **argv)
 {
     using namespace fmt;
+
+    if( argc > 1 )
+    {
+        std::cout << "there are " << argc-1 << " (more) arguments, they are:\n" ;
+
+        std::copy( argv+1, argv+argc, std::ostream_iterator<const char*>( std::cout, "\n" ) ) ;
+    }
 
     spdlog::info("Initializing g4e, parsing arguments...");
     auto osink = std::make_shared<spdlog::sinks::ostream_sink_mt> (G4cout);
@@ -102,7 +109,7 @@ int main(int argc, char **argv)
     runManager->SetUserAction(pgAction);
 
     // Event action
-    auto eventAction = new JLeicEventAction(runAction);
+    auto eventAction = new MulticastEventAction();
     runManager->SetUserAction(eventAction);
 
     // Stepping action

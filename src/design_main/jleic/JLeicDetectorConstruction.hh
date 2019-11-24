@@ -96,9 +96,11 @@
 
 
 class JLeicCalorimeterSD;
+
 class JLeicVertexSD;
 
-class JLeicDetectorConstruction : public G4VUserDetectorConstruction {
+class JLeicDetectorConstruction : public G4VUserDetectorConstruction
+{
 public:
 
     //--------BEAM elements------
@@ -106,35 +108,35 @@ public:
     //bool USE_FFQs_iu
     //bool USE_FFQs_ed
     //bool USE_FFQs_eu
-    
+
     //===========================================
     //--------BARREL------
     bool USE_BARREL = true;
-    bool USE_BARREL_det =true;
-    bool USE_BEAMPIPE =false; // beampipe
+    bool USE_BARREL_det = true;
+    bool USE_BEAMPIPE = false; // beampipe
     //------- subdetector-volumes  barrel ----- 
-    
+
     bool USE_CB_VTX = true;
     //bool  USE_VTX0 1   // for simple vtx geom
     bool USE_CB_VTX_LADDERS = true;
-    bool  USE_CB_VTX_ENDCAPS = false;  // for vxt endcaps ladders
+    bool USE_CB_VTX_ENDCAPS = false;  // for vxt endcaps ladders
     //bool  USE_VTX_DISKS    // for vxt disks along beampipe
     //bool USE_VTX_E 1   // for vxt endcaps 
-    
-    
+
+
     bool USE_CB_CTD = true;
     // -------- use one of the following options for CTD ---------------
-    bool USE_CB_CTD_Si   = true;//  silicon version of CTD
+    bool USE_CB_CTD_Si = true;//  silicon version of CTD
     bool USE_CB_CTD_Straw = false; // straw version of CTD
     //--------------------------------------------------------
 
     bool USE_CB_DIRC = true;
     bool USE_CB_DIRC_bars = true;  // bars for DIRC
-    
+
     bool USE_CB_EMCAL = true;
     bool USE_CB_HCAL = true;
     bool USE_CB_HCAL_D = true; // hcal detector ( granularity)
-    
+
     //==============================================
     //--------H-encap------
     bool USE_CI_ENDCAP = true;
@@ -152,25 +154,25 @@ public:
     //--------E-encap------
     bool USE_E_ENDCAP = true;
     //------- subdetector-volumes E-encap ----- 
-    bool  USE_CE_GEM = true;
-    bool  USE_CE_EMCAL = true;
-    bool  USE_CE_MRICH = true;
-    
+    bool USE_CE_GEM = true;
+    bool USE_CE_EMCAL = true;
+    bool USE_CE_MRICH = true;
+
     //==============================================
-    bool  USE_FFE_CPOL = false;
+    bool USE_FFE_CPOL = false;
     //--------FARFORWARD HADRON------
     //bool USE_DIPOLE1_SI
     //
     //bool USE_FI_DIPOLE1_B
     //bool USE_FI_DIPOLE2
-    
+
     bool USE_FFI_TRKD2 = true;
     bool USE_FFI_ZDC = true;
     bool USE_FFI_RPOT_D2 = true;
     bool USE_FFI_RPOT_D3 = true;
     //bool USE_FARFORWARD_GEM
     //bool USE_FARFORWARD_VP
-    
+
     //--------barrel------
     //bool  USE_VTX0 1   // for simple vtx geom
     //bool USE_VTX_E 1   // for vxt endcaps 
@@ -186,9 +188,9 @@ public:
     ~JLeicDetectorConstruction();
 
 public:
-    void  SetElectronBeamEnergy(G4int);
+    void SetElectronBeamEnergy(G4int);
 
-    void  SetIonBeamEnergy(G4int);
+    void SetIonBeamEnergy(G4int);
 
     void SetAbsorberMaterial(G4String);
 
@@ -204,7 +206,7 @@ public:
 
     void SetGasGapThickness(G4double);
 
- //   void SetFoilNumber(G4int i) { fFoilNumber = i; };
+    //   void SetFoilNumber(G4int i) { fFoilNumber = i; };
 
     void SetWorldMaterial(G4String);
 
@@ -229,27 +231,35 @@ public:
 
     G4double GetWorldSizeR() { return fConfig.World.SizeR; };
 
-  void checkVolumeOverlap();
+    void checkVolumeOverlap();
 
-    const G4VPhysicalVolume *GetphysiWorld() { return World_Phys; };
+    const G4VPhysicalVolume *GetWorldPhysicalVolume() { return World_Phys; };
 
-    const G4VPhysicalVolume *GetAbsorber() { return fPhysicsAbsorber; };
+    const G4VPhysicalVolume *GetAbsorberPhysicalVolume() { return fPhysicsAbsorber; };
 
     G4LogicalVolume *GetLogicalAbsorber() { return fLogicAbsorber; };
-    double  GetAbsorberThickness(){ return fConfig.ci_TRD.fAbsorberThickness;};
-    G4Material *GetAbsorberMaterial(){ return fConfig.ci_TRD.det_Material;};
 
-   //TRD- related ---- needs to be moved move
+    double GetAbsorberThickness() { return fConfig.ci_TRD.fAbsorberThickness; };
 
-   G4LogicalVolume *GetLogicalRadiator() { return ci_TRD.fLogicRadiator; };
-   G4Material *GetFoilMaterial() { return ci_TRD.fFoilMat; };
-   G4Material *GetGasMaterial() { return ci_TRD.fGasMat; };
-   G4double GetFoilThick() { return fConfig.ci_TRD.fRadThickness; };
-   G4double GetGasThick() {  return fConfig.ci_TRD.fGasGap; };
+    G4Material *GetAbsorberMaterial() { return fConfig.ci_TRD.det_Material; };
 
-   G4int   GetFoilNumber() {
-       std::cout << " foil number4 = " << ci_TRD.ConstructionConfig.fFoilNumber << std::endl;
-       return ci_TRD.ConstructionConfig.fFoilNumber;}
+    //TRD- related ---- needs to be moved move
+
+    G4LogicalVolume *GetLogicalRadiator() { return ci_TRD.fLogicRadiator; };
+
+    G4Material *GetFoilMaterial() { return ci_TRD.fFoilMat; };
+
+    G4Material *GetGasMaterial() { return ci_TRD.fGasMat; };
+
+    G4double GetFoilThick() { return fConfig.ci_TRD.fRadThickness; };
+
+    G4double GetGasThick() { return fConfig.ci_TRD.fGasGap; };
+
+    G4int GetFoilNumber()
+    {
+        std::cout << " foil number4 = " << ci_TRD.ConstructionConfig.fFoilNumber << std::endl;
+        return ci_TRD.ConstructionConfig.fFoilNumber;
+    }
 
     G4String rootFileName;
     G4double fadc_slice;
@@ -263,7 +273,7 @@ public:
     JLeicDetectorConfig fConfig;
 
     //----------------VTX  volume ------------------
-    cb_VTX_Design      cb_VTX;
+    cb_VTX_Design cb_VTX;
 
 private:
 
@@ -273,7 +283,6 @@ private:
 
     // G4FieldManager* SetQMagField(G4double field_x);
     G4FieldManager *SetDipoleMagField(G4double fx, G4double fy, G4double fz, float theta);
-
 
 
     G4VPhysicalVolume *SetUpJLEIC2019();
@@ -291,7 +300,7 @@ private:
 //           R E F A C T O R I N G
 
 
-     //=========================================================================
+    //=========================================================================
     //--------------World -------------------
     // =========================================================================
     G4Box *World_Solid;    //pointer to the solid World
@@ -317,57 +326,57 @@ private:
     //----------------BARREL -----------------------
     cb_Solenoid_Design cb_Solenoid;
     //----------------VTX  volume ------------------
-   // cb_VTX_Design      cb_VTX;
+    // cb_VTX_Design      cb_VTX;
     //----------------CTD  volume -------------------
-    cb_CTD_Design      cb_CTD;
+    cb_CTD_Design cb_CTD;
     //----------------DIRC  volume -------------------
-    cb_DIRC_Design     cb_DIRC;
+    cb_DIRC_Design cb_DIRC;
     //----------------EMCAL  volume -------------------
-    cb_EMCAL_Design   cb_EMCAL;
+    cb_EMCAL_Design cb_EMCAL;
     //----------------HCAL  volume -------------------
-    cb_HCAL_Design     cb_HCAL;
+    cb_HCAL_Design cb_HCAL;
     //==============================================
     //----------------E-ENDCAP -----------------------
     //----------------GEM volume ---------------------
-    ce_GEM_Design     ce_GEM;
+    ce_GEM_Design ce_GEM;
     //----------------MRICH volume -----------------------
-    ce_MRICH_Design     ce_MRICH;
+    ce_MRICH_Design ce_MRICH;
     //----------------EMCAL volume -----------------------
-    ce_EMCAL_Design     ce_EMCAL;
+    ce_EMCAL_Design ce_EMCAL;
 
     //==============================================
     //----------------Far-forward Electron  ---------
 
     //----------------FFe  CPOL volume --------------
-    ffe_CPOL_Design    ffe_CPOL;
+    ffe_CPOL_Design ffe_CPOL;
     //==============================================
     //----------------Ion-ENDCAP -----------------------
     //----------------GEM volume ---------------------
-    ci_GEM_Design     ci_GEM;
+    ci_GEM_Design ci_GEM;
     //----------------DRICH volume ---------------------
-    ci_DRICH_Design     ci_DRICH;
+    ci_DRICH_Design ci_DRICH;
     //----------------TRD volume ---------------------
-    ci_TRD_Design       ci_TRD;
+    ci_TRD_Design ci_TRD;
     //----------------EMCAL volume ---------------------
-    ci_EMCAL_Design     ci_EMCAL;
+    ci_EMCAL_Design ci_EMCAL;
     //----------------HCAL volume ---------------------
-    ci_HCAL_Design      ci_HCAL;
+    ci_HCAL_Design ci_HCAL;
 
     //==============================================
     //----------------Far-forward ION  --------------
     //----------------Tracking volume ---------------------
-    fi_TRKD1_Design     fi_TRKD1;
+    fi_TRKD1_Design fi_TRKD1;
     //----------------EMCAL volume ---------------------
-    fi_EMCAL_Design     fi_EMCAL;
+    fi_EMCAL_Design fi_EMCAL;
 
     //----------------D2 Tracking volume  ---------------------
-    ffi_TRKD2_Design     ffi_TRKD2;
+    ffi_TRKD2_Design ffi_TRKD2;
 
     //---------------HCAL -ZDC -------------------------
-    ffi_ZDC_Design  ffi_ZDC;
+    ffi_ZDC_Design ffi_ZDC;
     //---------------Roman Pot system -------------------------
-    ffi_RPOT_D2_Design  ffi_RPOT_D2;
-    ffi_RPOT_D3_Design  ffi_RPOT_D3;
+    ffi_RPOT_D2_Design ffi_RPOT_D2;
+    ffi_RPOT_D3_Design ffi_RPOT_D3;
 
 // ----------------------------------------------
 
@@ -387,7 +396,7 @@ private:
     G4double fGapThick;
 
 
-     // =========================================================================
+    // =========================================================================
 
 
     //  G4Polycone*        ce_HCAL_GVol_Solid;    //pointer to the solid ECAP_HCAL volume
@@ -414,14 +423,14 @@ private:
     //-----------------FARFORWARD  AREA-------------------
     //===========================================================
     //===========================================================
-   //-----------------FORWARD D1  volume--------------------
+    //-----------------FORWARD D1  volume--------------------
 
     // ----- B----
     G4double fi_D1B_GVol_RIn;
     G4double fi_D1B_GVol_ROut;
     G4double fi_D1B_GVol_SizeZ;
     G4Material *fi_D1B_GVol_Material;
-    G4VisAttributes* attr_fi_D1B_GVol;
+    G4VisAttributes *attr_fi_D1B_GVol;
 
     G4Tubs *fi_D1B_GVol_Solid;    //pointer to the solid  FARFORWD
     G4LogicalVolume *fi_D1B_GVol_Logic;    //pointer to the logical FARFORWD
@@ -431,7 +440,7 @@ private:
     G4double fi_D1B_lay_ROut;
     G4double fi_D1B_lay_SizeZ;
     G4Material *fi_D1B_lay_Material;
-    G4VisAttributes* attr_fi_D1B_lay;
+    G4VisAttributes *attr_fi_D1B_lay;
 
     G4Tubs *fi_D1B_lay_Solid;    //pointer to the solid  FARFORWD
     G4LogicalVolume *fi_D1B_lay_Logic;    //pointer to the logical FARFORWD
@@ -444,7 +453,7 @@ private:
     G4double ffi_D2_GVol_RIn;
     G4double ffi_D2_GVol_ROut;
     G4double ffi_D2_GVol_SizeZ;
-    G4VisAttributes* attr_ffi_D2_GVol;
+    G4VisAttributes *attr_ffi_D2_GVol;
     G4Tubs *ffi_D2_GVol_Solid;    //pointer to the solid  FARFORWD
     G4LogicalVolume *ffi_D2_GVol_Logic;    //pointer to the logical FARFORWD
     G4VPhysicalVolume *ffi_D2_GVol_Phys;    //pointer to the physical FARFORWD
@@ -531,7 +540,7 @@ private:
     G4LogicalVolume *fLogicRadRing;    // pointer to the logical R-slide
     G4VPhysicalVolume *fPhysicRadRing;   // pointer to the physical R-slide
 
-  //   G4Box *fSolidRadiator;
+    //   G4Box *fSolidRadiator;
 
 
 
@@ -551,8 +560,6 @@ private:
     G4double fWindowZ;
     G4double fGapZ;
     G4double fElectrodeZ;
-
-
 
 
     // G4double fElectronCut, fGammaCut, fPositronCut;

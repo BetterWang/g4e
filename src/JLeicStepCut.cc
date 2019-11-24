@@ -37,25 +37,22 @@
 #include "G4VParticleChange.hh"
 #include "G4EnergyLossTables.hh"
 
-JLeicStepCut::JLeicStepCut(const G4String& aName)
-  : G4VDiscreteProcess(aName),MaxChargedStep(DBL_MAX)
+JLeicStepCut::JLeicStepCut(const G4String &aName) : G4VDiscreteProcess(aName), MaxChargedStep(DBL_MAX)
 {
-   if (verboseLevel>0) {
-     G4cout << GetProcessName() << " is created "<< G4endl;
-   }
+    if (verboseLevel > 0) {
+        G4cout << GetProcessName() << " is created " << G4endl;
+    }
 }
 
 JLeicStepCut::~JLeicStepCut()
 {
 }
 
-JLeicStepCut::JLeicStepCut(JLeicStepCut& right)
-    :G4VDiscreteProcess(right)
-{}
+JLeicStepCut::JLeicStepCut(JLeicStepCut &right) : G4VDiscreteProcess(right) {}
 
 void JLeicStepCut::SetMaxStep(G4double step)
 {
-  MaxChargedStep = step ;
+    MaxChargedStep = step;
 }
 
 

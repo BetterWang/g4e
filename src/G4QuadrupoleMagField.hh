@@ -51,25 +51,25 @@
 #include "G4ThreeVector.hh"
 #include "G4RotationMatrix.hh"
 
+
 class G4QuadrupoleMagField : public G4MagneticField
 {
-  public: // with description
+public:
 
-    G4QuadrupoleMagField(G4double          pGradient);
-    G4QuadrupoleMagField(G4double          pGradient, 
-                         G4ThreeVector     pOrigin, 
-                         G4RotationMatrix* pMatrix);
-   ~G4QuadrupoleMagField();
+    G4QuadrupoleMagField(G4double pGradient);
+    G4QuadrupoleMagField(G4double pGradient, G4ThreeVector pOrigin, G4RotationMatrix *pMatrix);
 
-    void GetFieldValue(const G4double yTrack[],
-                             G4double B[]     ) const;
-    G4Field* Clone() const;
+    ~G4QuadrupoleMagField();
+    void GetFieldValue(const G4double yTrack[], G4double B[]) const;
 
-  private:
+    G4Field *Clone() const;
 
-    G4double          fGradient;
-    G4ThreeVector     fOrigin;
-    G4RotationMatrix* fpMatrix;
+private:
+
+    G4double fGradient;
+    G4ThreeVector fOrigin;
+    G4RotationMatrix *fpMatrix;
 };
+
 #endif
 

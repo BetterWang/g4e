@@ -58,7 +58,7 @@ JLeicEventAction::JLeicEventAction(JLeicRunAction *JLeicRA)
           vertexCollID(-1),
           eventMessenger(0),
           runaction(JLeicRA),
-          verboselevel(0),
+          fVerbose(0),
           printModulo(10000)
 {
     eventMessenger = new JLeicEventActionMessenger(this);
@@ -77,15 +77,16 @@ JLeicEventAction::~JLeicEventAction() {
 
 
 void JLeicEventAction::BeginOfEventAction(const G4Event *evt) {
-    G4int evtNb = evt->GetEventID();
+    G4int eventId = evt->GetEventID();
 
     mRootEventsOut->ClearForNewEvent();
 
-    if (evtNb % printModulo == 0)
-        G4cout << "\n---> Begin of Event: " << evtNb << G4endl;
+    if (eventId % printModulo == 0 && fVerbose > 0) {
+        G4cout << "\n---> Begin of Event: " << eventId << G4endl;
+    }
 
-    if (verboselevel > 1)
-        G4cout << "<<< Event  " << evtNb << " started." << G4endl;
+    if (fVerbose > 1)
+        G4cout << "<<< Event  " << eventId << " started." << G4endl;
 
     if (calorimeterCollID == -1) {
         G4SDManager *SDman = G4SDManager::GetSDMpointer();
@@ -107,7 +108,7 @@ void JLeicEventAction::BeginOfEventAction(const G4Event *evt) {
     Transmitted = 0.;
     Reflected = 0.;
 
-    if (evtNb == 0) printf("----> Begin of Event: %d \n", evtNb);
+    if (eventId == 0) printf("----> Begin of Event: %d \n", eventId);
 
 
 }
@@ -115,30 +116,32 @@ void JLeicEventAction::BeginOfEventAction(const G4Event *evt) {
 
 
 void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
-    G4HCofThisEvent *HCE = evt->GetHCofThisEvent();
+    G4HCofThisEvent *hitCollectionEvnt = evt->GetHCofThisEvent();
     auto vertex = evt->GetPrimaryVertex(0);
     if(vertex) {
         G4cout << "vertex particles: " << vertex->GetNumberOfParticle() << G4endl;
     }
 
-    JLeicCalorHitsCollection *CHC = 0;
-    if (HCE)
-        CHC = (JLeicCalorHitsCollection *) (HCE->GetHC(calorimeterCollID));
+    JLeicCalorHitsCollection *hitCollectionCalo = 0;
+    if (hitCollectionEvnt) {
+        hitCollectionCalo = (JLeicCalorHitsCollection *) (hitCollectionEvnt->GetHC(calorimeterCollID));
+    }
 
-    if (CHC) {
-        int n_hit = CHC->entries();
-        if (verboselevel >= 1)
+
+    if (hitCollectionCalo) {
+        int n_hit = hitCollectionCalo->entries();
+        if (fVerbose >= 1)
             G4cout << "     " << n_hit
                    << " hits are stored in JLeicCalorHitsCollection." << G4endl;
 
         G4double totEAbs = 0, totLAbs = 0;
         for (int i = 0; i < n_hit; i++) {
-            totEAbs += (*CHC)[i]->GetEdepAbs();
-            totLAbs += (*CHC)[i]->GetTrakAbs();
+            totEAbs += (*hitCollectionCalo)[i]->GetEdepAbs();
+            totLAbs += (*hitCollectionCalo)[i]->GetTrakAbs();
         }
 
     
-        if (verboselevel >= 1)
+        if (fVerbose >= 1)
             G4cout
                     << " CAL::  Absorber: total energy: " << std::setw(7) <<
                     G4BestUnit(totEAbs, "Energy")
@@ -151,7 +154,7 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
         runaction->AddTrackLength(totLAbs);
         runaction->AddnStepsCharged(nstepCharged);
         runaction->AddnStepsNeutral(nstepNeutral);
-        if (verboselevel == 2)
+        if (fVerbose == 2)
             G4cout << " Ncharged=" << Nch << "  ,   Nneutral=" << Nne << G4endl;
         runaction->CountParticles(Nch, Nne);
         runaction->AddEP(NE, NP);
@@ -168,12 +171,12 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
     }
 
     JLeicVTXHitsCollection *VCH = 0;
-    if (HCE)
-        VCH = (JLeicVTXHitsCollection *) (HCE->GetHC(vertexCollID));
+    if (hitCollectionEvnt)
+        VCH = (JLeicVTXHitsCollection *) (hitCollectionEvnt->GetHC(vertexCollID));
 
     if (VCH) {
         int n_hit = VCH->entries();
-        if (verboselevel >= 1)
+        if (fVerbose >= 1)
             G4cout << "     " << n_hit
                    << " hits are stored in JLeicVTXHitsCollection." << G4endl;
 
@@ -184,7 +187,7 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
         }
 
     
-        if (verboselevel >= 1)
+        if (fVerbose >= 1)
             G4cout
                     << "  VTX::  Absorber: total energy: " << std::setw(7) <<
                     G4BestUnit(totEAbs, "Energy")
@@ -197,7 +200,7 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
         runaction->AddTrackLength(totLAbs);
         runaction->AddnStepsCharged(nstepCharged);
         runaction->AddnStepsNeutral(nstepNeutral);
-        if (verboselevel == 2)
+        if (fVerbose == 2)
             G4cout << " Ncharged=" << Nch << "  ,   Nneutral=" << Nne << G4endl;
         runaction->CountParticles(Nch, Nne);
         runaction->AddEP(NE, NP);
@@ -211,7 +214,7 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
     }
 
 
-    if (verboselevel > 0)
+    if (fVerbose > 0)
         G4cout << "<<< Event  " << evt->GetEventID() << " ended." << G4endl;
 
 
@@ -235,9 +238,7 @@ G4int JLeicEventAction::GetEventno() {
 
 
 
-void JLeicEventAction::setEventVerbose(G4int level) {
-    verboselevel = level;
-}
+
 
 
 

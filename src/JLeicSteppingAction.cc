@@ -27,7 +27,7 @@
 
 #include "design_main/jleic/JLeicDetectorConstruction.hh"
 #include "JLeicSteppingAction.hh"
-#include "JLeicEventAction.hh"
+#include "MulticastEventAction.hh"
 #include "JLeicRunAction.hh"
 
 #include <G4ios.hh>
@@ -47,7 +47,7 @@ FILE *rc5;
 TLorentzVector ka;
 
 
-JLeicSteppingAction::JLeicSteppingAction(JLeicDetectorConstruction *detectorConstruction, JLeicEventAction *eventAction, JLeicRunAction *runAction) : detector(
+JLeicSteppingAction::JLeicSteppingAction(JLeicDetectorConstruction *detectorConstruction, MulticastEventAction *eventAction, JLeicRunAction *runAction) : detector(
         detectorConstruction), eventaction(eventAction), runaction(runAction), IDold(-1), evnoold(-1) {
     //steppingMessenger = new JLeicSteppingMessenger(this);
 }
@@ -499,8 +499,8 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep) {
     //-- Primary EXIT absorber forward ? GetMomentumDirection().x()>0. !!! x !!!  ERROR !! .z !!!
     bool is_beam_particle = aStep->GetTrack()->GetParentID() == 0 && aStep->GetTrack()->GetTrackID() == 1;
     bool was_in_pixel = aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName() == "pxdPixel";
-    bool was_in_absorber = aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName() == "Absorber";
-    bool is_next_world = aStep->GetTrack()->GetNextVolume()->GetName() == "World";
+    bool was_in_absorber = aStep->GetPreStepPoint()->GetPhysicalVolume() == detector->GetAbsorberPhysicalVolume();
+    bool is_next_world = aStep->GetTrack()->GetNextVolume() == detector->GetWorldPhysicalVolume();
     bool is_transportation = aStep->GetPostStepPoint()->GetProcessDefinedStep()->GetProcessName() == "Transportation";
 
     bool is_primary_exit_absorber = is_beam_particle && (was_in_pixel || was_in_absorber) && is_next_world && is_transportation;

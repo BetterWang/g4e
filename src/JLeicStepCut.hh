@@ -41,43 +41,34 @@
 
 class JLeicStepCut : public G4VDiscreteProcess
 {
-  public:     
+public:
 
-     JLeicStepCut(const G4String& processName ="UserStepCut" );
-     JLeicStepCut(JLeicStepCut &);
+    JLeicStepCut(const G4String &processName = "UserStepCut");
 
-     ~JLeicStepCut();
+    JLeicStepCut(JLeicStepCut &);
 
-     G4double PostStepGetPhysicalInteractionLength(
-                             const G4Track& track,
-                             G4double   previousStepSize,
-                             G4ForceCondition* condition
-                            );
+    ~JLeicStepCut();
 
-     G4VParticleChange* PostStepDoIt(
-                             const G4Track& ,
-                             const G4Step& 
-                            );
+    G4double PostStepGetPhysicalInteractionLength(const G4Track &track, G4double previousStepSize, G4ForceCondition *condition);
+
+    G4VParticleChange *PostStepDoIt(const G4Track &, const G4Step &);
 
     void SetMaxStep(G4double);
 
-  protected:
+protected:
 
-     // it is not needed here !
-     G4double GetMeanFreePath(const G4Track& aTrack,
-                             G4double   previousStepSize,
-                             G4ForceCondition* condition
-                            );
+    // it is not needed here !
+    G4double GetMeanFreePath(const G4Track &aTrack, G4double previousStepSize, G4ForceCondition *condition);
 
-                            
-  private:
-  
-  // hide assignment operator as private 
-      JLeicStepCut & operator=(const JLeicStepCut &right);
 
-  private:
+private:
 
-     G4double MaxChargedStep ;
+    // hide assignment operator as private
+    JLeicStepCut &operator=(const JLeicStepCut &right);
+
+private:
+
+    G4double MaxChargedStep;
 };
 
 // inlined function members implementation
@@ -88,42 +79,30 @@ class JLeicStepCut : public G4VDiscreteProcess
 #include "G4VParticleChange.hh"
 #include "G4EnergyLossTables.hh"
 
-inline G4double JLeicStepCut::PostStepGetPhysicalInteractionLength(
-                             const G4Track& aTrack,
-                             G4double,
-                             G4ForceCondition* condition
-                            )
+inline G4double JLeicStepCut::PostStepGetPhysicalInteractionLength(const G4Track &aTrack, G4double, G4ForceCondition *condition)
 {
-  // condition is set to "Not Forced"
-  *condition = NotForced;
+    // condition is set to "Not Forced"
+    *condition = NotForced;
 
-   G4double ProposedStep = DBL_MAX;
+    G4double ProposedStep = DBL_MAX;
 
-   if((MaxChargedStep > 0.) &&
-      (aTrack.GetVolume() != NULL) &&
-      (aTrack.GetVolume()->GetName() == "Absorber") &&
-      (aTrack.GetDynamicParticle()->GetDefinition()->GetPDGCharge() != 0.))
-        ProposedStep = MaxChargedStep ;
+    if ((MaxChargedStep > 0.) && (aTrack.GetVolume() != NULL) && (aTrack.GetVolume()->GetName() == "Absorber") &&
+        (aTrack.GetDynamicParticle()->GetDefinition()->GetPDGCharge() != 0.))
+        ProposedStep = MaxChargedStep;
 
-   return ProposedStep;
+    return ProposedStep;
 }
 
-inline G4VParticleChange* JLeicStepCut::PostStepDoIt(
-                             const G4Track& aTrack,
-                             const G4Step&
-                            )
+inline G4VParticleChange *JLeicStepCut::PostStepDoIt(const G4Track &aTrack, const G4Step &)
 {
-   // do nothing
-   aParticleChange.Initialize(aTrack);
-   return &aParticleChange;
+    // do nothing
+    aParticleChange.Initialize(aTrack);
+    return &aParticleChange;
 }
 
-inline G4double JLeicStepCut::GetMeanFreePath(const G4Track&,
-                             G4double,
-                             G4ForceCondition*
-                            )
+inline G4double JLeicStepCut::GetMeanFreePath(const G4Track &, G4double, G4ForceCondition *)
 {
-  return 0.;
+    return 0.;
 }
 
 #endif

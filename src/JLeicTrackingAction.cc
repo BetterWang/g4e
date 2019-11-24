@@ -28,36 +28,34 @@
 /// \file electromagnetic/VertexEIC/src/JLeicTrackingAction.cc
 /// \brief Implementation of the JLeicTrackingAction class
 //
- #include "JLeicTrackingAction.hh"
+#include "JLeicTrackingAction.hh"
 
- #include "G4TrackingManager.hh"
- #include "G4Track.hh"
- #include "G4RunManager.hh"
+#include "G4TrackingManager.hh"
+#include "G4Track.hh"
+#include "G4RunManager.hh"
 
- #include "G4UImanager.hh"
- #include "G4SystemOfUnits.hh"
+#include "G4UImanager.hh"
+#include "G4SystemOfUnits.hh"
 
- JLeicTrackingAction::JLeicTrackingAction() 
- : G4UserTrackingAction()
- { }
+JLeicTrackingAction::JLeicTrackingAction() : G4UserTrackingAction() {}
 
- void JLeicTrackingAction::PreUserTrackingAction(const G4Track* aTrack)
- {
+void JLeicTrackingAction::PreUserTrackingAction(const G4Track *aTrack)
+{
 
-  if( aTrack->GetParentID() == 1 && aTrack->GetKineticEnergy() > 100.*GeV ){
-    G4cout << "[JLeicTrackingAction::DEBUG]" << G4endl;
-    G4cout << " Track ID:          " << aTrack->GetTrackID() << G4endl;
-    G4cout << " particle:          " << aTrack->GetDynamicParticle()->GetDefinition()->GetParticleName() << G4endl;
-    G4cout << " Parent ID:         " << aTrack->GetParentID() << G4endl;
-    G4cout << " created by:        " << aTrack->GetCreatorProcess()->GetProcessName() << G4endl;
-    G4cout << " kin. energy (TeV): " << aTrack->GetKineticEnergy() / TeV << G4endl;
-    G4cout << " volume:            " << aTrack->GetVolume()->GetName() << G4endl;
-    G4cout << " global time:       " << aTrack->GetGlobalTime() << G4endl;
+    if (aTrack->GetParentID() == 1 && aTrack->GetKineticEnergy() > 100. * GeV) {
+        G4cout << "[JLeicTrackingAction::DEBUG]" << G4endl;
+        G4cout << " Track ID:          " << aTrack->GetTrackID() << G4endl;
+        G4cout << " particle:          " << aTrack->GetDynamicParticle()->GetDefinition()->GetParticleName() << G4endl;
+        G4cout << " Parent ID:         " << aTrack->GetParentID() << G4endl;
+        G4cout << " created by:        " << aTrack->GetCreatorProcess()->GetProcessName() << G4endl;
+        G4cout << " kin. energy (TeV): " << aTrack->GetKineticEnergy() / TeV << G4endl;
+        G4cout << " volume:            " << aTrack->GetVolume()->GetName() << G4endl;
+        G4cout << " global time:       " << aTrack->GetGlobalTime() << G4endl;
 
-    G4cout << " Killing event..." << G4endl;
-    if( aTrack->GetTrackID() != 1 )
-      const_cast<G4Track*>(aTrack)->SetTrackStatus( fKillTrackAndSecondaries );
-  }
+        G4cout << " Killing event..." << G4endl;
+        if (aTrack->GetTrackID() != 1)
+            const_cast<G4Track *>(aTrack)->SetTrackStatus(fKillTrackAndSecondaries);
+    }
 
-  return;
- }
+    return;
+}

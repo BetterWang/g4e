@@ -1,5 +1,8 @@
+import inspect
+import sys
 import unittest
 import subprocess
+import os
 
 class BeagleSmokeTest(unittest.TestCase):
     def setUp(self):
@@ -16,6 +19,11 @@ class BeagleSmokeTest(unittest.TestCase):
     #                      'wrong size after resize')
 
     def test_beagle_1_event(self):
-        subprocess.run(["ls", "-l", "/dev/null"], capture_output=True)
-        CompletedProcess(args=['ls', '-l', '/dev/null'], returncode=0,
-                 stdout=b'crw-rw-rw- 1 root root 1, 3 Jan 23 16:23 /dev/null\n', stderr=b'')
+        this_script_dir = os.path.dirname(inspect.stack()[0][1])
+        os.chdir(this_script_dir)
+        result = subprocess.run(["/home/romanov/eic/g4e/g4e-dev/cmake-build-debug/g4e", "beagle_io.mac"],
+                        check=True,
+                        stdout=subprocess.PIPE,
+                        stderr=subprocess.PIPE)
+
+        print(str(result.stdout, 'utf-8'))

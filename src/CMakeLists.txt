@@ -28,8 +28,8 @@ target_sources_local(g4e
         G4QuadrupoleMagField.cc
         G4QuadrupoleMagField.hh
 
-        JLeicEventAction.cc
-        JLeicEventAction.hh
+        MulticastEventAction.cc
+        MulticastEventAction.hh
 
         JLeicEventActionMessenger.cc
         JLeicEventActionMessenger.hh

@@ -40,26 +40,25 @@
 #include "globals.hh"
 #include "G4UImessenger.hh"
 
-class JLeicEventAction;
+class MulticastEventAction;
 class G4UIcmdWithAString;
 class G4UIcmdWithAnInteger;
-class G4UIcmdWithADoubleAndUnit;
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-class JLeicEventActionMessenger: public G4UImessenger
+class JLeicEventActionMessenger : public G4UImessenger
 {
-  public:
-    JLeicEventActionMessenger(JLeicEventAction*);
-   ~JLeicEventActionMessenger();
-    
-    void SetNewValue(G4UIcommand*, G4String);
-    
-  private:
-    JLeicEventAction* eventAction;   
-    G4UIcmdWithAnInteger* setVerboseCmd;
-    G4UIcmdWithAString*   DrawCmd;
-    G4UIcmdWithAnInteger* PrintCmd;
+public:
+    explicit JLeicEventActionMessenger(MulticastEventAction *);
+    ~JLeicEventActionMessenger() override;
+
+    void SetNewValue(G4UIcommand *, G4String) override;
+    virtual G4String GetCurrentValue(G4UIcommand * command);
+
+
+private:
+    MulticastEventAction *fEventAction;
+    G4UIcmdWithAnInteger *fVerboseCmd;
+    G4UIcmdWithAnInteger *fPrintCmd;
 };
 
 #endif

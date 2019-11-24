@@ -48,29 +48,28 @@
 //
 //
 
-JLeicPhysicsListMessenger::JLeicPhysicsListMessenger(JLeicPhysicsList* List)
-:G4UImessenger(),JLeicList(List)
+JLeicPhysicsListMessenger::JLeicPhysicsListMessenger(JLeicPhysicsList *List) : G4UImessenger(), JLeicList(List)
 {
-  /*
-  cutGCmd = new G4UIcmdWithADoubleAndUnit("/calor/cutG",this);
-  cutGCmd->SetGuidance("Set cut values by RANGE for Gamma.");
-  cutGCmd->SetParameterName("range",true);
-  cutGCmd->SetDefaultValue(1.);
-  cutGCmd->SetDefaultUnit("mm");
-  cutGCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
+    /*
+    cutGCmd = new G4UIcmdWithADoubleAndUnit("/calor/cutG",this);
+    cutGCmd->SetGuidance("Set cut values by RANGE for Gamma.");
+    cutGCmd->SetParameterName("range",true);
+    cutGCmd->SetDefaultValue(1.);
+    cutGCmd->SetDefaultUnit("mm");
+    cutGCmd->AvailableForStates(G4State_PreInit,G4State_Idle);
 
-  cutECmd = new G4UIcmdWithADoubleAndUnit("/calor/cutE",this);
-  cutECmd->SetGuidance("Set cut values by RANGE for e- e+.");
-  cutECmd->SetParameterName("range",true);
-  cutECmd->SetDefaultValue(1.);
-  cutECmd->SetDefaultUnit("mm");
-  cutECmd->AvailableForStates(G4State_PreInit,G4State_Idle);
+    cutECmd = new G4UIcmdWithADoubleAndUnit("/calor/cutE",this);
+    cutECmd->SetGuidance("Set cut values by RANGE for e- e+.");
+    cutECmd->SetParameterName("range",true);
+    cutECmd->SetDefaultValue(1.);
+    cutECmd->SetDefaultUnit("mm");
+    cutECmd->AvailableForStates(G4State_PreInit,G4State_Idle);
 
-  setMaxStepCmd = new G4UIcmdWithADoubleAndUnit("/step/setMaxStep",this);
-  setMaxStepCmd->SetGuidance("Set max. step length in the detector");
-  setMaxStepCmd->SetParameterName("mxStep",true);
-  setMaxStepCmd->SetDefaultUnit("mm");
-  */
+    setMaxStepCmd = new G4UIcmdWithADoubleAndUnit("/step/setMaxStep",this);
+    setMaxStepCmd->SetGuidance("Set max. step length in the detector");
+    setMaxStepCmd->SetParameterName("mxStep",true);
+    setMaxStepCmd->SetDefaultUnit("mm");
+    */
 
 
 }
@@ -79,24 +78,24 @@ JLeicPhysicsListMessenger::JLeicPhysicsListMessenger(JLeicPhysicsList* List)
 
 JLeicPhysicsListMessenger::~JLeicPhysicsListMessenger()
 {
-  /*
-  delete cutGCmd;
-  delete cutECmd;
+    /*
+    delete cutGCmd;
+    delete cutECmd;
 
-  delete setMaxStepCmd;
+    delete setMaxStepCmd;
 
-  delete ElectronCutCmd;
-  delete PositronCutCmd;
-  delete GammaCutCmd;
-  delete XTRModelCmd;
-  */
+    delete ElectronCutCmd;
+    delete PositronCutCmd;
+    delete GammaCutCmd;
+    delete XTRModelCmd;
+    */
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 
-void JLeicPhysicsListMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
+void JLeicPhysicsListMessenger::SetNewValue(G4UIcommand *command, G4String newValue)
 {
-  printf("JLeicPhysicsListMessenger::SetNewValue string= %s \n",newValue.c_str());
+    printf("JLeicPhysicsListMessenger::SetNewValue string= %s \n", newValue.c_str());
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....

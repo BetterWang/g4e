@@ -41,36 +41,41 @@
 #include "G4UImessenger.hh"
 
 class JLeicPhysicsList;
+
 class G4UIcmdWithoutParameter;
+
 class G4UIcmdWithADouble;
+
 class G4UIcmdWithADoubleAndUnit;
+
 class G4UIcmdWithAString;
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-class JLeicPhysicsListMessenger: public G4UImessenger
+class JLeicPhysicsListMessenger : public G4UImessenger
 {
-  public:
-    JLeicPhysicsListMessenger(JLeicPhysicsList*);
-   ~JLeicPhysicsListMessenger();
-    
-    void SetNewValue(G4UIcommand*, G4String);
-    
-  private:
-    JLeicPhysicsList*          JLeicList;
+public:
+    JLeicPhysicsListMessenger(JLeicPhysicsList *);
 
-    G4UIcmdWithADoubleAndUnit* setMaxStepCmd;
+    ~JLeicPhysicsListMessenger();
 
-    G4UIcmdWithADoubleAndUnit* cutGCmd;
-    G4UIcmdWithADoubleAndUnit* cutECmd;
-    G4UIcmdWithADoubleAndUnit* eCmd;
+    void SetNewValue(G4UIcommand *, G4String);
 
-    G4UIcmdWithADoubleAndUnit* ElectronCutCmd;
-    G4UIcmdWithADoubleAndUnit* PositronCutCmd;
-    G4UIcmdWithADoubleAndUnit* GammaCutCmd;
+private:
+    JLeicPhysicsList *JLeicList;
 
-    G4UIcmdWithADoubleAndUnit* RadiatorCutCmd;
-    G4UIcmdWithADoubleAndUnit* DetectorCutCmd;
-    G4UIcmdWithAString*        XTRModelCmd;
+    G4UIcmdWithADoubleAndUnit *setMaxStepCmd;
+
+    G4UIcmdWithADoubleAndUnit *cutGCmd;
+    G4UIcmdWithADoubleAndUnit *cutECmd;
+    G4UIcmdWithADoubleAndUnit *eCmd;
+
+    G4UIcmdWithADoubleAndUnit *ElectronCutCmd;
+    G4UIcmdWithADoubleAndUnit *PositronCutCmd;
+    G4UIcmdWithADoubleAndUnit *GammaCutCmd;
+
+    G4UIcmdWithADoubleAndUnit *RadiatorCutCmd;
+    G4UIcmdWithADoubleAndUnit *DetectorCutCmd;
+    G4UIcmdWithAString *XTRModelCmd;
 };
 
 #endif

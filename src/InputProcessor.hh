@@ -50,15 +50,11 @@ class InputProcessor
 public:
 
     static InputArguments Process(int argc, char **argv) {
-        ArgumentParser parser("g4e - Geant 4 Electron Ion COllider");
+        ArgumentParser parser("g4e - Geant 4 Electron Ion Collider");
         parser.add_argument("-g", "--gui", "Shows Geant4 GUI", false);
         parser.add_argument("-t", "--threads", "Number of threads. Single threaded mode if 0 or 1", false);
-        parser.add_argument("-j", "--jobs", "(alias to -t flag) Number of threads. Single threaded mode if 0 or 1", false);
-        parser.add_argument("-s", "--source", "Source files to process. "
-                                              "Should start with generator name. "
-                                              "Like --source=beagle:/path/to/file.txt:path/to/another.txt", false);
-        parser.add_argument("--files", "Input files. Macros (.mac) or generator files", false);
-
+        parser.add_argument("-j", "--jobs", "(alias to -t and --threads flags)", false);
+        parser.add_argument("files", "Input files. Macros (.mac) or generator files", false);
 
         InputArguments result;                                          // This function result
         try {
@@ -111,7 +107,7 @@ private:
     static void ProcessFileNames(InputArguments& result)
     {
         // Separate filenames to Mac and other files
-        for(const auto& name: result.MacroFileNames) {
+        for(const auto& name: result.AllFileNames) {
             if(g4e::EndsWith(name, ".mac")) {
                 result.MacroFileNames.push_back(name);
             } else {

@@ -483,17 +483,17 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
 
     if (jDebug > 2)
         printf("--> JLeicCalorimeterSD::ProcessHits() Vol=(%s) %p Abs=%p \n", physVol->GetName().c_str(),
-               (void *) physVol, (void *) Detector->GetAbsorber());
+               (void *) physVol, (void *) Detector->GetAbsorberPhysicalVolume());
 
     if (HitID[JLeicNumber] == -1) {
         JLeicCalorHit *calHit = new JLeicCalorHit();
-        if (physVol == Detector->GetAbsorber()) calHit->AddAbs(edep, stepl);
+        if (physVol == Detector->GetAbsorberPhysicalVolume()) calHit->AddAbs(edep, stepl);
         HitID[JLeicNumber] = CalCollection->insert(calHit) - 1;
         if (verboseLevel > 0)
             G4cout << " New Calorimeter Hit on JLeic: " << JLeicNumber << G4endl;
         //printf("--> JLeicCalorimeterSD::ProcessHits()  New Calorimeter Hit on JLeic: %d de=%f\n",JLeicNumber,edep/keV);
     } else {
-        if (physVol == Detector->GetAbsorber())
+        if (physVol == Detector->GetAbsorberPhysicalVolume())
             (*CalCollection)[HitID[JLeicNumber]]->AddAbs(edep, stepl);
         if (verboseLevel > 0)
             G4cout << " Energy added to JLeic: " << JLeicNumber << G4endl;

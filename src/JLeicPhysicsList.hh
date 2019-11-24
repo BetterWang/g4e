@@ -37,25 +37,30 @@
 #include "G4VModularPhysicsList.hh"
 #include "globals.hh"
 
-class G4ForwardXrayTR ;
+class G4ForwardXrayTR;
+
 class JLeicStepCut;
+
 class JLeicDetectorConstruction;
+
 class JLeicPhysicsListMessenger;
+
 class G4ProductionCuts;
+
 class JLeicXTRphysics;
 
-class JLeicPhysicsList: public G4VModularPhysicsList
+class JLeicPhysicsList : public G4VModularPhysicsList
 {
 public:
-  JLeicPhysicsList( JLeicDetectorConstruction*);
+    JLeicPhysicsList(JLeicDetectorConstruction *);
 
-  ~JLeicPhysicsList();
+    ~JLeicPhysicsList();
 
-  // Construct particle and physics
-  void ConstructParticle();
-  //void ConstructProcess();
- 
-  void SetCuts();
+    // Construct particle and physics
+    void ConstructParticle();
+    //void ConstructProcess();
+
+    void SetCuts();
 
 private:
 
@@ -63,25 +68,25 @@ public:
 
 private:
 
-  G4double MaxChargedStep;
+    G4double MaxChargedStep;
 
-  G4ForwardXrayTR*       fForwardXrayTR ;
+    G4ForwardXrayTR *fForwardXrayTR;
 
-  JLeicStepCut* fEMinusStepCut ;
-  JLeicStepCut* fEPlusStepCut ;
+    JLeicStepCut *fEMinusStepCut;
+    JLeicStepCut *fEPlusStepCut;
 
-  G4double cutForGamma;
-  G4double cutForElectron, cutForPositron;
+    G4double cutForGamma;
+    G4double cutForElectron, cutForPositron;
 
-  JLeicDetectorConstruction* pDet;
-  JLeicXTRphysics  * XTRphys;
+    JLeicDetectorConstruction *pDet;
+    JLeicXTRphysics *XTRphys;
 
-  JLeicPhysicsListMessenger* physicsListMessenger;
+    JLeicPhysicsListMessenger *physicsListMessenger;
 
-  G4ProductionCuts* fRadiatorCuts;
-  G4ProductionCuts* fDetectorCuts;
-  G4double fElectronCut, fGammaCut, fPositronCut;
-  G4String fXTRModel;
+    G4ProductionCuts *fRadiatorCuts;
+    G4ProductionCuts *fDetectorCuts;
+    G4double fElectronCut, fGammaCut, fPositronCut;
+    G4String fXTRModel;
 };
 
 #endif

@@ -28,22 +28,24 @@
 /// \file electromagnetic/VertexEIC/include/JLeicTrackingAction.hh
 /// \brief Definition of the JLeicTrackingAction class
 //
- #ifndef JLeicTrackingAction_h
- #define JLeicTrackingAction_h
+#ifndef JLeicTrackingAction_h
+#define JLeicTrackingAction_h
 
- #include "G4UserTrackingAction.hh"
+#include "G4UserTrackingAction.hh"
 
- #include "globals.hh"
+#include "globals.hh"
 
- class JLeicTrackingAction : public G4UserTrackingAction {
+class JLeicTrackingAction : public G4UserTrackingAction
+{
 
-  public:
+public:
     JLeicTrackingAction();
-    virtual ~JLeicTrackingAction(){};
 
-    virtual void PreUserTrackingAction(const G4Track*);
+    virtual ~JLeicTrackingAction() {};
 
- };
+    virtual void PreUserTrackingAction(const G4Track *);
 
- #endif
+};
+
+#endif
 

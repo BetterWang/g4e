@@ -1,4 +1,4 @@
-//
+/**///
 // ********************************************************************
 // * License and Disclaimer                                           *
 // *                                                                  *
@@ -45,75 +45,81 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
 class JLeicRunAction;
+
 class G4UIdirectory;
+
 class G4UIcmdWithAnInteger;
+
 class G4UIcmdWithADoubleAndUnit;
+
 class G4UIcmdWithADouble;
+
 class G4UIcmdWithAString;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-class JLeicRunMessenger: public G4UImessenger
+class JLeicRunMessenger : public G4UImessenger
 {
-  public:
+public:
 
-   JLeicRunMessenger(JLeicRunAction* );
-  ~JLeicRunMessenger();
+    JLeicRunMessenger(JLeicRunAction *);
 
-   void SetNewValue(G4UIcommand* ,G4String );
+    ~JLeicRunMessenger();
 
-  private:
+    void SetNewValue(G4UIcommand *, G4String);
 
-   JLeicRunAction*              runAction;
-   
-   G4UIdirectory*             plotDir;   
+private:
 
-   G4UIcmdWithAString*        sethistNameCmd;
+    JLeicRunAction *runAction;
 
-   G4UIcmdWithAnInteger*      setnbinStepCmd; 
-   G4UIcmdWithADouble*        setSteplowCmd; 
-   G4UIcmdWithADouble*        setStephighCmd; 
+    G4UIdirectory *plotDir;
 
-   G4UIcmdWithAnInteger*      setnbinEnCmd; 
-   G4UIcmdWithADoubleAndUnit* setEnlowCmd; 
-   G4UIcmdWithADoubleAndUnit* setEnhighCmd; 
+    G4UIcmdWithAString *sethistNameCmd;
 
-   G4UIcmdWithAnInteger*      setnbinGammaCmd; 
-   G4UIcmdWithADoubleAndUnit* setElowGammaCmd; 
-   G4UIcmdWithADoubleAndUnit* setEhighGammaCmd; 
+    G4UIcmdWithAnInteger *setnbinStepCmd;
+    G4UIcmdWithADouble *setSteplowCmd;
+    G4UIcmdWithADouble *setStephighCmd;
 
-   G4UIcmdWithAnInteger*      setnbinTtCmd; 
-   G4UIcmdWithADoubleAndUnit* setTtlowCmd; 
-   G4UIcmdWithADoubleAndUnit* setTthighCmd; 
+    G4UIcmdWithAnInteger *setnbinEnCmd;
+    G4UIcmdWithADoubleAndUnit *setEnlowCmd;
+    G4UIcmdWithADoubleAndUnit *setEnhighCmd;
 
-   G4UIcmdWithAnInteger*      setnbinTbCmd; 
-   G4UIcmdWithADoubleAndUnit* setTblowCmd; 
-   G4UIcmdWithADoubleAndUnit* setTbhighCmd; 
+    G4UIcmdWithAnInteger *setnbinGammaCmd;
+    G4UIcmdWithADoubleAndUnit *setElowGammaCmd;
+    G4UIcmdWithADoubleAndUnit *setEhighGammaCmd;
 
-   G4UIcmdWithAnInteger*      setnbinTsecCmd; 
-   G4UIcmdWithADoubleAndUnit* setTseclowCmd; 
-   G4UIcmdWithADoubleAndUnit* setTsechighCmd; 
+    G4UIcmdWithAnInteger *setnbinTtCmd;
+    G4UIcmdWithADoubleAndUnit *setTtlowCmd;
+    G4UIcmdWithADoubleAndUnit *setTthighCmd;
 
-   G4UIcmdWithAnInteger*      setnbinRCmd; 
-   G4UIcmdWithADoubleAndUnit* setRlowCmd; 
-   G4UIcmdWithADoubleAndUnit* setRhighCmd; 
+    G4UIcmdWithAnInteger *setnbinTbCmd;
+    G4UIcmdWithADoubleAndUnit *setTblowCmd;
+    G4UIcmdWithADoubleAndUnit *setTbhighCmd;
 
-   G4UIcmdWithAnInteger*      setnbinThCmd; 
-   G4UIcmdWithADoubleAndUnit* setThlowCmd; 
-   G4UIcmdWithADoubleAndUnit* setThhighCmd; 
+    G4UIcmdWithAnInteger *setnbinTsecCmd;
+    G4UIcmdWithADoubleAndUnit *setTseclowCmd;
+    G4UIcmdWithADoubleAndUnit *setTsechighCmd;
 
-   G4UIcmdWithAnInteger*      setnbinThbackCmd; 
-   G4UIcmdWithADoubleAndUnit* setThlowbackCmd; 
-   G4UIcmdWithADoubleAndUnit* setThhighbackCmd; 
+    G4UIcmdWithAnInteger *setnbinRCmd;
+    G4UIcmdWithADoubleAndUnit *setRlowCmd;
+    G4UIcmdWithADoubleAndUnit *setRhighCmd;
 
-   G4UIcmdWithAnInteger*      setnbinzvertexCmd; 
-   G4UIcmdWithADoubleAndUnit* setzlowCmd; 
-   G4UIcmdWithADoubleAndUnit* setzhighCmd;
-   
-   G4UIdirectory*             RndmDir;
-   G4UIcmdWithAnInteger*      RndmSaveCmd;    
-   G4UIcmdWithAString*        RndmReadCmd;    
- 
+    G4UIcmdWithAnInteger *setnbinThCmd;
+    G4UIcmdWithADoubleAndUnit *setThlowCmd;
+    G4UIcmdWithADoubleAndUnit *setThhighCmd;
+
+    G4UIcmdWithAnInteger *setnbinThbackCmd;
+    G4UIcmdWithADoubleAndUnit *setThlowbackCmd;
+    G4UIcmdWithADoubleAndUnit *setThhighbackCmd;
+
+    G4UIcmdWithAnInteger *setnbinzvertexCmd;
+    G4UIcmdWithADoubleAndUnit *setzlowCmd;
+    G4UIcmdWithADoubleAndUnit *setzhighCmd;
+
+    G4UIdirectory *RndmDir;
+    G4UIcmdWithAnInteger *RndmSaveCmd;
+    G4UIcmdWithAString *RndmReadCmd;
+
 };
 
 #endif

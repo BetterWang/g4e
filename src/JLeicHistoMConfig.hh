@@ -60,53 +60,10 @@ public:
 
     ~JLeicHistoMConfig();
 
-    void SetNewValue(G4UIcommand *, G4String);
+    void SetNewValue(G4UIcommand *, G4String) override;
 
 private:
 
-    G4UIdirectory *plotDir;
-
-    G4UIcmdWithAString *fDirNameCmd;
-
-    G4UIcmdWithAnInteger *setnbinStepCmd;
-    G4UIcmdWithADouble *setSteplowCmd;
-    G4UIcmdWithADouble *setStephighCmd;
-
-    G4UIcmdWithAnInteger *setnbinEnCmd;
-    G4UIcmdWithADoubleAndUnit *setEnlowCmd;
-    G4UIcmdWithADoubleAndUnit *setEnhighCmd;
-
-    G4UIcmdWithAnInteger *setnbinGammaCmd;
-    G4UIcmdWithADoubleAndUnit *setElowGammaCmd;
-    G4UIcmdWithADoubleAndUnit *setEhighGammaCmd;
-
-    G4UIcmdWithAnInteger *setnbinTtCmd;
-    G4UIcmdWithADoubleAndUnit *setTtlowCmd;
-    G4UIcmdWithADoubleAndUnit *setTthighCmd;
-
-    G4UIcmdWithAnInteger *setnbinTbCmd;
-    G4UIcmdWithADoubleAndUnit *setTblowCmd;
-    G4UIcmdWithADoubleAndUnit *setTbhighCmd;
-
-    G4UIcmdWithAnInteger *setnbinTsecCmd;
-    G4UIcmdWithADoubleAndUnit *setTseclowCmd;
-    G4UIcmdWithADoubleAndUnit *setTsechighCmd;
-
-    G4UIcmdWithAnInteger *setnbinRCmd;
-    G4UIcmdWithADoubleAndUnit *setRlowCmd;
-    G4UIcmdWithADoubleAndUnit *setRhighCmd;
-
-    G4UIcmdWithAnInteger *setnbinThCmd;
-    G4UIcmdWithADoubleAndUnit *setThlowCmd;
-    G4UIcmdWithADoubleAndUnit *setThhighCmd;
-
-    G4UIcmdWithAnInteger *setnbinThbackCmd;
-    G4UIcmdWithADoubleAndUnit *setThlowbackCmd;
-    G4UIcmdWithADoubleAndUnit *setThhighbackCmd;
-
-    G4UIcmdWithAnInteger *setnbinzvertexCmd;
-    G4UIcmdWithADoubleAndUnit *setzlowCmd;
-    G4UIcmdWithADoubleAndUnit *setzhighCmd;
 
     G4UIdirectory *RndmDir;
     G4UIcmdWithAnInteger *RndmSaveCmd;

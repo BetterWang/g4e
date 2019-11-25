@@ -35,3 +35,5 @@ target_sources_local(g4e
             TRTDetectorConstruction.hh
             TRTMaterials.hh
         )
+
+target_include_directories(g4e PUBLIC ./)

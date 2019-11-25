@@ -45,13 +45,14 @@ class JLeicDetectorConstruction;
 class JLeicRunAction;
 class JLeicEventAction;
 class JLeicSteppingMessenger;
+class JLeicHistogramming;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
 class JLeicSteppingAction : public G4UserSteppingAction
 {
   public:
-    JLeicSteppingAction(JLeicDetectorConstruction*, JLeicEventAction*, JLeicRunAction* );
+    JLeicSteppingAction(JLeicDetectorConstruction*, JLeicEventAction*, JLeicRunAction*, JLeicHistogramming* );
    ~JLeicSteppingAction();
 
     void UserSteppingAction(const G4Step*);
@@ -61,7 +62,8 @@ class JLeicSteppingAction : public G4UserSteppingAction
     JLeicDetectorConstruction* detector;
     JLeicEventAction*          eventaction;
     JLeicRunAction*            runaction;
-    JLeicSteppingMessenger*    steppingMessenger{};
+    JLeicSteppingMessenger*    steppingMessenger;
+    JLeicHistogramming*        fHistos;
 
     G4int IDnow{},IDold;
     G4int evnoold ;

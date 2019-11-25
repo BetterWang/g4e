@@ -28,6 +28,7 @@
 #include "JLeicSteppingAction.hh"
 #include "JLeicEventAction.hh"
 #include "JLeicRunAction.hh"
+#include "JleicHistogramming.hh"
 
 #include <G4ios.hh>
 #include <G4SystemOfUnits.hh>
@@ -47,10 +48,11 @@ FILE *rc5;
 TLorentzVector ka;
 
 
-JLeicSteppingAction::JLeicSteppingAction(JLeicDetectorConstruction *detectorConstruction, JLeicEventAction *eventAction, JLeicRunAction *runAction) :
+JLeicSteppingAction::JLeicSteppingAction(JLeicDetectorConstruction *detectorConstruction, JLeicEventAction *eventAction, JLeicRunAction *runAction, JLeicHistogramming *histo) :
     detector(detectorConstruction),
     eventaction(eventAction),
     runaction(runAction),
+    fHistos(histo),
     IDold(-1),
     evnoold(-1)
 {
@@ -65,9 +67,13 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep) {
 
     G4double Theta, Thetaback, Ttrans, Tback, Tsec, Egamma, DEgamma, xend, yend, zend, rend, xp, yp, zp, rp;
     G4int evno = eventaction->GetEventno();
-
     IDnow = evno + 10000 * (aStep->GetTrack()->GetTrackID()) + 100000000 * (aStep->GetTrack()->GetParentID());                //-- 100 k events only ???
 
+    auto preStepVolumeName = aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName();
+    auto postStepVolumeName = aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName();
+    const double x = aStep->GetTrack()->GetPosition().x();
+    const double y = aStep->GetTrack()->GetPosition().y();
+    const double z = aStep->GetTrack()->GetPosition().z();
 
     if (evno != myevno) {
 
@@ -104,7 +110,7 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep) {
       G4double zinp = localPosition.z();
       printf("SteppingAction:: Pre:: Volume=%s world pos  x=%f(%f) y=%f(%f) z=%f(%f) \n",aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str(), worldPosition.x(),xinp, worldPosition.y(),yinp, worldPosition.z(),zinp);
       printf("SteppingAction:: Exit Volume=%s  x=%f(%f) y=%f(%f) z=%f(%f)   mom_dir (%f,%f, %f ) particle=%s \n",aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str(),
-         aStep->GetTrack()->GetPosition().x(),xinp, aStep->GetTrack()->GetPosition().y(),yinp, aStep->GetTrack()->GetPosition().z(),zinp,
+         aStep->GetTrack()->GetPosition().x(),xinp, y,yinp, z,zinp,
          aStep->GetTrack()->GetMomentumDirection().x(),aStep->GetTrack()->GetMomentumDirection().y(),aStep->GetTrack()->GetMomentumDirection().z()
          ,aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName().c_str());
     }
@@ -120,10 +126,10 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep) {
       G4double yinp = localPosition.y();
       G4double zinp = localPosition.z();
 
-      printf("SteppingAction:: Post:: Volume=%s world pos  x=%f(%f) y=%f(%f) z=%f(%f) \n",aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(), worldPosition.x(),xinp, worldPosition.y(),yinp, worldPosition.z(),zinp);
+      printf("SteppingAction:: Post:: Volume=%s world pos  x=%f(%f) y=%f(%f) z=%f(%f) \n",postStepVolumeName.c_str(), worldPosition.x(),xinp, worldPosition.y(),yinp, worldPosition.z(),zinp);
 
-      printf("SteppingAction:: Enter Volume=%s  x=%f(%f) y=%f(%f) z=%f(%f)   mom_dir (%f,%f, %f ) particle=%s \n",aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(),
-         aStep->GetTrack()->GetPosition().x(),xinp, aStep->GetTrack()->GetPosition().y(),yinp, aStep->GetTrack()->GetPosition().z(),zinp,
+      printf("SteppingAction:: Enter Volume=%s  x=%f(%f) y=%f(%f) z=%f(%f)   mom_dir (%f,%f, %f ) particle=%s \n",postStepVolumeName.c_str(),
+         aStep->GetTrack()->GetPosition().x(),xinp, y,yinp, z,zinp,
          aStep->GetTrack()->GetMomentumDirection().x(),aStep->GetTrack()->GetMomentumDirection().y(),aStep->GetTrack()->GetMomentumDirection().z()
          ,aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName().c_str());
     }
@@ -133,12 +139,13 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep) {
     //===========================================================================
 
     // print positions at Roman_pot location
-    if (aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName() == "ffi_RPOT_D3_GVol_Phys") {
+    if (preStepVolumeName == "ffi_RPOT_D3_GVol_Phys") {
 
-        printf("SteppingAction:: Volume=%s  x=%f y=%f z=%f   mom_dir (%f,%f, %f ) particle=%s \n", aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(),
-               aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), aStep->GetTrack()->GetPosition().z(), aStep->GetTrack()->GetMomentumDirection().x(),
-               aStep->GetTrack()->GetMomentumDirection().y(), aStep->GetTrack()->GetMomentumDirection().z(),
-               aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName().c_str());
+        fmt::print("SteppingAction:: Volume={}  x={} y={} z={}   mom_dir ({}, {}, {}) particle={} \n",
+                   preStepVolumeName,
+                   x, y, z ,
+                   aStep->GetTrack()->GetMomentumDirection().y(), aStep->GetTrack()->GetMomentumDirection().z(),
+                   aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName().c_str());
 
     }
     char myfposout[256];
@@ -151,31 +158,32 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep) {
 
     //====== Entry position of the volume=========================================================================
     if (aStep->GetPostStepPoint()->GetStepStatus() == fGeomBoundary && aStep->GetPostStepPoint()->GetPhysicalVolume()) {
-        if ((aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName() == "Physics_DIPOLE_m_iBDS1a") ||
-            (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName() == "Physics_DIPOLE_m_iBDS1b") ||
-            (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName() == "Physics_QUADS_hd_m_iQDS1a") ||
-            (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName() == "Physics_QUADS_hd_m_iQDS1b") ||
-            (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName() == "Physics_QUADS_hd_m_iQDS1S") ||
-            (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName() == "Physics_QUADS_hd_m_iQDS2S") ||
-            (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName() == "Physics_QUADS_hd_m_iQDS2") ||
-            (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName() == "Physics_QUADS_hd_m_iQDS3S") ||
-            (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName() == "Physics_QUADS_hd_m_iQDS3") ||
-            (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName() == "Physics_DIPOLE_m_iBDS2") ||
-            (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName() == "Physics_DIPOLE_m_iBDS3") ||
-            (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName() == "Physics_ASOLENOID_hd_m_iASUS") ||
-            (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName() == "Physics_Chicane_m_eBDS1") ||
-            (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName() == "Physics_DIPOLE")
+        if ((postStepVolumeName == "Physics_DIPOLE_m_iBDS1a") ||
+            (postStepVolumeName == "Physics_DIPOLE_m_iBDS1b") ||
+            (postStepVolumeName == "Physics_QUADS_hd_m_iQDS1a") ||
+            (postStepVolumeName == "Physics_QUADS_hd_m_iQDS1b") ||
+            (postStepVolumeName == "Physics_QUADS_hd_m_iQDS1S") ||
+            (postStepVolumeName == "Physics_QUADS_hd_m_iQDS2S") ||
+            (postStepVolumeName == "Physics_QUADS_hd_m_iQDS2") ||
+            (postStepVolumeName == "Physics_QUADS_hd_m_iQDS3S") ||
+            (postStepVolumeName == "Physics_QUADS_hd_m_iQDS3") ||
+            (postStepVolumeName == "Physics_DIPOLE_m_iBDS2") ||
+            (postStepVolumeName == "Physics_DIPOLE_m_iBDS3") ||
+            (postStepVolumeName == "Physics_ASOLENOID_hd_m_iASUS") ||
+            (postStepVolumeName == "Physics_Chicane_m_eBDS1") ||
+            (postStepVolumeName == "Physics_DIPOLE")) {
 
-
-                ) {
-
+            /** >oO Dbug printing
             fprintf(rc5, "SteppingAction::iBDS1 Entry: Volume=%s  x=%f y=%f z=%f   mom_dir (%f,%f, %f ) theta=%f particle=%s  Exit_volume=%s\n",
-                    aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(), aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(),
-                    aStep->GetTrack()->GetPosition().z(), aStep->GetTrack()->GetMomentumDirection().x(), aStep->GetTrack()->GetMomentumDirection().y(),
+                    postStepVolumeName.c_str(), x, y,
+                    z, aStep->GetTrack()->GetMomentumDirection().x(), aStep->GetTrack()->GetMomentumDirection().y(),
                     aStep->GetTrack()->GetMomentumDirection().z(), atan(aStep->GetTrack()->GetMomentumDirection().x() / aStep->GetTrack()->GetMomentumDirection().z()),
                     aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName().c_str(), aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str());
-            if (strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(), "Physics_DIPOLE_m_iBDS1a") == 0) {
-                runaction->FillHist2d(4, aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), 1.);
+                    */
+
+
+            if (strcmp(postStepVolumeName.c_str(), "Physics_DIPOLE_m_iBDS1a") == 0) {
+                fHistos->FillHist2d(4, x, y, 1.);
 
                 if (InsideD1 == 0) {
                     InsideD1 = 1;
@@ -197,47 +205,47 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep) {
                     //  xL=pz/ka.P();
                 }
             }
-            if (strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(), "Physics_DIPOLE_m_iBDS1b") == 0) {
-                runaction->FillHist2d(5, aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), 1.);
+            if (strcmp(postStepVolumeName.c_str(), "Physics_DIPOLE_m_iBDS1b") == 0) {
+                fHistos->FillHist2d(5, x, y, 1.);
             }
 
-            if (strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(), "Physics_QUADS_hd_m_iQDS1a") == 0) {
-                runaction->FillHist2d(8, aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), 1.);
+            if (strcmp(postStepVolumeName.c_str(), "Physics_QUADS_hd_m_iQDS1a") == 0) {
+                fHistos->FillHist2d(8, x, y, 1.);
             }
 
-            if (strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(), "Physics_QUADS_hd_m_iQDS1S") == 0) {
-                runaction->FillHist2d(9, aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), 1.);
+            if (strcmp(postStepVolumeName.c_str(), "Physics_QUADS_hd_m_iQDS1S") == 0) {
+                fHistos->FillHist2d(9, x, y, 1.);
             }
-            if (strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(), "Physics_QUADS_hd_m_iQDS1b") == 0) {
-                runaction->FillHist2d(10, aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), 1.);
+            if (strcmp(postStepVolumeName.c_str(), "Physics_QUADS_hd_m_iQDS1b") == 0) {
+                fHistos->FillHist2d(10, x, y, 1.);
             }
-            if (strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(), "Physics_QUADS_hd_m_iQDS2S") == 0) {
-                runaction->FillHist2d(11, aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), 1.);
+            if (strcmp(postStepVolumeName.c_str(), "Physics_QUADS_hd_m_iQDS2S") == 0) {
+                fHistos->FillHist2d(11, x, y, 1.);
             }
-            if (strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(), "Physics_QUADS_hd_m_iQDS2") == 0) {
-                runaction->FillHist2d(12, aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), 1.);
+            if (strcmp(postStepVolumeName.c_str(), "Physics_QUADS_hd_m_iQDS2") == 0) {
+                fHistos->FillHist2d(12, x, y, 1.);
             }
-            if (strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(), "Physics_QUADS_hd_m_iQDS3S") == 0) {
-                runaction->FillHist2d(13, aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), 1.);
-            }
-
-
-            if (strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(), "Physics_DIPOLE_m_iBDS2") == 0) {
-                runaction->FillHist2d(6, aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), 1.);
+            if (strcmp(postStepVolumeName.c_str(), "Physics_QUADS_hd_m_iQDS3S") == 0) {
+                fHistos->FillHist2d(13, x, y, 1.);
             }
 
-            if (strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(), "Physics_DIPOLE_m_iBDS3") == 0) {
 
-                runaction->FillHist2d(7, aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), 1.);
+            if (strcmp(postStepVolumeName.c_str(), "Physics_DIPOLE_m_iBDS2") == 0) {
+                fHistos->FillHist2d(6, x, y, 1.);
+            }
+
+            if (strcmp(postStepVolumeName.c_str(), "Physics_DIPOLE_m_iBDS3") == 0) {
+
+                fHistos->FillHist2d(7, x, y, 1.);
 
             }
 
-            if (strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(), "Physics_QUADS_hd_m_iQDS4") == 0) {
-                runaction->FillHist2d(14, aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), 1.);
+            if (strcmp(postStepVolumeName.c_str(), "Physics_QUADS_hd_m_iQDS4") == 0) {
+                fHistos->FillHist2d(14, x, y, 1.);
 
             }
-            if (strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(), "Physics_Chicane_m_eBDS1") == 0) {
-                runaction->FillHist2d(15, aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), 1.);
+            if (strcmp(postStepVolumeName.c_str(), "Physics_Chicane_m_eBDS1") == 0) {
+                fHistos->FillHist2d(15, x, y, 1.);
 
             }
 
@@ -264,49 +272,51 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep) {
 //  if(aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName() == "Physics_DIPOLE_m_iBDS1b") {
 
             fprintf(rc5, "SteppingAction::iBDS1 Exit Volume=%s  x=%f y=%f z=%f   mom_dir (%f,%f, %f ) theta =%f particle=%s Entry_Volume =%s\n",
-                    aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str(), aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(),
-                    aStep->GetTrack()->GetPosition().z(), aStep->GetTrack()->GetMomentumDirection().x(), aStep->GetTrack()->GetMomentumDirection().y(),
+                    aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str(), x, y,
+                    z, aStep->GetTrack()->GetMomentumDirection().x(), aStep->GetTrack()->GetMomentumDirection().y(),
                     aStep->GetTrack()->GetMomentumDirection().z(), atan(aStep->GetTrack()->GetMomentumDirection().x() / aStep->GetTrack()->GetMomentumDirection().z()),
-                    aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName().c_str(), aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str());
+                    aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName().c_str(), postStepVolumeName.c_str());
 
-            //   runaction->FillHist2d(1, aStep->GetTrack()->GetPosition().x(),aStep->GetTrack()->GetPosition().y(),1.);
-
-            if (strcmp(aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str(), "Physics_DIPOLE_m_iBDS1a") == 0) {
-                runaction->FillHist2d(24, aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), 1.);
-            }
-            if (strcmp(aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str(), "Physics_DIPOLE_m_iBDS1b") == 0) {
-                runaction->FillHist2d(25, aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), 1.);
-            }
-
-            if (strcmp(aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str(), "Physics_QUADS_hd_m_iQDS1a") == 0) {
-                runaction->FillHist2d(28, aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), 1.);
-            }
-
-            if (strcmp(aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str(), "Physics_QUADS_hd_m_iQDS1S") == 0) {
-                runaction->FillHist2d(29, aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), 1.);
-            }
-            if (strcmp(aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str(), "Physics_QUADS_hd_m_iQDS1b") == 0) {
-                runaction->FillHist2d(30, aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), 1.);
-            }
-            if (strcmp(aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str(), "Physics_QUADS_hd_m_iQDS2S") == 0) {
-                runaction->FillHist2d(31, aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), 1.);
-            }
-            if (strcmp(aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str(), "Physics_QUADS_hd_m_iQDS2") == 0) {
-                runaction->FillHist2d(32, aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), 1.);
-            }
-            if (strcmp(aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str(), "Physics_QUADS_hd_m_iQDS3S") == 0) {
-                runaction->FillHist2d(33, aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), 1.);
-
-            }
+            //   fHistos->FillHist2d(1, x,y,1.);
 
 
-            if (strcmp(aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str(), "Physics_DIPOLE_m_iBDS2") == 0) {
-                runaction->FillHist2d(26, aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), 1.);
+
+            if (preStepVolumeName == "Physics_DIPOLE_m_iBDS1a") {
+                fHistos->FillHist2d(24, x, y, 1.);
+            }
+            if (preStepVolumeName == "Physics_DIPOLE_m_iBDS1b") {
+                fHistos->FillHist2d(25, x, y, 1.);
             }
 
-            if (strcmp(aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str(), "Physics_DIPOLE_m_iBDS3") == 0) {
+            if (preStepVolumeName == "Physics_QUADS_hd_m_iQDS1a") {
+                fHistos->FillHist2d(28, x, y, 1.);
+            }
 
-                runaction->FillHist2d(27, aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), 1.);
+            if (preStepVolumeName == "Physics_QUADS_hd_m_iQDS1S") {
+                fHistos->FillHist2d(29, x, y, 1.);
+            }
+            if (preStepVolumeName == "Physics_QUADS_hd_m_iQDS1b") {
+                fHistos->FillHist2d(30, x, y, 1.);
+            }
+            if (preStepVolumeName == "Physics_QUADS_hd_m_iQDS2S") {
+                fHistos->FillHist2d(31, x, y, 1.);
+            }
+            if (preStepVolumeName == "Physics_QUADS_hd_m_iQDS2") {
+                fHistos->FillHist2d(32, x, y, 1.);
+            }
+            if (preStepVolumeName == "Physics_QUADS_hd_m_iQDS3S") {
+                fHistos->FillHist2d(33, x, y, 1.);
+
+            }
+
+
+            if (preStepVolumeName == "Physics_DIPOLE_m_iBDS2") {
+                fHistos->FillHist2d(26, x, y, 1.);
+            }
+
+            if (preStepVolumeName == "Physics_DIPOLE_m_iBDS3") {
+
+                fHistos->FillHist2d(27, x, y, 1.);
 
 
                 //---------------- acceptance plot ----------------------------
@@ -314,13 +324,13 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep) {
                 if (InsideD1 == 1 && InsideQ4 == 0) {
                     InsideQ4 = 1;
                     printf("SteppingAction:: RPOT:: pt =%f pz=%f xL=%f\n", pt, pz, xL);
-                    runaction->FillHist2d(20, abs(xL), abs(pt / 1000.), 1.);
+                    fHistos->FillHist2d(20, abs(xL), abs(pt / 1000.), 1.);
                 }
 
             }
 
-            if (strcmp(aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str(), "Physics_QUADS_hd_m_iQDS4") == 0) {
-                runaction->FillHist2d(34, aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), 1.);
+            if (preStepVolumeName == "Physics_QUADS_hd_m_iQDS4") {
+                fHistos->FillHist2d(34, x, y, 1.);
             }
 
 
@@ -331,7 +341,7 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep) {
     //--------------------------for TUNE-------------------------------------------------------------------------
     if(
        //      strcmp(aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str(),"World")==0 &&
-        strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(),"Physics_QUADS_hd_m_iQDS1a")==0
+        strcmp(postStepVolumeName.c_str(),"Physics_QUADS_hd_m_iQDS1a")==0
 
      ){
 
@@ -345,18 +355,18 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep) {
    //
    // (x+0.3529979921)^2+(px+200*tan(0.05299800449))^2+y^2+py^2 where x, px, y, py are at the entrance into iQDS1a
    //
-  //   my_or= (aStep->GetTrack()->GetPosition().x()+0.3529979921)*(aStep->GetTrack()->GetPosition().x()+0.3529979921)
+  //   my_or= (x+0.3529979921)*(x+0.3529979921)
    //       +( aStep->GetTrack()->GetMomentumDirection().x()+200*tan(0.05299800449))*( aStep->GetTrack()->GetMomentumDirection().x()+200*tan(0.05299800449))
-   //       +aStep->GetTrack()->GetPosition().y()*aStep->GetTrack()->GetPosition().y()
+   //       +y*y
    //       +aStep->GetTrack()->GetMomentumDirection().y()*aStep->GetTrack()->GetMomentumDirection().y();
-     my_or= (aStep->GetTrack()->GetPosition().x()/1000.+0.3529979921)*(aStep->GetTrack()->GetPosition().x()/1000.+0.3529979921)
+     my_or= (x/1000.+0.3529979921)*(x/1000.+0.3529979921)
           +(200*aStep->GetTrack()->GetMomentumDirection().x()+200*tan(0.05299800449))*(200*aStep->GetTrack()->GetMomentumDirection().x()+200*tan(0.05299800449))
-       +(aStep->GetTrack()->GetPosition().y()/1000.)*(aStep->GetTrack()->GetPosition().y()/1000.)
+       +(y/1000.)*(y/1000.)
        +(200*aStep->GetTrack()->GetMomentumDirection().y())*(200*aStep->GetTrack()->GetMomentumDirection().y());
 
-     runaction->FillHist2d(8, aStep->GetTrack()->GetPosition().x(),aStep->GetTrack()->GetPosition().y(),1.);
+     runaction->FillHist2d(8, x,y,1.);
 
-     fprintf(rc,"SteppingAction:: iQDS1a %f %f %f %f %f %f ", aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), aStep->GetTrack()->GetPosition().z(),  aStep->GetTrack()->GetMomentumDirection().x(),aStep->GetTrack()->GetMomentumDirection().y(),aStep->GetTrack()->GetMomentumDirection().z());
+     fprintf(rc,"SteppingAction:: iQDS1a %f %f %f %f %f %f ", x, y, z,  aStep->GetTrack()->GetMomentumDirection().x(),aStep->GetTrack()->GetMomentumDirection().y(),aStep->GetTrack()->GetMomentumDirection().z());
         printf("SteppingAction:: %f \n", my_or );
         fprintf(rc,"%f\n", my_or );
         //  fclose(rc);
@@ -365,10 +375,10 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep) {
 
 
   //----------------------------- dipoles -------------------------------
-    if( strcmp(aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(),"Physics_DIPOLE_m_iBDS3")==0 ){
+    if( strcmp(postStepVolumeName.c_str(),"Physics_DIPOLE_m_iBDS3")==0 ){
 
-        fprintf(rc,"SteppingAction:: iBDS3 %f %f %f %f %f %f \n", aStep->GetTrack()->GetPosition().x(), aStep->GetTrack()->GetPosition().y(), aStep->GetTrack()->GetPosition().z(),  aStep->GetTrack()->GetMomentumDirection().x(),aStep->GetTrack()->GetMomentumDirection().y(),aStep->GetTrack()->GetMomentumDirection().z());
-         runaction->FillHist2d(7, aStep->GetTrack()->GetPosition().x(),aStep->GetTrack()->GetPosition().y(),1.);
+        fprintf(rc,"SteppingAction:: iBDS3 %f %f %f %f %f %f \n", x, y, z,  aStep->GetTrack()->GetMomentumDirection().x(),aStep->GetTrack()->GetMomentumDirection().y(),aStep->GetTrack()->GetMomentumDirection().z());
+         runaction->FillHist2d(7, x,y,1.);
     }
 
 #endif
@@ -384,7 +394,7 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep) {
              ((aStep->GetTrack()->GetTrackID() != 1) || (aStep->GetTrack()->GetParentID() != 0))) ||
             (((aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName()) == "e+") &&
              ((aStep->GetTrack()->GetTrackID() != 1) || (aStep->GetTrack()->GetParentID() != 0))))
-            runaction->Fillvertexz(aStep->GetTrack()->GetVertexPosition().z()); //-- Z ?
+            fHistos->Fillvertexz(aStep->GetTrack()->GetVertexPosition().z()); //-- Z ?
         //-----------
 
 
@@ -395,14 +405,14 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep) {
                 eventaction->AddE();
                 Tsec = aStep->GetTrack()->GetKineticEnergy();  // !!!!!!!!!!!!
                 //Tsec += aStep->GetTotalEnergyDeposit() ;        // !!!!!!!!!!!!
-                runaction->FillTsec(Tsec / keV);
+                fHistos->FillTsec(Tsec / keV);
             } else if (((aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName()) == "e+") &&
                        ((aStep->GetTrack()->GetTrackID() != 1) || (aStep->GetTrack()->GetParentID() != 0))) {
                 eventaction->AddCharged();
                 eventaction->AddP();
                 Tsec = aStep->GetTrack()->GetKineticEnergy();  // !!!!!!!!!!!!
                 //Tsec += aStep->GetTotalEnergyDeposit() ;        // !!!!!!!!!!!!
-                runaction->FillTsec(Tsec / keV);
+                fHistos->FillTsec(Tsec / keV);
             } else  //-- gamma START in absorber
             if (((aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName()) == "gamma") &&
                 ((aStep->GetTrack()->GetTrackID() != 1) || (aStep->GetTrack()->GetParentID() != 0))) {
@@ -427,43 +437,43 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep) {
         printf("step in absorber de=%f  step=%f Particle=%s energy=%f [mev]\n", aStep->GetTotalEnergyDeposit() / keV, aStep->GetStepLength() / um,
                aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName().c_str(), aStep->GetTrack()->GetKineticEnergy() / MeV);
 
-        zend = aStep->GetTrack()->GetPosition().z();
+        zend = z;
 
-        runaction->FillHist(7, zend - detector->fConfig.ci_TRD.fAbsorberZ + detector->fConfig.ci_TRD.fAbsorberThickness / 2., aStep->GetTotalEnergyDeposit() / keV);
+        fHistos->FillHist(7, zend - detector->fConfig.ci_TRD.fAbsorberZ + detector->fConfig.ci_TRD.fAbsorberThickness / 2., aStep->GetTotalEnergyDeposit() / keV);
         if (((aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName()) == "gamma")) {
-            runaction->FillHist(27, aStep->GetTotalEnergyDeposit() / keV, 1.);
+            fHistos->FillHist(27, aStep->GetTotalEnergyDeposit() / keV, 1.);
         } else {
             if (aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName() == "pxdPixel") {
-                runaction->FillHist(25, aStep->GetTotalEnergyDeposit() / keV, 1.);
-                runaction->FillHist2d(2, aStep->GetTrack()->GetKineticEnergy() / MeV, aStep->GetTotalEnergyDeposit() / keV, 1.);
+                fHistos->FillHist(25, aStep->GetTotalEnergyDeposit() / keV, 1.);
+                fHistos->FillHist2d(2, aStep->GetTrack()->GetKineticEnergy() / MeV, aStep->GetTotalEnergyDeposit() / keV, 1.);
             } else if (aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName() == "svdPixel") {
-                runaction->FillHist(26, aStep->GetTotalEnergyDeposit() / keV, 1.);
-                runaction->FillHist2d(3, aStep->GetTrack()->GetKineticEnergy() / MeV, aStep->GetTotalEnergyDeposit() / keV, 1.);
+                fHistos->FillHist(26, aStep->GetTotalEnergyDeposit() / keV, 1.);
+                fHistos->FillHist2d(3, aStep->GetTrack()->GetKineticEnergy() / MeV, aStep->GetTotalEnergyDeposit() / keV, 1.);
             }
         }
-        //if ( 201 < zend && zend < 203 )  runaction->FillHist(11,aStep->GetTotalEnergyDeposit()/keV);
-        //if ( 225 < zend && zend < 227 )  runaction->FillHist(12,aStep->GetTotalEnergyDeposit()/keV);
-        //if ( 235 < zend && zend < 237 )  runaction->FillHist(13,aStep->GetTotalEnergyDeposit()/keV);
+        //if ( 201 < zend && zend < 203 )  fHistos->FillHist(11,aStep->GetTotalEnergyDeposit()/keV);
+        //if ( 225 < zend && zend < 227 )  fHistos->FillHist(12,aStep->GetTotalEnergyDeposit()/keV);
+        //if ( 235 < zend && zend < 237 )  fHistos->FillHist(13,aStep->GetTotalEnergyDeposit()/keV);
 
         if (((aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName()) == "e-") ||
             ((aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName()) == "e+")) {
 
             eventaction->CountStepsCharged();
 
-            runaction->FillHist(3, aStep->GetStepLength() / um);
+            fHistos->FillHist(3, aStep->GetStepLength() / um);
             if ((aStep->GetTrack()->GetTrackID() == 1) && (aStep->GetTrack()->GetParentID() == 0)) {
-                runaction->FillHist(5, zend - detector->fConfig.ci_TRD.fAbsorberZ + detector->fConfig.ci_TRD.fAbsorberThickness / 2., aStep->GetTotalEnergyDeposit() / keV);
+                fHistos->FillHist(5, zend - detector->fConfig.ci_TRD.fAbsorberZ + detector->fConfig.ci_TRD.fAbsorberThickness / 2., aStep->GetTotalEnergyDeposit() / keV);
             } else {
-                runaction->FillHist(4, zend - detector->fConfig.ci_TRD.fAbsorberZ + detector->fConfig.ci_TRD.fAbsorberThickness / 2., aStep->GetTotalEnergyDeposit() / keV);
+                fHistos->FillHist(4, zend - detector->fConfig.ci_TRD.fAbsorberZ + detector->fConfig.ci_TRD.fAbsorberThickness / 2., aStep->GetTotalEnergyDeposit() / keV);
             }
-            runaction->FillHist(6, zend - detector->fConfig.ci_TRD.fAbsorberZ + detector->fConfig.ci_TRD.fAbsorberThickness / 2., aStep->GetTotalEnergyDeposit() / keV);
+            fHistos->FillHist(6, zend - detector->fConfig.ci_TRD.fAbsorberZ + detector->fConfig.ci_TRD.fAbsorberThickness / 2., aStep->GetTotalEnergyDeposit() / keV);
         }
         if ((aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName()) == "gamma") {
             eventaction->CountStepsNeutral();
             DEgamma = aStep->GetTotalEnergyDeposit();
             //eventaction->AddGammaDE(aStep->GetTotalEnergyDeposit()) ;
             if (DEgamma > 0.00000001)
-                runaction->FillGamDE(DEgamma);
+                fHistos->FillGamDE(DEgamma);
 
 
             G4TouchableHandle theTouchable = aStep->GetPreStepPoint()->GetTouchableHandle();
@@ -482,12 +492,12 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep) {
                    aStep->GetTotalEnergyDeposit() / keV, histDepth, motherCopyNo, motherRepNo, copyIDx_pre, copyIDy_pre);
 
             if (DEgamma > 0.00000001) {
-                runaction->FillGammaEStep(DEgamma);
-                xend = aStep->GetTrack()->GetPosition().x();
-                yend = aStep->GetTrack()->GetPosition().y();
-                zend = aStep->GetTrack()->GetPosition().z();
-                runaction->FillHist(1, zend - detector->fConfig.ci_TRD.fAbsorberZ + detector->fConfig.ci_TRD.fAbsorberThickness / 2.);
-                runaction->FillHist(2, zend - detector->fConfig.ci_TRD.fAbsorberZ + detector->fConfig.ci_TRD.fAbsorberThickness / 2., DEgamma / keV);
+                fHistos->FillGammaEStep(DEgamma);
+                xend = x;
+                yend = y;
+                zend = z;
+                fHistos->FillHist(1, zend - detector->fConfig.ci_TRD.fAbsorberZ + detector->fConfig.ci_TRD.fAbsorberThickness / 2.);
+                fHistos->FillHist(2, zend - detector->fConfig.ci_TRD.fAbsorberZ + detector->fConfig.ci_TRD.fAbsorberThickness / 2., DEgamma / keV);
             }
             //G4VProcess* creatorProcess = aStep->GetTrack()->GetCreatorProcess();
             //if(creatorProcess->GetProcessName() == “GammaXTRadiator”) G4cout << “Particle was created by the LowEnergy” << “Ionization process“ << G4endl;
@@ -499,7 +509,7 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep) {
     else {
 
         if (aStep->GetTrack()->GetDefinition()->GetPDGCharge() != 0)
-            runaction->FillHist(3, aStep->GetStepLength() / um);
+            fHistos->FillHist(3, aStep->GetStepLength() / um);
     }
 
 
@@ -516,13 +526,13 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep) {
     if (is_primary_exit_absorber && (aStep->GetTrack()->GetMomentumDirection().z() > 0.)) {
         eventaction->SetTr();
         Theta = std::acos(aStep->GetTrack()->GetMomentumDirection().x());
-        runaction->FillTh(Theta);
+        fHistos->FillTh(Theta);
         Ttrans = aStep->GetTrack()->GetKineticEnergy();
-        runaction->FillTt(Ttrans);
-        yend = aStep->GetTrack()->GetPosition().y();
-        zend = aStep->GetTrack()->GetPosition().z();
+        fHistos->FillTt(Ttrans);
+        yend = y;
+        zend = z;
         rend = std::sqrt(yend * yend + zend * zend);
-        runaction->FillR(rend);
+        fHistos->FillR(rend);
     }
     //----------------------------------------------------------------------------
     //--  Primary EXIT absorber backward ? GetMomentumDirection().z()<0. ---
@@ -530,23 +540,23 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep) {
         eventaction->SetRef();
         Thetaback = std::acos(aStep->GetTrack()->GetMomentumDirection().x());
         Thetaback -= 0.5 * CLHEP::pi;
-        runaction->FillThBack(Thetaback);
+        fHistos->FillThBack(Thetaback);
         Tback = aStep->GetTrack()->GetKineticEnergy();
-        runaction->FillTb(Tback);
+        fHistos->FillTb(Tback);
     }
 
     //----------------------------------------------------------------------------
     //--  gamma EXIT absorber forward
     if (aStep->GetPostStepPoint()->GetStepStatus() == fGeomBoundary && aStep->GetPostStepPoint()->GetPhysicalVolume()) {
         if (((aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName() == "pxdPixel" || aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName() == "Absorber") &&
-             (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName() == "World") &&
+             (postStepVolumeName == "World") &&
              //(aStep->GetTrack()->GetNextVolume()->GetName()=="World") &&
              (aStep->GetPostStepPoint()->GetProcessDefinedStep()->GetProcessName() == "Transportation") && (aStep->GetTrack()->GetMomentumDirection().z() > 0.) &&
              (aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName() == "gamma"))) {
             Egamma = aStep->GetTrack()->GetKineticEnergy();
-            runaction->FillGammaOutSpectrum(Egamma);
+            fHistos->FillGammaOutSpectrum(Egamma);
             //printf("O::test PreStep = %s ",aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str());
-            //printf("O::test PostStep = %s \n",aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str());
+            //printf("O::test PostStep = %s \n",postStepVolumeName.c_str());
             //printf("E::gammas EXIT absorber de=%f E=%f step=%f\n",aStep->GetTotalEnergyDeposit(),Egamma/keV,aStep->GetStepLength());
         }
     }
@@ -557,13 +567,13 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep) {
 
     if (aStep->GetPostStepPoint()->GetStepStatus() == fGeomBoundary && aStep->GetPostStepPoint()->GetPhysicalVolume()) {
         if ((aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName() == "World") &&
-            ((aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName() == "Absorber") || (aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName() == "pxdPixel")) &&
+            ((postStepVolumeName == "Absorber") || (postStepVolumeName == "pxdPixel")) &&
             (aStep->GetPostStepPoint()->GetProcessDefinedStep()->GetProcessName() == "Transportation") && (aStep->GetTrack()->GetMomentumDirection().z() > 0.) &&
             (aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName() == "gamma")) {
             Egamma = aStep->GetTrack()->GetKineticEnergy();
-            runaction->FillGammaInSpectrum(Egamma);
+            fHistos->FillGammaInSpectrum(Egamma);
             //printf("I::test PreStep = %s ",aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str());
-            //printf("I::test PostStep = %s \n",aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str());
+            //printf("I::test PostStep = %s \n",postStepVolumeName.c_str());
             //printf("I::gammas ENTER absorber de=%f E=%f ID=%d\n",aStep->GetTotalEnergyDeposit()/keV,Egamma/keV,IDnow);
 
             xp = aStep->GetTrack()->GetMomentumDirection().x();
@@ -571,12 +581,12 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep) {
             zp = aStep->GetTrack()->GetMomentumDirection().z();
             rp = std::sqrt(yp * yp + xp * xp);
             Theta = std::acos(zp);
-            runaction->FillGamAngle(Theta);
+            fHistos->FillGamAngle(Theta);
             Ttrans = aStep->GetTrack()->GetKineticEnergy();
-            runaction->FillTt(Ttrans);
-            xend = aStep->GetTrack()->GetPosition().x();
-            yend = aStep->GetTrack()->GetPosition().y();
-            zend = aStep->GetTrack()->GetPosition().z();
+            fHistos->FillTt(Ttrans);
+            xend = x;
+            yend = y;
+            zend = z;
             rend = std::sqrt(yend * yend + zend * zend);
         }
     }

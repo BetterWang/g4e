@@ -33,12 +33,15 @@
 
 #include "StringHelpers.hh"
 
+#include "MulticastEventAction.hh"
+
 #include "design_main/jleic/JLeicDetectorConstruction.hh"
 #include "InputProcessor.hh"
 #include "JLeicPhysicsList.hh"
 #include "PrimaryGeneratorAction.hh"
 #include "JLeicRunAction.hh"
-#include "MulticastEventAction.hh"
+
+#include "JLeicEventAction.hh"
 #include "JLeicSteppingAction.hh"
 #include "JLeicSteppingVerbose.hh"
 #include "JLeicTrackingAction.hh"
@@ -110,11 +113,12 @@ int main(int argc, char **argv)
 
     // Event action
     auto eventAction = new MulticastEventAction();
-    eventAction->AddUserAction(new JLeicEve)
+    eventAction->AddUserAction(new JLeicEventAction(runAction));
 
     runManager->SetUserAction(eventAction);
 
     // Stepping action
+    auto histos = JLeicHistogramming();
     auto steppingAction = new JLeicSteppingAction(detector, eventAction, runAction);
     runManager->SetUserAction(steppingAction);
 

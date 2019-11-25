@@ -7,15 +7,16 @@
 
 #include <TH1D.h>
 #include <TH2D.h>
+#include <TStyle.h>
 
 #include <globals.hh>
-#include <G4SIunits.hh>
+
 
 class JLeicHistogramming {
 public:
 
-    static TH1D *histo1, *histo2, *histo3, *histo4, *histo5, *histo6, *histo7, *histo8, *histo9, *histo10, *histo11, *histo12, *histo13, *histo14;
-//static TH2D* d2_pos_ffq1;
+    TH1D *histo1, *histo2, *histo3, *histo4, *histo5, *histo6, *histo7, *histo8, *histo9, *histo10, *histo11, *histo12, *histo13, *histo14;
+    //static TH2D* d2_pos_ffq1;
     static const int NHIST = 50;
     TH1D *hist[NHIST];
 
@@ -32,78 +33,53 @@ public:
 
     void FillHLikelihood(int ihist, G4double val)
     {
-
-        //printf("FillHLikelihood(%d, %f)  ptr=%p\n",ihist,val,HLikelihood[ihist]);
         if (ihist < NHIST && HLikelihood[ihist]) HLikelihood[ihist]->Fill(val);
-
     }
 
     void FillHist(int ihist, G4double val)
     {
-
         if (hist[ihist]) hist[ihist]->Fill(val);
-
     }
 
     void FillHist(int ihist, G4double val, G4double w)
     {
-
         if (hist[ihist]) hist[ihist]->Fill(val, w);
-
     }
 
     void FillHist(int ihist, int bin, G4double w)
     {
-
         if (hist[ihist]) hist[ihist]->Fill(bin, w);
-
     }
 
     void ResetHist(int ihist)
     {
-
         if (hist[ihist]) hist[ihist]->Reset();
-
     }
 
 //---  2D ---
     void FillHist2d(int ihist, G4double valx, G4double valy, G4double w)
     {
-
         if (d2_hist[ihist]) d2_hist[ihist]->Fill(valx, valy, w);
-
     }
 
     G4double GetHist2d(int ihist, G4int ix, G4int iy)
     {
-
         if (d2_hist[ihist]) return d2_hist[ihist]->GetBinContent(ix, iy);
-
     }
 
     void ResetHist2d(int ihist)
     {
-
         if (d2_hist[ihist]) d2_hist[ihist]->Reset();
-
     }
 
     void FillHistmatrixOccup(int ihist, G4double valx, G4double valy, G4double w)
     {
-
-        // printf("ihist= %d\n",ihist);
-        //  if( hmatrixOccup[ihist])  hmatrixOccup[ihist]->Fill(valx,valy,w) ;
         if (hmatrixOccup[ihist]) hmatrixOccup[ihist]->Fill(valx, valy, 1.);
-
     }
 
     void FillHistmatrixOccupCM(int ihist, G4double valx, G4double valy, G4double w)
     {
-
-        // printf("ihist= %d\n",ihist);
-        //  if( hmatrixOccup[ihist])  hmatrixOccup[ihist]->Fill(valx,valy,w) ;
         if (hmatrixOccupCM[ihist]) hmatrixOccupCM[ihist]->Fill(valx, valy, 1.);
-
     }
 
 
@@ -111,77 +87,29 @@ public:
     {
         char myname[120];
 
+        histo1 = new TH1D("histo1", "number of steps/event", nbinStep, Steplow, Stephigh);
 
-        printf("------------------- > Booking histograms ...  \n");
+        histo2 = new TH1D("histo2", "Energy Loss (keV)", nbinEn, Enlow / keV, Enhigh / keV);
 
-        // init hbook
+        histo3 = new TH1D("histo3", "angle distribution at exit(deg)", nbinTh, Thlow / deg, Thhigh / deg);
 
-        //  hbookManager = new HBookFile(histName, 68);
-        //  assert (hbookManager != 0);
 
-        // book histograms
+        histo4 = new TH1D("histo4", "lateral distribution at exit(mm)", nbinR, Rlow, Rhigh);
 
-        if (nbinStep > 0) {
-            printf("book histo1 \n");
-            histo1 = new TH1D("histo1", "number of steps/event", nbinStep, Steplow, Stephigh);
-            //histo1 = hbookManager->histogram("number of steps/event",nbinStep,Steplow,Stephigh) ;
-            //assert (histo1 != 0);
-        }
-        if (nbinEn > 0) {
-            printf("book histo2 \n");
-            histo2 = new TH1D("histo2", "Energy Loss (keV)", nbinEn, Enlow / keV, Enhigh / keV);
-            //histo2 = hbookManager->histogram("Energy Loss (keV)",nbinEn,Enlow/keV,Enhigh/keV) ;
-            //assert (histo2 != 0);
-        }
-        if (nbinTh > 0) {
-            histo3 = new TH1D("histo3", "angle distribution at exit(deg)", nbinTh, Thlow / deg, Thhigh / deg);
-            //histo3 = hbookManager->histogram("angle distribution at exit(deg)",nbinTh,Thlow/deg,Thhigh/deg) ;
-            //assert (histo3 != 0);
-        }
-        if (nbinR > 0) {
-            histo4 = new TH1D("histo4", "lateral distribution at exit(mm)", nbinR, Rlow, Rhigh);
-            //histo4 = hbookManager->histogram("lateral distribution at exit(mm)",nbinR ,Rlow,Rhigh)  ;
-            //assert (histo4 != 0);
-        }
-        if (nbinTt > 0) {
-            histo5 = new TH1D("histo5", "kinetic energy of the primary at exit(MeV)", nbinTt, Ttlow, Tthigh);
-            //histo5 = hbookManager->histogram("kinetic energy of the primary at exit(MeV)",nbinTt,Ttlow,Tthigh)  ;
-            //assert (histo5 != 0);
-        }
-        if (nbinThback > 0) {
-            histo6 = new TH1D("histo6", "angle distribution of backscattered primaries(deg)", nbinThback, Thlowback / deg, Thhighback / deg);
-            //histo6 = hbookManager->histogram("angle distribution of backscattered primaries(deg)",nbinThback,Thlowback/deg,Thhighback/deg) ;
-            //assert (histo6 != 0);
-        }
-        if (nbinTb > 0) {
-            histo7 = new TH1D("histo7", "kinetic energy of the backscattered primaries (MeV)", nbinTb, Tblow, Tbhigh);
-            //histo7 = hbookManager->histogram("kinetic energy of the backscattered primaries (MeV)",nbinTb,Tblow,Tbhigh)  ;
-            //assert (histo7 != 0);
-        }
-        if (nbinTsec > 0) {
-            histo8 = new TH1D("histo8", "kinetic energy of the charged secondaries (keV)", nbinTsec, Tseclow, Tsechigh);
-            //histo8 = hbookManager->histogram("kinetic energy of the charged secondaries (MeV)",nbinTsec,Tseclow,Tsechigh)  ;
-            //assert (histo8 != 0);
-        }
-        if (nbinvertexz > 0) {
-            histo9 = new TH1D("histo9", "z of secondary charged vertices(mm)", nbinvertexz, zlow, zhigh);
-            //histo9 = hbookManager->histogram("z of secondary charged vertices(mm)",nbinvertexz ,zlow,zhigh)  ;
-            //assert (histo9 != 0);
-        }
-        //  if(nbinGamma>0)
-        //  {
-        //printf("book histo10 \n");
-        // histo10= new TH1D("histo10","kinetic energy of gammas escaping the absorber (keV)",nbinGamma,0.,50.)  ;
-        //		      ,nbinGamma,std::log10(ElowGamma),std::log10(EhighGamma));
-        //histo10= hbookManager->histogram("kinetic energy of gammas escaping the absorber (MeV)"
-        //     ,nbinGamma,ElowGamma,EhighGamma)  ;
-        //                            ,nbinGamma,std::log10(ElowGamma),std::log10(EhighGamma))  ;
-        //assert (histo10 != 0);
-        //  }
-        printf("book  nbin=%d Elow=%f Ehigh=%f\n", nbinGamma, ElowGamma, EhighGamma);
+        histo5 = new TH1D("histo5", "kinetic energy of the primary at exit(MeV)", nbinTt, Ttlow, Tthigh);
+
+        histo6 = new TH1D("histo6", "angle distribution of backscattered primaries(deg)", nbinThback, Thlowback / deg, Thhighback / deg);
+
+        histo7 = new TH1D("histo7", "kinetic energy of the backscattered primaries (MeV)", nbinTb, Tblow, Tbhigh);
+
+        histo8 = new TH1D("histo8", "kinetic energy of the charged secondaries (keV)", nbinTsec, Tseclow, Tsechigh);
+
+        histo9 = new TH1D("histo9", "z of secondary charged vertices(mm)", nbinvertexz, zlow, zhigh);
+
+
 
         int nb = 500;
-        float emin = 0, emax = 50.;
+        double emin = 0, emax = 50.;
         histo10 = new TH1D("histo10", "kinetic energy of gammas escaping the absorber (keV)", nb, emin, emax);
         histo11 = new TH1D("histo11", "dE of gammas in the absorber (keV) ", nb, emin, emax);   //-- keV
         histo12 = new TH1D("histo12", "kinetic energy of gammas entering the absorber (keV) ", nb, emin, emax);   //-- keV
@@ -209,10 +137,13 @@ public:
 
         hist[20] = new TH1D("hist20", " N TR photons bin:1-100", 50, -0.5, 49.5);
         hist[20]->GetXaxis()->SetTitle("Number TR");
+
         hist[21] = new TH1D("hist21", " N TR photons bin:1-5 ", 50, -0.5, 49.5);
         hist[21]->GetXaxis()->SetTitle("Number TR");
+
         hist[22] = new TH1D("hist22", " N TR photons bin:1-10", 50, -0.5, 49.5);
         hist[22]->GetXaxis()->SetTitle("Number TR");
+
         hist[23] = new TH1D("hist23", " N TR photons bin:1-15", 50, -0.5, 49.5);
         hist[23]->GetXaxis()->SetTitle("Number TR");
 
@@ -237,6 +168,7 @@ public:
         dmaxY = dmX;
         nbinY = dmX * 2;
         d2_hist[4] = new TH2D("d2_hist4_iBDS1a_in", " d2_pos_iBDS1a_in ", nbinX, dminX, dmaxX, nbinY, dminY, dmaxY);
+
         dmX = 500;
         nbinX = dmX * 2;
         dminX = -254 - dmX;
@@ -245,6 +177,7 @@ public:
         dmaxY = dmX;
         nbinY = dmX * 2;
         d2_hist[5] = new TH2D("d2_hist5_iBDS1b_in", " d2_pos_iBDS1b_in ", nbinX, dminX, dmaxX, nbinY, dminY, dmaxY);
+
         dmX = 400;
         nbinX = dmX * 2;
         dminX = -1163 - dmX;
@@ -253,6 +186,7 @@ public:
         dmaxY = dmX;
         nbinY = dmX * 2;
         d2_hist[6] = new TH2D("d2_hist6_iBDS2_in", " d2_pos_iBDS2_in ", nbinX, dminX, dmaxX, nbinY, dminY, dmaxY);
+
         dmX = 50;
         nbinX = dmX * 2;
         dminX = -1358 - dmX;
@@ -272,6 +206,7 @@ public:
         nbinY = dmX * 2;
         d2_hist[8] = new TH2D("d2_hist8_iQDS1a_in", " d2_pos_iQDS1a_in ", nbinX, dminX, dmaxX, nbinY, dminY, dmaxY);
         d2_hist[9] = new TH2D("d2_hist9_iQDS1S_in", " d2_pos_iQDS1S_in ", nbinX, dminX, dmaxX, nbinY, dminY, dmaxY);
+
         dmX = 140;
         nbinX = dmX * 2;
         dminX = -532 - dmX;
@@ -281,6 +216,7 @@ public:
         nbinY = dmX * 2;
         d2_hist[10] = new TH2D("d2_hist10_iQDS1b_in", " d2_pos_iQDS1b_in ", nbinX, dminX, dmaxX, nbinY, dminY, dmaxY);
         d2_hist[11] = new TH2D("d2_hist11_iQDS2S_in", " d2_pos_iQDS2S_in ", nbinX, -670., -610., nbinY, dminY, dmaxY);
+
         dmX = 200;
         nbinX = dmX * 2;
         dminX = -709 - dmX;
@@ -291,6 +227,7 @@ public:
         d2_hist[12] = new TH2D("d2_hist12_iQDS2_in", " d2_pos_iQDS2_in ", nbinX, dminX, dmaxX, nbinY, dminY, dmaxY);
         d2_hist[13] = new TH2D("d2_hist13_iQDS3S_in", " d2_pos_iQDS3S_in ", nbinX, -960., -900., nbinY, dminY, dmaxY);
         d2_hist[14] = new TH2D("d2_hist14_iQDS4_in", " d2_pos_iQDS4_in ", nbinX, -1800., -1700., nbinY, dminY, dmaxY);
+
         dmX = 100;
         nbinX = dmX * 2;
         dminX = -dmX;
@@ -313,6 +250,7 @@ public:
         nbinY = dmX * 2;
         d2_hist[24] = new TH2D("d2_hist24_iBDS1a_out", " d2_pos_iBDS1a_out ", nbinX, dminX, dmaxX, nbinY, dminY, dmaxY);
         d2_hist[25] = new TH2D("d2_hist25_iBDS1b_out", " d2_pos_iBDS1b_out ", nbinX, -380., -320., nbinY, dminY, dmaxY);
+
         dmX = 400;
         nbinX = dmX * 2;
         dminX = -1368 - dmX;
@@ -321,6 +259,7 @@ public:
         dmaxY = dmX;
         nbinY = dmX * 2;
         d2_hist[26] = new TH2D("d2_hist26_iBDS2_out", " d2_pos_iBDS2_out ", nbinX, dminX, dmaxX, nbinY, dminY, dmaxY);
+
         dmX = 50;
         nbinX = dmX * 2 * 10;
         dminX = -1525 - dmX;
@@ -329,6 +268,7 @@ public:
         dmaxY = dmX;
         nbinY = dmX * 2 * 10;
         d2_hist[27] = new TH2D("d2_hist27_iBDS3_out", " d2_pos_iBDS3_out ", nbinX, dminX, dmaxX, nbinY, dminY, dmaxY);
+
         // ---- position at the EXIT of quadr -----
         dmX = 100;
         nbinX = dmX * 2;
@@ -339,6 +279,7 @@ public:
         nbinY = dmX * 2;
         d2_hist[28] = new TH2D("d2_hist28_iQDS1a_out", " d2_pos_iQDS1a_out ", nbinX, dminX, dmaxX, nbinY, dminY, dmaxY);
         d2_hist[29] = new TH2D("d2_hist29_iQDS1S_out", " d2_pos_iQDS1S_out ", nbinX, -550., -490., nbinY, dminY, dmaxY);
+
         dmX = 140;
         nbinX = dmX * 2;
         dminX = -658 - dmX;
@@ -348,6 +289,7 @@ public:
         nbinY = dmX * 2;
         d2_hist[30] = new TH2D("d2_hist30_iQDS1b_out", " d2_pos_iQDS1b_out ", nbinX, dminX, dmaxX, nbinY, dminY, dmaxY);
         d2_hist[31] = new TH2D("d2_hist31_iQDS2S_out", " d2_pos_iQDS2S_out ", nbinX, -720., -660., nbinY, dminY, dmaxY);
+
         dmX = 200;
         nbinX = dmX * 2;
         dminX = -955 - dmX;
@@ -366,18 +308,7 @@ public:
             hmatrixOccupCM[in] = new TH2F(myname, myname, 100, -10., 10., 100, -10., 10.);
         }
 
-        for (int is = 0; is < detector->NannVAR; is++) {
-            if (is < NHIST) {
-                sprintf(Hname, "Likelihood:%02d", is);
-                HLikelihood[is] = new TH1D(Hname, Hname, 100, emin, emax * (1 + detector->fadc_slice / 2.));
-            }
-        }
-
-
         gStyle->SetOptStat("nemruo");
-        printf("booking done ! \n");
-
-
     }
 
     void FillGamDE(G4double de);  //--- fsv
@@ -468,43 +399,6 @@ public:
     G4int nbinThback;
     G4double Thhighback;
     G4double Thlowback;
-
-#
-#  histo2    Energy Loss (keV)
-    /plots/setnbinEn
-    /plots/setEnlow  MeV
-    /plots/setEnhigh  MeV
-#
-#  histo3   angle distribution at exit(deg)
-    /plots/setnbinTh
-    /plots/setThlow
-    /plots/setThhigh
-#
-#  histo4    lateral distribution at exit(mm)
-    /plots/setnbinR  100
-    /plots/setRlow   0.  mm
-    /plots/setRhigh  400. mm
-
-#
-#  histo6    angle distribution of backscattered primaries(deg)
-    /plots/setnbinThback  100
-    /plots/setThlowback   0.   deg
-    /plots/setThhighback  40. deg
-
-#
-#
-#  histo8    kinetic energy of the charged secondaries (MeV)
-    /plots/setnbinTsec  100
-    /plots/setTseclow   0.   MeV
-    /plots/setTsechigh  100.  MeV
-#
-#  histo9      z of secondary charged vertices(mm)
-    /plots/setnbinzvertex  100
-    /plots/setzlow   0.   mm
-    /plots/setzhigh  100. mm
-
-
-
 };
 
 #endif //G4E_JLEICHISTOGRAMMING_HH

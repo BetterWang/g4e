@@ -263,7 +263,7 @@ public:
 
     G4String rootFileName;
     G4double fadc_slice;
-    G4int NannVAR;
+
     //---  fsv move to public ---
     G4String fSetUp;
     G4Material *fAbsorberMaterial;

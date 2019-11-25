@@ -28,6 +28,7 @@
 
 #include "JLeicRunAction.hh"
 #include "JLeicHistoMConfig.hh"
+#include "JleicHistogramming.hh"
 #include "design_main/jleic/JLeicDetectorConstruction.hh"
 #include "PrimaryGeneratorAction.hh"
 
@@ -44,28 +45,21 @@
 
 
 
-JLeicRunAction::JLeicRunAction(JLeicDetectorConstruction *DET) : histName("histfile"), detector(DET), nbinStep(0), nbinEn(0), nbinTt(0), nbinTb(0), nbinTsec(0), nbinTh(0),
-                                                                 nbinThback(0), nbinR(0), nbinGamma(0), nbinvertexz(0)
+JLeicRunAction::JLeicRunAction(JLeicDetectorConstruction *DET, JLeicHistogramming *histos) : histName("histfile"), detector(DET), nbinStep(0), nbinEn(0), nbinTt(0), nbinTb(0), nbinTsec(0), nbinTh(0),
+                                                                 nbinThback(0), nbinR(0), nbinGamma(0), nbinvertexz(0), fHistos(histos)
 {
-    runMessenger = new JLeicHistoMConfig(this);
+    runMessenger = new JLeicHistoMConfig();
     saveRndm = 1;
 
 }
 
-////////////////////////////////////////////////////////////////////////////
 
 JLeicRunAction::~JLeicRunAction()
 {
     delete runMessenger;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 
-
-//////////////////////////////////////////////////////////////////////////////
-
-
-/////////////////////////////////////////////////////////////////////////////
 
 void JLeicRunAction::BeginOfRunAction(const G4Run *aRun)
 {
@@ -208,7 +202,7 @@ void JLeicRunAction::BeginOfRunAction(const G4Run *aRun)
     }
   } 
     */
-    printf("RunAction:: 6\n");
+
 
     if (nbinvertexz > 0) {
         dz = (zhigh - zlow) / nbinvertexz;
@@ -219,11 +213,11 @@ void JLeicRunAction::BeginOfRunAction(const G4Run *aRun)
             distvertexz[iz] = 0.;
         }
     }
-    printf("RunAction:: 9\n");
 
-    bookHisto();
 
-    printf("RunAction:: exit\n");
+
+
+
 
 
 }
@@ -661,53 +655,7 @@ void JLeicRunAction::EndOfRunAction(const G4Run *)
         CLHEP::HepRandom::saveEngineStatus("endOfRun.rndm");
     }
 
-    //============================ SAVE hist ======================================
-    printf(" SAVE hist to file: %s\n", histName.c_str());
-    TFile *myRootfile = new TFile("histos.root", "RECREATE");
 
-    if (histo1) {
-        printf(" Write histo1 to file %s, histo1=%p f=%p \n", histName.c_str(), histo1, myRootfile);
-        histo1->Write();
-    }
-    if (histo2) {
-        printf(" Write histo2 to file %s, histo2=%p f=%p \n", histName.c_str(), histo2, myRootfile);
-        histo2->Write();
-    }
-    if (histo3) histo3->Write();
-    if (histo4) histo4->Write();
-    if (histo5) histo5->Write();
-    if (histo6) histo6->Write();
-    if (histo7) histo7->Write();
-    if (histo8) histo8->Write();
-    if (histo9) histo9->Write();
-    if (histo10) histo10->Write();
-    if (histo11) histo11->Write();
-    if (histo12) histo12->Write();
-    if (histo13) histo13->Write();
-    if (histo14) histo14->Write();
-    //------------------------------------------------------------
-    for (int ihi = 0; ihi < NHIST; ihi++) {
-        printf(" Test hist%d  hist=%p f=%p \n", ihi, hist[ihi], myRootfile);
-
-        if (d2_hist[ihi]) d2_hist[ihi]->Write();
-        if (hist[ihi]) {
-            hist[ihi]->Write();
-            printf(" Write hist[%d] to file %s, hist=%p f=%p \n", ihi, histName.c_str(), myRootfile);
-        }
-    }
-    //------------------------------------------------------------
-    for (int in = 0; in < 12; in++) {
-        hmatrixOccup[in]->Write();
-        hmatrixOccupCM[in]->Write();
-    }
-
-
-    //------------------------------------------------------------
-    for (int ihi = 0; ihi < NHIST; ihi++) {
-        if (HLikelihood[ihi]) HLikelihood[ihi]->Write();
-    }
-
-    printf(" Close file %s, f=%p \n", histName.c_str(), myRootfile);
     myRootfile->Close();
 
 

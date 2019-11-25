@@ -43,8 +43,8 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
 class JLeicDetectorConstruction;
-
 class JLeicHistoMConfig;
+class JLeicHistogramming;
 
 class G4Run;
 
@@ -53,14 +53,14 @@ class G4Run;
 class JLeicRunAction : public G4UserRunAction
 {
 public:
-    JLeicRunAction(JLeicDetectorConstruction *);
+    explicit JLeicRunAction(JLeicDetectorConstruction *, JLeicHistogramming *histos);
 
-    ~JLeicRunAction();
+    ~JLeicRunAction() override;
 
 public:
-    void BeginOfRunAction(const G4Run *);
+    void BeginOfRunAction(const G4Run *) override;
 
-    void EndOfRunAction(const G4Run *);
+    void EndOfRunAction(const G4Run *) override;
 
     void CountEvent();
 
@@ -80,10 +80,6 @@ public:
     g4e::RootOutput mRootEventsOut;
     TFile *mHitsFile = nullptr;
 
-
-private:
-
-    void bookHisto();
 
 private:
 
@@ -137,6 +133,7 @@ private:
     G4int nbinvertexz;
 
     JLeicHistoMConfig *runMessenger;
+    JLeicHistogramming *fHistos;
     G4int saveRndm;
 };
 

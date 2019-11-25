@@ -12,7 +12,7 @@
 #include "G4PVPlacement.hh"
 #include "G4UImessenger.hh"
 #include "G4SystemOfUnits.hh"
-#include "../../../design_main/jleic/JLeicSolenoid3D.hh"
+#include "JLeicSolenoid3D.hh"
 #include "spdlog/spdlog.h"
 
 

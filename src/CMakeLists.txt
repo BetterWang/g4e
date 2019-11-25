@@ -40,17 +40,11 @@ target_sources_local(g4e
         JLeicPhysicsListMessenger.cc
         JLeicPhysicsListMessenger.hh
 
-        JLeicRunAction.cc
-
-        JLeicRunAction.hh
-
         JLeicHistoMConfig.cc
         JLeicHistoMConfig.hh
 
         JLeicStepCut.cc
         JLeicStepCut.hh
-
-
 
         JLeicSteppingVerbose.cc
         JLeicSteppingVerbose.hh

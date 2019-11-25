@@ -16,6 +16,9 @@ target_sources_local(g4e
             JLeicEventActionMessenger.cc
             JLeicEventActionMessenger.hh
 
+            JLeicRunAction.cc
+            JLeicRunAction.hh
+
             JLeicSolenoid3D.cc
             JLeicSolenoid3D.hh
 

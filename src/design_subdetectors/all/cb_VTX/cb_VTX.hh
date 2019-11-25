@@ -1,7 +1,3 @@
-//
-// Created by yulia on 6/6/19.
-//
-
 #ifndef G4E_CB_VTX_HH
 #define G4E_CB_VTX_HH
 
@@ -227,7 +223,7 @@ public:
                     pxdPixel_log[lay]->SetVisAttributes(pixelVisAtt);
 
                     // divide in pixels
-                    G4PVDivision *pixelDiv = new G4PVDivision(abname,
+                    auto pixelDiv = new G4PVDivision(abname,
                                                               pxdPixel_log[lay],
                                                               pxdSlice_log[lay],
                                                               kYAxis,
@@ -242,7 +238,6 @@ public:
     }
     inline void ConstructLaddersEndcaps() {
         static char abname[256];
-        auto cfg = ConstructionConfig;
         int lay = 0;
         int NUMF;
         double phi, x,y,z;

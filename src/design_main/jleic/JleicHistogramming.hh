@@ -6,7 +6,6 @@
 #define G4E_JLEICHISTOGRAMMING_HH
 
 
-#include <globals.hh>
 
 class TH1D;
 class TH2D;
@@ -34,36 +33,23 @@ public:
     void FillGamAngle(G4double theta); //--- fsv
     void AddTrRef(G4double tr, G4double ref);
 
-    void FillEn(G4double En);
+        //------------------------------------------------------------
+        for (int ihi = 0; ihi < NHIST; ihi++) {
+            if (d2_hist[ihi]) d2_hist[ihi]->Write();
+            if (hist[ihi])  hist[ihi]->Write();
+        }
 
-    void FillTh(G4double Th);
+        //------------------------------------------------------------
+        for (int in = 0; in < 12; in++) {
+            hmatrixOccup[in]->Write();
+            hmatrixOccupCM[in]->Write();
+        }
 
-    void FillThBack(G4double Th);
-
-    void FillR(G4double R);
-
-    void FillTt(G4double Tt);
-
-    void FillTb(G4double Tt);
-
-    void FillTsec(G4double T);
-
-    void FillGammaInSpectrum(G4double E);
-
-    void FillGammaOutSpectrum(G4double E);
-
-    void FillGammaEStep(G4double E);
-
-    void FillNbOfSteps(G4double nstep);
-
-    void Fillvertexz(G4double z);
-
-
-
-//    void SetRndmFreq(G4int val) { saveRndm = val; }
-
-//    G4int GetRndmFreq() { return saveRndm; }
-
+        //------------------------------------------------------------
+        for (int ihi = 0; ihi < NHIST; ihi++) {
+            if (HLikelihood[ihi]) HLikelihood[ihi]->Write();
+        }
+    }
 
 // #--------------------------------------------------------------------
 // #----- HISTOGRAMS ---------------------------------------------------

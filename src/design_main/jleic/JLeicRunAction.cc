@@ -29,7 +29,7 @@
 #include "JLeicRunAction.hh"
 #include "JLeicHistoMConfig.hh"
 #include "JleicHistogramming.hh"
-#include "design_main/jleic/JLeicDetectorConstruction.hh"
+#include "JLeicDetectorConstruction.hh"
 #include "PrimaryGeneratorAction.hh"
 
 #include "G4Run.hh"
@@ -214,13 +214,6 @@ void JLeicRunAction::BeginOfRunAction(const G4Run *aRun)
             distvertexz[iz] = 0.;
         }
     }
-
-
-
-
-
-
-
 }
 
 
@@ -656,7 +649,8 @@ void JLeicRunAction::EndOfRunAction(const G4Run *)
         CLHEP::HepRandom::saveEngineStatus("endOfRun.rndm");
     }
 
-
+    auto myRootfile = new TFile("histos.root", "RECREATE");
+    fHistos->Write(myRootfile);
     myRootfile->Close();
 
 
@@ -715,335 +709,335 @@ void JLeicRunAction::AddTrRef(G4double tr, G4double ref)
     Transmitted += tr;
     Reflected += ref;
 }
-
-/////////////////////////////////////////////////////////////////////////////
-
-void JLeicRunAction::FillNbOfSteps(G4double ns)
-{
-
-    const G4double eps = 1.e-10;
-    G4double n, bin;
-    G4int ibin;
-
-    if (histo1) {
-        entryStep += 1.;
-
-        if (ns < Steplow)
-            underStep += 1.;
-        else if (ns >= Stephigh)
-            overStep += 1.;
-        else {
-            n = ns + eps;
-            bin = (n - Steplow) / dStep;
-            ibin = (G4int) bin;
-            distStep[ibin] += 1.;
-        }
-        //histo1->accumulate(ns) ;
-        histo1->Fill(ns);
-    }
-
-}
-//////////////////////////////////////////////////////////////////////////////
-
-void JLeicRunAction::FillGamAngle(G4double theta)
-{
-
-    if (histo13) histo13->Fill(theta / mrad);
-
-}
-//////////////////////////////////////////////////////////////////////////////
-
-void JLeicRunAction::FillGamDE(G4double de)
-{
-
-    if (histo11) histo11->Fill(de / keV);
-
-}
-//////////////////////////////////////////////////////////////////////////////
-
-void JLeicRunAction::FillEn(G4double En)
-{
-
-    // #ifndef G4NOHIST
-
-
-
-    G4double bin;
-    G4int ibin;
-
-    //  if(histo2)
-    {
-        entryEn += 1.;
-
-        if (En < Enlow) underEn += 1.;
-        else if (En >= Enhigh) overEn += 1.;
-        else {
-            bin = (En - Enlow) / dEn;
-            ibin = (G4int) bin;
-            distEn[ibin] += 1.;
-        }
-        //    histo2->accumulate(En/keV) ; // was /MeV
-        if (histo2) histo2->Fill(En / keV); // was /MeV
-    }
-
-    // #endif
-
-
-
-}
-
-////////////////////////////////////////////////////////////////////////////
-
-void JLeicRunAction::FillTt(G4double En)
-{
-
-    G4double bin;
-    G4int ibin;
-
-    if (histo5) {
-        entryTt += 1.;
-        Ttmean += En;
-        Tt2mean += En * En;
-
-        if (En < Ttlow)
-            underTt += 1.;
-        else if (En >= Tthigh)
-            overTt += 1.;
-        else {
-            bin = (En - Ttlow) / dTt;
-            ibin = (G4int) bin;
-            distTt[ibin] += 1.;
-        }
-        //histo5->accumulate(En/MeV) ;
-        histo5->Fill(En / MeV);
-    }
-
-}
-
-//////////////////////////////////////////////////////////////////////////////
-
-void JLeicRunAction::FillTb(G4double En)
-{
-
-    G4double bin;
-    G4int ibin;
-
-    if (histo7) {
-        entryTb += 1.;
-        Tbmean += En;
-        Tb2mean += En * En;
-
-        if (En < Tblow)
-            underTb += 1.;
-        else if (En >= Tbhigh)
-            overTb += 1.;
-        else {
-            bin = (En - Tblow) / dTb;
-            ibin = (G4int) bin;
-            distTb[ibin] += 1.;
-        }
-        //histo7->accumulate(En/MeV) ;
-        histo7->Fill(En / MeV);
-    }
-
-}
-
+//
 ///////////////////////////////////////////////////////////////////////////////
-
-void JLeicRunAction::FillTsec(G4double En)
-{
-
-    G4double bin;
-    G4int ibin;
-
-    if (histo8) {
-        entryTsec += 1.;
-
-        if (En < Tseclow)
-            underTsec += 1.;
-        else if (En >= Tsechigh)
-            overTsec += 1.;
-        else {
-            bin = (En - Tseclow) / dTsec;
-            ibin = (G4int) bin;
-            distTsec[ibin] += 1.;
-        }
-        //histo8->accumulate(En/MeV) ;
-        histo8->Fill(En / MeV);
-    }
-
-}
-/////////////////////////////////////////////////////////////////////////////
-
-void JLeicRunAction::FillGammaInSpectrum(G4double En)
-{
-    histo12->Fill(En / keV);
-}
-
-void JLeicRunAction::FillGammaEStep(G4double En)
-{
-
-    //printf("FillGammaEStep:: fill  E=%f\n",En/keV);
-    histo14->Fill(En / keV);
-}
-/////////////////////////////////////////////////////////////////////////////
-
-void JLeicRunAction::FillGammaOutSpectrum(G4double En)
-{
-
-    G4double bin;
-    G4int ibin;
-
-    if (histo10) {
-        entryGamma += 1.;
-        /*
-        if(En<ElowGamma)
-          underGamma += 1. ;
-        else if(En>=EhighGamma)
-          overGamma  += 1. ;
-        else
-        {
-          bin = std::log(En/ElowGamma)/dEGamma;
-          ibin= (G4int)bin ;
-          distGamma[ibin] += 1. ;
-        }
-        */
-        //histo10->accumulate(std::log10(En/MeV)) ;
-        //histo10->Fill(std::log10(En/MeV)) ;
-        histo10->Fill(En / keV);
-    }
-
-}
-
+//
+//void JLeicRunAction::FillNbOfSteps(G4double ns)
+//{
+//
+//    const G4double eps = 1.e-10;
+//    G4double n, bin;
+//    G4int ibin;
+//
+//    if (histo1) {
+//        entryStep += 1.;
+//
+//        if (ns < Steplow)
+//            underStep += 1.;
+//        else if (ns >= Stephigh)
+//            overStep += 1.;
+//        else {
+//            n = ns + eps;
+//            bin = (n - Steplow) / dStep;
+//            ibin = (G4int) bin;
+//            distStep[ibin] += 1.;
+//        }
+//        //histo1->accumulate(ns) ;
+//        histo1->Fill(ns);
+//    }
+//
+//}
 ////////////////////////////////////////////////////////////////////////////////
-
-void JLeicRunAction::FillTh(G4double Th)
-{
-
-    static const G4double cn = CLHEP::pi / (64800. * dTh);
-    static const G4double cs = CLHEP::pi / (64800. * (std::cos(Thlow) - std::cos(Thlow + dTh)));
-    G4double bin, Thbin, wg;
-    G4int ibin;
-
-    if (histo3) {
-        entryTh += 1.;
-
-        wg = 0.;
-
-        if (Th < Thlow)
-            underTh += 1.;
-        else if (Th >= Thhigh)
-            overTh += 1.;
-        else {
-            bin = (Th - Thlow) / dTh;
-            ibin = (G4int) bin;
-            Thbin = Thlow + ibin * dTh;
-            if (Th > 0.001 * dTh)
-                wg = cn / std::sin(Th);
-            else {
-                G4double thdeg = Th * 180. / CLHEP::pi;
-                G4cout << "theta < 0.001*dth (from plot excluded) theta=" << std::setw(12) << std::setprecision(4) << thdeg << G4endl;
-                wg = 0.;
-            }
-            distTh[ibin] += wg;
-        }
-        //G4double thdeg=Th*180./pi;
-        //G4cout << "theta="<< std::setw(12) << std::setprecision(4) << thdeg << ", wg=" << wg << G4endl;
-        //histo3->accumulate(Th/deg, wg) ;
-        histo3->Fill(Th / deg, wg);
-    }
-
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-void JLeicRunAction::FillThBack(G4double Th)
-{
-
-    static const G4double cn = CLHEP::pi / (64800. * dThback);
-    static const G4double cs = CLHEP::pi / (64800. * (std::cos(Thlowback) - std::cos(Thlowback + dThback)));
-    G4double bin, Thbin, wg;
-    G4int ibin;
-
-    if (histo6) {
-        entryThback += 1.;
-
-        if (Th < Thlowback)
-            underThback += 1.;
-        else if (Th >= Thhighback)
-            overThback += 1.;
-        else {
-            bin = (Th - Thlowback) / dThback;
-            ibin = (G4int) bin;
-            Thbin = Thlowback + ibin * dThback;
-            if (Th > 0.001 * dThback)
-                wg = cn / std::sin(Th);
-            else {
-                G4double thdeg = Th * 180. / CLHEP::pi;
-                G4cout << "theta < 0.001*dth (from plot excluded) theta=" << std::setw(12) << std::setprecision(4) << thdeg << G4endl;
-                wg = 0.;
-            }
-            distThback[ibin] += wg;
-        }
-        //histo6->accumulate(Th/deg, wg) ;
-        histo6->Fill(Th / deg, wg);
-    }
-
-}
-
-//////////////////////////////////////////////////////////////////////////
-
-void JLeicRunAction::FillR(G4double R)
-{
-
-    G4double bin;
-    G4int ibin;
-
-    if (histo4) {
-        entryR += 1.;
-        Rmean += R;
-        R2mean += R * R;
-
-        if (R < Rlow)
-            underR += 1.;
-        else if (R >= Rhigh)
-            overR += 1.;
-        else {
-            bin = (R - Rlow) / dR;
-            ibin = (G4int) bin;
-            distR[ibin] += 1.;
-        }
-        //histo4->accumulate(R/mm) ;
-        histo4->Fill(R / mm);
-    }
-
-}
-
-/////////////////////////////////////////////////////////////////////////////
-
-void JLeicRunAction::Fillvertexz(G4double z)
-{
-
-    G4double bin;
-    G4int ibin;
-
-    if (histo9) {
-        entryvertexz += 1.;
-
-        if (z < zlow)
-            undervertexz += 1.;
-        else if (z >= zhigh)
-            oververtexz += 1.;
-        else {
-            bin = (z - zlow) / dz;
-            ibin = (G4int) bin;
-            distvertexz[ibin] += 1.;
-        }
-        //histo9->accumulate(z/mm) ;
-        histo9->Fill(z / mm);
-    }
-
-}
+//
+//void JLeicRunAction::FillGamAngle(G4double theta)
+//{
+//
+//    if (histo13) histo13->Fill(theta / mrad);
+//
+//}
+////////////////////////////////////////////////////////////////////////////////
+//
+//void JLeicRunAction::FillGamDE(G4double de)
+//{
+//
+//    if (histo11) histo11->Fill(de / keV);
+//
+//}
+////////////////////////////////////////////////////////////////////////////////
+//
+//void JLeicRunAction::FillEn(G4double En)
+//{
+//
+//    // #ifndef G4NOHIST
+//
+//
+//
+//    G4double bin;
+//    G4int ibin;
+//
+//    //  if(histo2)
+//    {
+//        entryEn += 1.;
+//
+//        if (En < Enlow) underEn += 1.;
+//        else if (En >= Enhigh) overEn += 1.;
+//        else {
+//            bin = (En - Enlow) / dEn;
+//            ibin = (G4int) bin;
+//            distEn[ibin] += 1.;
+//        }
+//        //    histo2->accumulate(En/keV) ; // was /MeV
+//        if (histo2) histo2->Fill(En / keV); // was /MeV
+//    }
+//
+//    // #endif
+//
+//
+//
+//}
+//
+//////////////////////////////////////////////////////////////////////////////
+//
+//void JLeicRunAction::FillTt(G4double En)
+//{
+//
+//    G4double bin;
+//    G4int ibin;
+//
+//    if (histo5) {
+//        entryTt += 1.;
+//        Ttmean += En;
+//        Tt2mean += En * En;
+//
+//        if (En < Ttlow)
+//            underTt += 1.;
+//        else if (En >= Tthigh)
+//            overTt += 1.;
+//        else {
+//            bin = (En - Ttlow) / dTt;
+//            ibin = (G4int) bin;
+//            distTt[ibin] += 1.;
+//        }
+//        //histo5->accumulate(En/MeV) ;
+//        histo5->Fill(En / MeV);
+//    }
+//
+//}
+//
+////////////////////////////////////////////////////////////////////////////////
+//
+//void JLeicRunAction::FillTb(G4double En)
+//{
+//
+//    G4double bin;
+//    G4int ibin;
+//
+//    if (histo7) {
+//        entryTb += 1.;
+//        Tbmean += En;
+//        Tb2mean += En * En;
+//
+//        if (En < Tblow)
+//            underTb += 1.;
+//        else if (En >= Tbhigh)
+//            overTb += 1.;
+//        else {
+//            bin = (En - Tblow) / dTb;
+//            ibin = (G4int) bin;
+//            distTb[ibin] += 1.;
+//        }
+//        //histo7->accumulate(En/MeV) ;
+//        histo7->Fill(En / MeV);
+//    }
+//
+//}
+//
+/////////////////////////////////////////////////////////////////////////////////
+//
+//void JLeicRunAction::FillTsec(G4double En)
+//{
+//
+//    G4double bin;
+//    G4int ibin;
+//
+//    if (histo8) {
+//        entryTsec += 1.;
+//
+//        if (En < Tseclow)
+//            underTsec += 1.;
+//        else if (En >= Tsechigh)
+//            overTsec += 1.;
+//        else {
+//            bin = (En - Tseclow) / dTsec;
+//            ibin = (G4int) bin;
+//            distTsec[ibin] += 1.;
+//        }
+//        //histo8->accumulate(En/MeV) ;
+//        histo8->Fill(En / MeV);
+//    }
+//
+//}
+///////////////////////////////////////////////////////////////////////////////
+//
+//void JLeicRunAction::FillGammaInSpectrum(G4double En)
+//{
+//    histo12->Fill(En / keV);
+//}
+//
+//void JLeicRunAction::FillGammaEStep(G4double En)
+//{
+//
+//    //printf("FillGammaEStep:: fill  E=%f\n",En/keV);
+//    histo14->Fill(En / keV);
+//}
+///////////////////////////////////////////////////////////////////////////////
+//
+//void JLeicRunAction::FillGammaOutSpectrum(G4double En)
+//{
+//
+//    G4double bin;
+//    G4int ibin;
+//
+//    if (histo10) {
+//        entryGamma += 1.;
+//        /*
+//        if(En<ElowGamma)
+//          underGamma += 1. ;
+//        else if(En>=EhighGamma)
+//          overGamma  += 1. ;
+//        else
+//        {
+//          bin = std::log(En/ElowGamma)/dEGamma;
+//          ibin= (G4int)bin ;
+//          distGamma[ibin] += 1. ;
+//        }
+//        */
+//        //histo10->accumulate(std::log10(En/MeV)) ;
+//        //histo10->Fill(std::log10(En/MeV)) ;
+//        histo10->Fill(En / keV);
+//    }
+//
+//}
+//
+//////////////////////////////////////////////////////////////////////////////////
+//
+//void JLeicRunAction::FillTh(G4double Th)
+//{
+//
+//    static const G4double cn = CLHEP::pi / (64800. * dTh);
+//    static const G4double cs = CLHEP::pi / (64800. * (std::cos(Thlow) - std::cos(Thlow + dTh)));
+//    G4double bin, Thbin, wg;
+//    G4int ibin;
+//
+//    if (histo3) {
+//        entryTh += 1.;
+//
+//        wg = 0.;
+//
+//        if (Th < Thlow)
+//            underTh += 1.;
+//        else if (Th >= Thhigh)
+//            overTh += 1.;
+//        else {
+//            bin = (Th - Thlow) / dTh;
+//            ibin = (G4int) bin;
+//            Thbin = Thlow + ibin * dTh;
+//            if (Th > 0.001 * dTh)
+//                wg = cn / std::sin(Th);
+//            else {
+//                G4double thdeg = Th * 180. / CLHEP::pi;
+//                G4cout << "theta < 0.001*dth (from plot excluded) theta=" << std::setw(12) << std::setprecision(4) << thdeg << G4endl;
+//                wg = 0.;
+//            }
+//            distTh[ibin] += wg;
+//        }
+//        //G4double thdeg=Th*180./pi;
+//        //G4cout << "theta="<< std::setw(12) << std::setprecision(4) << thdeg << ", wg=" << wg << G4endl;
+//        //histo3->accumulate(Th/deg, wg) ;
+//        histo3->Fill(Th / deg, wg);
+//    }
+//
+//}
+//
+////////////////////////////////////////////////////////////////////////////
+//
+//void JLeicRunAction::FillThBack(G4double Th)
+//{
+//
+//    static const G4double cn = CLHEP::pi / (64800. * dThback);
+//    static const G4double cs = CLHEP::pi / (64800. * (std::cos(Thlowback) - std::cos(Thlowback + dThback)));
+//    G4double bin, Thbin, wg;
+//    G4int ibin;
+//
+//    if (histo6) {
+//        entryThback += 1.;
+//
+//        if (Th < Thlowback)
+//            underThback += 1.;
+//        else if (Th >= Thhighback)
+//            overThback += 1.;
+//        else {
+//            bin = (Th - Thlowback) / dThback;
+//            ibin = (G4int) bin;
+//            Thbin = Thlowback + ibin * dThback;
+//            if (Th > 0.001 * dThback)
+//                wg = cn / std::sin(Th);
+//            else {
+//                G4double thdeg = Th * 180. / CLHEP::pi;
+//                G4cout << "theta < 0.001*dth (from plot excluded) theta=" << std::setw(12) << std::setprecision(4) << thdeg << G4endl;
+//                wg = 0.;
+//            }
+//            distThback[ibin] += wg;
+//        }
+//        //histo6->accumulate(Th/deg, wg) ;
+//        histo6->Fill(Th / deg, wg);
+//    }
+//
+//}
+//
+////////////////////////////////////////////////////////////////////////////
+//
+//void JLeicRunAction::FillR(G4double R)
+//{
+//
+//    G4double bin;
+//    G4int ibin;
+//
+//    if (histo4) {
+//        entryR += 1.;
+//        Rmean += R;
+//        R2mean += R * R;
+//
+//        if (R < Rlow)
+//            underR += 1.;
+//        else if (R >= Rhigh)
+//            overR += 1.;
+//        else {
+//            bin = (R - Rlow) / dR;
+//            ibin = (G4int) bin;
+//            distR[ibin] += 1.;
+//        }
+//        //histo4->accumulate(R/mm) ;
+//        histo4->Fill(R / mm);
+//    }
+//
+//}
+//
+///////////////////////////////////////////////////////////////////////////////
+//
+//void JLeicRunAction::Fillvertexz(G4double z)
+//{
+//
+//    G4double bin;
+//    G4int ibin;
+//
+//    if (histo9) {
+//        entryvertexz += 1.;
+//
+//        if (z < zlow)
+//            undervertexz += 1.;
+//        else if (z >= zhigh)
+//            oververtexz += 1.;
+//        else {
+//            bin = (z - zlow) / dz;
+//            ibin = (G4int) bin;
+//            distvertexz[ibin] += 1.;
+//        }
+//        //histo9->accumulate(z/mm) ;
+//        histo9->Fill(z / mm);
+//    }
+//
+//}
 
 
 void JLeicRunAction::CountParticles(G4double nch, G4double nne)

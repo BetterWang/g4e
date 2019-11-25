@@ -111,14 +111,15 @@ namespace g4e {
          * @param line_reco_func_ function to decide on the whole line
          * @param token_reco_func_ function to decide on tokenized line
          */
-        TextEventFileReader(const std::string input_file_name_arg,
+        TextEventFileReader(std::string input_file_name_arg,
                             TextEventFileReader::LineRecognisionFunc line_reco_func_,
                             TextEventFileReader::TokensRecognisionFunc token_reco_func_) :
-                file_name(input_file_name_arg),
-                line_reco_func(line_reco_func_),
-                token_reco_func(token_reco_func_),
+                file_name(std::move(input_file_name_arg)),
                 current_event(nullptr),
-                compiled_event(nullptr)
+                compiled_event(nullptr),
+                line_reco_func(line_reco_func_),
+                token_reco_func(token_reco_func_)
+
         {
             input_file.open(file_name, std::ifstream::in);
             if (input_file.fail()) {

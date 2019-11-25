@@ -63,6 +63,7 @@ JLeicRunAction::~JLeicRunAction()
 
 void JLeicRunAction::BeginOfRunAction(const G4Run *aRun)
 {
+    fmt::print()
     printf("RunAction:: Enter\n");
     G4cout << "### Run " << aRun->GetRunID() << " start." << G4endl;
 

@@ -23,11 +23,10 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-//
 
 #include "design_main/jleic/JLeicDetectorConstruction.hh"
 #include "JLeicSteppingAction.hh"
-#include "MulticastEventAction.hh"
+#include "JLeicEventAction.hh"
 #include "JLeicRunAction.hh"
 
 #include <G4ios.hh>
@@ -39,7 +38,8 @@
 
 #include "TLorentzVector.h"
 
-int FIRST = 0, FIRSTFOUT = 0;
+int FIRST = 0,
+FIRSTFOUT = 0;
 int InsideD1 = 0, InsideQ4 = 0;
 int myevno = 0;
 static double pt = 0., pz = 0., xL = 0.;
@@ -47,8 +47,13 @@ FILE *rc5;
 TLorentzVector ka;
 
 
-JLeicSteppingAction::JLeicSteppingAction(JLeicDetectorConstruction *detectorConstruction, MulticastEventAction *eventAction, JLeicRunAction *runAction) : detector(
-        detectorConstruction), eventaction(eventAction), runaction(runAction), IDold(-1), evnoold(-1) {
+JLeicSteppingAction::JLeicSteppingAction(JLeicDetectorConstruction *detectorConstruction, JLeicEventAction *eventAction, JLeicRunAction *runAction) :
+    detector(detectorConstruction),
+    eventaction(eventAction),
+    runaction(runAction),
+    IDold(-1),
+    evnoold(-1)
+{
     //steppingMessenger = new JLeicSteppingMessenger(this);
 }
 
@@ -414,13 +419,16 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep) {
 
     //----------------------------------------------------------------------------
     //-- STEP in pxdPixel
-    if (aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName() == "pxdPixel" || aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName() == "svdPixel" ||
-        aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName() == "Absorber") {
+    if (aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName() == "pxdPixel" ||
+        aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName() == "svdPixel" ||
+        aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName() == "Absorber")
+    {
 
         printf("step in absorber de=%f  step=%f Particle=%s energy=%f [mev]\n", aStep->GetTotalEnergyDeposit() / keV, aStep->GetStepLength() / um,
                aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName().c_str(), aStep->GetTrack()->GetKineticEnergy() / MeV);
 
         zend = aStep->GetTrack()->GetPosition().z();
+
         runaction->FillHist(7, zend - detector->fConfig.ci_TRD.fAbsorberZ + detector->fConfig.ci_TRD.fAbsorberThickness / 2., aStep->GetTotalEnergyDeposit() / keV);
         if (((aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName()) == "gamma")) {
             runaction->FillHist(27, aStep->GetTotalEnergyDeposit() / keV, 1.);

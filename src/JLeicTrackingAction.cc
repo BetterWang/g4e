@@ -41,7 +41,6 @@ JLeicTrackingAction::JLeicTrackingAction() : G4UserTrackingAction() {}
 
 void JLeicTrackingAction::PreUserTrackingAction(const G4Track *aTrack)
 {
-
     if (aTrack->GetParentID() == 1 && aTrack->GetKineticEnergy() > 100. * GeV) {
         G4cout << "[JLeicTrackingAction::DEBUG]" << G4endl;
         G4cout << " Track ID:          " << aTrack->GetTrackID() << G4endl;
@@ -56,6 +55,4 @@ void JLeicTrackingAction::PreUserTrackingAction(const G4Track *aTrack)
         if (aTrack->GetTrackID() != 1)
             const_cast<G4Track *>(aTrack)->SetTrackStatus(fKillTrackAndSecondaries);
     }
-
-    return;
 }

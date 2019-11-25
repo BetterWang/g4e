@@ -7,8 +7,6 @@
 #include "globals.hh"
 
 
-
-
 class MulticastEventAction : public G4UserEventAction
 {
 public:

@@ -23,42 +23,49 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
-/// \file electromagnetic/VertexEIC/include/JLeicEventActionMessenger.hh
-/// \brief Definition of the JLeicEventActionMessenger class
 //
-//
-// $Id: JLeicEventActionMessenger.hh 66241 2012-12-13 18:34:42Z gunter $
+// $Id: JLeicSteppingAction.hh,v 1.3 2006-06-29 16:38:14 gunter Exp $
+// GEANT4 tag $Name: geant4-09-04-patch-01 $
 //
 // 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-#ifndef JLeicEventActionMessenger_h
-#define JLeicEventActionMessenger_h 1
+#ifndef JLeicSteppingAction_h
+#define JLeicSteppingAction_h 1
 
+#include "G4UserSteppingAction.hh"
+#include "G4Event.hh"
+#include "G4EventManager.hh"
+#include "G4ios.hh"
 #include "globals.hh"
-#include "G4UImessenger.hh"
 
-class MulticastEventAction;
-class G4UIcmdWithAString;
-class G4UIcmdWithAnInteger;
+class JLeicDetectorConstruction;
+class JLeicRunAction;
+class JLeicEventAction;
+class JLeicSteppingMessenger;
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-class JLeicEventActionMessenger : public G4UImessenger
+class JLeicSteppingAction : public G4UserSteppingAction
 {
-public:
-    explicit JLeicEventActionMessenger(MulticastEventAction *);
-    ~JLeicEventActionMessenger() override;
+  public:
+    JLeicSteppingAction(JLeicDetectorConstruction*, JLeicEventAction*, JLeicRunAction* );
+   ~JLeicSteppingAction();
 
-    void SetNewValue(G4UIcommand *, G4String) override;
-    virtual G4String GetCurrentValue(G4UIcommand * command);
+    void UserSteppingAction(const G4Step*);
+   
+  FILE* rc{};
+  private:
+    JLeicDetectorConstruction* detector;
+    JLeicEventAction*          eventaction;
+    JLeicRunAction*            runaction;
+    JLeicSteppingMessenger*    steppingMessenger{};
 
+    G4int IDnow{},IDold;
+    G4int evnoold ;
 
-private:
-    MulticastEventAction *fEventAction;
-    G4UIcmdWithAnInteger *fVerboseCmd;
-    G4UIcmdWithAnInteger *fPrintCmd;
 };
 
 #endif

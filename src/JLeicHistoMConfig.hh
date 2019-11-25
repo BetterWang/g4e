@@ -42,10 +42,6 @@
 #include "G4UImessenger.hh"
 #include "G4ios.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
-
-class JLeicRunAction;
-
 class G4UIdirectory;
 
 class G4UIcmdWithAnInteger;
@@ -56,25 +52,21 @@ class G4UIcmdWithADouble;
 
 class G4UIcmdWithAString;
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
-
-class JLeicRunMessenger : public G4UImessenger
+class JLeicHistoMConfig : public G4UImessenger
 {
 public:
 
-    JLeicRunMessenger(JLeicRunAction *);
+    JLeicHistoMConfig();
 
-    ~JLeicRunMessenger();
+    ~JLeicHistoMConfig();
 
     void SetNewValue(G4UIcommand *, G4String);
 
 private:
 
-    JLeicRunAction *runAction;
-
     G4UIdirectory *plotDir;
 
-    G4UIcmdWithAString *sethistNameCmd;
+    G4UIcmdWithAString *fDirNameCmd;
 
     G4UIcmdWithAnInteger *setnbinStepCmd;
     G4UIcmdWithADouble *setSteplowCmd;
@@ -119,6 +111,8 @@ private:
     G4UIdirectory *RndmDir;
     G4UIcmdWithAnInteger *RndmSaveCmd;
     G4UIcmdWithAString *RndmReadCmd;
+
+
 
 };
 

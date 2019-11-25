@@ -44,7 +44,7 @@
 
 class JLeicDetectorConstruction;
 
-class JLeicRunMessenger;
+class JLeicHistoMConfig;
 
 class G4Run;
 
@@ -76,126 +76,7 @@ public:
 
     void AddnStepsNeutral(G4double ns);
 
-    void FillGamDE(G4double de);  //--- fsv
-    void FillGamAngle(G4double theta); //--- fsv
-    void AddTrRef(G4double tr, G4double ref);
 
-    void FillEn(G4double En);
-
-    void FillTh(G4double Th);
-
-    void FillThBack(G4double Th);
-
-    void FillR(G4double R);
-
-    void FillTt(G4double Tt);
-
-    void FillTb(G4double Tt);
-
-    void FillTsec(G4double T);
-
-    void FillGammaInSpectrum(G4double E);
-
-    void FillGammaOutSpectrum(G4double E);
-
-    void FillGammaEStep(G4double E);
-
-    void FillNbOfSteps(G4double nstep);
-
-    void Fillvertexz(G4double z);
-
-    void SethistName(G4String name);
-
-    void SetnbinStep(G4int nbin);
-
-    void SetSteplow(G4double Slow);
-
-    void SetStephigh(G4double Shigh);
-
-    void SetnbinEn(G4int nbin);
-
-    void SetEnlow(G4double Elow);
-
-    void SetEnhigh(G4double Enhigh);
-
-    void SetnbinTt(G4int nbin);
-
-    void SetTtlow(G4double Ttlow);
-
-    void SetTthigh(G4double Tthigh);
-
-    void SetnbinTb(G4int nbin);
-
-    void SetTblow(G4double Tblow);
-
-    void SetTbhigh(G4double Tbhigh);
-
-    void SetnbinTsec(G4int nbin);
-
-    void SetTseclow(G4double Tlow);
-
-    void SetTsechigh(G4double Thigh);
-
-    void SetnbinTh(G4int nbin);
-
-    void SetThlow(G4double Thlow);
-
-    void SetThhigh(G4double Thhigh);
-
-    void SetnbinThBack(G4int nbin);
-
-    void SetThlowBack(G4double Thlow);
-
-    void SetThhighBack(G4double Thhigh);
-
-    void SetnbinR(G4int nbin);
-
-    void SetRlow(G4double Rlow);
-
-    void SetRhigh(G4double Rhigh);
-
-    void SetnbinGamma(G4int nbin);
-
-    void SetElowGamma(G4double Elow);
-
-    void SetEhighGamma(G4double Ehigh);
-
-    void Setnbinzvertex(G4int nbin);
-
-    void Setzlow(G4double z);
-
-    void Setzhigh(G4double z);
-
-    void SetRndmFreq(G4int val) { saveRndm = val; }
-
-    G4int GetRndmFreq() { return saveRndm; }
-
-    void FillHist(int ihist, G4double val);
-
-    void FillHist(int ihist, G4double val, G4double w);
-
-    void FillHist(int ihist, int bin, G4double w);
-
-    void FillHLikelihood(int ihist, G4double val);
-
-    void ResetHist(int ihist);
-
-    void FillHist2d(int ihist, G4double valx, G4double valy, G4double w);
-
-    G4double GetHist2d(int ihist, G4int ix, G4int iy);
-
-    void ResetHist2d(int ihist);
-
-    void FillHistmatrixOccup(int ihist, G4double valx, G4double valy, G4double w);
-
-    void FillHistmatrixOccupCM(int ihist, G4double valx, G4double valy, G4double w);
-
-    G4String GetAnnFileName()
-    {
-        return AnnFileName;
-    }
-
-    //----- EVENT STRUCTURE -----
     g4e::RootOutput mRootEventsOut;
     TFile *mHitsFile = nullptr;
 
@@ -255,7 +136,7 @@ private:
     G4double zlow, zhigh, dz;
     G4int nbinvertexz;
 
-    JLeicRunMessenger *runMessenger;
+    JLeicHistoMConfig *runMessenger;
     G4int saveRndm;
 };
 

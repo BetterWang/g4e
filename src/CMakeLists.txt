@@ -28,11 +28,8 @@ target_sources_local(g4e
         G4QuadrupoleMagField.cc
         G4QuadrupoleMagField.hh
 
-        MulticastEventAction.cc
         MulticastEventAction.hh
-
-        JLeicEventActionMessenger.cc
-        JLeicEventActionMessenger.hh
+        MulticastSteppingAction.hh
 
         JLeicMaterials.cc
         JLeicMaterials.hh
@@ -47,14 +44,13 @@ target_sources_local(g4e
 
         JLeicRunAction.hh
 
-        JLeicRunMessenger.cc
-        JLeicRunMessenger.hh
+        JLeicHistoMConfig.cc
+        JLeicHistoMConfig.hh
 
         JLeicStepCut.cc
         JLeicStepCut.hh
 
-        JLeicSteppingAction.cc
-        JLeicSteppingAction.hh
+
 
         JLeicSteppingVerbose.cc
         JLeicSteppingVerbose.hh

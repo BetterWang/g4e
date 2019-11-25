@@ -22,50 +22,59 @@
 // * use  in  resulting  scientific  publications,  and indicate your *
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
-//
-//
-// $Id: JLeicSteppingAction.hh,v 1.3 2006-06-29 16:38:14 gunter Exp $
-// GEANT4 tag $Name: geant4-09-04-patch-01 $
-//
-// 
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-#ifndef JLeicSteppingAction_h
-#define JLeicSteppingAction_h 1
+#include "JLeicEventActionMessenger.hh"
+#include "JLeicEventAction.hh"
 
-#include "G4UserSteppingAction.hh"
-#include "G4Event.hh"
-#include "G4EventManager.hh"
-#include "G4ios.hh"
+#include "G4UIcmdWithAString.hh"
+#include "G4UIcmdWithAnInteger.hh"
+
 #include "globals.hh"
 
-class JLeicDetectorConstruction;
-class JLeicRunAction;
-class MulticastEventAction;
-class JLeicSteppingMessenger;
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-class JLeicSteppingAction : public G4UserSteppingAction
+JLeicEventActionMessenger::JLeicEventActionMessenger(JLeicEventAction *eventAction) :
+    G4UImessenger(),
+    fEventAction(eventAction)
 {
-  public:
-    JLeicSteppingAction(JLeicDetectorConstruction*, MulticastEventAction*, JLeicRunAction* );
-   ~JLeicSteppingAction();
+    fVerboseCmd = new G4UIcmdWithAnInteger("/event/verbose", this);
+    fVerboseCmd->SetGuidance("Set verbose level .");
+    fVerboseCmd->SetParameterName("level", true);
+    fVerboseCmd->SetDefaultValue(0);
 
-    void UserSteppingAction(const G4Step*);
-   
-  FILE* rc{};
-  private:
-    JLeicDetectorConstruction* detector;
-    MulticastEventAction*          eventaction;
-    JLeicRunAction*            runaction;
-    JLeicSteppingMessenger*    steppingMessenger{};
+    fPrintCmd = new G4UIcmdWithAnInteger("/event/printModulo", this);
+    fPrintCmd->SetGuidance("Print events modulo n");
+    fPrintCmd->SetParameterName("printModulo", false);
+    fPrintCmd->SetDefaultValue(1000);
+    fPrintCmd->SetRange("printModulo>0");
+    fPrintCmd->AvailableForStates(G4State_Idle);
+}
 
-    G4int IDnow{},IDold;
-    G4int evnoold ;
 
-};
 
-#endif
+JLeicEventActionMessenger::~JLeicEventActionMessenger()
+{
+    delete fVerboseCmd;
+    delete fPrintCmd;
+}
+
+
+
+void JLeicEventActionMessenger::SetNewValue(G4UIcommand *command, G4String newValue)
+{
+    if (command == fVerboseCmd) { fEventAction->SetVerbose(G4UIcmdWithAnInteger::GetNewIntValue(newValue)); }
+
+    if (command == fPrintCmd) { fEventAction->SetPrintModulo(G4UIcmdWithAnInteger::GetNewIntValue(newValue)); }
+}
+
+G4String JLeicEventActionMessenger::GetCurrentValue(G4UIcommand *command)
+{
+    if (command == fVerboseCmd) { return G4UIcommand::ConvertToString(fEventAction->GetVerbose()); }
+
+    if (command == fPrintCmd) {  return G4UIcommand::ConvertToString(fEventAction->GetPrintModulo()); }
+
+    return G4UImessenger::GetCurrentValue(command);
+}
+
+

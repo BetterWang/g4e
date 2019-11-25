@@ -9,8 +9,19 @@ target_sources_local(g4e
             JLeicDetectorConstruction.hh
             JLeicDetectorMessenger.cc
             JLeicDetectorMessenger.hh
+            JleicHistogramming.hh
+            JLeicEventAction.hh
+            JLeicEventAction.cc
+
+            JLeicEventActionMessenger.cc
+            JLeicEventActionMessenger.hh
+
             JLeicSolenoid3D.cc
             JLeicSolenoid3D.hh
+
+            JLeicSteppingAction.cc
+            JLeicSteppingAction.hh
+
             JLeicVertexSD.cc
             JLeicVertexSD.hh
             JLeicVTXHit.cc

@@ -34,7 +34,7 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-#include "JLeicRunMessenger.hh"
+#include "JLeicHistoMConfig.hh"
 
 #include "JLeicRunAction.hh"
 #include "G4UIdirectory.hh"
@@ -48,13 +48,13 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-JLeicRunMessenger::JLeicRunMessenger(JLeicRunAction *RA) : G4UImessenger(), runAction(RA)
+JLeicHistoMConfig::JLeicHistoMConfig(): G4UImessenger()
 {
     plotDir = new G4UIdirectory("/plots/");
     plotDir->SetGuidance("plot control");
 
-    sethistNameCmd = new G4UIcmdWithAString("/plots/sethistName", this);
-    sethistNameCmd->SetGuidance("set name for the histogram file");
+    fDirNameCmd = new G4UIcmdWithAString("/plots/dirName", this);
+    fDirNameCmd->SetGuidance("Set root file directory name for the histograms");
 
     setnbinStepCmd = new G4UIcmdWithAnInteger("/plots/setnbinStep", this);
     setnbinStepCmd->SetGuidance("set nb of bins in #step plot");
@@ -202,9 +202,9 @@ JLeicRunMessenger::JLeicRunMessenger(JLeicRunAction *RA) : G4UImessenger(), runA
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-JLeicRunMessenger::~JLeicRunMessenger()
+JLeicHistoMConfig::~JLeicHistoMConfig()
 {
-    delete sethistNameCmd;
+    delete fDirNameCmd;
 
     delete setnbinStepCmd;
     delete setSteplowCmd;
@@ -255,105 +255,105 @@ JLeicRunMessenger::~JLeicRunMessenger()
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-void JLeicRunMessenger::SetNewValue(G4UIcommand *command, G4String newValues)
+void JLeicHistoMConfig::SetNewValue(G4UIcommand *command, G4String newValues)
 {
-    if (command == sethistNameCmd) {
-        runAction->SethistName(newValues);
+    if (command == fDirNameCmd) {
+        SethistName(newValues);
     }
 
 
     if (command == setnbinStepCmd)
-        runAction->SetnbinStep(setnbinStepCmd->GetNewIntValue(newValues));
+        SetnbinStep(setnbinStepCmd->GetNewIntValue(newValues));
 
     if (command == setSteplowCmd)
-        runAction->SetSteplow(setSteplowCmd->GetNewDoubleValue(newValues));
+        SetSteplow(setSteplowCmd->GetNewDoubleValue(newValues));
 
     if (command == setStephighCmd)
-        runAction->SetStephigh(setStephighCmd->GetNewDoubleValue(newValues));
+        SetStephigh(setStephighCmd->GetNewDoubleValue(newValues));
 
     if (command == setnbinEnCmd)
-        runAction->SetnbinEn(setnbinEnCmd->GetNewIntValue(newValues));
+        SetnbinEn(setnbinEnCmd->GetNewIntValue(newValues));
 
     if (command == setEnlowCmd)
-        runAction->SetEnlow(setEnlowCmd->GetNewDoubleValue(newValues));
+        SetEnlow(setEnlowCmd->GetNewDoubleValue(newValues));
 
     if (command == setEnhighCmd)
-        runAction->SetEnhigh(setEnhighCmd->GetNewDoubleValue(newValues));
+        SetEnhigh(setEnhighCmd->GetNewDoubleValue(newValues));
 
     if (command == setnbinGammaCmd)
-        runAction->SetnbinGamma(setnbinGammaCmd->GetNewIntValue(newValues));
+        SetnbinGamma(setnbinGammaCmd->GetNewIntValue(newValues));
 
     if (command == setElowGammaCmd)
-        runAction->SetElowGamma(setElowGammaCmd->GetNewDoubleValue(newValues));
+        SetElowGamma(setElowGammaCmd->GetNewDoubleValue(newValues));
 
     if (command == setEhighGammaCmd)
-        runAction->SetEhighGamma(setEhighGammaCmd->GetNewDoubleValue(newValues));
+        SetEhighGamma(setEhighGammaCmd->GetNewDoubleValue(newValues));
 
     if (command == setnbinTtCmd)
-        runAction->SetnbinTt(setnbinTtCmd->GetNewIntValue(newValues));
+        SetnbinTt(setnbinTtCmd->GetNewIntValue(newValues));
 
     if (command == setTtlowCmd)
-        runAction->SetTtlow(setTtlowCmd->GetNewDoubleValue(newValues));
+        SetTtlow(setTtlowCmd->GetNewDoubleValue(newValues));
 
     if (command == setTthighCmd)
-        runAction->SetTthigh(setTthighCmd->GetNewDoubleValue(newValues));
+        SetTthigh(setTthighCmd->GetNewDoubleValue(newValues));
 
     if (command == setnbinTbCmd)
-        runAction->SetnbinTb(setnbinTbCmd->GetNewIntValue(newValues));
+        SetnbinTb(setnbinTbCmd->GetNewIntValue(newValues));
 
     if (command == setTblowCmd)
-        runAction->SetTblow(setTblowCmd->GetNewDoubleValue(newValues));
+        SetTblow(setTblowCmd->GetNewDoubleValue(newValues));
 
     if (command == setTbhighCmd)
-        runAction->SetTbhigh(setTbhighCmd->GetNewDoubleValue(newValues));
+        SetTbhigh(setTbhighCmd->GetNewDoubleValue(newValues));
 
     if (command == setnbinTsecCmd)
-        runAction->SetnbinTsec(setnbinTsecCmd->GetNewIntValue(newValues));
+        SetnbinTsec(setnbinTsecCmd->GetNewIntValue(newValues));
 
     if (command == setTseclowCmd)
-        runAction->SetTseclow(setTseclowCmd->GetNewDoubleValue(newValues));
+        SetTseclow(setTseclowCmd->GetNewDoubleValue(newValues));
 
     if (command == setTsechighCmd)
-        runAction->SetTsechigh(setTsechighCmd->GetNewDoubleValue(newValues));
+        SetTsechigh(setTsechighCmd->GetNewDoubleValue(newValues));
 
     if (command == setnbinRCmd)
-        runAction->SetnbinR(setnbinRCmd->GetNewIntValue(newValues));
+        SetnbinR(setnbinRCmd->GetNewIntValue(newValues));
 
     if (command == setRlowCmd)
-        runAction->SetRlow(setRlowCmd->GetNewDoubleValue(newValues));
+        SetRlow(setRlowCmd->GetNewDoubleValue(newValues));
 
     if (command == setRhighCmd)
-        runAction->SetRhigh(setRhighCmd->GetNewDoubleValue(newValues));
+        SetRhigh(setRhighCmd->GetNewDoubleValue(newValues));
 
     if (command == setnbinzvertexCmd)
-        runAction->Setnbinzvertex(setnbinzvertexCmd->GetNewIntValue(newValues));
+        Setnbinzvertex(setnbinzvertexCmd->GetNewIntValue(newValues));
 
     if (command == setzlowCmd)
-        runAction->Setzlow(setzlowCmd->GetNewDoubleValue(newValues));
+        Setzlow(setzlowCmd->GetNewDoubleValue(newValues));
 
     if (command == setzhighCmd)
-        runAction->Setzhigh(setzhighCmd->GetNewDoubleValue(newValues));
+        Setzhigh(setzhighCmd->GetNewDoubleValue(newValues));
 
     if (command == setnbinThCmd)
-        runAction->SetnbinTh(setnbinThCmd->GetNewIntValue(newValues));
+        SetnbinTh(setnbinThCmd->GetNewIntValue(newValues));
 
     if (command == setThlowCmd)
-        runAction->SetThlow(setThlowCmd->GetNewDoubleValue(newValues));
+        SetThlow(setThlowCmd->GetNewDoubleValue(newValues));
 
     if (command == setThhighCmd)
-        runAction->SetThhigh(setThhighCmd->GetNewDoubleValue(newValues));
+        SetThhigh(setThhighCmd->GetNewDoubleValue(newValues));
 
     if (command == setnbinThbackCmd)
-        runAction->SetnbinThBack(setnbinThbackCmd->GetNewIntValue(newValues));
+        SetnbinThBack(setnbinThbackCmd->GetNewIntValue(newValues));
 
     if (command == setThlowbackCmd)
-        runAction->SetThlowBack(setThlowbackCmd->GetNewDoubleValue(newValues));
+        SetThlowBack(setThlowbackCmd->GetNewDoubleValue(newValues));
 
     if (command == setThhighbackCmd)
-        runAction->SetThhighBack(setThhighbackCmd->GetNewDoubleValue(newValues));
+        SetThhighBack(setThhighbackCmd->GetNewDoubleValue(newValues));
 
     if (command == RndmSaveCmd)
-        runAction->SetRndmFreq(RndmSaveCmd->GetNewIntValue(newValues));
+        SetRndmFreq(RndmSaveCmd->GetNewIntValue(newValues));
 
     if (command == RndmReadCmd) {
         G4cout << "\n---> rndm status restored from file: " << newValues << G4endl;

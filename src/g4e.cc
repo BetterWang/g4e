@@ -110,6 +110,8 @@ int main(int argc, char **argv)
 
     // Event action
     auto eventAction = new MulticastEventAction();
+    eventAction->AddUserAction(new JLeicEve)
+
     runManager->SetUserAction(eventAction);
 
     // Stepping action

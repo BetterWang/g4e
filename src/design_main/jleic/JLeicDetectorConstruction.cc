@@ -102,32 +102,14 @@ JLeicDetectorConstruction::~JLeicDetectorConstruction()
 
 G4VPhysicalVolume *JLeicDetectorConstruction::Construct()
 {
-
-    G4VPhysicalVolume *mdet = ConstructDetectorXTR();
-
-    //std::cout << " start checkVolumeOverlap() ..... " << std::endl ;   checkVolumeOverlap();
-
-    return mdet;
-
-}
-
-
-/////////////////////////////////////////////////////////////////////////
-//
-//
-
-G4VPhysicalVolume *JLeicDetectorConstruction::ConstructDetectorXTR()
-{
-    // Cleanup old geometry
-
     G4GeometryManager::GetInstance()->OpenGeometry();
     G4PhysicalVolumeStore::Clean();
     G4LogicalVolumeStore::Clean();
     G4SolidStore::Clean();
 
     return SetUpJLEIC2019();
-}
 
+}
 
 void JLeicDetectorConstruction::Create_ci_Endcap(JLeicDetectorConfig::ci_Endcap_Config cfg)
 {
@@ -1110,7 +1092,7 @@ void JLeicDetectorConstruction::SetAbsorberZpos(G4double val)
 
 void JLeicDetectorConstruction::UpdateGeometry()
 {
-    G4RunManager::GetRunManager()->DefineWorldVolume(ConstructDetectorXTR());
+    G4RunManager::GetRunManager()->DefineWorldVolume(World_Phys);
 }
 
 

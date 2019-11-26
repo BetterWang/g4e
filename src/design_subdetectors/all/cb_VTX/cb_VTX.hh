@@ -16,7 +16,7 @@ typedef struct
     double Dy;
     double Dz;
     double Rin;
-} cb_VTX_ladder_LayParam;
+} cb_VTX_ladder_LayerParams;
 
 struct cb_VTX_Config
 {
@@ -81,43 +81,15 @@ public:
         cb_VTX_ladder_Material = G4Material::GetMaterial("Si");
 
         //std::vector <cb_VTX_ladder_LayParam> Lays;
-        cb_VTX_ladder_LayParam Lay;
-        // Lay 0
-        Lay.Dx = 0.050 * mm;
-        Lay.Dy = 2 * cm;
-        Lay.Dz = 10 * cm;
-        Lay.Rin = 3.5 * cm;
-        Lays.push_back(Lay);
-        // Lay 1
-        Lay.Dx = 0.050 * mm;
-        Lay.Dy = 2 * cm;
-        Lay.Dz = 11 * cm;
-        Lay.Rin = 4.5 * cm;
-        Lays.push_back(Lay);
-        // Lay 2
-        Lay.Dx = 0.150 * mm;
-        Lay.Dy = 4 * cm;
-        Lay.Dz = 18 * cm;
-        Lay.Rin = 6.5 * cm;
-        Lays.push_back(Lay);
-        // Lay 3
-        Lay.Dx = 0.150 * mm;
-        Lay.Dy = 4 * cm;
-        Lay.Dz = 24 * cm;
-        Lay.Rin = 10.5 * cm;
-        Lays.push_back(Lay);
-        // Lay 4
-        Lay.Dx = 0.150 * mm;
-        Lay.Dy = 4 * cm;
-        Lay.Dz = 36 * cm;
-        Lay.Rin = 13.5 * cm;
-        Lays.push_back(Lay);
-        // Lay 5
-        Lay.Dx = 0.150 * mm;
-        Lay.Dy = 4 * cm;
-        Lay.Dz = 48 * cm;
-        Lay.Rin = 15.5 * cm;
-        Lays.push_back(Lay);
+        cb_VTX_ladder_LayerParams Lay;
+
+
+        Lays.push_back({0.050 * mm, 2 * cm, 10 * cm, 3.5 * cm});    // Lay 0
+        Lays.push_back({0.050 * mm, 2 * cm, 11 * cm, 4.5 * cm});    // Lay 1
+        Lays.push_back({0.150 * mm, 4 * cm, 18 * cm, 6.5 * cm});    // Lay 2
+        Lays.push_back({0.150 * mm, 4 * cm, 24 * cm, 10.5 * cm});   // Lay 3
+        Lays.push_back({0.150 * mm, 4 * cm, 36 * cm, 13.5 * cm});   // Lay 4
+        Lays.push_back({0.150 * mm, 4 * cm, 48 * cm, 15.5 * cm});   // Lay 5
 
         if (Lays.size() > 10) {
             printf("Nlayers in VERTEX >10 !!! \n");
@@ -389,7 +361,7 @@ public:
     /// Parameters that was used in the moment of construction
     cb_VTX_Config ConstructionConfig;
 
-    std::vector<cb_VTX_ladder_LayParam> Lays;
+    std::vector<cb_VTX_ladder_LayerParams> Lays;
     G4LogicalVolume *cb_VTX_ladder_Logic[10]; //pointer to the logical Absorber
 
 private:

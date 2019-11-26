@@ -150,13 +150,13 @@ JLeicDetectorMessenger::JLeicDetectorMessenger(JLeicDetectorConstruction * JLeic
   WorldRCmd->SetDefaultUnit("mm");
   WorldRCmd->SetRange("WSizeR>0.");
   WorldRCmd->AvailableForStates(G4State_Idle);
-  
+
   UpdateCmd = new G4UIcmdWithoutParameter("/XTRdetector/update",this);
   UpdateCmd->SetGuidance("Update calorimeter geometry.");
   UpdateCmd->SetGuidance("This command MUST be applied before \"beamOn\" ");
   UpdateCmd->SetGuidance("if you changed geometrical value(s).");
   UpdateCmd->AvailableForStates(G4State_Idle);
-      
+
   MagFieldCmd = new G4UIcmdWithADoubleAndUnit("/XTRdetector/setField",this);  
   MagFieldCmd->SetGuidance("Define magnetic field.");
   MagFieldCmd->SetGuidance("Magnetic field will be in Z direction.");
@@ -281,7 +281,7 @@ void JLeicDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
    
   if( command == WorldRCmd )
    { JLeicDetector->SetWorldSizeR(WorldRCmd->GetNewDoubleValue(newValue));}
-   
+
   if( command == UpdateCmd )
    { JLeicDetector->UpdateGeometry(); }
 

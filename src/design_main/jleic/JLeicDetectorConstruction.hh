@@ -275,9 +275,6 @@ public:
 
 private:
 
-    G4VPhysicalVolume *ConstructDetectorXTR();
-
-
     void Create_ci_Endcap(JLeicDetectorConfig::ci_Endcap_Config cfg);
 
     void Create_ce_Endcap(JLeicDetectorConfig::ce_Endcap_Config dfg);

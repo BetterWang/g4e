@@ -27,6 +27,7 @@
 //
 #include <stdio.h>
 #include "G4UserRunAction.hh"
+#include <spdlog/spdlog.h>
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
@@ -62,25 +63,24 @@ static int jDebug = 7;
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-JLeicVertexSD::JLeicVertexSD(G4String name, JLeicDetectorConstruction *det)
-  : G4VSensitiveDetector(name), Detector(det)
+JLeicVertexSD::JLeicVertexSD(G4String name, JLeicDetectorConstruction *det) : G4VSensitiveDetector(name), Detector(det)
 {
     printf("JLeicVertexSD()::constructor  enter\n");
     //fRM=G4RunManager::GetRunManager();
 
     NumRow = 10; // :64 depfet
     NumCol = 50; // :256 depfet
-    FRAME.resize(NumRow*NumCol);
+    FRAME.resize(NumRow * NumCol);
     nevent = 0;
     collectionName.insert("VTXCollection");
     HitID = new G4int[500];
     printf("--> JLeicVertexSD::Constructor(%s) \n", name.c_str());
 
-  JLeicRunAction* runaction = (JLeicRunAction*)(G4RunManager::GetRunManager()->GetUserRunAction());
-  JLeicRunAction* eventaction = (JLeicRunAction*)(G4RunManager::GetRunManager()->GetUserEventAction());
+    JLeicRunAction *runaction = (JLeicRunAction *) (G4RunManager::GetRunManager()->GetUserRunAction());
+    JLeicRunAction *eventaction = (JLeicRunAction *) (G4RunManager::GetRunManager()->GetUserEventAction());
 
-  mHitsFile = runaction->mHitsFile;
-  mRootEventsOut=&runaction->mRootEventsOut;
+    mHitsFile = runaction->mHitsFile;
+    mRootEventsOut = &runaction->mRootEventsOut;
 
     if (use_depfet) for (int ii = 0; ii < (NumRow * NumCol); ii++) FRAME[ii] = 0; //-- 8000;  //-- set pedestals
     if (use_fdc) {
@@ -117,16 +117,17 @@ JLeicVertexSD::JLeicVertexSD(G4String name, JLeicDetectorConstruction *det)
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-JLeicVertexSD::~JLeicVertexSD() {
+JLeicVertexSD::~JLeicVertexSD()
+{
 
-  /*
-    if(mHitsFile)
-    {
-        mHitsFile->cd();
-        mRootEventsOut->Write();
-        mHitsFile->Close();
-    }
-  */
+    /*
+      if(mHitsFile)
+      {
+          mHitsFile->cd();
+          mRootEventsOut->Write();
+          mHitsFile->Close();
+      }
+    */
 
     delete[] HitID;
 
@@ -144,12 +145,12 @@ JLeicVertexSD::~JLeicVertexSD() {
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-void JLeicVertexSD::Initialize(G4HCofThisEvent *) {
+void JLeicVertexSD::Initialize(G4HCofThisEvent *)
+{
 
-  printf("JLeicVertexSD()::Initialize enter nevent=%d  Lays.size()=%d\n", nevent,Detector->cb_VTX.Lays.size());
+    fmt::print("JLeicVertexSD()::Initialize enter nevent={}  Lays.size()={}\n", nevent, Detector->cb_VTX.Lays.size());
 
-    VTXCollection = new JLeicVTXHitsCollection
-            (SensitiveDetectorName, collectionName[0]);
+    VTXCollection = new JLeicVTXHitsCollection(SensitiveDetectorName, collectionName[0]);
     for (G4int j = 0; j < 1; j++) { HitID[j] = -1; };
 
     if (nevent == 0) {
@@ -199,7 +200,8 @@ void JLeicVertexSD::Initialize(G4HCofThisEvent *) {
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-G4bool JLeicVertexSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
+G4bool JLeicVertexSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
+{
     if (jDebug > 2) printf("--> JLeicVertexSD::ProcessHits() Enter\n");
 
     //  const G4TouchableHandle touchablepre[128];
@@ -241,8 +243,7 @@ G4bool JLeicVertexSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
     if (jDebug > 2) printf("xloc=%f yloc=%f zloc=%f  \n", xloc, yloc, zloc);
     if (use_fdc) {  //----- FDC / TRD  ---
 
-        int zbin = (zloc / mm + Detector->GetAbsorberThickness() / 2.) /
-                   Detector->fadc_slice; //-- z position , slice number
+        int zbin = (zloc / mm + Detector->GetAbsorberThickness() / 2.) / Detector->fadc_slice; //-- z position , slice number
         //int zbin = (zloc/mm+Detector->GetAbsorberThickness()/2.) /  (Detector->GetAbsorberThickness()/10.)  ; //-- z position , slice 1/10
         //printf("zbin=%d zloc=%f zinp=%f  zend=%f wz=%f \n",zbin,zloc,zinp,zend,worldPosition.z());
 
@@ -267,17 +268,15 @@ G4bool JLeicVertexSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
 
     if (char_sh == 0 && copyIDy_pre < NumRow && copyIDx_pre < NumCol) FRAME[copyIDy_pre * NumCol + copyIDx_pre] += ADC;
 
-    G4TouchableHistory *theTouchable
-            = (G4TouchableHistory *) (aStep->GetPreStepPoint()->GetTouchable());
+    G4TouchableHistory *theTouchable = (G4TouchableHistory *) (aStep->GetPreStepPoint()->GetTouchable());
 
     if (jDebug > 3)
         printf("--> JLeicVertexSD::ProcessHits() Vol: 0=%s \n", theTouchable->GetVolume()->GetName().c_str());
 
     if (jDebug > 3)
-        printf("--> JLeicVertexSD::ProcessHits() Vol: 0=%s 1=%s  2=%s 3=%s \n",
-               theTouchable->GetVolume()->GetName().c_str(), theTouchable->GetVolume(1)->GetName().c_str(),
+        printf("--> JLeicVertexSD::ProcessHits() Vol: 0=%s 1=%s  2=%s 3=%s \n", theTouchable->GetVolume()->GetName().c_str(), theTouchable->GetVolume(1)->GetName().c_str(),
                theTouchable->GetVolume(2)->GetName().c_str(), theTouchable->GetVolume(3)->GetName().c_str());
-	       //               Detector->GetAbsorber()->GetName().c_str());
+    //               Detector->GetAbsorber()->GetName().c_str());
 
     if (use_depfet > 0) {
         G4String VTXmod = theTouchable->GetVolume()->GetName();
@@ -285,8 +284,8 @@ G4bool JLeicVertexSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
         //   int Mod=int (VTXmod<<10);
         // printf("VTX_ladder=%d \n",Mod);
         if (jDebug > 2)
-            printf("--> JLeicVertexSD::ProcessHits() de=%f ADC=%d  len=%f Mod=%s  IDxy=(%d,%d,%d)\n", edep / keV,
-                   ADC, stepl / um, VTXmod.c_str(), copyIDx_pre, copyIDy_pre, copyIDz_pre);
+            printf("--> JLeicVertexSD::ProcessHits() de=%f ADC=%d  len=%f Mod=%s  IDxy=(%d,%d,%d)\n", edep / keV, ADC, stepl / um, VTXmod.c_str(), copyIDx_pre, copyIDy_pre,
+                   copyIDz_pre);
         for (int in = 0; in < 12; in++) {
             sprintf(buffer, "VTX_ladder1_%d", in);
             if (strcmp(VTXmod.c_str(), buffer) == 0) {
@@ -370,37 +369,33 @@ G4bool JLeicVertexSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
     //--- save hits ------
     if (save_hits_root) {
         if (jDebug > 6)
-            printf("New VTX Hit:: IdVect=%d XYZloc (%f,%f,%f) dEdx=%f \n", aStep->GetTrack()->GetTrackID(), xloc, yloc, zloc,
-                   edep / keV);
+            printf("New VTX Hit:: IdVect=%d XYZloc (%f,%f,%f) dEdx=%f \n", aStep->GetTrack()->GetTrackID(), xloc, yloc, zloc, edep / keV);
 
         int curTrackID = aStep->GetTrack()->GetTrackID();
         std::string volumeName = theTouchable->GetVolume()->GetName().c_str();
-        mRootEventsOut->AddHit(
-                 mHitsCount,  /* aHitId */
-                 curTrackID,  /* aTrackId */
-                 0,
-                 xstep / mm,  /* aX */
-                 ystep / mm,  /* aY */
-                 zstep / mm,  /* aZ */
-                 edep / GeV,  /* aELoss */
-                copyIDx_pre,  /* aIRep */
-                copyIDy_pre,  /* aJRep */
-                volumeName    /* aVolNam */
-               );
+        mRootEventsOut->AddHit(mHitsCount,  /* aHitId */
+                               curTrackID,  /* aTrackId */
+                               0, xstep / mm,  /* aX */
+                               ystep / mm,  /* aY */
+                               zstep / mm,  /* aZ */
+                               edep / GeV,  /* aELoss */
+                               copyIDx_pre,  /* aIRep */
+                               copyIDy_pre,  /* aJRep */
+                               volumeName    /* aVolNam */
+        );
         mHitsCount++;
 
         //-- fill tracks --
-        mRootEventsOut->AddTrack(
-                curTrackID,                           /* int aTrackId,*/
-                ParrentID,                            /* int aParentId,*/
-                PDG,                                  /* int aTrackPdg,*/
-                vertex.x() / mm,                      /* double aXVertex,*/
-                vertex.y() / mm,                      /* double aYVertex,*/
-                vertex.z() / mm,                      /* double aZVertex,*/
-                vertexMom.x(),                        /* double aXMom,*/
-                vertexMom.y(),                        /* double aYMom,*/
-                vertexMom.z(),                        /* double aZMom,*/
-                momentum.mag() / GeV                  /* double aMom*/
+        mRootEventsOut->AddTrack(curTrackID,                           /* int aTrackId,*/
+                                 ParrentID,                            /* int aParentId,*/
+                                 PDG,                                  /* int aTrackPdg,*/
+                                 vertex.x() / mm,                      /* double aXVertex,*/
+                                 vertex.y() / mm,                      /* double aYVertex,*/
+                                 vertex.z() / mm,                      /* double aZVertex,*/
+                                 vertexMom.x(),                        /* double aXMom,*/
+                                 vertexMom.y(),                        /* double aYMom,*/
+                                 vertexMom.z(),                        /* double aZMom,*/
+                                 momentum.mag() / GeV                  /* double aMom*/
         );
 
     } //  if (save_hits_root)
@@ -414,8 +409,7 @@ G4bool JLeicVertexSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
     G4int JLeicNumber = 0;
 
     if (jDebug > 2)
-        printf("--> JLeicVertexSD::ProcessHits() Vol=(%s) %p Abs=%p \n", physVol->GetName().c_str(),
-               (void *) physVol, (void *) Detector->GetAbsorberPhysicalVolume());
+        printf("--> JLeicVertexSD::ProcessHits() Vol=(%s) %p Abs=%p \n", physVol->GetName().c_str(), (void *) physVol, (void *) Detector->GetAbsorberPhysicalVolume());
 
     if (HitID[JLeicNumber] == -1) {
         JLeicVTXHit *vtxHit = new JLeicVTXHit();
@@ -439,7 +433,8 @@ G4bool JLeicVertexSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-void JLeicVertexSD::EndOfEvent(G4HCofThisEvent *HCE) {
+void JLeicVertexSD::EndOfEvent(G4HCofThisEvent *HCE)
+{
 
     static G4int HCID = -1;
     if (HCID < 0) { HCID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]); }
@@ -449,8 +444,7 @@ void JLeicVertexSD::EndOfEvent(G4HCofThisEvent *HCE) {
     if (use_fdc) {
 
         if (NVAR > Detector->GetAbsorberThickness() / Detector->fadc_slice) {
-            printf("Error FADC slices:: NVAR=%d Slices=%f \n", NVAR,
-                   Detector->GetAbsorberThickness() / Detector->fadc_slice);
+            printf("Error FADC slices:: NVAR=%d Slices=%f \n", NVAR, Detector->GetAbsorberThickness() / Detector->fadc_slice);
             exit(1);
         }
 
@@ -494,42 +488,39 @@ void JLeicVertexSD::EndOfEvent(G4HCofThisEvent *HCE) {
         const G4Event *evt = G4RunManager::GetRunManager()->GetCurrentEvent();
 
         const G4int primeVtxCount = evt->GetNumberOfPrimaryVertex();
-        size_t particleId=0;  // prime particle ID unique for all prime vertexes
+        size_t particleId = 0;  // prime particle ID unique for all prime vertexes
 
-        for(G4int primeVtxIndex = 0; primeVtxIndex < primeVtxCount; primeVtxIndex++)
-        {
+        for (G4int primeVtxIndex = 0; primeVtxIndex < primeVtxCount; primeVtxIndex++) {
             auto primeVtx = evt->GetPrimaryVertex(primeVtxIndex);
 
             // Add primary vertex to root output
-            mRootEventsOut->AddPrimaryVertex(
-                    (size_t) primeVtxIndex,                    /* size_t aVtxIndex, */
-                    (size_t) primeVtx->GetNumberOfParticle(),  /* size_t aParticleCount, */
-                    primeVtx->GetX0(),                         /* double aX, */
-                    primeVtx->GetY0(),                         /* double aY, */
-                    primeVtx->GetZ0(),                         /* double aZ, */
-                    primeVtx->GetT0(),                         /* double aTime, */
-                    primeVtx->GetWeight());                    /* double aWeight */
+            mRootEventsOut->AddPrimaryVertex((size_t) primeVtxIndex,                    /* size_t aVtxIndex, */
+                                             (size_t) primeVtx->GetNumberOfParticle(),  /* size_t aParticleCount, */
+                                             primeVtx->GetX0(),                         /* double aX, */
+                                             primeVtx->GetY0(),                         /* double aY, */
+                                             primeVtx->GetZ0(),                         /* double aZ, */
+                                             primeVtx->GetT0(),                         /* double aTime, */
+                                             primeVtx->GetWeight());                    /* double aWeight */
 
 
             const G4int partCount = primeVtx->GetNumberOfParticle();
-            for(G4int partIndex = 0; partIndex < partCount; partIndex++) {
+            for (G4int partIndex = 0; partIndex < partCount; partIndex++) {
                 auto particle = primeVtx->GetPrimary(partIndex);
-                mRootEventsOut->AddPrimaryParticle(
-                         particleId,                             /*size_t aId */
-                         (size_t)primeVtxIndex,                  /*size_t aPrimeVtxId */
-                         (size_t)particle->GetPDGcode(),         /*size_t aPDGCode */
-                         (size_t)particle->GetTrackID(),         /*size_t aTrackId */
-                         particle->GetCharge(),                  /*double aCharge */
-                         particle->GetMomentumDirection().x(),   /*double aMomDirX */
-                         particle->GetMomentumDirection().y(),   /*double aMomDirY */
-                         particle->GetMomentumDirection().z(),   /*double aMomDirZ */
-                         particle->GetTotalMomentum()/GeV,       /*double aTotalMomentum */
-                         particle->GetTotalEnergy()/GeV,         /*double aTotalEnergy */
-                         particle->GetProperTime()/ns,           /*double aProperTime */
-                         particle->GetPolX(),                    /*double aPolX */
-                         particle->GetPolY(),                    /*double aPolY */
-                         particle->GetPolZ()                     /*double aPolZ */
-                        );
+                mRootEventsOut->AddPrimaryParticle(particleId,                             /*size_t aId */
+                                                   (size_t) primeVtxIndex,                  /*size_t aPrimeVtxId */
+                                                   (size_t) particle->GetPDGcode(),         /*size_t aPDGCode */
+                                                   (size_t) particle->GetTrackID(),         /*size_t aTrackId */
+                                                   particle->GetCharge(),                  /*double aCharge */
+                                                   particle->GetMomentumDirection().x(),   /*double aMomDirX */
+                                                   particle->GetMomentumDirection().y(),   /*double aMomDirY */
+                                                   particle->GetMomentumDirection().z(),   /*double aMomDirZ */
+                                                   particle->GetTotalMomentum() / GeV,       /*double aTotalMomentum */
+                                                   particle->GetTotalEnergy() / GeV,         /*double aTotalEnergy */
+                                                   particle->GetProperTime() / ns,           /*double aProperTime */
+                                                   particle->GetPolX(),                    /*double aPolX */
+                                                   particle->GetPolY(),                    /*double aPolY */
+                                                   particle->GetPolZ()                     /*double aPolZ */
+                );
 
                 particleId++;
             }
@@ -546,14 +537,16 @@ void JLeicVertexSD::EndOfEvent(G4HCofThisEvent *HCE) {
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-void JLeicVertexSD::clear() {
+void JLeicVertexSD::clear()
+{
     printf("--> JLeicVertexSD::clear() \n");
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
 
-void JLeicVertexSD::PrintAll() {
+void JLeicVertexSD::PrintAll()
+{
     printf("--> JLeicVertexSD::PrintAll() \n");
 
 }

@@ -251,7 +251,7 @@ void JLeicDetectorMessenger::SetNewValue(G4UIcommand* command,G4String newValue)
    { JLeicDetector->SetAbsorberMaterial(newValue);}
 
   if( command == DetectorSetUpCmd )
-   { JLeicDetector->SetDetectorSetUp(newValue);}
+   { JLeicDetector->SetUpJLEIC2019();}
 
   if( command == RadiatorMaterCmd )
    { JLeicDetector->SetRadiatorMaterial(newValue);}

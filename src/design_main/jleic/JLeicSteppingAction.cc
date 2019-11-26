@@ -394,7 +394,7 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep) {
              ((aStep->GetTrack()->GetTrackID() != 1) || (aStep->GetTrack()->GetParentID() != 0))) ||
             (((aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName()) == "e+") &&
              ((aStep->GetTrack()->GetTrackID() != 1) || (aStep->GetTrack()->GetParentID() != 0))))
-            fHistos->Fillvertexz(aStep->GetTrack()->GetVertexPosition().z()); //-- Z ?
+//            fHistos->Fillvertexz(aStep->GetTrack()->GetVertexPosition().z()); //-- Z ?
         //-----------
 
 
@@ -405,14 +405,14 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep) {
                 eventaction->AddE();
                 Tsec = aStep->GetTrack()->GetKineticEnergy();  // !!!!!!!!!!!!
                 //Tsec += aStep->GetTotalEnergyDeposit() ;        // !!!!!!!!!!!!
-                fHistos->FillTsec(Tsec / keV);
+                //fHistos->FillTsec(Tsec / keV);
             } else if (((aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName()) == "e+") &&
                        ((aStep->GetTrack()->GetTrackID() != 1) || (aStep->GetTrack()->GetParentID() != 0))) {
                 eventaction->AddCharged();
                 eventaction->AddP();
                 Tsec = aStep->GetTrack()->GetKineticEnergy();  // !!!!!!!!!!!!
                 //Tsec += aStep->GetTotalEnergyDeposit() ;        // !!!!!!!!!!!!
-                fHistos->FillTsec(Tsec / keV);
+                //fHistos->FillTsec(Tsec / keV);
             } else  //-- gamma START in absorber
             if (((aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName()) == "gamma") &&
                 ((aStep->GetTrack()->GetTrackID() != 1) || (aStep->GetTrack()->GetParentID() != 0))) {
@@ -472,8 +472,7 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep) {
             eventaction->CountStepsNeutral();
             DEgamma = aStep->GetTotalEnergyDeposit();
             //eventaction->AddGammaDE(aStep->GetTotalEnergyDeposit()) ;
-            if (DEgamma > 0.00000001)
-                fHistos->FillGamDE(DEgamma);
+            //if (DEgamma > 0.00000001) fHistos->FillGamDE(DEgamma);
 
 
             G4TouchableHandle theTouchable = aStep->GetPreStepPoint()->GetTouchableHandle();
@@ -492,7 +491,7 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep) {
                    aStep->GetTotalEnergyDeposit() / keV, histDepth, motherCopyNo, motherRepNo, copyIDx_pre, copyIDy_pre);
 
             if (DEgamma > 0.00000001) {
-                fHistos->FillGammaEStep(DEgamma);
+                // fHistos->FillGammaEStep(DEgamma);
                 xend = x;
                 yend = y;
                 zend = z;
@@ -526,13 +525,13 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep) {
     if (is_primary_exit_absorber && (aStep->GetTrack()->GetMomentumDirection().z() > 0.)) {
         eventaction->SetTr();
         Theta = std::acos(aStep->GetTrack()->GetMomentumDirection().x());
-        fHistos->FillTh(Theta);
+        // fHistos->FillTh(Theta);
         Ttrans = aStep->GetTrack()->GetKineticEnergy();
-        fHistos->FillTt(Ttrans);
+        // fHistos->FillTt(Ttrans);
         yend = y;
         zend = z;
         rend = std::sqrt(yend * yend + zend * zend);
-        fHistos->FillR(rend);
+        // fHistos->FillR(rend);
     }
     //----------------------------------------------------------------------------
     //--  Primary EXIT absorber backward ? GetMomentumDirection().z()<0. ---
@@ -540,9 +539,9 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep) {
         eventaction->SetRef();
         Thetaback = std::acos(aStep->GetTrack()->GetMomentumDirection().x());
         Thetaback -= 0.5 * CLHEP::pi;
-        fHistos->FillThBack(Thetaback);
+        // fHistos->FillThBack(Thetaback);
         Tback = aStep->GetTrack()->GetKineticEnergy();
-        fHistos->FillTb(Tback);
+        // fHistos->FillTb(Tback);
     }
 
     //----------------------------------------------------------------------------
@@ -554,7 +553,7 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep) {
              (aStep->GetPostStepPoint()->GetProcessDefinedStep()->GetProcessName() == "Transportation") && (aStep->GetTrack()->GetMomentumDirection().z() > 0.) &&
              (aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName() == "gamma"))) {
             Egamma = aStep->GetTrack()->GetKineticEnergy();
-            fHistos->FillGammaOutSpectrum(Egamma);
+            // fHistos->FillGammaOutSpectrum(Egamma);
             //printf("O::test PreStep = %s ",aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str());
             //printf("O::test PostStep = %s \n",postStepVolumeName.c_str());
             //printf("E::gammas EXIT absorber de=%f E=%f step=%f\n",aStep->GetTotalEnergyDeposit(),Egamma/keV,aStep->GetStepLength());
@@ -571,7 +570,7 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep) {
             (aStep->GetPostStepPoint()->GetProcessDefinedStep()->GetProcessName() == "Transportation") && (aStep->GetTrack()->GetMomentumDirection().z() > 0.) &&
             (aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName() == "gamma")) {
             Egamma = aStep->GetTrack()->GetKineticEnergy();
-            fHistos->FillGammaInSpectrum(Egamma);
+            // fHistos->FillGammaInSpectrum(Egamma);
             //printf("I::test PreStep = %s ",aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str());
             //printf("I::test PostStep = %s \n",postStepVolumeName.c_str());
             //printf("I::gammas ENTER absorber de=%f E=%f ID=%d\n",aStep->GetTotalEnergyDeposit()/keV,Egamma/keV,IDnow);
@@ -581,9 +580,9 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep) {
             zp = aStep->GetTrack()->GetMomentumDirection().z();
             rp = std::sqrt(yp * yp + xp * xp);
             Theta = std::acos(zp);
-            fHistos->FillGamAngle(Theta);
+            // fHistos->FillGamAngle(Theta);
             Ttrans = aStep->GetTrack()->GetKineticEnergy();
-            fHistos->FillTt(Ttrans);
+            // fHistos->FillTt(Ttrans);
             xend = x;
             yend = y;
             zend = z;

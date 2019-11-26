@@ -22,14 +22,6 @@
 // * use  in  resulting  scientific  publications,  and indicate your *
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
-//
-
-
-
-#include "spdlog/spdlog.h"
-#include "spdlog/sinks/ostream_sink.h"
-
-#include <argparse.hh>
 
 #include "StringHelpers.hh"
 
@@ -39,12 +31,16 @@
 #include "InputProcessor.hh"
 #include "JLeicPhysicsList.hh"
 #include "PrimaryGeneratorAction.hh"
-#include "JLeicRunAction.hh"
 
+#include "JleicHistogramming.hh"
+#include "JLeicRunAction.hh"
 #include "JLeicEventAction.hh"
 #include "JLeicSteppingAction.hh"
 #include "JLeicSteppingVerbose.hh"
 #include "JLeicTrackingAction.hh"
+
+#include "MulticastEventAction.hh"
+#include "MulticastSteppingAction.hh"
 
 #include <G4MTRunManager.hh>
 #include <G4RunManager.hh>
@@ -56,6 +52,8 @@
 //-- physics processes --
 #include <FTFP_BERT.hh>
 #include <QGSP_BIC.hh>
+
+#include <spdlog/sinks/ostream_sink.h>
 
 
 
@@ -99,12 +97,13 @@ int main(int argc, char **argv)
     }
 
     auto detector = new JLeicDetectorConstruction();
+    auto jleicHistos = new JLeicHistogramming();
 
     runManager->SetUserInitialization(detector);
     runManager->SetUserInitialization(new JLeicPhysicsList(detector));
 
     // RUN action
-    auto runAction = new JLeicRunAction(detector);
+    auto runAction = new JLeicRunAction(detector, jleicHistos);
     runManager->SetUserAction(runAction);
 
     // Primary Generator
@@ -113,13 +112,14 @@ int main(int argc, char **argv)
 
     // Event action
     auto eventAction = new MulticastEventAction();
-    eventAction->AddUserAction(new JLeicEventAction(runAction));
+    auto jleicEventAction = new JLeicEventAction(runAction, jleicHistos);
+    eventAction->AddUserAction(jleicEventAction);
 
     runManager->SetUserAction(eventAction);
 
     // Stepping action
-    auto histos = JLeicHistogramming();
-    auto steppingAction = new JLeicSteppingAction(detector, eventAction, runAction);
+
+    auto steppingAction = new JLeicSteppingAction(detector, jleicEventAction, runAction, jleicHistos);
     runManager->SetUserAction(steppingAction);
 
     // Tracking action

@@ -42,7 +42,7 @@
 #include "G4SystemOfUnits.hh"
 
 
-#include <spdlog/fmt/fmt.h>
+#include <spdlog/spdlog.h>
 
 
     g4e::BeagleGenerator::BeagleGenerator()

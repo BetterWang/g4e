@@ -39,6 +39,7 @@
 #include "design_main/jleic/JLeicCalorHit.hh"
 #include "design_main/jleic/JLeicVTXHit.hh"
 #include "JLeicEventActionMessenger.hh"
+#include "JleicHistogramming.hh"
 
 #include "G4Event.hh"
 #include "G4PrimaryVertex.hh"
@@ -53,13 +54,14 @@
 
 
 
-JLeicEventAction::JLeicEventAction(JLeicRunAction *JLeicRA)
+JLeicEventAction::JLeicEventAction(JLeicRunAction *JLeicRA, JLeicHistogramming *histos)
         : calorimeterCollID(-1),
           vertexCollID(-1),
           eventMessenger(0),
           runaction(JLeicRA),
           fVerbose(0),
-          printModulo(10000)
+          printModulo(10000),
+          fHistos(histos)
 {
     eventMessenger = new JLeicEventActionMessenger(this);
     printf("JLeicEventAction:: Constructor \n");
@@ -158,15 +160,15 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
             G4cout << " Ncharged=" << Nch << "  ,   Nneutral=" << Nne << G4endl;
         runaction->CountParticles(Nch, Nne);
         runaction->AddEP(NE, NP);
-        runaction->AddTrRef(Transmitted, Reflected);
+        // TODO        runaction->AddTrRef(Transmitted, Reflected);
         runaction->AddEdeps(totEAbs);
-        runaction->FillEn(totEAbs);
         //runaction->FillGamDE(GamDE) ;; // move to step action
 
         nstep = nstepCharged + nstepNeutral;
-        runaction->FillNbOfSteps(nstep);
+        // fHistos->FillEn(totEAbs);
+        // fHistos->FillNbOfSteps(nstep);
 
-	mRootEventsOut->FillEvent((uint64_t)evt->GetEventID());
+	    mRootEventsOut->FillEvent((uint64_t)evt->GetEventID());
 
     }
 
@@ -204,13 +206,13 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
             G4cout << " Ncharged=" << Nch << "  ,   Nneutral=" << Nne << G4endl;
         runaction->CountParticles(Nch, Nne);
         runaction->AddEP(NE, NP);
-        runaction->AddTrRef(Transmitted, Reflected);
+        //runaction->AddTrRef(Transmitted, Reflected);
         runaction->AddEdeps(totEAbs);
-        runaction->FillEn(totEAbs);
+        //runaction->FillEn(totEAbs);
         //runaction->FillGamDE(GamDE) ;; // move to step action
 
         nstep = nstepCharged + nstepNeutral;
-        runaction->FillNbOfSteps(nstep);
+        //runaction->FillNbOfSteps(nstep);
     }
 
 
@@ -219,6 +221,7 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
 
 
     //save rndm status
+    /*
     if (runaction->GetRndmFreq() == 2) {
         CLHEP::HepRandom::saveEngineStatus("endOfEvent.rndm");
         G4int evtNb = evt->GetEventID();
@@ -226,7 +229,7 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
             G4cout << "\n---> End of Event: " << evtNb << G4endl;
             CLHEP::HepRandom::showEngineStatus();
         }
-    }
+    }*/
 }
 
 

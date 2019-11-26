@@ -9,7 +9,10 @@ target_sources_local(g4e
             JLeicDetectorConstruction.hh
             JLeicDetectorMessenger.cc
             JLeicDetectorMessenger.hh
+
             JleicHistogramming.hh
+            JLeicHistogramming.cc
+
             JLeicEventAction.hh
             JLeicEventAction.cc
 

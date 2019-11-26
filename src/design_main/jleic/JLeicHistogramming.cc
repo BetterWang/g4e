@@ -2,7 +2,7 @@
 #include <TH2D.h>
 #include <TStyle.h>
 
-#include "JLeicHistogramming.hh"
+#include "JleicHistogramming.hh"
 
 
 
@@ -284,4 +284,40 @@ JLeicHistogramming::JLeicHistogramming()
     }
 
     gStyle->SetOptStat("nemruo");
+}
+
+
+void JLeicHistogramming::Write() {
+    if (histo1) histo1->Write();
+    if (histo2) histo2->Write();
+    if (histo3) histo3->Write();
+    if (histo4) histo4->Write();
+    if (histo5) histo5->Write();
+    if (histo6) histo6->Write();
+    if (histo7) histo7->Write();
+    if (histo8) histo8->Write();
+    if (histo9) histo9->Write();
+    if (histo10) histo10->Write();
+    if (histo11) histo11->Write();
+    if (histo12) histo12->Write();
+    if (histo13) histo13->Write();
+    if (histo14) histo14->Write();
+
+
+    //------------------------------------------------------------
+    for (int ihi = 0; ihi < NHIST; ihi++) {
+        if (d2_hist[ihi]) d2_hist[ihi]->Write();
+        if (hist[ihi])  hist[ihi]->Write();
+    }
+
+    //------------------------------------------------------------
+    for (int in = 0; in < 12; in++) {
+        hmatrixOccup[in]->Write();
+        hmatrixOccupCM[in]->Write();
+    }
+
+    //------------------------------------------------------------
+    for (int ihi = 0; ihi < NHIST; ihi++) {
+        if (HLikelihood[ihi]) HLikelihood[ihi]->Write();
+    }
 }

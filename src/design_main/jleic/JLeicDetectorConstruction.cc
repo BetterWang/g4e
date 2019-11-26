@@ -25,7 +25,7 @@
 //
 
 
-#include <spdlog/spdlog.h>
+
 #include "vector"
 #include "JLeicDetectorConstruction.hh"
 //#include "JLeicDetectorMessenger.hh"
@@ -75,10 +75,12 @@
 //
 //
 
-JLeicDetectorConstruction::JLeicDetectorConstruction() : fWorldChanged(false), fAbsorberMaterial(0), fGapMat(0), fSetUp("jleic2019"), World_Material(nullptr), World_Solid(0),
-                                                         World_Logic(0), World_Phys(0), fSolidRadSlice(0), fLogicRadSlice(0), fPhysicRadSlice(0), fPipe(false),
+JLeicDetectorConstruction::JLeicDetectorConstruction() : fWorldChanged(false), fAbsorberMaterial(nullptr), fGapMat(0), World_Material(nullptr), World_Solid(0),
+                                                         World_Logic(nullptr), World_Phys(nullptr), fSolidRadSlice(0), fLogicRadSlice(nullptr), fPhysicRadSlice(nullptr),
+                                                         fPipe(false),
 // fSolidAbsorber(0),    fLogicAbsorber(0),   fPhysicsAbsorber(0),
-                                                         fCalorimeterSD(0), fVertexSD(0), fMat(0) {
+                                                         fCalorimeterSD(0), fVertexSD(0), fMat(0)
+{
     fDetectorMessenger = new JLeicDetectorMessenger(this);
     fMat = new JLeicMaterials();
 
@@ -88,7 +90,8 @@ JLeicDetectorConstruction::JLeicDetectorConstruction() : fWorldChanged(false), f
 //
 //
 
-JLeicDetectorConstruction::~JLeicDetectorConstruction() {
+JLeicDetectorConstruction::~JLeicDetectorConstruction()
+{
     delete fDetectorMessenger;
     delete fMat;
 }
@@ -97,7 +100,8 @@ JLeicDetectorConstruction::~JLeicDetectorConstruction() {
 //
 //
 
-G4VPhysicalVolume *JLeicDetectorConstruction::Construct() {
+G4VPhysicalVolume *JLeicDetectorConstruction::Construct()
+{
 
     G4VPhysicalVolume *mdet = ConstructDetectorXTR();
 
@@ -112,28 +116,21 @@ G4VPhysicalVolume *JLeicDetectorConstruction::Construct() {
 //
 //
 
-G4VPhysicalVolume *JLeicDetectorConstruction::ConstructDetectorXTR() {
+G4VPhysicalVolume *JLeicDetectorConstruction::ConstructDetectorXTR()
+{
     // Cleanup old geometry
 
     G4GeometryManager::GetInstance()->OpenGeometry();
-    G4PhysicalVolumeStore::GetInstance()->Clean();
-    G4LogicalVolumeStore::GetInstance()->Clean();
-    G4SolidStore::GetInstance()->Clean();
+    G4PhysicalVolumeStore::Clean();
+    G4LogicalVolumeStore::Clean();
+    G4SolidStore::Clean();
 
-    G4cout << "USE Experimental setup : " << fSetUp << G4endl;
-
-    if (fSetUp == "jleic2019") {
-        return SetUpJLEIC2019();
-    } else {
-        G4cout << "Experimental setup is unsupported.  " << G4endl;
-        return SetUpJLEIC09();
-
-        //  return 0;
-    }
+    return SetUpJLEIC2019();
 }
 
 
-void JLeicDetectorConstruction::Create_ci_Endcap(JLeicDetectorConfig::ci_Endcap_Config cfg) {
+void JLeicDetectorConstruction::Create_ci_Endcap(JLeicDetectorConfig::ci_Endcap_Config cfg)
+{
     //===================================================================================
     //==                           ION-ENDCAP                                          ==
     //===================================================================================
@@ -142,15 +139,16 @@ void JLeicDetectorConstruction::Create_ci_Endcap(JLeicDetectorConfig::ci_Endcap_
 
     ci_ENDCAP_GVol_Logic = new G4LogicalVolume(ci_ENDCAP_GVol_Solid, World_Material, "ci_ENDCAP_GVol_Logic");
 
-    ci_ENDCAP_GVol_Phys = new G4PVPlacement(0, G4ThreeVector(cfg.PosX, 0, cfg.PosZ), "ci_ENDCAP_GVol_Phys", ci_ENDCAP_GVol_Logic, World_Phys, false, 0);
+    ci_ENDCAP_GVol_Phys = new G4PVPlacement(nullptr, G4ThreeVector(cfg.PosX, 0, cfg.PosZ), "ci_ENDCAP_GVol_Phys", ci_ENDCAP_GVol_Logic, World_Phys, false, 0);
 
-    attr_ci_ENDCAP_GVol = new G4VisAttributes(G4Color(0.3, 0, 3., 0.1));
-    attr_ci_ENDCAP_GVol->SetLineWidth(1);
-    attr_ci_ENDCAP_GVol->SetForceSolid(true);
-    ci_ENDCAP_GVol_Logic->SetVisAttributes(attr_ci_ENDCAP_GVol);
+    ci_ENDCAP_GVol_VisAttr = new G4VisAttributes(G4Color(0.3, 0, 3., 0.1));
+    ci_ENDCAP_GVol_VisAttr->SetLineWidth(1);
+    ci_ENDCAP_GVol_VisAttr->SetForceSolid(true);
+    ci_ENDCAP_GVol_Logic->SetVisAttributes(ci_ENDCAP_GVol_VisAttr);
 }
 
-void JLeicDetectorConstruction::Create_ce_Endcap(JLeicDetectorConfig::ce_Endcap_Config cfg) {
+void JLeicDetectorConstruction::Create_ce_Endcap(JLeicDetectorConfig::ce_Endcap_Config cfg)
+{
     //===================================================================================
     //==                           ELECTRON-ENDCAP                                     ==
     //===================================================================================
@@ -173,33 +171,24 @@ void JLeicDetectorConstruction::Create_ce_Endcap(JLeicDetectorConfig::ce_Endcap_
 //
 
 
-G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
-
-    char abname[128];
-    int i, j;
-
-
+G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019()
+{
     fAbsorberMaterial = fMat->GetMaterial("Si");
 
     //===================================================================================
     //==                    create a world                                            ==
     //===================================================================================
 
-
-    spdlog::flush_on(spdlog::level::info);
-    spdlog::info("fConfig.World.SizeR={}", fConfig.World.SizeR);
-    spdlog::info("fConfig.World.SizeZ={}", fConfig.World.SizeZ);
-
     fConfig.World.SizeR /= 3.;
     fConfig.World.SizeZ /= 5.;
-    printf("==>> create a world : xyz= %f %f %f [m]\n", fConfig.World.SizeR * 2 / m, fConfig.World.SizeR * 2 / m, fConfig.World.SizeZ / m);
+
     // World_Material    = Air;
     World_Material = fMat->GetMaterial("G4_Galactic");
     World_Solid = new G4Box("World_Solid", fConfig.World.SizeR, fConfig.World.SizeR, fConfig.World.SizeZ / 2.);
     World_Logic = new G4LogicalVolume(World_Solid, World_Material, "World_Logic");
     World_Phys = new G4PVPlacement(nullptr, G4ThreeVector(), "World_Phys", World_Logic, nullptr, false, 0);
 
-    spdlog::info("World_Solid->GetCubicVolume() = {}", World_Solid->GetCubicVolume());
+    printf("==>> create a world : xyz= %f %f %f [m]\n", fConfig.World.SizeR * 2 / m, fConfig.World.SizeR * 2 / m, fConfig.World.SizeZ / m);
     G4cout << "World_Solid->GetCubicVolume() = " << World_Solid->GetCubicVolume() << std::endl;
     G4cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  " << fConfig.World.SizeR << std::endl;
     G4cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  " << fConfig.World.SizeZ << std::endl;
@@ -209,16 +198,16 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!! SizeZ %f \n", fConfig.World.SizeZ);
 
 
-   //===================================================================================
-   //                          START placement of BEAM ELEMENTS                       ==
-   //===================================================================================
+    //==========================================================================
+    //                          B E A M   E L E M E N T S
+    //==========================================================================
 
     ir_Lattice.SetMotherParams(World_Phys, World_Material);
     ir_Lattice.SetIonBeamEnergy(fConfig.IonBeamEnergy);
     ir_Lattice.SetElectronBeamEnergy(fConfig.ElectronBeamEnergy);
 
-    ir_Lattice.Read_ion_beam_lattice();
-    ir_Lattice.Read_electron_beam_lattice();
+    ir_Lattice.LoadIonBeamLattice();
+    ir_Lattice.LoadElectronBeamLattice();
 
     //=========================================================================
     //                    Sensitive detectors
@@ -239,71 +228,71 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019() {
     }
 
 
+    if (USE_BARREL) {
+        //----------------------CREATE SOLENOID ---------------------------------------------
+        fConfig.cb_Solenoid.ShiftZ = fConfig.World.ShiftVTX;
+        cb_Solenoid.Construct(fConfig.cb_Solenoid, World_Material, World_Phys);
+    }
 
 
-if(USE_BARREL) {
-    //----------------------CREATE SOLENOID ---------------------------------------------
-    fConfig.cb_Solenoid.ShiftZ = fConfig.World.ShiftVTX;
-    cb_Solenoid.Construct(fConfig.cb_Solenoid, World_Material, World_Phys);
-}
+    if (USE_E_ENDCAP) {
+        // ------------------ create electon endcap ---------------------------------------------
 
+        fConfig.ce_Endcap.ROut = fConfig.cb_Solenoid.ROut - 1 * cm;
+        fConfig.ce_Endcap.PosZ = -fConfig.ce_Endcap.SizeZ / 2 - fConfig.cb_Solenoid.SizeZ / 2 + fConfig.World.ShiftVTX;
 
-if(USE_E_ENDCAP) {
-// ------------------ create electon endcap ---------------------------------------------
+        Create_ce_Endcap(fConfig.ce_Endcap);
+    }
 
-    fConfig.ce_Endcap.ROut = fConfig.cb_Solenoid.ROut - 1 * cm;
-    fConfig.ce_Endcap.PosZ = -fConfig.ce_Endcap.SizeZ / 2 - fConfig.cb_Solenoid.SizeZ / 2 + fConfig.World.ShiftVTX;
-
-    Create_ce_Endcap(fConfig.ce_Endcap);
-}
-
-if( USE_CB_HCAL) {
-    //----------------create  HCAL ( Iron  BARREL) ---------------------------------------
-    fConfig.cb_HCAL.RIn = fConfig.cb_Solenoid.ROut;
-    fConfig.cb_HCAL.ROut = fConfig.cb_Solenoid.ROut + fConfig.cb_HCAL.Thickness;
-    fConfig.cb_HCAL.SizeZ = fConfig.cb_Solenoid.SizeZ + fConfig.ce_Endcap.SizeZ;
-    //  fConfig.cb_HCAL.SizeZ = fConfig.cb_Solenoid.SizeZ ;
-
-    fConfig.cb_HCAL.ShiftZ = -fConfig.ce_Endcap.SizeZ / 2. + fConfig.World.ShiftVTX;
-
-    //  fConfig.cb_HCAL.ShiftZ = fConfig.World.ShiftVTX;
-    cb_HCAL.Construct(fConfig.cb_HCAL, World_Material, World_Phys);
-    //----------create a layered structure for the Iron ----------------------------------------
-    if(USE_CB_HCAL_D)  { cb_HCAL.ConstructLayers();  }
-
-}
-
-
-if(USE_CI_ENDCAP) {
-    //----------------- create Hadron endcap (ci_Endcap) ----------------------------------------
     if (USE_CB_HCAL) {
-        fConfig.ci_Endcap.ROut = fConfig.cb_HCAL.ROut;
-    } else {
-        fConfig.ci_Endcap.ROut = fConfig.cb_Solenoid.ROut + 100 * cm;
+        //----------------create  HCAL ( Iron  BARREL) ---------------------------------------
+        fConfig.cb_HCAL.RIn = fConfig.cb_Solenoid.ROut;
+        fConfig.cb_HCAL.ROut = fConfig.cb_Solenoid.ROut + fConfig.cb_HCAL.Thickness;
+        fConfig.cb_HCAL.SizeZ = fConfig.cb_Solenoid.SizeZ + fConfig.ce_Endcap.SizeZ;
+        //  fConfig.cb_HCAL.SizeZ = fConfig.cb_Solenoid.SizeZ ;
+
+        fConfig.cb_HCAL.ShiftZ = -fConfig.ce_Endcap.SizeZ / 2. + fConfig.World.ShiftVTX;
+
+        //  fConfig.cb_HCAL.ShiftZ = fConfig.World.ShiftVTX;
+        cb_HCAL.Construct(fConfig.cb_HCAL, World_Material, World_Phys);
+
+        //----------create a layered structure for the Iron ----------------------------------------
+        if (USE_CB_HCAL_D) {
+            cb_HCAL.ConstructLayers();
+        }
     }
 
 
-    fConfig.ci_Endcap.PosZ = fConfig.cb_Solenoid.SizeZ / 2. + fConfig.World.ShiftVTX + fConfig.ci_Endcap.ShiftZ + fConfig.ci_Endcap.SizeZ / 2.;
-    Create_ci_Endcap(fConfig.ci_Endcap);
+    if (USE_CI_ENDCAP) {
+        //----------------- create Hadron endcap (ci_Endcap) ----------------------------------------
+        if (USE_CB_HCAL) {
+            fConfig.ci_Endcap.ROut = fConfig.cb_HCAL.ROut;
+        } else {
+            fConfig.ci_Endcap.ROut = fConfig.cb_Solenoid.ROut + 100 * cm;
+        }
 
-    //------------------ create    HCAL in hadron endcap ---------------------------------------
 
-    if (USE_CI_HCAL) {
-        // G4double ci_HCAL_GVol_RIn[2]={60*cm, 70*cm } ;
-        //  G4double ci_HCAL_GVol_RIn[2]={0*cm, 0*cm }
-        // G4double ci_HCAL_GVol_ROut[2]={cb_HCAL_GVol_ROut,cb_HCAL_GVol_ROut };
+        fConfig.ci_Endcap.PosZ = fConfig.cb_Solenoid.SizeZ / 2. + fConfig.World.ShiftVTX + fConfig.ci_Endcap.ShiftZ + fConfig.ci_Endcap.SizeZ / 2.;
+        Create_ci_Endcap(fConfig.ci_Endcap);
 
-        if (USE_CB_HCAL) { fConfig.ci_HCAL.ROut = fConfig.cb_HCAL.ROut; }
-        else { fConfig.ci_HCAL.ROut = 300 * cm; }
+        //------------------ create    HCAL in hadron endcap ---------------------------------------
 
-        fConfig.ci_HCAL.PosZ = fConfig.ci_Endcap.PosZ + fConfig.ci_Endcap.SizeZ / 2 + fConfig.ci_HCAL.ShiftZ + fConfig.ci_HCAL.SizeZ / 2;
-        ci_HCAL.Construct(fConfig.ci_HCAL, World_Material, World_Phys);
+        if (USE_CI_HCAL) {
+            // G4double ci_HCAL_GVol_RIn[2]={60*cm, 70*cm } ;
+            //  G4double ci_HCAL_GVol_RIn[2]={0*cm, 0*cm }
+            // G4double ci_HCAL_GVol_ROut[2]={cb_HCAL_GVol_ROut,cb_HCAL_GVol_ROut };
 
-        //---------------------------- HCAL IRON--------------------------------------
-        if (USE_CI_HCAL_D) { ci_HCAL.ConstructDetectors(); };
+            if (USE_CB_HCAL) { fConfig.ci_HCAL.ROut = fConfig.cb_HCAL.ROut; }
+            else { fConfig.ci_HCAL.ROut = 300 * cm; }
 
+            fConfig.ci_HCAL.PosZ = fConfig.ci_Endcap.PosZ + fConfig.ci_Endcap.SizeZ / 2 + fConfig.ci_HCAL.ShiftZ + fConfig.ci_HCAL.SizeZ / 2;
+            ci_HCAL.Construct(fConfig.ci_HCAL, World_Material, World_Phys);
+
+            //---------------------------- HCAL IRON--------------------------------------
+            if (USE_CI_HCAL_D) { ci_HCAL.ConstructDetectors(); };
+
+        }
     }
-}
 
 
     //***********************************************************************************
@@ -313,254 +302,255 @@ if(USE_CI_ENDCAP) {
     //***********************************************************************************
 
 
-if(USE_BARREL_det) {
-    //===================================================================================
-    //==                          VERTEX DETECTOR VOLUME                               ==
-    //===================================================================================
+    if (USE_BARREL_det) {
+        //===================================================================================
+        //==                          VERTEX DETECTOR VOLUME                               ==
+        //===================================================================================
 
-    if (USE_CB_VTX) {
+        if (USE_CB_VTX) {
 
-        fConfig.cb_VTX.ShiftZ = -fConfig.World.ShiftVTX;
-        cb_VTX.Construct(fConfig.cb_VTX, World_Material, cb_Solenoid.Phys);
+            fConfig.cb_VTX.ShiftZ = -fConfig.World.ShiftVTX;
+            cb_VTX.Construct(fConfig.cb_VTX, World_Material, cb_Solenoid.Phys);
 
-        if (USE_CB_VTX_LADDERS) {
-            //----------vtx barrel ladder geometry--------------
-            cb_VTX.ConstructLaddersCentral();
-            for (int lay = 0; lay < cb_VTX.Lays.size(); lay++) {
-                if (cb_VTX.cb_VTX_ladder_Logic) { cb_VTX.cb_VTX_ladder_Logic[lay]->SetSensitiveDetector(fVertexSD); }
+            if (USE_CB_VTX_LADDERS) {
+                //----------vtx barrel ladder geometry--------------
+                cb_VTX.ConstructLaddersCentral();
+                for (size_t lay = 0; lay < cb_VTX.Lays.size(); lay++) {
+                    if (cb_VTX.cb_VTX_ladder_Logic) {
+                        cb_VTX.cb_VTX_ladder_Logic[lay]->SetSensitiveDetector(fVertexSD);
+                    }
+                }
             }
+            if (USE_CB_VTX_ENDCAPS) {
+                cb_VTX.ConstructLaddersEndcaps();
+                //         if (fLogicVTXEndH[lay]) { fLogicVTXEndH[lay]->SetSensitiveDetector(fCalorimeterSD); }
+            }
+
+        };    // end VTX detector
+
+        //===================================================================================
+        //==                         CTD DETECTOR                                          ==
+        //===================================================================================
+        if (USE_CB_CTD) {
+
+            fConfig.cb_CTD.SizeZ = fConfig.cb_Solenoid.SizeZ - fConfig.cb_CTD.SizeZCut;
+            cb_CTD.Construct(fConfig.cb_CTD, World_Material, cb_Solenoid.Phys);
+
+            if (USE_CB_CTD_Si) { cb_CTD.ConstructLadders(); }
+            else if (USE_CB_CTD_Straw) { cb_CTD.ConstructStraws(); };
+
+        };// end CTD detector
+
+
+        //===================================================================================
+        //==                         RICH DETECTOR                                         ==
+        //===================================================================================
+        if (USE_CB_DIRC) {
+
+            fConfig.cb_DIRC.RIn = fConfig.cb_CTD.ROut + 1 * cm;
+            // for new magnet
+            //   cb_DIRC_GVol_ROut = 95 * cm;
+            // for CLEO and BABAR DIRC
+            fConfig.cb_DIRC.ROut = fConfig.cb_DIRC.RIn + 10 * cm;
+            //   cb_DIRC_GVol_SizeZ = SizeZ;
+            fConfig.cb_DIRC.SizeZ = fConfig.cb_CTD.SizeZ;
+
+            cb_DIRC.Construct(fConfig.cb_DIRC, World_Material, cb_Solenoid.Phys);
+
+            if (USE_CB_DIRC_bars) { cb_DIRC.ConstructBars(); }
+
+
+        }; // end DIRC detector
+
+
+        //===================================================================================
+        //==                         EMCAL DETECTOR VOLUME                                 ==
+        //===================================================================================
+        if (USE_CB_EMCAL) {
+
+            fConfig.cb_EMCAL.ROut = fConfig.cb_Solenoid.ROut - fConfig.cb_EMCAL.ROutshift;
+            fConfig.cb_EMCAL.RIn = fConfig.cb_EMCAL.ROut - fConfig.cb_EMCAL.Thickness;
+            // cb_EMCAL_GVol_SizeZ=SizeZ -30*cm;
+
+            cb_EMCAL.Construct(fConfig.cb_EMCAL, fConfig.cb_Solenoid, World_Material, cb_Solenoid.Phys);
+            cb_EMCAL.ConstructBars();
         }
-        if (USE_CB_VTX_ENDCAPS) {
-            cb_VTX.ConstructLaddersEndcaps();
-            //         if (fLogicVTXEndH[lay]) { fLogicVTXEndH[lay]->SetSensitiveDetector(fCalorimeterSD); }
-        }
-
-    };    // end VTX detector
-
-    //===================================================================================
-    //==                         CTD DETECTOR                                          ==
-    //===================================================================================
-    if (USE_CB_CTD) {
-
-        fConfig.cb_CTD.SizeZ = fConfig.cb_Solenoid.SizeZ - fConfig.cb_CTD.SizeZCut;
-        cb_CTD.Construct(fConfig.cb_CTD, World_Material, cb_Solenoid.Phys);
-
-        if (USE_CB_CTD_Si) { cb_CTD.ConstructLadders(); }
-        else if (USE_CB_CTD_Straw) { cb_CTD.ConstructStraws(); };
-
-    };// end CTD detector
 
 
-    //===================================================================================
-    //==                         RICH DETECTOR                                         ==
-    //===================================================================================
-    if (USE_CB_DIRC) {
-
-        fConfig.cb_DIRC.RIn = fConfig.cb_CTD.ROut + 1 * cm;
-        // for new magnet
-        //   cb_DIRC_GVol_ROut = 95 * cm;
-        // for CLEO and BABAR DIRC
-        fConfig.cb_DIRC.ROut = fConfig.cb_DIRC.RIn + 10 * cm;
-        //   cb_DIRC_GVol_SizeZ = SizeZ;
-        fConfig.cb_DIRC.SizeZ = fConfig.cb_CTD.SizeZ;
-
-        cb_DIRC.Construct(fConfig.cb_DIRC, World_Material, cb_Solenoid.Phys);
-
-        if (USE_CB_DIRC_bars) { cb_DIRC.ConstructBars(); }
-
-
-    }; // end DIRC detector
-
-
-    //===================================================================================
-    //==                         EMCAL DETECTOR VOLUME                                 ==
-    //===================================================================================
-
-    if (USE_CB_EMCAL) {
-
-        fConfig.cb_EMCAL.ROut = fConfig.cb_Solenoid.ROut - fConfig.cb_EMCAL.ROutshift;
-        fConfig.cb_EMCAL.RIn = fConfig.cb_EMCAL.ROut - fConfig.cb_EMCAL.Thickness;
-        // cb_EMCAL_GVol_SizeZ=SizeZ -30*cm;
-
-        cb_EMCAL.Construct(fConfig.cb_EMCAL, fConfig.cb_Solenoid, World_Material, cb_Solenoid.Phys);
-        cb_EMCAL.ConstructBars();
-    }
-
-
-}  // end Barrel
+    }  // end Barrel
 
 
 
-// ***********************************************************************************
-//                       CE_ENDCAP
-// ***********************************************************************************
-if(USE_E_ENDCAP) {
+    // ***********************************************************************************
+    //                       CE_ENDCAP
+    // ***********************************************************************************
+    if (USE_E_ENDCAP) {
 
 
-//===================================================================================
-// ==                      GEM     Hadron endcap                                ==
-//==================================================================================
+        //===================================================================================
+        // ==                      GEM     Hadron endcap                                ==
+        //==================================================================================
 
-    if (USE_CE_GEM) {
-        fConfig.ce_GEM.PosZ = -fConfig.cb_Solenoid.SizeZ / 2 + fConfig.ce_GEM.SizeZ / 2;
+        if (USE_CE_GEM) {
+            fConfig.ce_GEM.PosZ = -fConfig.cb_Solenoid.SizeZ / 2 + fConfig.ce_GEM.SizeZ / 2;
 
-        ce_GEM.Construct(fConfig.ce_GEM, World_Material, cb_Solenoid.Phys);
-        ce_GEM.ConstructDetectors();
-        //   for (int lay = 0; lay < fConfig.ce_GEM.Nlayers; lay++) {
-        //       if (ce_GEM.lay_Logic[lay]) ce_GEM.lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD);
-        //   }
+            ce_GEM.Construct(fConfig.ce_GEM, World_Material, cb_Solenoid.Phys);
+            ce_GEM.ConstructDetectors();
+            //   for (int lay = 0; lay < fConfig.ce_GEM.Nlayers; lay++) {
+            //       if (ce_GEM.lay_Logic[lay]) ce_GEM.lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD);
+            //   }
 
 //    for (int lay = 0; lay < fConfig.ce_GEM.Nlayers; lay++) {
 //        if (ce_GEM.lay_Logic[lay]) ce_GEM.lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD);
-        //   }
-    }  // end USE_CI_GEM
+            //   }
+        }  // end USE_CI_GEM
 
 //===================================================================================
 //                         mRICH
 //===================================================================================
 
-    if (USE_CE_MRICH) {
-        fConfig.ce_MRICH.PosZ = fConfig.ce_Endcap.SizeZ / 2 - fConfig.ce_MRICH.SizeZ / 2 - 2 * cm;
+        if (USE_CE_MRICH) {
+            fConfig.ce_MRICH.PosZ = fConfig.ce_Endcap.SizeZ / 2 - fConfig.ce_MRICH.SizeZ / 2 - 2 * cm;
 
-        ce_MRICH.Construct(fConfig.ce_MRICH, World_Material, ce_ENDCAP_GVol_Phys);
+            ce_MRICH.Construct(fConfig.ce_MRICH, World_Material, ce_ENDCAP_GVol_Phys);
 
-        ce_MRICH.ConstructModules();
+            ce_MRICH.ConstructModules();
 
-    }
+        }
 //===================================================================================
 //                         CE_EMCAL
 //===================================================================================
-    if (USE_CE_EMCAL) {
-        fConfig.ce_EMCAL.PosZ = -fConfig.ce_Endcap.SizeZ / 2 + fConfig.ce_EMCAL.Thickness / 2.;
-        fConfig.ce_EMCAL.ROut = fConfig.ce_Endcap.ROut;
-        ce_EMCAL.Construct(fConfig.ce_EMCAL, World_Material, ce_ENDCAP_GVol_Phys);
-        ce_EMCAL.ConstructCrystals(); // --- inner detector with Crystals
-        ce_EMCAL.ConstructGlass();    // --- outer part with Glass
+        if (USE_CE_EMCAL) {
+            fConfig.ce_EMCAL.PosZ = -fConfig.ce_Endcap.SizeZ / 2 + fConfig.ce_EMCAL.Thickness / 2.;
+            fConfig.ce_EMCAL.ROut = fConfig.ce_Endcap.ROut;
+            ce_EMCAL.Construct(fConfig.ce_EMCAL, World_Material, ce_ENDCAP_GVol_Phys);
+            ce_EMCAL.ConstructCrystals(); // --- inner detector with Crystals
+            ce_EMCAL.ConstructGlass();    // --- outer part with Glass
 
-    }
+        }
 
-} //------------------end USE_E_ENDCAP -----------------------------------------------
+    } //------------------end USE_E_ENDCAP -----------------------------------------------
 //
 //
 // ***********************************************************************************
 //                       CI_ENDCAP
 // ***********************************************************************************
-if(USE_CI_ENDCAP) {
+    if (USE_CI_ENDCAP) {
 
 //===================================================================================
 // ==                      GEM     Hadron endcap                                ==
 //==================================================================================
 
-    if (USE_CI_GEM) {
-        fConfig.ci_GEM.PosZ = fConfig.cb_Solenoid.SizeZ / 2 - fConfig.ci_GEM.SizeZ / 2;   // --- need to find out why this 5 cm are needed
-        fConfig.ci_GEM.PosX = -5 * cm;
-        ci_GEM.Construct(fConfig.ci_GEM, World_Material, cb_Solenoid.Phys);
-        ci_GEM.ConstructDetectors();
-        for (int lay = 0; lay < fConfig.ci_GEM.Nlayers; lay++) {
-            if (ci_GEM.lay_Logic[lay]) ci_GEM.lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD);
-        }
-    }  // end USE_CI_GEM
+        if (USE_CI_GEM) {
+            fConfig.ci_GEM.PosZ = fConfig.cb_Solenoid.SizeZ / 2 - fConfig.ci_GEM.SizeZ / 2;   // --- need to find out why this 5 cm are needed
+            fConfig.ci_GEM.PosX = -5 * cm;
+            ci_GEM.Construct(fConfig.ci_GEM, World_Material, cb_Solenoid.Phys);
+            ci_GEM.ConstructDetectors();
+            for (int lay = 0; lay < fConfig.ci_GEM.Nlayers; lay++) {
+                if (ci_GEM.lay_Logic[lay]) ci_GEM.lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD);
+            }
+        }  // end USE_CI_GEM
 
-    if (USE_CI_DRICH) {
-        //===================================================================================
-        // ==                       dRICH     Hadron endcap                                ==
-        //==================================================================================
-        fConfig.ci_DRICH.RIn = fConfig.ci_Endcap.RIn;
+        if (USE_CI_DRICH) {
+            //===================================================================================
+            // ==                       dRICH     Hadron endcap                                ==
+            //==================================================================================
+            fConfig.ci_DRICH.RIn = fConfig.ci_Endcap.RIn;
 
-        fConfig.ci_DRICH.PosZ = -fConfig.ci_Endcap.SizeZ / 2. + fConfig.ci_DRICH.ThicknessZ / 2.;
-        //    double ci_DRICH_GVol_PosZ= 0*cm;
-        ci_DRICH.Construct(fConfig.ci_DRICH, World_Material, ci_ENDCAP_GVol_Phys);
-        ci_DRICH.ConstructDetectors();
+            fConfig.ci_DRICH.PosZ = -fConfig.ci_Endcap.SizeZ / 2. + fConfig.ci_DRICH.ThicknessZ / 2.;
+            //    double ci_DRICH_GVol_PosZ= 0*cm;
+            ci_DRICH.Construct(fConfig.ci_DRICH, World_Material, ci_ENDCAP_GVol_Phys);
+            ci_DRICH.ConstructDetectors();
 
-        //===================================================================================
-    } // end USE_CI_DRICH
+            //===================================================================================
+        } // end USE_CI_DRICH
 
 
-    if (USE_CI_TRD) {
-        //===================================================================================
-        // ==                       TRD     Hadron endcap                                ==
-        //==================================================================================
-        //   ci_TRD_GVol_PosZ = -fConfig.ci_Endcap.SizeZ / 2 + fConfig.ci_DRICH.ThicknessZ + ci_TRD_GVol_ThicknessZ/2.;
+        if (USE_CI_TRD) {
+            //===================================================================================
+            // ==                       TRD     Hadron endcap                                ==
+            //==================================================================================
+            //   ci_TRD_GVol_PosZ = -fConfig.ci_Endcap.SizeZ / 2 + fConfig.ci_DRICH.ThicknessZ + ci_TRD_GVol_ThicknessZ/2.;
 
-        fConfig.ci_TRD.RIn = fConfig.ci_Endcap.RIn;
+            fConfig.ci_TRD.RIn = fConfig.ci_Endcap.RIn;
 
-        fConfig.ci_TRD.PosZ = -fConfig.ci_Endcap.SizeZ / 2. + fConfig.ci_DRICH.ThicknessZ + fConfig.ci_TRD.ThicknessZ / 2.;
-        //    double ci_DRICH_GVol_PosZ= 0*cm;
-        ci_TRD.Construct(fConfig.ci_TRD, World_Material, ci_ENDCAP_GVol_Phys);
+            fConfig.ci_TRD.PosZ = -fConfig.ci_Endcap.SizeZ / 2. + fConfig.ci_DRICH.ThicknessZ + fConfig.ci_TRD.ThicknessZ / 2.;
+            //    double ci_DRICH_GVol_PosZ= 0*cm;
+            ci_TRD.Construct(fConfig.ci_TRD, World_Material, ci_ENDCAP_GVol_Phys);
 
-        ci_TRD.ConstructDetectors();
-        printf("FoilNumbers=%d (%d) \n", fConfig.ci_TRD.fFoilNumber, ci_TRD.ConstructionConfig.fFoilNumber); // --- ????????? ---
-        //ci_TRD.ConstructionConfig.fFoilNumber
-        //===================================================================================
-    }// end USE_CI_TRD
+            ci_TRD.ConstructDetectors();
+            printf("FoilNumbers=%d (%d) \n", fConfig.ci_TRD.fFoilNumber, ci_TRD.ConstructionConfig.fFoilNumber); // --- ????????? ---
+            //ci_TRD.ConstructionConfig.fFoilNumber
+            //===================================================================================
+        }// end USE_CI_TRD
 
-    if (USE_CI_EMCAL) {
-       //===================================================================================
-        // ==                      EMCAL    Hadron endcap                                ==
-        //==================================================================================
+        if (USE_CI_EMCAL) {
+            //===================================================================================
+            // ==                      EMCAL    Hadron endcap                                ==
+            //==================================================================================
 
-        fConfig.ci_EMCAL.PosZ = -fConfig.ci_Endcap.SizeZ / 2 + fConfig.ci_DRICH.ThicknessZ + fConfig.ci_TRD.ThicknessZ + fConfig.ci_EMCAL.ThicknessZ / 2;
-        ci_EMCAL.Construct(fConfig.ci_EMCAL, World_Material, ci_ENDCAP_GVol_Phys);
-        ci_EMCAL.ConstructDetectors();    // --- outer part with Glass
+            fConfig.ci_EMCAL.PosZ = -fConfig.ci_Endcap.SizeZ / 2 + fConfig.ci_DRICH.ThicknessZ + fConfig.ci_TRD.ThicknessZ + fConfig.ci_EMCAL.ThicknessZ / 2;
+            ci_EMCAL.Construct(fConfig.ci_EMCAL, World_Material, ci_ENDCAP_GVol_Phys);
+            ci_EMCAL.ConstructDetectors();    // --- outer part with Glass
 
-    } // end USE_CI_EMCAL
-} // ============end USE_CI_ENDCAP  ===================================
+        } // end USE_CI_EMCAL
+    } // ============end USE_CI_ENDCAP  ===================================
 
 
     //====================================================================================
     //==                          DIPOLE-1 Tracker and EMCAL                            ==
     //====================================================================================
 
-if(USE_FI_TRKD1) {
-    //-------------------------------------------------------------------------------
-    //                      Place Si_disks inside D1a
-    //-------------------------------------------------------------------------------
-    int mydipole_fi_trk1 = -1;
+    if (USE_FI_TRKD1) {
+        //-------------------------------------------------------------------------------
+        //                      Place Si_disks inside D1a
+        //-------------------------------------------------------------------------------
+        int mydipole_fi_trk1 = -1;
 
-    for (int id = 0; id < 20; id++) {
-        if (strcmp(ir_Lattice.fSolid_BigDi_ffqsNAME[id], "iBDS1a") == 0) {
-            printf("found D21=%s  Z=%f dZ=%f Rout=%f \n", ir_Lattice.fSolid_BigDi_ffqsNAME[id], ir_Lattice.fSolid_BigDi_ffqsZ[id], ir_Lattice.fSolid_BigDi_ffqsSizeZDi[id],
-                   ir_Lattice.fSolid_BigDi_ffqsRinDi[id]);
-            mydipole_fi_trk1 = id;
+        for (int id = 0; id < 20; id++) {
+            if (strcmp(ir_Lattice.fSolid_BigDi_ffqsNAME[id], "iBDS1a") == 0) {
+                printf("found D21=%s  Z=%f dZ=%f Rout=%f \n", ir_Lattice.fSolid_BigDi_ffqsNAME[id], ir_Lattice.fSolid_BigDi_ffqsZ[id], ir_Lattice.fSolid_BigDi_ffqsSizeZDi[id],
+                       ir_Lattice.fSolid_BigDi_ffqsRinDi[id]);
+                mydipole_fi_trk1 = id;
+            };
         };
-    };
 
-    if (mydipole_fi_trk1 == -1) {
-        printf("ERROR mydipole_fi_trk1=-1\n");
-        sleep(3);
-        exit(1);
+        if (mydipole_fi_trk1 == -1) {
+            printf("ERROR mydipole_fi_trk1=-1\n");
+            sleep(3);
+            exit(1);
+        }
+
+        fConfig.fi_TRKD1.ROut = ir_Lattice.fSolid_BigDi_ffqsRinDi[mydipole_fi_trk1] * cm;
+        fConfig.fi_TRKD1.Zpos = (ir_Lattice.fSolid_BigDi_ffqsSizeZDi[mydipole_fi_trk1] / 2.) * cm - fConfig.fi_TRKD1.SizeZ / 2.;
+        fi_TRKD1.ConstructA(fConfig.fi_TRKD1, World_Material, ir_Lattice.fPhysics_BigDi_m[mydipole_fi_trk1]);
+        fi_TRKD1.ConstructDetectorsA();
+
+
+        // fi_TRKD1.ConstructDetectorsB();
+        //  if (f1_D1A_Lay_Logic) f1_D1A_Lay_Logic->SetSensitiveDetector(fCalorimeterSD);
+
     }
-
-    fConfig.fi_TRKD1.ROut = ir_Lattice.fSolid_BigDi_ffqsRinDi[mydipole_fi_trk1] * cm;
-    fConfig.fi_TRKD1.Zpos = (ir_Lattice.fSolid_BigDi_ffqsSizeZDi[mydipole_fi_trk1] / 2.) * cm - fConfig.fi_TRKD1.SizeZ / 2.;
-    fi_TRKD1.ConstructA(fConfig.fi_TRKD1, World_Material, ir_Lattice.fPhysics_BigDi_m[mydipole_fi_trk1]);
-    fi_TRKD1.ConstructDetectorsA();
-
-
-    // fi_TRKD1.ConstructDetectorsB();
-    //  if (f1_D1A_Lay_Logic) f1_D1A_Lay_Logic->SetSensitiveDetector(fCalorimeterSD);
-
-}
 //------------------------------------------------
-if(USE_CI_HCAL) {
+    if (USE_CI_HCAL) {
 
-    if (USE_FI_EMCAL) {
-        // Ecal module  AFTER !!!   Dipole1
+        if (USE_FI_EMCAL) {
+            // Ecal module  AFTER !!!   Dipole1
 
-        fConfig.fi_EMCAL.Zpos = -fConfig.ci_HCAL.SizeZ / 2 + fConfig.fi_EMCAL.SizeZ / 2;
+            fConfig.fi_EMCAL.Zpos = -fConfig.ci_HCAL.SizeZ / 2 + fConfig.fi_EMCAL.SizeZ / 2;
 
-        fConfig.fi_EMCAL.rot_matx.rotateY(fConfig.fi_EMCAL.Angle * rad);
-        fi_EMCAL.Construct(fConfig.fi_EMCAL, World_Material, ci_HCAL.Phys);
+            fConfig.fi_EMCAL.rot_matx.rotateY(fConfig.fi_EMCAL.Angle * rad);
+            fi_EMCAL.Construct(fConfig.fi_EMCAL, World_Material, ci_HCAL.Phys);
 
 
+        }
     }
-}
 
     //====================================================================================
     //==                    Far-Forward Area    D2, D3  ZDC. Roman Pots                 ==
     //====================================================================================
     int mydipole_ffi_trk2;
-    if(USE_FFI_TRKD2) {
+    if (USE_FFI_TRKD2) {
         for (int id = 0; id < 20; id++) {
             if (strcmp(ir_Lattice.fSolid_BigDi_ffqsNAME[id], "iBDS2") == 0) {
                 printf("fi_D2_GVol :: found D2=%s  Z=%f dZ=%f Rout=%f \n", ir_Lattice.fSolid_BigDi_ffqsNAME[id], ir_Lattice.fSolid_BigDi_ffqsZ[id],
@@ -580,52 +570,52 @@ if(USE_CI_HCAL) {
 
     }
     //------------------------------------------------
-if(USE_FFI_ZDC) {
-    fConfig.ffi_ZDC.rot_matx.rotateY(fConfig.ffi_ZDC.Angle * rad);
-    fConfig.ffi_ZDC.Zpos = 4000 * cm;
-    fConfig.ffi_ZDC.Xpos = -190 * cm;
+    if (USE_FFI_ZDC) {
+        fConfig.ffi_ZDC.rot_matx.rotateY(fConfig.ffi_ZDC.Angle * rad);
+        fConfig.ffi_ZDC.Zpos = 4000 * cm;
+        fConfig.ffi_ZDC.Xpos = -190 * cm;
 
-    ffi_ZDC.Construct(fConfig.ffi_ZDC, World_Material, World_Phys);
-    ffi_ZDC.ConstructTowels();
-    if (ffi_ZDC.Logic) ffi_ZDC.Logic->SetSensitiveDetector(fCalorimeterSD);
+        ffi_ZDC.Construct(fConfig.ffi_ZDC, World_Material, World_Phys);
+        ffi_ZDC.ConstructTowels();
+        if (ffi_ZDC.Logic) ffi_ZDC.Logic->SetSensitiveDetector(fCalorimeterSD);
 
-} // end ffi_ZDC
+    } // end ffi_ZDC
 
     //------------------------------------------------
-if(USE_FFI_RPOT_D2) {
-    fConfig.ffi_RPOT_D2.rot_matx.rotateY(fConfig.ffi_RPOT_D2.Angle * rad);
-    fConfig.ffi_RPOT_D2.PosZ = 3100 * cm;
-    fConfig.ffi_RPOT_D2.PosX = -170 * cm;
+    if (USE_FFI_RPOT_D2) {
+        fConfig.ffi_RPOT_D2.rot_matx.rotateY(fConfig.ffi_RPOT_D2.Angle * rad);
+        fConfig.ffi_RPOT_D2.PosZ = 3100 * cm;
+        fConfig.ffi_RPOT_D2.PosX = -170 * cm;
 
-    ffi_RPOT_D2.Construct(fConfig.ffi_RPOT_D2, World_Material, World_Phys);
-    if (ffi_RPOT_D2.Logic) ffi_RPOT_D2.Logic->SetSensitiveDetector(fCalorimeterSD);
+        ffi_RPOT_D2.Construct(fConfig.ffi_RPOT_D2, World_Material, World_Phys);
+        if (ffi_RPOT_D2.Logic) ffi_RPOT_D2.Logic->SetSensitiveDetector(fCalorimeterSD);
 
-} // end ffi_RPOT_D2
+    } // end ffi_RPOT_D2
     //------------------------------------------------
-if(USE_FFI_RPOT_D3) {
-    fConfig.ffi_RPOT_D3.Angle = -0.053;
-    fConfig.ffi_RPOT_D3.rot_matx.rotateY(fConfig.ffi_RPOT_D3.Angle * rad);
-    fConfig.ffi_RPOT_D3.PosZ = 5000 * cm;
-    fConfig.ffi_RPOT_D3.PosX = -153 * cm;
+    if (USE_FFI_RPOT_D3) {
+        fConfig.ffi_RPOT_D3.Angle = -0.053;
+        fConfig.ffi_RPOT_D3.rot_matx.rotateY(fConfig.ffi_RPOT_D3.Angle * rad);
+        fConfig.ffi_RPOT_D3.PosZ = 5000 * cm;
+        fConfig.ffi_RPOT_D3.PosX = -153 * cm;
 
-    ffi_RPOT_D3.Construct(fConfig.ffi_RPOT_D3, World_Material, World_Phys);
-    if (ffi_RPOT_D3.Logic) ffi_RPOT_D3.Logic->SetSensitiveDetector(fCalorimeterSD);
+        ffi_RPOT_D3.Construct(fConfig.ffi_RPOT_D3, World_Material, World_Phys);
+        if (ffi_RPOT_D3.Logic) ffi_RPOT_D3.Logic->SetSensitiveDetector(fCalorimeterSD);
 
-} // end ffi_RPOT_D3
+    } // end ffi_RPOT_D3
 
     //===================================================================================
     //==                        Compton Polarimeter                                  ==
     //===================================================================================
-if(USE_FFE_CPOL) {
+    if (USE_FFE_CPOL) {
 
-    ffe_CPOL.Construct(fConfig.ffe_CPOL, World_Material, World_Phys);
-} // end ffe_CPOL
+        ffe_CPOL.Construct(fConfig.ffe_CPOL, World_Material, World_Phys);
+    } // end ffe_CPOL
 
 
-if(USE_BEAMPIPE) {
- 
+    if (USE_BEAMPIPE) {
 
-} // ---- end beampipe ------
+
+    } // ---- end beampipe ------
 
 
 #ifdef USE_FI_DIPOLE1_B
@@ -943,24 +933,11 @@ if(USE_BEAMPIPE) {
 }
 
 
-
-//==========================================================================================================
-//                                      JLEIC   END
-//==========================================================================================================
-
-
-
-G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC09() {
-    return nullptr;
-}
-
-
-
 ////////////////////////////////////////////////////////////////////////////
 //
 //
-
-void JLeicDetectorConstruction::PrintGeometryParameters() {
+void JLeicDetectorConstruction::PrintGeometryParameters()
+{
     G4cout << "\n The  WORLD   is made of " << fConfig.World.SizeZ / mm << "mm of " << World_Material->GetName();
     G4cout << ", the transverse size (R) of the world is " << fConfig.World.SizeR / mm << " mm. " << G4endl;
     G4cout << "WorldMaterial = " << World_Material->GetName() << G4endl;
@@ -972,7 +949,8 @@ void JLeicDetectorConstruction::PrintGeometryParameters() {
 //
 //
 
-void JLeicDetectorConstruction::SetAbsorberMaterial(G4String materialChoice) {
+void JLeicDetectorConstruction::SetAbsorberMaterial(G4String materialChoice)
+{
     // get the pointer to the material table
     const G4MaterialTable *theMaterialTable = G4Material::GetMaterialTable();
 
@@ -993,7 +971,8 @@ void JLeicDetectorConstruction::SetAbsorberMaterial(G4String materialChoice) {
 //
 //
 
-void JLeicDetectorConstruction::SetRadiatorMaterial(G4String materialChoice) {
+void JLeicDetectorConstruction::SetRadiatorMaterial(G4String materialChoice)
+{
     // get the pointer to the material table
 
     const G4MaterialTable *theMaterialTable = G4Material::GetMaterialTable();
@@ -1016,7 +995,8 @@ void JLeicDetectorConstruction::SetRadiatorMaterial(G4String materialChoice) {
 //
 //
 
-void JLeicDetectorConstruction::SetWorldMaterial(G4String materialChoice) {
+void JLeicDetectorConstruction::SetWorldMaterial(G4String materialChoice)
+{
     // get the pointer to the material table
     const G4MaterialTable *theMaterialTable = G4Material::GetMaterialTable();
 
@@ -1037,22 +1017,26 @@ void JLeicDetectorConstruction::SetWorldMaterial(G4String materialChoice) {
 ///////////////////////////////////////////////////////////////////////////
 //                  Set beam energy settings
 //
-void JLeicDetectorConstruction::SetElectronBeamEnergy(G4int  val) {
+void JLeicDetectorConstruction::SetElectronBeamEnergy(G4int val)
+{
     //  electron beam energy settings
     fConfig.ElectronBeamEnergy = val;
-     printf("ElectronBeamEnergy =%d \n",fConfig.ElectronBeamEnergy);
+    printf("ElectronBeamEnergy =%d \n", fConfig.ElectronBeamEnergy);
 }
-void JLeicDetectorConstruction::SetIonBeamEnergy(G4int  val) {
+
+void JLeicDetectorConstruction::SetIonBeamEnergy(G4int val)
+{
     // Ion beam energy settings
     fConfig.IonBeamEnergy = val;
-    printf("IonBeamEnergy =%d \n",fConfig.IonBeamEnergy);
+    printf("IonBeamEnergy =%d \n", fConfig.IonBeamEnergy);
 }
 
 ///////////////////////////////////////////////////////////////////////////
 //
 //
 
-void JLeicDetectorConstruction::SetAbsorberThickness(G4double val) {
+void JLeicDetectorConstruction::SetAbsorberThickness(G4double val)
+{
     // change Absorber thickness and recompute the calorimeter parameters
     fConfig.ci_TRD.fAbsorberThickness = val;
     //  ComputeCalorParameters();
@@ -1062,7 +1046,8 @@ void JLeicDetectorConstruction::SetAbsorberThickness(G4double val) {
 //
 //
 
-void JLeicDetectorConstruction::SetRadiatorThickness(G4double val) {
+void JLeicDetectorConstruction::SetRadiatorThickness(G4double val)
+{
     // change XTR radiator thickness and recompute the calorimeter parameters
     fConfig.ci_TRD.fRadThickness = val;
     // ComputeCalorParameters();
@@ -1072,7 +1057,8 @@ void JLeicDetectorConstruction::SetRadiatorThickness(G4double val) {
 //
 //
 
-void JLeicDetectorConstruction::SetGasGapThickness(G4double val) {
+void JLeicDetectorConstruction::SetGasGapThickness(G4double val)
+{
     // change XTR gas gap thickness and recompute the calorimeter parameters
     fConfig.ci_TRD.fGasGap = val;
     // ComputeCalorParameters();
@@ -1082,7 +1068,8 @@ void JLeicDetectorConstruction::SetGasGapThickness(G4double val) {
 //
 //
 
-void JLeicDetectorConstruction::SetAbsorberRadius(G4double val) {
+void JLeicDetectorConstruction::SetAbsorberRadius(G4double val)
+{
     // change the transverse size and recompute the calorimeter parameters
     fConfig.ci_TRD.fAbsorberRadius = val;
     // ComputeCalorParameters();
@@ -1092,7 +1079,8 @@ void JLeicDetectorConstruction::SetAbsorberRadius(G4double val) {
 //
 //
 
-void JLeicDetectorConstruction::SetWorldSizeZ(G4double val) {
+void JLeicDetectorConstruction::SetWorldSizeZ(G4double val)
+{
     fWorldChanged = true;
     fConfig.World.SizeZ = val;
     // ComputeCalorParameters();
@@ -1102,7 +1090,8 @@ void JLeicDetectorConstruction::SetWorldSizeZ(G4double val) {
 //
 //
 
-void JLeicDetectorConstruction::SetWorldSizeR(G4double val) {
+void JLeicDetectorConstruction::SetWorldSizeR(G4double val)
+{
     fWorldChanged = true;
     fConfig.World.SizeR = val;
     // ComputeCalorParameters();
@@ -1112,20 +1101,21 @@ void JLeicDetectorConstruction::SetWorldSizeR(G4double val) {
 //
 //
 
-void JLeicDetectorConstruction::SetAbsorberZpos(G4double val) {
+void JLeicDetectorConstruction::SetAbsorberZpos(G4double val)
+{
     fConfig.ci_TRD.fAbsorberZ = val;
     // ComputeCalorParameters();
 }
 
 
-
-
-void JLeicDetectorConstruction::UpdateGeometry() {
+void JLeicDetectorConstruction::UpdateGeometry()
+{
     G4RunManager::GetRunManager()->DefineWorldVolume(ConstructDetectorXTR());
 }
 
 
-void JLeicDetectorConstruction::checkVolumeOverlap() {
+void JLeicDetectorConstruction::checkVolumeOverlap()
+{
     // loop inside all the daughters volumes
     G4cout << " loop inside all the daughters volumes" << G4endl;
     //        bool bCheckOverlap;

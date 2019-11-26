@@ -22,23 +22,15 @@
 // * use  in  resulting  scientific  publications,  and indicate your *
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
-//
-//
-// $Id: JLeicSteppingAction.hh,v 1.3 2006-06-29 16:38:14 gunter Exp $
-// GEANT4 tag $Name: geant4-09-04-patch-01 $
-//
-// 
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
 #ifndef JLeicSteppingAction_h
 #define JLeicSteppingAction_h 1
 
 #include "G4UserSteppingAction.hh"
-#include "G4Event.hh"
 #include "G4EventManager.hh"
+#include "G4Event.hh"
 #include "G4ios.hh"
+
 #include "globals.hh"
 
 class JLeicDetectorConstruction;
@@ -47,15 +39,14 @@ class JLeicEventAction;
 class JLeicSteppingMessenger;
 class JLeicHistogramming;
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
 class JLeicSteppingAction : public G4UserSteppingAction
 {
   public:
-    JLeicSteppingAction(JLeicDetectorConstruction*, JLeicEventAction*, JLeicRunAction*, JLeicHistogramming* );
-   ~JLeicSteppingAction();
+    JLeicSteppingAction(JLeicDetectorConstruction *detectorConstruction, JLeicEventAction *eventAction, JLeicRunAction *runAction, JLeicHistogramming *histo);
+   ~JLeicSteppingAction() override;
 
-    void UserSteppingAction(const G4Step*);
+    void UserSteppingAction(const G4Step*) override;
    
   FILE* rc{};
   private:

@@ -8,12 +8,16 @@ target_include_directories(g4e
 
         SYSTEM
             external/spdlog/include     # Header only library for str formatting and fast logging
+
             external/argparse           # Header only library for argument parsing
 
         # TODO configure install and build interfaces right
         # $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         # $<INSTALL_INTERFACE:include/mylib>  # <prefix>/include/mylib
         )
+
+# This definition will turn fmt lib into header only version
+target_compile_definitions(g4e PRIVATE FMT_HEADER_ONLY)
 
 target_sources_local(g4e
         PRIVATE
@@ -23,6 +27,10 @@ target_sources_local(g4e
 
         helpers/StringHelpers.cc
         helpers/StringHelpers.hh
+
+        InitializationContextInterface.hh
+        InitializationMConfig.hh
+        LogLevels.hh
 
 
         G4QuadrupoleMagField.cc

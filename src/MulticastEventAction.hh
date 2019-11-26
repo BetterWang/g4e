@@ -10,11 +10,6 @@
 class MulticastEventAction : public G4UserEventAction
 {
 public:
-    MulticastEventAction();
-
-    ~MulticastEventAction();
-
-public:
     void BeginOfEventAction(const G4Event *) override;
 
     void EndOfEventAction(const G4Event *) override;

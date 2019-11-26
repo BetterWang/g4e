@@ -8,6 +8,8 @@
 #include <G4Material.hh>
 #include <G4FieldManager.hh>
 
+#include <spdlog/spdlog.h>
+
 class ir_LatticeDesign {
 public:
 
@@ -22,18 +24,12 @@ public:
     }
 
     void SetElectronBeamEnergy(int32_t electronBeamEnergy) {
-        ir_LatticeDesign::fElectronBeamEnergy = electronBeamEnergy;
+        fElectronBeamEnergy = electronBeamEnergy;
     }
 
     void SetIonBeamEnergy(int32_t ionBeamEnergy) {
-        ir_LatticeDesign::fIonBeamEnergy = ionBeamEnergy;
+        fIonBeamEnergy = ionBeamEnergy;
     }
-
-
-
-
-
-
 
     G4Material *ffqsMaterial;
     G4VisAttributes *vb1, *vb1a, *vb1b, *vb1as;
@@ -81,7 +77,7 @@ public:
 
     G4RotationMatrix brm_hk[20];
 
-    void Read_ion_beam_lattice() {
+    void LoadIonBeamLattice() {
         //Downstream elements
         // Element name	Type	   Length [m] Good_field half-aperture [cm]
         // Inner Half-A [cm]
@@ -201,7 +197,7 @@ public:
     }
 
 
-    void Read_electron_beam_lattice() {
+    void LoadElectronBeamLattice() {
         //Downstream elements
         // Element name	Type	   Length [m] Good_field half-aperture [cm]
         // Inner Half-A [cm]
@@ -237,11 +233,11 @@ public:
         float ffqsPhi;
 
 
-        printf("DetectorConstruction::Read_electron_beam_lattice. %d \n",fElectronBeamEnergy);
+        printf("DetectorConstruction::LoadElectronBeamLattice. %d \n",fElectronBeamEnergy);
         // If G4E_HOME is set get a file from resources, otherwise try to open what we have
 
         std::string fileName = fmt::format("e_ir_{}.txt",fElectronBeamEnergy);
-        spdlog::debug("DetectorConstruction::Read_electron_beam_lattice. Opening file: '{}'", fileName);
+        spdlog::debug("DetectorConstruction::LoadElectronBeamLattice. Opening file: '{}'", fileName);
 
         // If G4E_HOME is set get a file from resources, otherwise try to open what we have
         //std::string fileName("e_ir.txt");
@@ -253,10 +249,10 @@ public:
         // Opening the file
         rc = fopen(fileName.c_str(), "r");
         if (rc == nullptr) {
-            spdlog::warn("DetectorConstruction::Read_electron_beam_lattice. fopen returned NULLPTR on file: '{}'", fileName);
+            spdlog::warn("DetectorConstruction::LoadElectronBeamLattice. fopen returned NULLPTR on file: '{}'", fileName);
             return;
         }
-        spdlog::debug("DetectorConstruction::Read_electron_beam_lattice. Opened file: '{}'", fileName);
+        spdlog::debug("DetectorConstruction::LoadElectronBeamLattice. Opened file: '{}'", fileName);
 
         int iq=0,ik=0,is=0;
         while (fgets(buffer, 512, (FILE *) rc)) {

@@ -13,7 +13,7 @@
 #include "G4UImessenger.hh"
 #include "G4SystemOfUnits.hh"
 #include "JLeicSolenoid3D.hh"
-#include "spdlog/spdlog.h"
+#include <spdlog/spdlog.h>
 
 
 struct cb_Solenoid_Config {

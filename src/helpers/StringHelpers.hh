@@ -3,6 +3,7 @@
 
 
 #include <string>
+#include <vector>
 #include <algorithm>
 
 
@@ -213,6 +214,15 @@ namespace g4e {
     inline std::string TrimCopy(std::string s)
     {
         Trim(s);
+        return s;
+    }
+
+    inline std::string ToLowerCopy(std::string s) {
+        // This function is tested to be faster than boost::algorithm::to_lower
+        // Probably it would be a problem with locales. But who cares, we are in physics
+        for(auto& c : s) {
+            c = tolower(c);
+        }
         return s;
     }
 }

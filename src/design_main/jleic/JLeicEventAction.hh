@@ -42,13 +42,13 @@
 class JLeicRunAction;
 
 class JLeicEventActionMessenger;
-
+class JLeicHistogramming;
 
 
 class JLeicEventAction : public G4UserEventAction
 {
 public:
-    JLeicEventAction(JLeicRunAction *JLeicRA);
+    JLeicEventAction(JLeicRunAction*, JLeicHistogramming*);
 
     ~JLeicEventAction();
 
@@ -92,6 +92,7 @@ private:
     G4int calorimeterCollID;
     G4int vertexCollID;
     JLeicEventActionMessenger *eventMessenger;
+    JLeicHistogramming* fHistos;
     JLeicRunAction *runaction;
     G4int fVerbose;
     G4double nstep, nstepCharged, nstepNeutral;

@@ -75,7 +75,7 @@ public:
     void AddnStepsCharged(G4double ns);
 
     void AddnStepsNeutral(G4double ns);
-
+    void AddTrRef(G4double tr, G4double ref);
 
     g4e::RootOutput mRootEventsOut;
     TFile *mHitsFile = nullptr;

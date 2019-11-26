@@ -214,10 +214,7 @@ public:
 
     void SetWorldSizeR(G4double);
 
-    void SetDetectorSetUp(G4String setUp) { fSetUp = setUp; };
-
-
-    G4VPhysicalVolume *Construct();
+    G4VPhysicalVolume *Construct() override;
 
     void UpdateGeometry();
 
@@ -265,7 +262,6 @@ public:
     G4double fadc_slice;
 
     //---  fsv move to public ---
-    G4String fSetUp;
     G4Material *fAbsorberMaterial;
 
     G4int fModuleNumber;   // the number of Rad-et modules
@@ -275,19 +271,12 @@ public:
     //----------------VTX  volume ------------------
     cb_VTX_Design cb_VTX;
 
+    G4VPhysicalVolume *SetUpJLEIC2019();
+
 private:
 
     G4VPhysicalVolume *ConstructDetectorXTR();
 
-    G4FieldManager *SetQMagField(float field, float angle, float theta, G4ThreeVector fieldorigin);
-
-    // G4FieldManager* SetQMagField(G4double field_x);
-    G4FieldManager *SetDipoleMagField(G4double fx, G4double fy, G4double fz, float theta);
-
-
-    G4VPhysicalVolume *SetUpJLEIC2019();
-
-    G4VPhysicalVolume *SetUpJLEIC09();
 
     void Create_ci_Endcap(JLeicDetectorConfig::ci_Endcap_Config cfg);
 
@@ -303,25 +292,26 @@ private:
     //=========================================================================
     //--------------World -------------------
     // =========================================================================
-    G4Box *World_Solid;    //pointer to the solid World
-    G4LogicalVolume *World_Logic;    //pointer to the logical World
-    G4VPhysicalVolume *World_Phys;    //pointer to the physical World
+    G4Box *World_Solid;                 // pointer to the solid World
+    G4LogicalVolume *World_Logic;       // pointer to the logical World
+    G4VPhysicalVolume *World_Phys;      // pointer to the physical World
     G4Material *World_Material;
 
+    // Interaction region
     ir_LatticeDesign ir_Lattice;
     ir_Beampipe_Design ir_Beampipe;
 
 //-----------------Hadron ENDCAP volume--------------------
-    G4VisAttributes *attr_ci_ENDCAP_GVol;
-    G4Tubs *ci_ENDCAP_GVol_Solid;    //pointer to the solid  ENDCAP-H volume
-    G4LogicalVolume *ci_ENDCAP_GVol_Logic;    //pointer to the logical  ENDCAP-H  volume
-    G4VPhysicalVolume *ci_ENDCAP_GVol_Phys;    //pointer to the physical ENDCAP-H  volume
+    G4VisAttributes *ci_ENDCAP_GVol_VisAttr;
+    G4Tubs *ci_ENDCAP_GVol_Solid;               // pointer to the solid  ENDCAP-H volume
+    G4LogicalVolume *ci_ENDCAP_GVol_Logic;      // pointer to the logical  ENDCAP-H  volume
+    G4VPhysicalVolume *ci_ENDCAP_GVol_Phys;     // pointer to the physical ENDCAP-H  volume
 
 //-----------------Electron ENDCAP  volume--------------------
     G4VisAttributes *attr_ce_ENDCAP_GVol;
-    G4Tubs *ce_ENDCAP_GVol_Solid;    //pointer to the solid  ENDCAP-E volume
-    G4LogicalVolume *ce_ENDCAP_GVol_Logic;    //pointer to the logical ENDCAP-E  volume
-    G4VPhysicalVolume *ce_ENDCAP_GVol_Phys;    //pointer to the physical ENDCAP-E  volume
+    G4Tubs *ce_ENDCAP_GVol_Solid;               // pointer to the solid  ENDCAP-E volume
+    G4LogicalVolume *ce_ENDCAP_GVol_Logic;      // pointer to the logical ENDCAP-E  volume
+    G4VPhysicalVolume *ce_ENDCAP_GVol_Phys;     // pointer to the physical ENDCAP-E  volume
     //==============================================
     //----------------BARREL -----------------------
     cb_Solenoid_Design cb_Solenoid;

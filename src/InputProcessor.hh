@@ -1,8 +1,11 @@
 #ifndef G4E_INPUTPROCESSOR_HH
 #define G4E_INPUTPROCESSOR_HH
 
+
 #include <vector>
 #include <string>
+
+#include <argparse.hh>
 
 #include <StringHelpers.hh>
 

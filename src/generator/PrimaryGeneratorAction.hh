@@ -43,10 +43,12 @@
 #ifndef PRIMARY_GENERATOR_ACTION_HEADER
 #define PRIMARY_GENERATOR_ACTION_HEADER
 
+
 #include <map>
-#include <spdlog/spdlog.h>
 #include "globals.hh"
 #include "G4VUserPrimaryGeneratorAction.hh"
+
+#include <spdlog/fmt/ostr.h>
 
 class G4Event;
 
@@ -103,7 +105,7 @@ inline void PrimaryGeneratorAction::SelectGenerator(const G4String& name) {
 
     // Check we have such generator
     if (pos == gentypeMap.end()) {
-        spdlog::error("PrimaryGeneratorAction::SelectGenerator no generator with name '{}'", name);
+        fmt::print(G4cerr, "PrimaryGeneratorAction::SelectGenerator no generator with name '{}'\n", name);
         return;
     }
 

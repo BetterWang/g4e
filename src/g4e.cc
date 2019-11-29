@@ -41,6 +41,7 @@
 
 #include "MulticastEventAction.hh"
 #include "MulticastSteppingAction.hh"
+#include "Logging.hh"
 
 #include <G4MTRunManager.hh>
 #include <G4RunManager.hh>
@@ -53,30 +54,22 @@
 #include <FTFP_BERT.hh>
 #include <QGSP_BIC.hh>
 
-#include <spdlog/sinks/ostream_sink.h>
-
-
 
 int main(int argc, char **argv)
 {
     using namespace fmt;
 
-    if( argc > 1 )
-    {
+    if( argc > 1 ) {
         std::cout << "there are " << argc-1 << " (more) arguments, they are:\n" ;
-
         std::copy( argv+1, argv+argc, std::ostream_iterator<const char*>( std::cout, "\n" ) ) ;
     }
 
-    spdlog::info("Initializing g4e, parsing arguments...");
-    auto osink = std::make_shared<spdlog::sinks::ostream_sink_mt> (G4cout);
-    spdlog::default_logger()->sinks().clear();
-    spdlog::default_logger()->sinks().push_back(osink);
-    spdlog::info("Initialized G4E sink");
-    spdlog::set_level(spdlog::level::debug);
+    Logging::InitializeSpdLog();
 
     // Process user args and environment variables
     auto args = InputProcessor::Process(argc, argv);
+    Logging::SetGlobalLevel(args.LogLevel);
+
 
     //choose the Random engine
     CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine);
@@ -155,7 +148,7 @@ int main(int argc, char **argv)
     fmt::print("Executing macro files:");
     for(const auto& fileName: args.MacroFileNames) {
         std::string command = "/control/execute " + fileName;
-        fmt::print("   {}", command);
+        fmt::print("   {}\n", command);
         ui->ApplyCommand(command);
     }
 

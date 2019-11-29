@@ -6,7 +6,7 @@
 #define G4E_JLEICINITIALIZATIONCONTEXT_HH
 
 #include <InitializationContextInterface.hh>
-#include <InitializationMConfig.hh>
+#include <LoggingMessenger.hh>
 #include <LogLevels.hh>
 
 class JLeicInitializationContext: public InitializationContextInterface {

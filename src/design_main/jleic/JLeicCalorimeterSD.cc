@@ -28,15 +28,12 @@
 #include <stdio.h>
 #include "G4UserRunAction.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
 //=====================================================================================================
 //      T C P   
 //=====================================================================================================
 int tcp_main(int SND);  //--     1->BOR;    2->DATA;    3->EOR;
 int tcp_event_snd(unsigned int *DATA, int lenDATA, int n, int i, unsigned int evtHDR, unsigned int Trig);
-
 int tcp_event_host(char *host, int port);
 
 #define BUFSIZE 128000
@@ -640,7 +637,7 @@ void JLeicCalorimeterSD::PrintAll() {
 //                  TCP
 //
 //===========================================================================================
-#include  <stdio.h>
+#include <stdio.h>
 #include <string.h>
 #include <sys/types.h>
 #include <sys/socket.h>

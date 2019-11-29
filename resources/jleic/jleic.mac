@@ -14,10 +14,8 @@
 /detsetup/pBeam 200
 
 #--------Detector construction ------------------
-#-------------------------------------------------------
-#  TRD  setup
-#-------------------------------------------------------
-/XTRdetector/setup  jleic2019
+
+
 #-------------------------------------------------------
 # Set XTR model (default: transpM). Name list consits:
 # gammaR, gammaM, regR, regM, strawR, transpR, transpM

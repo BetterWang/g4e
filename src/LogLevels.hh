@@ -5,7 +5,8 @@
 
 #include <G4Exception.hh>
 
-#include <fmt/format.h>
+#include <spdlog/spdlog.h>
+
 #include <StringHelpers.hh>
 
 /**

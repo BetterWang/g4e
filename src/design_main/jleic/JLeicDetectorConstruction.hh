@@ -113,7 +113,7 @@ public:
     //--------BARREL------
     bool USE_BARREL = true;
     bool USE_BARREL_det = true;
-    bool USE_BEAMPIPE = false; // beampipe
+
     //------- subdetector-volumes  barrel ----- 
 
     bool USE_CB_VTX = true;
@@ -271,7 +271,7 @@ public:
     //----------------VTX  volume ------------------
     cb_VTX_Design cb_VTX;
 
-    G4VPhysicalVolume *SetUpJLEIC2019();
+    void SetUpJLEIC2019();
 
 private:
 
@@ -305,7 +305,7 @@ private:
     G4VPhysicalVolume *ci_ENDCAP_GVol_Phys;     // pointer to the physical ENDCAP-H  volume
 
 //-----------------Electron ENDCAP  volume--------------------
-    G4VisAttributes *attr_ce_ENDCAP_GVol;
+    G4VisAttributes *ce_ENDCAP_VisAttr;
     G4Tubs *ce_ENDCAP_GVol_Solid;               // pointer to the solid  ENDCAP-E volume
     G4LogicalVolume *ce_ENDCAP_GVol_Logic;      // pointer to the logical ENDCAP-E  volume
     G4VPhysicalVolume *ce_ENDCAP_GVol_Phys;     // pointer to the physical ENDCAP-E  volume

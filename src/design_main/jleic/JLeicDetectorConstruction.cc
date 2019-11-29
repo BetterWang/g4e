@@ -62,33 +62,24 @@
 #include "JLeicSolenoid3D.hh"
 
 #define USE_TGEOM 1
+
 #ifdef USE_TGEOM
-// VGM demo
+// VGM
 #include "Geant4GM/volumes/Factory.h"
 #include "RootGM/volumes/Factory.h"
 #include "TGeoManager.h"
 #include "XmlVGM/GDMLExporter.h"
-// end VGM demo
+// end VGM
 #endif
 
-/////////////////////////////////////////////////////////////////////////////
-//
-//
 
-JLeicDetectorConstruction::JLeicDetectorConstruction() : fWorldChanged(false), fAbsorberMaterial(nullptr), fGapMat(0), World_Material(nullptr), World_Solid(0),
-                                                         World_Logic(nullptr), World_Phys(nullptr), fSolidRadSlice(0), fLogicRadSlice(nullptr), fPhysicRadSlice(nullptr),
-                                                         fPipe(false),
-// fSolidAbsorber(0),    fLogicAbsorber(0),   fPhysicsAbsorber(0),
-                                                         fCalorimeterSD(0), fVertexSD(0), fMat(0)
+
+JLeicDetectorConstruction::JLeicDetectorConstruction() : fWorldChanged(false)
 {
     fDetectorMessenger = new JLeicDetectorMessenger(this);
     fMat = new JLeicMaterials();
-
 }
 
-//////////////////////////////////////////////////////////////////////////
-//
-//
 
 JLeicDetectorConstruction::~JLeicDetectorConstruction()
 {
@@ -96,64 +87,54 @@ JLeicDetectorConstruction::~JLeicDetectorConstruction()
     delete fMat;
 }
 
-//////////////////////////////////////////////////////////////////////////
-//
-//
 
 G4VPhysicalVolume *JLeicDetectorConstruction::Construct()
 {
     G4GeometryManager::GetInstance()->OpenGeometry();
-    G4PhysicalVolumeStore::Clean();
-    G4LogicalVolumeStore::Clean();
-    G4SolidStore::Clean();
+    G4PhysicalVolumeStore::GetInstance()->Clean();
+    G4LogicalVolumeStore::GetInstance()->Clean();
+    G4SolidStore::GetInstance()->Clean();
 
-    return SetUpJLEIC2019();
-
+    SetUpJLEIC2019();
+    return World_Phys;
 }
+
 
 void JLeicDetectorConstruction::Create_ci_Endcap(JLeicDetectorConfig::ci_Endcap_Config cfg)
 {
-    //===================================================================================
-    //==                           ION-ENDCAP                                          ==
-    //===================================================================================
+    /// This function creates ION-ENDCAP (but doesn't fill its contents)
+
     // Make endcup radius the same as Barrel Hadron Calorimeter
     ci_ENDCAP_GVol_Solid = new G4Tubs("ci_ENDCAP_GVol_Solid", cfg.RIn, cfg.ROut, cfg.SizeZ / 2., 0., 360 * deg);
-
     ci_ENDCAP_GVol_Logic = new G4LogicalVolume(ci_ENDCAP_GVol_Solid, World_Material, "ci_ENDCAP_GVol_Logic");
-
     ci_ENDCAP_GVol_Phys = new G4PVPlacement(nullptr, G4ThreeVector(cfg.PosX, 0, cfg.PosZ), "ci_ENDCAP_GVol_Phys", ci_ENDCAP_GVol_Logic, World_Phys, false, 0);
 
+    // Visual attributes
     ci_ENDCAP_GVol_VisAttr = new G4VisAttributes(G4Color(0.3, 0, 3., 0.1));
     ci_ENDCAP_GVol_VisAttr->SetLineWidth(1);
     ci_ENDCAP_GVol_VisAttr->SetForceSolid(true);
     ci_ENDCAP_GVol_Logic->SetVisAttributes(ci_ENDCAP_GVol_VisAttr);
 }
 
+
 void JLeicDetectorConstruction::Create_ce_Endcap(JLeicDetectorConfig::ce_Endcap_Config cfg)
 {
-    //===================================================================================
-    //==                           ELECTRON-ENDCAP                                     ==
-    //===================================================================================
+    /// This function creates ELECTRON-ENDCAP (but doesn't fill its contents)
+
     ce_ENDCAP_GVol_Solid = new G4Tubs("ce_ENDCAP_GVol_Solid", cfg.RIn, cfg.ROut, cfg.SizeZ / 2., 0., 360 * deg);
     ce_ENDCAP_GVol_Logic = new G4LogicalVolume(ce_ENDCAP_GVol_Solid, World_Material, "ce_ENDCAP_GVol_Logic");
-
     ce_ENDCAP_GVol_Phys = new G4PVPlacement(nullptr, G4ThreeVector(0, 0, cfg.PosZ), "ce_ENDCAP_GVol_Phys", ce_ENDCAP_GVol_Logic, World_Phys, false, 0);
 
-    attr_ce_ENDCAP_GVol = new G4VisAttributes(G4Color(0.3, 0, 3., 0.1));
-    attr_ce_ENDCAP_GVol->SetLineWidth(1);
-    attr_ce_ENDCAP_GVol->SetForceSolid(true);
-    ce_ENDCAP_GVol_Logic->SetVisAttributes(attr_ce_ENDCAP_GVol);
+    // Visual attributes
+    ce_ENDCAP_VisAttr = new G4VisAttributes(G4Color(0.3, 0, 3., 0.1));
+    ce_ENDCAP_VisAttr->SetLineWidth(1);
+    ce_ENDCAP_VisAttr->SetForceSolid(true);
+    ce_ENDCAP_GVol_Logic->SetVisAttributes(ce_ENDCAP_VisAttr);
 }
 
-//==========================================================================================================
-//                              JLEIC 2019
-//==========================================================================================================
-
-/////////////////////////////////////////////////////////////////////////////////
-//
 
 
-G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019()
+void JLeicDetectorConstruction::SetUpJLEIC2019()
 {
     fAbsorberMaterial = fMat->GetMaterial("Si");
 
@@ -594,12 +575,6 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019()
     } // end ffe_CPOL
 
 
-    if (USE_BEAMPIPE) {
-
-
-    } // ---- end beampipe ------
-
-
 #ifdef USE_FI_DIPOLE1_B
 
     //-------------------------------------------------------------------------------
@@ -909,9 +884,6 @@ G4VPhysicalVolume *JLeicDetectorConstruction::SetUpJLEIC2019()
 
     printf("FoilNumbers3=%d\n", ci_TRD.ConstructionConfig.fFoilNumber);
     printf("exit Detector Construction\n");
-
-
-    return World_Phys;
 }
 
 

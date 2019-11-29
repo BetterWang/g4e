@@ -29,8 +29,9 @@ target_sources_local(g4e
         helpers/StringHelpers.hh
 
         InitializationContextInterface.hh
-        InitializationMConfig.hh
+        LoggingMessenger.hh
         LogLevels.hh
+        Logging.hh
 
 
         G4QuadrupoleMagField.cc

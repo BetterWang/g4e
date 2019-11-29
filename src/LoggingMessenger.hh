@@ -1,7 +1,3 @@
-//
-// Created by romanov on 11/25/19.
-//
-
 #ifndef G4E_INITIALIZATIONCONFIGMESSENGER_HH
 #define G4E_INITIALIZATIONCONFIGMESSENGER_HH
 
@@ -11,11 +7,19 @@
 
 #include "LogLevels.hh"
 
+/** InitCfgMessenger = Initialization Config Messenger
+ *
+ *  "CfgMessenger" = Config Messengers = Classes which fields can be changed from 'mac' files and (fields) are used by other classes as collection of "configs"
+ *
+ */
 
-class InitializationMConfig : public G4UImessenger {
+
+namespace Logging { void SetGlobalLevel(LogLevels level);}
+
+    class LoggingMessenger : public G4UImessenger {
 public:
 
-    InitializationMConfig();
+    LoggingMessenger();
 
     void SetNewValue(G4UIcommand *command, G4String newValue) override;
     G4String GetCurrentValue(G4UIcommand *command) override;
@@ -25,12 +29,12 @@ public:
 private:
 
     LogLevels fLogLevel = LogLevels::INFO;     /// General|Global log level
-    G4UIcmdWithAString *fLogLevelCmd;                /// LogLevel corresponding UI command
-    G4UIdirectory* fDirectory;                       /// Ui commands directory 'g4e'
+    G4UIcmdWithAString *fLogLevelCmd;          /// LogLevel corresponding UI command
+    G4UIdirectory* fDirectory;                 /// Ui commands directory 'g4e'
 };
 
 
-InitializationMConfig::InitializationMConfig()
+LoggingMessenger::LoggingMessenger()
 {
     fDirectory = new G4UIdirectory("/g4/");
     fDirectory->SetGuidance("Control commands for general config");
@@ -39,20 +43,21 @@ InitializationMConfig::InitializationMConfig()
     fLogLevelCmd->SetGuidance("Sets general log level");
     fLogLevelCmd->SetParameterName("logLevel", false, false);
     fLogLevelCmd->SetCandidates("off fatal error warn info debug trace");
-    fLogLevelCmd->SetDefaultValue("info");
+    fLogLevelCmd->SetDefaultValue(fLogLevel.ToString());
 }
 
-void InitializationMConfig::SetNewValue(G4UIcommand *command, G4String newValue)
+void LoggingMessenger::SetNewValue(G4UIcommand *command, G4String newValue)
 {
     if (command == fLogLevelCmd) {
-        fGlobalLogLevel = LogLevels(newValue);
+        fLogLevel = LogLevels(newValue);
+        Logging::SetGlobalLevel(fLogLevel);
     }
 }
 
-G4String InitializationMConfig::GetCurrentValue(G4UIcommand *command)
+G4String LoggingMessenger::GetCurrentValue(G4UIcommand *command)
 {
     if (command == fLogLevelCmd) {
-        return fGlobalLogLevel.ToString();
+        return fLogLevel.ToString();
     }
 
     return G4UImessenger::GetCurrentValue(command);

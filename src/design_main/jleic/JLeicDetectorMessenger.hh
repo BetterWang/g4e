@@ -70,7 +70,6 @@ class JLeicDetectorMessenger: public G4UImessenger
     G4UIcmdWithAnInteger*       ModelCmd;
     G4UIcmdWithAnInteger*       FoilNumCmd;
     G4UIcmdWithAString*        AbsMaterCmd;
-    G4UIcmdWithAString*        DetectorSetUpCmd;
     G4UIcmdWithADoubleAndUnit* AbsThickCmd;
     G4UIcmdWithADoubleAndUnit* AbsRadCmd;
     G4UIcmdWithAString*        RadiatorMaterCmd;

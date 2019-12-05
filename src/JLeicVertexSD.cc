@@ -1,30 +1,5 @@
-//
-// ********************************************************************
-// * License and Disclaimer                                           *
-// *                                                                  *
-// * The  Geant4 software  is  copyright of the Copyright Holders  of *
-// * the Geant4 Collaboration.  It is provided  under  the terms  and *
-// * conditions of the Geant4 Software License,  included in the file *
-// * LICENSE and available at  http://cern.ch/geant4/license .  These *
-// * include a list of copyright holders.                             *
-// *                                                                  *
-// * Neither the authors of this software system, nor their employing *
-// * institutes,nor the agencies providing financial support for this *
-// * work  make  any representation or  warranty, express or implied, *
-// * regarding  this  software system or assume any liability for its *
-// * use.  Please see the license in the file  LICENSE  and URL above *
-// * for the full disclaimer and the limitation of liability.         *
-// *                                                                  *
-// * This  code  implementation is the result of  the  scientific and *
-// * technical work of the GEANT4 collaboration.                      *
-// * By using,  copying,  modifying or  distributing the software (or *
-// * any work based  on the software)  you  agree  to acknowledge its *
-// * use  in  resulting  scientific  publications,  and indicate your *
-// * acceptance of all terms of the Geant4 Software license.          *
-// ********************************************************************
-//
-//
-//
+
+
 #include <stdio.h>
 #include "G4UserRunAction.hh"
 
@@ -35,10 +10,8 @@
 //=====================================================================================================
 static int save_hits_root = 1;
 static int use_depfet = 1;
-static int use_fdc = 0;
 
-static FILE *fann; //*fopen(const char *path, const char *mode);
-static char AnnFileName[128];
+
 static int NVAR;
 static int jDebug = 7;
 
@@ -83,13 +56,7 @@ JLeicVertexSD::JLeicVertexSD(G4String name, JLeicDetectorConstruction *det)
   mRootEventsOut=&runaction->mRootEventsOut;
 
     if (use_depfet) for (int ii = 0; ii < (NumRow * NumCol); ii++) FRAME[ii] = 0; //-- 8000;  //-- set pedestals
-    if (use_fdc) {
-        dedx_fadc = new TH1F("dedx_fadc", " FDC dE/dX", 50, -0.5, 49.5);
-        printf(" SAVE Matrix file trd_frames.root \n");
-        fm1 = new TFile("fdc_frames.root", "RECREATE");
-        for (int ii = 0; ii < 100; ii++) dEslice[ii] = 0; // reset
-    }
-    //-----------------  charge sharing hist ------
+      //-----------------  charge sharing hist ------
     char_sh = 0;
     N_bin = 45;
     char hname1[80], hname2[80];
@@ -119,23 +86,10 @@ JLeicVertexSD::JLeicVertexSD(G4String name, JLeicDetectorConstruction *det)
 
 JLeicVertexSD::~JLeicVertexSD() {
 
-  /*
-    if(mHitsFile)
-    {
-        mHitsFile->cd();
-        mRootEventsOut->Write();
-        mHitsFile->Close();
-    }
-  */
 
     delete[] HitID;
 
     printf("JLeicVertexSD():: Delete dedx_fadc ...  \n");
-
-    if (use_fdc) delete dedx_fadc;
-
-    printf("JLeicVertexSD():: Deleted dedx_fadc ...  \n");
-
 
     printf("JLeicVertexSD():: Done ...  \n");
 }
@@ -154,44 +108,9 @@ void JLeicVertexSD::Initialize(G4HCofThisEvent *) {
 
     if (nevent == 0) {
         runaction = (JLeicRunAction *) (G4RunManager::GetRunManager()->GetUserRunAction());
-        //
-        //  NVAR=Detector->NannVAR;
-        //  sprintf(AnnFileName,"%s_nv%d.dat",runaction->GetAnnFileName().c_str(),NVAR);
-        // printf("AnnFileName=%s\n",AnnFileName);
-        // if((fann = fopen(AnnFileName,"w")) == NULL)  { printf("Can not open file %s \n",AnnFileName); };
-        //    fprintf(fann,"    %d\n",NVAR);
-        //  for (int ii=0;ii<NVAR;ii++) {
-        //  fprintf(fann,"E%d\n",ii);
-        // }
-        //
-        printf("JLeicVertexSD():: First Event ev=%d AnnFileName=%s \n", nevent, AnnFileName);
     }
     nevent++;
-    if (use_fdc) {
-        for (int ii = 0; ii < 100; ii++) dEslice[ii] = 0; // reset
-        if (!(nevent % Detector->fModuleNumber)) { //-- number of chambers simple aproximation ----
-            //      for (int ii=0; ii<100; ii++) dEslice[ii]=0; // reset
-            ntr = 0;
-            ntr1 = 0;
-            ntr2 = 0;
-            ntr3 = 0;
-            //printf("reset energy \n");
-        }
-    }
-    //printf("JLeicVertexSD()::Initialize 1\n");
-
-    //printf("--> JLeicVertexSD::Initialize(%s) \n",collectionName[0].c_str());
-
-    /*
-    if (save_hits_root) {
-        mRootEventsOut->ClearForNewEvent();
-    }
-    */
-
-
-    //printf("JLeicVertexSD()::Initialize 2\n");
     if (use_depfet) for (int ii = 0; ii < (NumRow * NumCol); ii++) FRAME[ii] = 0; //-- 8000;  //-- reset pedestals
-    if (use_fdc) dedx_fadc->Reset(" ");
 
     mHitsCount = 0;
     printf("JLeicVertexSD()::Initialize exit\n");
@@ -239,20 +158,7 @@ G4bool JLeicVertexSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
     G4double zloc = (zinp + zend) / 2;
 
     if (jDebug > 2) printf("xloc=%f yloc=%f zloc=%f  \n", xloc, yloc, zloc);
-    if (use_fdc) {  //----- FDC / TRD  ---
-
-        int zbin = (zloc / mm + Detector->GetAbsorberThickness() / 2.) /
-                   Detector->fadc_slice; //-- z position , slice number
-        //int zbin = (zloc/mm+Detector->GetAbsorberThickness()/2.) /  (Detector->GetAbsorberThickness()/10.)  ; //-- z position , slice 1/10
-        //printf("zbin=%d zloc=%f zinp=%f  zend=%f wz=%f \n",zbin,zloc,zinp,zend,worldPosition.z());
-
-
-        if (0 <= zbin && zbin < 100) dEslice[zbin] += edep / keV;
-        dedx_fadc->Fill(zbin, edep / keV);
-    }
-
-
-    if (aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName() == "gamma") {
+   if (aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName() == "gamma") {
         xloc = xend;
         yloc = yend;
         zloc = zend;
@@ -444,51 +350,6 @@ void JLeicVertexSD::EndOfEvent(G4HCofThisEvent *HCE) {
     static G4int HCID = -1;
     if (HCID < 0) { HCID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]); }
     HCE->AddHitsCollection(HCID, VTXCollection);
-    //printf("--> JLeicVertexSD::EndOfEvent() \n");
-
-    if (use_fdc) {
-
-        if (NVAR > Detector->GetAbsorberThickness() / Detector->fadc_slice) {
-            printf("Error FADC slices:: NVAR=%d Slices=%f \n", NVAR,
-                   Detector->GetAbsorberThickness() / Detector->fadc_slice);
-            exit(1);
-        }
-
-        fprintf(fann, "    %d\n", NVAR);
-        for (int ii = 0; ii < NVAR; ii++) {
-            fprintf(fann, "%.2f ", dEslice[ii]);
-        }
-        fprintf(fann, "\n");
-
-        G4double etot = 0;
-        for (int ii = 0; ii < 100; ii++) {
-            etot += dEslice[ii];
-            runaction->FillHist2d(1, dEslice[ii], (double) ii, 1.);
-            runaction->FillHLikelihood(ii, dEslice[ii]);
-        }
-        runaction->FillHist(10, etot);
-        for (int ii = 0; ii < 3; ii++) runaction->FillHist(11, dEslice[ii]);
-        for (int ii = 20; ii < 23; ii++) runaction->FillHist(12, dEslice[ii]);
-        for (int ii = 30; ii < 33; ii++) runaction->FillHist(13, dEslice[ii]);
-        ntr = 0;
-        ntr1 = 0;
-        ntr2 = 0;
-        ntr3 = 0;
-        for (int ii = 0; ii < 100; ii++)
-            if (dEslice[ii] > 5) {
-                ntr++;
-                if (ii < 5) ntr1++;
-                if (ii < 10) ntr2++;
-                if (ii < 15) ntr3++;
-            }
-        runaction->FillHist(20, ntr);
-        runaction->FillHist(21, ntr1);
-        runaction->FillHist(22, ntr2);
-        runaction->FillHist(23, ntr3);
-
-        //dedx_fadc->Write();
-        //printf(" new event:%6d",nevent);  for (int ii=0;  ii<30; ii++) printf(" %4.1f",dEslice[ii]);  printf("\n");
-    }
 
     if (save_hits_root) { //--   fill tree  ----
         const G4Event *evt = G4RunManager::GetRunManager()->GetCurrentEvent();

@@ -615,7 +615,11 @@ if(USE_FFI_RPOT_D3) {
     fConfig.ffi_RPOT_D3.PosX = -153 * cm;
 
     ffi_RPOT_D3.Construct(fConfig.ffi_RPOT_D3, World_Material, World_Phys);
-    if (ffi_RPOT_D3.Logic) ffi_RPOT_D3.Logic->SetSensitiveDetector(fCalorimeterSD);
+    ffi_RPOT_D3.ConstructDetectors();
+
+          for (int lay = 0; lay < cb_VTX.Lays.size(); lay++) {
+                if (ffi_RPOT_D3.lay_Logic[lay]) { ffi_RPOT_D3.lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD); }
+            }
 
 } // end ffi_RPOT_D3
 
@@ -629,7 +633,7 @@ if(USE_FFE_CPOL) {
 
 
 if(USE_BEAMPIPE) {
- 
+
 
 } // ---- end beampipe ------
 

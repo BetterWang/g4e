@@ -19,7 +19,7 @@ struct ffi_RPOT_D3_Config {
 // define here Global volume parameters
     double RIn = 0 * cm;
     double ROut = 30 * cm;
-    double SizeZ = 3 * cm;
+    double SizeZ = 300 * cm;
     double ShiftZ = 0 * cm;
     double PosZ = 0 * cm;
     double PosX=0*cm;
@@ -63,21 +63,21 @@ public:
 
         // construct here your detectors
         // ===================================================================================
-//                           GEM tracker                                           ==
-//===================================================================================
+        //                           GEM tracker                                           ==
+        //===================================================================================
 
-/*        printf("Begin ffi_RPOT_D3_lay_\n");
-        //ffi_RPOT_D3_lay_Material = fMat->GetMaterial("Si");
-        ffi_RPOT_D3_lay_Material = G4Material::GetMaterial("Ar10CO2");  //----   !!!!! ----
+         printf("Begin ffi_RPOT_D3_lay_\n");
+       //  RPMaterial = G4Material::GetMaterial("Ar10CO2");  //----   !!!!! ----
+        RPMaterial = G4Material::GetMaterial("Si");  //----   !!!!! ----
 
         for (int lay = 0; lay < cfg.Nlayers; lay++) {
 
-            ffi_RPOT_D3_lay_RIn[lay] = cfg.RIn + 1 * cm + (double(lay) * 0.5) * cm;
-            ffi_RPOT_D3_lay_ROut[lay] = cfg.ROut - 25 * cm + (double(lay) * 2.) * cm;;
+            ffi_RPOT_D3_lay_RIn[lay] = cfg.RIn ;
+            ffi_RPOT_D3_lay_ROut[lay] = cfg.ROut - 5. * cm;;
 
             //      ffi_RPOT_D3_lay_PosZ[lay]=-ffi_RPOT_D3_GVol_PosZ/2+(double(lay)*5.)*cm;
             ffi_RPOT_D3_lay_PosZ[lay] = -cfg.SizeZ / 2 + 5 * cm + (double(lay) * 3.) * cm;
-            ffi_RPOT_D3_lay_SizeZ[lay] = 1 * cm;
+            ffi_RPOT_D3_lay_SizeZ[lay] = 0.50 * mm;
 
             sprintf(abname, "ffi_RPOT_D3_lay_Solid_%d", lay);
             lay_Solid[lay] = new G4Tubs(abname, ffi_RPOT_D3_lay_RIn[lay], ffi_RPOT_D3_lay_ROut[lay],
@@ -85,7 +85,7 @@ public:
 
             sprintf(abname, "ffi_RPOT_D3_lay_Logic_%d", lay);
             lay_Logic[lay] = new G4LogicalVolume(lay_Solid[lay],
-                                                 ffi_RPOT_D3_lay_Material, abname);
+                                                 RPMaterial, abname);
 
             attr_ffi_RPOT_D3_lay = new G4VisAttributes(G4Color(0.8, 0.4, 0.3, 0.8));
             attr_ffi_RPOT_D3_lay->SetLineWidth(1);
@@ -99,10 +99,10 @@ public:
         }
 
         printf("END ffi_RPOT_D3_lay_\n");
-*/
+
     };
 
-
+    G4Material *RPMaterial;
     G4Tubs *Solid;      //pointer to the solid
     G4LogicalVolume *Logic;    //pointer to the logical
     G4VPhysicalVolume *Phys;  //pointer to the physical

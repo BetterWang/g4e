@@ -87,7 +87,7 @@ public:
     G4LogicalVolume *fLogicBeamCone2;    //pointer to the logical World
     G4VPhysicalVolume *fPhysicsBeamCone2;    //pointer to the physical World
     ir_Beampipe_Config  ConstructionConfig;
-     
+
 
     inline void Construct(ir_Beampipe_Config cfg, double ShiftVTX, G4Material *worldMaterial, G4VPhysicalVolume *motherVolume) {
          ConstructionConfig = cfg;

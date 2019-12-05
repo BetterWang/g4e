@@ -41,11 +41,11 @@
 
 #include "TLorentzVector.h"
 
-int FIRST=0,FIRSTFOUT=0;
-int InsideD1=0, InsideQ4=0;
+static int FIRST=0,FIRSTFOUT=0;
+static int InsideD1=0, InsideQ4=0;
 int myevno=0;
 static double pt=0.,pz=0.,xL=0.;
-FILE *rc5;
+static FILE *rc5,*rc4;
 TLorentzVector ka;
 
 
@@ -73,14 +73,30 @@ void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep) {
     IDnow = evno + 10000 * (aStep->GetTrack()->GetTrackID()) +
             100000000 * (aStep->GetTrack()->GetParentID());                //-- 100 k events only ???
 
+    //===========================================================================
+ char myfposout[256],myfposout1[256];
+ if(FIRSTFOUT==0 ) { FIRSTFOUT=1;
 
+   rc5=fopen("RPmypositions.txt","w");
+   fprintf(rc5,"==========\n");
+
+   rc4=fopen("positions1.txt","w");
+   fprintf(rc4,"==========\n");
+  // printf(" rc4=%p, rc5=%p \n",rc4,rc5);
+   if (rc4 == NULL ||rc5 == NULL ) return;
+ }
+  // printf(" rc4=%p, rc5=%p \n",rc4,rc5);
+if(evno>1000 && rc4 && rc5){ printf("close files \n"); fclose(rc4);fclose(rc5); rc4=NULL; rc5=NULL;}
+ // printf(" rc4=%p, rc5=%p \n",rc4,rc5);
 if(evno!=myevno) {
 
     InsideD1=0, InsideQ4=0; myevno=evno;
+  //  fprintf(rc6,"================\n");
+
 }
 
 #if 0
-    Nauka_11
+
     //===========================================================================
     //   DEBUG 
     //===========================================================================
@@ -134,13 +150,35 @@ if(evno!=myevno) {
       }
 #endif
 
-    //===========================================================================
 
     // print positions at Roman_pot location
-    if (aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName() == "ffi_RPOT_D3_GVol_Phys") {
+    if (aStep->GetPostStepPoint()->GetStepStatus() == fGeomBoundary &&
+        aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName() == "ffi_RPOT_D3_GVol_Phys") {
+        printf("SteppingAction:: RP entry Volume=%s  x=%f y=%f z=%f   mom_dir (%f,%f, %f ) particle=%s \n",
+                aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(),
+                aStep->GetTrack()->GetPosition().x(),
+                aStep->GetTrack()->GetPosition().y(),
+                aStep->GetTrack()->GetPosition().z(),
+                aStep->GetTrack()->GetMomentumDirection().x(),
+                aStep->GetTrack()->GetMomentumDirection().y(),
+                aStep->GetTrack()->GetMomentumDirection().z(),
+                aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName().c_str());
 
-        printf("SteppingAction:: Volume=%s  x=%f y=%f z=%f   mom_dir (%f,%f, %f ) particle=%s \n",
-               aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(),
+   if(rc5)     fprintf(rc5,"entry x=%f y=%f z=%f   mom_dir (ix,iy,iz)  %f,%f, %f  ptot=%f \n",
+               aStep->GetTrack()->GetPosition().x(),
+               aStep->GetTrack()->GetPosition().y(),
+               aStep->GetTrack()->GetPosition().z(),
+               aStep->GetTrack()->GetMomentumDirection().x(),
+               aStep->GetTrack()->GetMomentumDirection().y(),
+               aStep->GetTrack()->GetMomentumDirection().z(),
+               aStep->GetTrack()->GetMomentum().mag());
+    }
+   if (aStep->GetPostStepPoint()->GetStepStatus() == fGeomBoundary &&
+        aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName() == "ffi_RPOT_D3_GVol_Phys") {
+       printf("SteppingAction:: RP exit Volume /  x / y / z /   mom_dir (px,py, pz )/ particle  \n");
+
+       printf("%s  %f  %f %f  %f %f %f  %s \n",
+               aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str(),
                aStep->GetTrack()->GetPosition().x(),
                aStep->GetTrack()->GetPosition().y(),
                aStep->GetTrack()->GetPosition().z(),
@@ -149,11 +187,33 @@ if(evno!=myevno) {
                aStep->GetTrack()->GetMomentumDirection().z(),
                aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName().c_str());
 
-    }
-  char myfposout[256];
-  if(FIRSTFOUT==0 ) {  sprintf(myfposout,"mypositions.txt");
-     rc5=fopen(myfposout,"w");  if (rc5 == NULL) return; FIRSTFOUT=1;
-   }
+
+  if(rc5)     fprintf(rc5,"exit  x=%f y=%f z=%f   mom_dir (ix,iy,iz)  %f,%f, %f  ptot=%f \n",
+               aStep->GetTrack()->GetPosition().x(),
+               aStep->GetTrack()->GetPosition().y(),
+               aStep->GetTrack()->GetPosition().z(),
+               aStep->GetTrack()->GetMomentumDirection().x(),
+               aStep->GetTrack()->GetMomentumDirection().y(),
+               aStep->GetTrack()->GetMomentumDirection().z(),
+               aStep->GetTrack()->GetMomentum().mag());
+
+/* if(aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName() == "ffi_RPOT_D3_GVol_Phys") {
+    fprintf(rc6,"SteppingAction::RPOT: Volume=%s  x=%f y=%f z=%f   mom_dir (%f,%f, %f ) theta=%f  particle=%s  Exit_volume=%s\n",
+            aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(),
+            aStep->GetTrack()->GetPosition().x(),
+            aStep->GetTrack()->GetPosition().y(),
+            aStep->GetTrack()->GetPosition().z(),
+            aStep->GetTrack()->GetMomentumDirection().x(),
+            aStep->GetTrack()->GetMomentumDirection().y(),
+            aStep->GetTrack()->GetMomentumDirection().z(),
+            atan(aStep->GetTrack()->GetMomentumDirection().x() / aStep->GetTrack()->GetMomentumDirection().z()),
+            aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName().c_str(),
+            aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str());
+*/;
+
+}
+
+
 
     //====== Entry position of the volume=========================================================================
     if (aStep->GetPostStepPoint()->GetStepStatus() == fGeomBoundary && aStep->GetPostStepPoint()->GetPhysicalVolume()) {
@@ -176,7 +236,7 @@ if(evno!=myevno) {
 
                 ) {
 
-            fprintf(rc5,"SteppingAction::iBDS1 Entry: Volume=%s  x=%f y=%f z=%f   mom_dir (%f,%f, %f ) theta=%f particle=%s  Exit_volume=%s\n",
+          if(rc4)  fprintf(rc4,"SteppingAction::iBDS1 Entry: Volume=%s  x=%f y=%f z=%f   mom_dir (%f,%f, %f ) theta=%f particle=%s  Exit_volume=%s\n",
                    aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName().c_str(),
                    aStep->GetTrack()->GetPosition().x(),
                    aStep->GetTrack()->GetPosition().y(),
@@ -304,7 +364,7 @@ if(evno!=myevno) {
                 ) {
 //  if(aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName() == "Physics_DIPOLE_m_iBDS1b") {
 
-            fprintf(rc5,"SteppingAction::iBDS1 Exit Volume=%s  x=%f y=%f z=%f   mom_dir (%f,%f, %f ) theta =%f particle=%s Entry_Volume =%s\n",
+           if(rc4) fprintf(rc4,"SteppingAction::iBDS1 Exit Volume=%s  x=%f y=%f z=%f   mom_dir (%f,%f, %f ) theta =%f particle=%s Entry_Volume =%s\n",
                    aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName().c_str(),
                    aStep->GetTrack()->GetPosition().x(),
                    aStep->GetTrack()->GetPosition().y(),

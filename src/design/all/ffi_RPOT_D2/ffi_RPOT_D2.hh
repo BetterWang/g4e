@@ -63,7 +63,7 @@ public:
 
         // construct here your detectors
         // ===================================================================================
-//                           GEM tracker                                           ==
+//                           Silicon layers  tracker                                           ==
 //===================================================================================
 
 /*        printf("Begin ffi_RPOT_D2_lay_\n");
@@ -117,7 +117,7 @@ private:
 
     // define here local variables and parameter of detectors
 
-    //-------------------ENDCAP-H GEM detector ------------------
+    //--------
     G4double ffi_RPOT_D2_lay_RIn[20];
     G4double ffi_RPOT_D2_lay_ROut[20];
     G4double ffi_RPOT_D2_lay_SizeZ[20];

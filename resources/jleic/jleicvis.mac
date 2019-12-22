@@ -13,10 +13,10 @@
 
 # Use this open statement to create an OpenGL view:
 ### This works  ->   
-/vis/open OGL 600x600-0+0
+#/vis/open OGL 1600x1600-0+0
 #/vis/open OGLI 600x600-0+0
 #/vis/open OGLIX 600x600-0+0
-#/vis/open OGLIQt 600x600-0+0
+/vis/open OGLIQt 1600x1600-0+0
 #
 #/vis/open OGLS 600x600-0+0
 #/vis/open OGLSX 600x600-0+0
@@ -139,7 +139,7 @@
 /vis/viewer/clearCutawayPlanes
 /vis/viewer/addCutawayPlane 0 0 0 m 0 0 -1
 /vis/viewer/addCutawayPlane 0 0 0 m -1 0 0
-/vis/viewer/addCutawayPlane 0 0 0 m 0 -1 0
+/vis/viewer/addCutawayPlane 0 0 0 m 0 -1 -1
 #/vis/viewer/set/style surface
 #/vis/viewer/colourByDensity 1 g/cm3 .5 3 10
 #---------------------------------------------------

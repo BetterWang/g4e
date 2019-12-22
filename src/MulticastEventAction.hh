@@ -32,6 +32,8 @@ private:
     std::vector<G4UserEventAction*> fActions;
 };
 
+
+
 void MulticastEventAction::AddUserAction(G4UserEventAction *action) {
 
     // Do we already have a pointer to this UserAction?

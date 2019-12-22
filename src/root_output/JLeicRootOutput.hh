@@ -1,11 +1,14 @@
 #ifndef G4E_JLEICROOTOUTPUT_HH
 #define G4E_JLEICROOTOUTPUT_HH
 
+
 #include <string>
 #include <memory>
 
 #include <TFile.h>
 #include <TTree.h>
+
+#include <spdlog/spdlog.h>
 
 namespace g4e
 {
@@ -336,9 +339,8 @@ namespace g4e
         {
             mEventId = eventId;
 
-            printf("Fill hits tree ....ev=%d  Nhits=%d  Ntracks=%d \n", mEventId, mHitIo.HitsCount, mTrackIo.TrackCount);
+            fmt::print("Fill hits tree ....ev={}  Nhits={}  Ntracks={} \n", mEventId, mHitIo.HitsCount, mTrackIo.TrackCount);
             mEventTree->Fill();
-
         }
 
         void Write()

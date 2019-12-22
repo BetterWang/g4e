@@ -22,7 +22,6 @@
  *      1. Configure initialization
  *      2. Provide running aspects (verbosity, input, output)
  *      3. Info, what was set by user (macro PATH env, macros to run, input files (if given by command line)
- *
  */
 
 
@@ -47,7 +46,7 @@ struct InputArguments
 
     std::string ResourcePath;        /// Path to resources directory
 
-    LogLevels LogLevel;       /// Controlled by -v. --verbosity
+    LogLevels LogLevel;              /// Controlled by -v. --verbosity
 
 };
 
@@ -103,6 +102,8 @@ InputArguments InputProcessor::Process(int argc, char **argv)
     // verbosity
     if(parser.exists("v")) {     // is -v flag set?
         result.LogLevel = ProcessVerbosity(parser.get<std::string>("v"));
+    } else {
+        result.LogLevel = LogLevels::INFO;
     }
 
     //

@@ -1,6 +1,6 @@
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
 #include "JLeicXTRphysics.hh"
+
+#include <spdlog/spdlog.h>
 
 #include "G4ParticleDefinition.hh"
 #include "G4ProcessManager.hh"
@@ -68,6 +68,8 @@
 
 #include "JLeicXTRphysicsMessenger.hh"
 
+
+
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 JLeicXTRphysics::JLeicXTRphysics(JLeicDetectorConstruction *p, JLeicPhysicsList *pl, const G4String &name) : G4VPhysicsConstructor(name), fJLeicXTRphysicsMessenger(0)
@@ -89,11 +91,9 @@ JLeicXTRphysics::~JLeicXTRphysics()
 
 void JLeicXTRphysics::ConstructProcess()
 {
+    namespace log = spdlog;
 
-    // G4cout<<"fMinElectronEnergy = "<<fMinElectronEnergy/keV<<" keV"<<G4endl;
-    // G4cout<<"fMinGammaEnergy = "<<fMinGammaEnergy/keV<<" keV"<<G4endl;
-    G4cout << "XTR model = " << fXTRModel << G4endl;
-    std::cout << "XTR model = " << fXTRModel << G4endl;
+    log::debug("XTR model = {}\n", fXTRModel);
 
     const G4RegionStore *theRegionStore = G4RegionStore::GetInstance();
     G4Region *gas = theRegionStore->GetRegion("XTRdEdxDetector");
@@ -129,18 +129,12 @@ void JLeicXTRphysics::ConstructProcess()
                                               pDet->GetFoilNumber(), "RegularXTRadiator");
 
     } else if (fXTRModel == "transpM" && pDet->GetFoilNumber() > 0) {
-        std::cout << " Enter ConstructEM transpM " << std::endl;
-        // G4XTRTransparentRegRadModel*
-        // processXTR = new G4XTRTransparentRegRadModel(pDet->GetLogicalRadiator(),
         processXTR = new JLeicXTRTransparentRegRadModel(pDet->GetLogicalRadiator(), pDet->GetFoilMaterial(), pDet->GetGasMaterial(), pDet->GetFoilThick(), pDet->GetGasThick(),
                                                         pDet->GetFoilNumber(), "RegularXTRadiator");
-
-        std::cout << " Exit ConstructEM transpM " << std::endl;
     } else {
-        //G4Exception("Invalid XTR model name", "InvalidSetup",FatalException, "XTR model name is out of the name list");
-        printf("Invalid XTR model name %s, or foil number =%d \n", fXTRModel.c_str(), pDet->GetFoilNumber());
+        log::warn("Invalid XTR model name {}, or foil number = {} \n", fXTRModel, pDet->GetFoilNumber());
     }
-    //  processXTR->SetCompton(true);
+
     if (processXTR) processXTR->SetVerboseLevel(1);
     if (processXTR) processXTR->SetAngleRadDistr(true);
 
@@ -152,7 +146,7 @@ void JLeicXTRphysics::ConstructProcess()
         G4ProcessManager *pmanager = particle->GetProcessManager();
         G4String particleName = particle->GetParticleName();
 
-        printf("JLeicXTRphysics::ConstructEM():: particle=%s \n", particle->GetParticleName().c_str());
+        log::trace("JLeicXTRphysics::ConstructEM():: particle={} \n", particle->GetParticleName().c_str());
 
         if (particleName == "gamma") {
             // Construct processes for gamma
@@ -227,9 +221,6 @@ void JLeicXTRphysics::ConstructProcess()
             pmanager->AddProcess(thehIonisation, -1, 2, 2);
             pmanager->AddProcess(thehadronStepCut, -1, -1, 3);
             //if (processXTR) pmanager->AddDiscreteProcess(processXTR);
-
-
-
         } //-- charged hadrons --
     }
     std::cout << " Exit ConstructEM " << std::endl;
@@ -308,7 +299,6 @@ void JLeicXTRphysics::SetDetectorCuts()
     G4cout << "Detector gamma cut    = " << fGammaCut / mm << " mm" << G4endl;
     G4cout << "Detector electron cut = " << fElectronCut / mm << " mm" << G4endl;
     G4cout << "Detector positron cut = " << fPositronCut / mm << " mm" << G4endl;
-
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

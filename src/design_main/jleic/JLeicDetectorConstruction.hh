@@ -187,6 +187,8 @@ public:
 
     ~JLeicDetectorConstruction();
 
+    void EnableHCalRings();
+
 public:
     void SetElectronBeamEnergy(G4int);
 

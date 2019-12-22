@@ -60,9 +60,6 @@ target_sources_local(g4e
 
         JLeicTrackingAction.cc
         JLeicTrackingAction.hh
-
-        StepMax.cc
-        StepMax.hh
         )
 
 add_subdirectory(design_main)

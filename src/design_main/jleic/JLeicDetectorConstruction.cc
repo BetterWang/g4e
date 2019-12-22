@@ -222,6 +222,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
         //----------create a layered structure for the Iron ----------------------------------------
         if (USE_CB_HCAL_D) {
             cb_HCAL.ConstructLayers();
+            // cb_HCAL.ConstructRings();
         }
     }
 
@@ -252,8 +253,9 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
             ci_HCAL.Construct(fConfig.ci_HCAL, World_Material, World_Phys);
 
             //---------------------------- HCAL IRON--------------------------------------
-            if (USE_CI_HCAL_D) { ci_HCAL.ConstructDetectors(); };
-
+            if (USE_CI_HCAL_D) {
+                ci_HCAL.ConstructDetectors();
+            }
         }
     }
 
@@ -321,7 +323,6 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
             cb_DIRC.Construct(fConfig.cb_DIRC, World_Material, cb_Solenoid.Phys);
 
             if (USE_CB_DIRC_bars) { cb_DIRC.ConstructBars(); }
-
 
         }; // end DIRC detector
 
@@ -1088,4 +1089,9 @@ void JLeicDetectorConstruction::checkVolumeOverlap()
         }
     }
     G4cout << G4endl;
+}
+
+void JLeicDetectorConstruction::EnableHCalRings()
+{
+    cb_HCAL.ConstructRings();
 }

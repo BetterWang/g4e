@@ -1,6 +1,8 @@
 #ifndef G4E_LOGGING_HH
 #define G4E_LOGGING_HH
 
+#include <spdlog/sinks/ostream_sink.h>
+
 #include "LogLevels.hh"
 
 namespace Logging {
@@ -39,7 +41,6 @@ void Logging::SetGlobalLevel(LogLevels level)
     spdlog::debug("Log level is set to: {}", level.ToString());
 }
 
-#include <spdlog/sinks/ostream_sink.h>
 void Logging::InitializeSpdLog()
 {
     spdlog::info("Initializing g4e, parsing arguments...");

@@ -63,7 +63,6 @@ JLeicDetectorMessenger::JLeicDetectorMessenger(JLeicDetectorConstruction *JLeicD
     TRDdetDir = new G4UIdirectory("/XTRdetector/");
     TRDdetDir->SetGuidance("TRD detector control.");
 
-
     AbsMaterCmd = new G4UIcmdWithAString("/XTRdetector/setAbsMat", this);
     AbsMaterCmd->SetGuidance("Select Material of the Absorber.");
     AbsMaterCmd->SetParameterName("choice", true);

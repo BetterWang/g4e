@@ -30,15 +30,14 @@ set(GEANT4_INC_DIR "" CACHE PATH "Alternative directory for Geant4 includes")
 set(GEANT4_LIB_DIR "" CACHE PATH "Alternative directory for Geant4 libraries")
 set(GEANT4_SYSTEM "" CACHE PATH "Geant4 platform specification")
 
-# First search for Geant4Config.cmake on the path defined via user setting 
-# GEANT4_DIR
 
-if(EXISTS ${GEANT4_DIR}/Geant4Config.cmake)
-  include(${GEANT4_DIR}/Geant4Config.cmake)
-  message(STATUS "Found Geant4 CMake configuration in ${GEANT4_DIR}")
-  # Geant4_INCLUDE_DIRS, Geant4_LIBRARIES are defined in Geant4Config
-  set(Geant4_FOUND TRUE)
-  return()
+# Some debug text
+if(EXISTS "$ENV{GEANT4_DIR}")
+  message(STATUS "g4e: GEANT4_DIR provided from env: $ENV{GEANT4_DIR}")
+elseif(${GEANT4_DIR})
+  message(STATUS "g4e: GEANT4_DIR provided trhough GEANT4_DIR ${GEANT4_DIR}")
+else()
+  message(STATUS "g4e warning: No GEANT4_DIR or ENV(GEANT4_DIR) provided")
 endif()
 
 # If Geant4Config.cmake was not found in GEANT4_DIR
@@ -49,6 +48,8 @@ find_program(GEANT4_CONFIG_EXECUTABLE geant4-config PATHS
   )
 
 if(GEANT4_CONFIG_EXECUTABLE)
+
+  set(Geant4_FOUND TRUE)
 
   execute_process(
     COMMAND ${GEANT4_CONFIG_EXECUTABLE} --prefix 

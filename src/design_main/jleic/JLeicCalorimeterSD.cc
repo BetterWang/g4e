@@ -318,8 +318,8 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
         for (int in = 0; in < 12; in++) {
             sprintf(buffer, "CAL_module_%d", in);
             if (strcmp(CALmod.c_str(), buffer) == 0) {
-                runaction->FillHistmatrixOccup(in, copyIDx_pre, copyIDy_pre, edep / keV);
-                runaction->FillHistmatrixOccupCM(in, xstep, ystep, edep / keV);
+                //runaction->FillHistmatrixOccup(in, copyIDx_pre, copyIDy_pre, edep / keV);
+                //runaction->FillHistmatrixOccupCM(in, xstep, ystep, edep / keV);
                 if (jDebug > 2) printf("xstep=%f ystep=%f \n", xstep, ystep);
             }
         }

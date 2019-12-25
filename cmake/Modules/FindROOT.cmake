@@ -22,7 +22,7 @@ print_header(">>>>    C E R N    R O O T    <<<<")
 
 
 # Some debug text
-if( EXISTS "$ENV{ROOTSYS}" )
+if(EXISTS "$ENV{ROOTSYS}")
     message(STATUS "ejana: ROOTSYS provided $ENV{ROOTSYS}")
 elseif(CERN_ROOT_DIRECTORY)
     message(STATUS "ejana: CERN_ROOT_DIRECTORY provided ${CERN_ROOT_DIRECTORY}")

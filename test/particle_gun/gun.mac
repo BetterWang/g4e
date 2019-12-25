@@ -7,7 +7,6 @@
 /geometry/navigator/verbose 0
 /tracking/verbose 0
 
-/XTRdetector/setup  jleic2019
 /emphyslist/setXTRModel  transpM
 /emphyslist/setGammaCut     0.11
 /emphyslist/setElectronCut  0.12

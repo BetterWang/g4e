@@ -40,7 +40,7 @@ static int save_hits_root = 1;
 static int save_frames_root = 0;
 
 static int use_crustals = 1;
-static int use_fdc =0;
+static int use_fdc = 0;
 
 
 static int NVAR;
@@ -69,8 +69,7 @@ int NumCol = 50; //
 char myname[120], buffer[50];
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-JLeicCalorimeterSD::JLeicCalorimeterSD(G4String name, JLeicDetectorConstruction *det)
-        : G4VSensitiveDetector(name), Detector(det)
+JLeicCalorimeterSD::JLeicCalorimeterSD(G4String name, JLeicDetectorConstruction *det) : G4VSensitiveDetector(name), Detector(det)
 {
     printf("JLeicCalorimeterSD()::constructor  enter\n");
     //fRM=G4RunManager::GetRunManager();
@@ -79,12 +78,11 @@ JLeicCalorimeterSD::JLeicCalorimeterSD(G4String name, JLeicDetectorConstruction 
     HitID = new G4int[500];
     printf("--> JLeicCalorimeterSD::Constructor(%s) \n", name.c_str());
 
-  JLeicRunAction* runaction = (JLeicRunAction*)(G4RunManager::GetRunManager()->GetUserRunAction());
-  JLeicRunAction* eventaction = (JLeicRunAction*)(G4RunManager::GetRunManager()->GetUserEventAction());
+    JLeicRunAction *runaction = (JLeicRunAction *) (G4RunManager::GetRunManager()->GetUserRunAction());
+    JLeicRunAction *eventaction = (JLeicRunAction *) (G4RunManager::GetRunManager()->GetUserEventAction());
 
-  mHitsFile = runaction->mHitsFile;
-  mRootEventsOut=&runaction->mRootEventsOut;
-
+    mHitsFile = runaction->mHitsFile;
+    mRootEventsOut = &runaction->mRootEventsOut;
 
 
     if (save_frames_root) {
@@ -108,8 +106,8 @@ JLeicCalorimeterSD::JLeicCalorimeterSD(G4String name, JLeicDetectorConstruction 
     }
     */
 
-     if (use_crustals) for (int ii = 0; ii < (NumRow * NumCol); ii++) FRAME[ii] = 0; //-- 8000;  //-- set pedestals
-   if (use_fdc) {
+    if (use_crustals) for (int ii = 0; ii < (NumRow * NumCol); ii++) FRAME[ii] = 0; //-- 8000;  //-- set pedestals
+    if (use_fdc) {
         dedx_fadc = new TH1F("dedx_fadc", " FDC dE/dX", 50, -0.5, 49.5);
         printf(" SAVE Matrix file trd_frames.root \n");
         fm1 = new TFile("fdc_frames.root", "RECREATE");
@@ -144,16 +142,17 @@ JLeicCalorimeterSD::JLeicCalorimeterSD(G4String name, JLeicDetectorConstruction 
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-JLeicCalorimeterSD::~JLeicCalorimeterSD() {
+JLeicCalorimeterSD::~JLeicCalorimeterSD()
+{
 
-  /*
-    if(mHitsFile)
-    {
-        mHitsFile->cd();
-        mRootEventsOut.Write();
-        mHitsFile->Close();
-    }
-  */
+    /*
+      if(mHitsFile)
+      {
+          mHitsFile->cd();
+          mRootEventsOut.Write();
+          mHitsFile->Close();
+      }
+    */
 
     delete[] HitID;
     if (save_frames_root) {
@@ -175,17 +174,17 @@ JLeicCalorimeterSD::~JLeicCalorimeterSD() {
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-void JLeicCalorimeterSD::Initialize(G4HCofThisEvent *) {
+void JLeicCalorimeterSD::Initialize(G4HCofThisEvent *)
+{
 
     printf("JLeicCalorimeterSD()::Initialize enter nevent=%d\n", nevent);
 
-    CalCollection = new JLeicCalorHitsCollection
-            (SensitiveDetectorName, collectionName[0]);
+    CalCollection = new JLeicCalorHitsCollection(SensitiveDetectorName, collectionName[0]);
     for (G4int j = 0; j < 1; j++) { HitID[j] = -1; };
 
     if (nevent == 0) {
         runaction = (JLeicRunAction *) (G4RunManager::GetRunManager()->GetUserRunAction());
-     }
+    }
     nevent++;
     if (use_fdc) {
         for (int ii = 0; ii < 100; ii++) dEslice[ii] = 0; // reset
@@ -223,7 +222,8 @@ void JLeicCalorimeterSD::Initialize(G4HCofThisEvent *) {
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
+G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
+{
     if (jDebug > 2) printf("--> JLeicCalorimeterSD::ProcessHits() Enter\n");
 
 
@@ -243,7 +243,7 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
     G4int copyIDy_pre = touchablepre->GetCopyNumber();
     G4int copyIDx_pre = touchablepre->GetCopyNumber(1);
     G4int copyIDz_pre = 0;
-  //JMF got crash on "run beam on"   here. Needs to be fixed ... commenting this for a moment
+    //JMF got crash on "run beam on"   here. Needs to be fixed ... commenting this for a moment
     G4double xstep = (aStep->GetTrack()->GetStep()->GetPostStepPoint()->GetPosition()).x();
     G4double ystep = (aStep->GetTrack()->GetStep()->GetPostStepPoint()->GetPosition()).y();
     G4double zstep = (aStep->GetTrack()->GetStep()->GetPostStepPoint()->GetPosition()).z();
@@ -267,8 +267,7 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
     if (jDebug > 2) printf("xloc=%f yloc=%f zloc=%f  \n", xloc, yloc, zloc);
     if (use_fdc) {  //----- FDC / TRD  ---
 
-        int zbin = (zloc / mm + Detector->GetAbsorberThickness() / 2.) /
-                   Detector->fadc_slice; //-- z position , slice number
+        int zbin = (zloc / mm + Detector->GetAbsorberThickness() / 2.) / Detector->fadc_slice; //-- z position , slice number
         //int zbin = (zloc/mm+Detector->GetAbsorberThickness()/2.) /  (Detector->GetAbsorberThickness()/10.)  ; //-- z position , slice 1/10
         //printf("zbin=%d zloc=%f zinp=%f  zend=%f wz=%f \n",zbin,zloc,zinp,zend,worldPosition.z());
 
@@ -293,8 +292,7 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
 
     if (char_sh == 0 && copyIDy_pre < NumRow && copyIDx_pre < NumCol) FRAME[copyIDy_pre * NumCol + copyIDx_pre] += ADC;
 
-    G4TouchableHistory *theTouchable
-            = (G4TouchableHistory *) (aStep->GetPreStepPoint()->GetTouchable());
+    G4TouchableHistory *theTouchable = (G4TouchableHistory *) (aStep->GetPreStepPoint()->GetTouchable());
 
     if (jDebug > 3)
         printf("--> JLeicCalorimeterSD::ProcessHits() Vol: 0=%s \n", theTouchable->GetVolume()->GetName().c_str());
@@ -313,8 +311,8 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
         if (jDebug > 2) printf("CALmod=%s \n", CALmod.c_str());
 
         if (jDebug > 2)
-            printf("--> JLeicCalorimeterSD::ProcessHits() de=%f ADC=%d  len=%f Mod=%s  IDxy=(%d,%d,%d)\n", edep / keV,
-                   ADC, stepl / um, CALmod.c_str(), copyIDx_pre, copyIDy_pre, copyIDz_pre);
+            printf("--> JLeicCalorimeterSD::ProcessHits() de=%f ADC=%d  len=%f Mod=%s  IDxy=(%d,%d,%d)\n", edep / keV, ADC, stepl / um, CALmod.c_str(), copyIDx_pre, copyIDy_pre,
+                   copyIDz_pre);
         for (int in = 0; in < 12; in++) {
             sprintf(buffer, "CAL_module_%d", in);
             if (strcmp(CALmod.c_str(), buffer) == 0) {
@@ -396,7 +394,6 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
     G4int PDG = aTrack->GetDefinition()->GetPDGEncoding();
 
 
-
     if ((edep == 0.) && (stepl == 0.)) return false;
 
     //  printf("--> JLeicCalorimeterSD::ProcessHits() de=%f ADC=%d  len=%f  IDxy=(%d,%d) step(x,y,z)=(%f, %f %f) in=(%f, %f %f) um  out=(%f, %f %f) um \n  loc=(%f, %f %f) um part=%s\n"
@@ -406,37 +403,33 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
     //--- save hits ------
     if (save_hits_root) {
         if (jDebug > 6)
-            printf("New CAL Hit:: IdVect=%d XYZloc (%f,%f,%f) dEdx=%f \n", aStep->GetTrack()->GetTrackID(), xloc, yloc, zloc,
-                   edep / keV);
+            printf("New CAL Hit:: IdVect=%d XYZloc (%f,%f,%f) dEdx=%f \n", aStep->GetTrack()->GetTrackID(), xloc, yloc, zloc, edep / keV);
 
         int curTrackID = aStep->GetTrack()->GetTrackID();
         std::string volumeName = theTouchable->GetVolume()->GetName().c_str();
-        mRootEventsOut->AddHit(
-                 mHitsCount,  /* aHitId */
-                 curTrackID,  /* aTrackId */
-                 0,
-                 xstep / mm,  /* aX */
-                 ystep / mm,  /* aY */
-                 zstep / mm,  /* aZ */
-                 edep / GeV,  /* aELoss */
-                copyIDx_pre,  /* aIRep */
-                copyIDy_pre,  /* aJRep */
-                volumeName    /* aVolNam */
-               );
+        mRootEventsOut->AddHit(mHitsCount,  /* aHitId */
+                               curTrackID,  /* aTrackId */
+                               0, xstep / mm,  /* aX */
+                               ystep / mm,  /* aY */
+                               zstep / mm,  /* aZ */
+                               edep / GeV,  /* aELoss */
+                               copyIDx_pre,  /* aIRep */
+                               copyIDy_pre,  /* aJRep */
+                               volumeName    /* aVolNam */
+        );
         mHitsCount++;
 
         //-- fill tracks --
-        mRootEventsOut->AddTrack(
-                curTrackID,                           /* int aTrackId,*/
-                ParrentID,                            /* int aParentId,*/
-                PDG,                                  /* int aTrackPdg,*/
-                vertex.x() / mm,                      /* double aXVertex,*/
-                vertex.y() / mm,                      /* double aYVertex,*/
-                vertex.z() / mm,                      /* double aZVertex,*/
-                vertexMom.x(),                        /* double aXMom,*/
-                vertexMom.y(),                        /* double aYMom,*/
-                vertexMom.z(),                        /* double aZMom,*/
-                momentum.mag() / GeV                  /* double aMom*/
+        mRootEventsOut->AddTrack(curTrackID,                           /* int aTrackId,*/
+                                 ParrentID,                            /* int aParentId,*/
+                                 PDG,                                  /* int aTrackPdg,*/
+                                 vertex.x() / mm,                      /* double aXVertex,*/
+                                 vertex.y() / mm,                      /* double aYVertex,*/
+                                 vertex.z() / mm,                      /* double aZVertex,*/
+                                 vertexMom.x(),                        /* double aXMom,*/
+                                 vertexMom.y(),                        /* double aYMom,*/
+                                 vertexMom.z(),                        /* double aZMom,*/
+                                 momentum.mag() / GeV                  /* double aMom*/
         );
 
     } //  if (save_hits_root)
@@ -449,10 +442,8 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
     //theTouchable->MoveUpHistory();
     G4int JLeicNumber = 0;
 
-    if (jDebug > 2)
-        printf("--> JLeicCalorimeterSD::ProcessHits() Vol=(%s) %p Abs=%p \n", physVol->GetName().c_str(),
-               (void *) physVol, (void *) Detector->GetAbsorber());
-
+    /*
+     * TODO this don't work as Detector->GetAbsorber returns null for a long time
     if (HitID[JLeicNumber] == -1) {
         JLeicCalorHit *calHit = new JLeicCalorHit();
         if (physVol == Detector->GetAbsorber()) calHit->AddAbs(edep, stepl);
@@ -467,6 +458,7 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
             G4cout << " Energy added to JLeic: " << JLeicNumber << G4endl;
         //printf("--> JLeicCalorimeterSD::ProcessHits()  Energy added to JLeic: %d  de=%f\n",JLeicNumber,edep/keV);
     }
+     */
 
     if (jDebug > 2) printf("--> JLeicCalorimeterSD::ProcessHits() Exit\n");
 
@@ -475,7 +467,8 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-void JLeicCalorimeterSD::EndOfEvent(G4HCofThisEvent *HCE) {
+void JLeicCalorimeterSD::EndOfEvent(G4HCofThisEvent *HCE)
+{
 
     static G4int HCID = -1;
     if (HCID < 0) { HCID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]); }
@@ -485,21 +478,20 @@ void JLeicCalorimeterSD::EndOfEvent(G4HCofThisEvent *HCE) {
     if (use_fdc) {
 
         if (NVAR > Detector->GetAbsorberThickness() / Detector->fadc_slice) {
-            printf("Error FADC slices:: NVAR=%d Slices=%f \n", NVAR,
-                   Detector->GetAbsorberThickness() / Detector->fadc_slice);
+            printf("Error FADC slices:: NVAR=%d Slices=%f \n", NVAR, Detector->GetAbsorberThickness() / Detector->fadc_slice);
             exit(1);
         }
 
-         G4double etot = 0;
+        G4double etot = 0;
         for (int ii = 0; ii < 100; ii++) {
             etot += dEslice[ii];
-            runaction->FillHist2d(1, dEslice[ii], (double) ii, 1.);
-            runaction->FillHLikelihood(ii, dEslice[ii]);
+            //runaction->FillHist2d(1, dEslice[ii], (double) ii, 1.);
+            //runaction->FillHLikelihood(ii, dEslice[ii]);
         }
-        runaction->FillHist(10, etot);
-        for (int ii = 0; ii < 3; ii++) runaction->FillHist(11, dEslice[ii]);
-        for (int ii = 20; ii < 23; ii++) runaction->FillHist(12, dEslice[ii]);
-        for (int ii = 30; ii < 33; ii++) runaction->FillHist(13, dEslice[ii]);
+        //runaction->FillHist(10, etot);
+        //for (int ii = 0; ii < 3; ii++) runaction->FillHist(11, dEslice[ii]);
+        //for (int ii = 20; ii < 23; ii++) runaction->FillHist(12, dEslice[ii]);
+        //for (int ii = 30; ii < 33; ii++) runaction->FillHist(13, dEslice[ii]);
         ntr = 0;
         ntr1 = 0;
         ntr2 = 0;
@@ -511,10 +503,10 @@ void JLeicCalorimeterSD::EndOfEvent(G4HCofThisEvent *HCE) {
                 if (ii < 10) ntr2++;
                 if (ii < 15) ntr3++;
             }
-        runaction->FillHist(20, ntr);
-        runaction->FillHist(21, ntr1);
-        runaction->FillHist(22, ntr2);
-        runaction->FillHist(23, ntr3);
+        //runaction->FillHist(20, ntr);
+        //runaction->FillHist(21, ntr1);
+        //runaction->FillHist(22, ntr2);
+        //runaction->FillHist(23, ntr3);
 
         //dedx_fadc->Write();
         //printf(" new event:%6d",nevent);  for (int ii=0;  ii<30; ii++) printf(" %4.1f",dEslice[ii]);  printf("\n");
@@ -530,42 +522,39 @@ void JLeicCalorimeterSD::EndOfEvent(G4HCofThisEvent *HCE) {
         const G4Event *evt = G4RunManager::GetRunManager()->GetCurrentEvent();
 
         const G4int primeVtxCount = evt->GetNumberOfPrimaryVertex();
-        size_t particleId=0;  // prime particle ID unique for all prime vertexes
+        size_t particleId = 0;  // prime particle ID unique for all prime vertexes
 
-        for(G4int primeVtxIndex = 0; primeVtxIndex < primeVtxCount; primeVtxIndex++)
-        {
+        for (G4int primeVtxIndex = 0; primeVtxIndex < primeVtxCount; primeVtxIndex++) {
             auto primeVtx = evt->GetPrimaryVertex(primeVtxIndex);
 
             // Add primary vertex to root output
-            mRootEventsOut->AddPrimaryVertex(
-                    (size_t) primeVtxIndex,                    /* size_t aVtxIndex, */
-                    (size_t) primeVtx->GetNumberOfParticle(),  /* size_t aParticleCount, */
-                    primeVtx->GetX0(),                         /* double aX, */
-                    primeVtx->GetY0(),                         /* double aY, */
-                    primeVtx->GetZ0(),                         /* double aZ, */
-                    primeVtx->GetT0(),                         /* double aTime, */
-                    primeVtx->GetWeight());                    /* double aWeight */
+            mRootEventsOut->AddPrimaryVertex((size_t) primeVtxIndex,                    /* size_t aVtxIndex, */
+                                             (size_t) primeVtx->GetNumberOfParticle(),  /* size_t aParticleCount, */
+                                             primeVtx->GetX0(),                         /* double aX, */
+                                             primeVtx->GetY0(),                         /* double aY, */
+                                             primeVtx->GetZ0(),                         /* double aZ, */
+                                             primeVtx->GetT0(),                         /* double aTime, */
+                                             primeVtx->GetWeight());                    /* double aWeight */
 
 
             const G4int partCount = primeVtx->GetNumberOfParticle();
-            for(G4int partIndex = 0; partIndex < partCount; partIndex++) {
+            for (G4int partIndex = 0; partIndex < partCount; partIndex++) {
                 auto particle = primeVtx->GetPrimary(partIndex);
-                mRootEventsOut->AddPrimaryParticle(
-                         particleId,                             /*size_t aId */
-                         (size_t)primeVtxIndex,                  /*size_t aPrimeVtxId */
-                         (size_t)particle->GetPDGcode(),         /*size_t aPDGCode */
-                         (size_t)particle->GetTrackID(),         /*size_t aTrackId */
-                         particle->GetCharge(),                  /*double aCharge */
-                         particle->GetMomentumDirection().x(),   /*double aMomDirX */
-                         particle->GetMomentumDirection().y(),   /*double aMomDirY */
-                         particle->GetMomentumDirection().z(),   /*double aMomDirZ */
-                         particle->GetTotalMomentum()/GeV,       /*double aTotalMomentum */
-                         particle->GetTotalEnergy()/GeV,         /*double aTotalEnergy */
-                         particle->GetProperTime()/ns,           /*double aProperTime */
-                         particle->GetPolX(),                    /*double aPolX */
-                         particle->GetPolY(),                    /*double aPolY */
-                         particle->GetPolZ()                     /*double aPolZ */
-                        );
+                mRootEventsOut->AddPrimaryParticle(particleId,                             /*size_t aId */
+                                                   (size_t) primeVtxIndex,                  /*size_t aPrimeVtxId */
+                                                   (size_t) particle->GetPDGcode(),         /*size_t aPDGCode */
+                                                   (size_t) particle->GetTrackID(),         /*size_t aTrackId */
+                                                   particle->GetCharge(),                  /*double aCharge */
+                                                   particle->GetMomentumDirection().x(),   /*double aMomDirX */
+                                                   particle->GetMomentumDirection().y(),   /*double aMomDirY */
+                                                   particle->GetMomentumDirection().z(),   /*double aMomDirZ */
+                                                   particle->GetTotalMomentum() / GeV,       /*double aTotalMomentum */
+                                                   particle->GetTotalEnergy() / GeV,         /*double aTotalEnergy */
+                                                   particle->GetProperTime() / ns,           /*double aProperTime */
+                                                   particle->GetPolX(),                    /*double aPolX */
+                                                   particle->GetPolY(),                    /*double aPolY */
+                                                   particle->GetPolZ()                     /*double aPolZ */
+                );
 
                 particleId++;
             }
@@ -582,14 +571,16 @@ void JLeicCalorimeterSD::EndOfEvent(G4HCofThisEvent *HCE) {
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-void JLeicCalorimeterSD::clear() {
+void JLeicCalorimeterSD::clear()
+{
     printf("--> JLeicCalorimeterSD::clear() \n");
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
 
-void JLeicCalorimeterSD::PrintAll() {
+void JLeicCalorimeterSD::PrintAll()
+{
     printf("--> JLeicCalorimeterSD::PrintAll() \n");
 
 }

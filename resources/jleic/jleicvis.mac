@@ -1,8 +1,5 @@
-#
 /control/execute jleic.mac
-#/control/execute depfet09.mac
-#/control/execute fdc15.mac
-#
+
 #-----------------------------------------------------------------------
 
 #/vis/open VRML2FILE
@@ -16,7 +13,7 @@
 #/vis/open OGL 1600x1600-0+0
 #/vis/open OGLI 600x600-0+0
 #/vis/open OGLIX 600x600-0+0
-#/vis/open OGLIQt 600x600-0+0  q
+/vis/open OGLIQt 600x600-0+0  q
 #
 #/vis/open OGLS 600x600-0+0
 #/vis/open OGLSX 600x600-0+0

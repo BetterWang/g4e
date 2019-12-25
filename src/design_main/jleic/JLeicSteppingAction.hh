@@ -44,7 +44,7 @@ class JLeicSteppingAction : public G4UserSteppingAction
 {
   public:
     JLeicSteppingAction(JLeicDetectorConstruction *detectorConstruction, JLeicEventAction *eventAction, JLeicRunAction *runAction, JLeicHistogramming *histo);
-   ~JLeicSteppingAction() override;
+    ~JLeicSteppingAction() override;
 
     void UserSteppingAction(const G4Step*) override;
    
@@ -55,10 +55,6 @@ class JLeicSteppingAction : public G4UserSteppingAction
     JLeicRunAction*            runaction;
     JLeicSteppingMessenger*    steppingMessenger;
     JLeicHistogramming*        fHistos;
-
-    G4int IDnow{},IDold;
-    G4int evnoold ;
-
 };
 
 #endif

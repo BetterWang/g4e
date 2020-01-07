@@ -40,8 +40,8 @@ target_sources_local(g4e
         MulticastEventAction.hh
         MulticastSteppingAction.hh
 
-        JLeicMaterials.cc
-        JLeicMaterials.hh
+        Materials.cc
+        Materials.hh
 
         JLeicPhysicsList.cc
         JLeicPhysicsList.hh
@@ -62,6 +62,6 @@ target_sources_local(g4e
         JLeicTrackingAction.hh
         )
 
-add_subdirectory(design_main)
+add_subdirectory(main_detectors)
 add_subdirectory(generator)
 

@@ -182,3 +182,9 @@ docs_old/build/
 docs/_build/
 
 bin/
+
+resources/erhic/__MACOSX/
+
+resources/erhic/madx_eRHIC.zip
+
+*.mac~

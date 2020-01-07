@@ -6,14 +6,14 @@
 # Use jleic.mac for headless mode or jleicvis.mac for GUI visualization
 /control/execute jleicvis.mac
 
-# Select Beagle generator
+# Select pythiaAScii generator
 # Options are: particleGun hepmcAscii pythiaAscii beagle
-/generator/select beagle
+/generator/select pythiaAscii
+
 
 # Open file and run some MC file
-#/generator/beagle/open beagle_test_data.txt
-/generator/beagle/open BEAGLE.txt
-/generator/beagle/verbose 2
-
-#/run/beamOn 1
+#------ cone at 50mrad ----
+#---protons ---
+/generator/pythiaAscii/open  /data/yulia/yulia-PCbackup/EIC-soft/pythia_jlab_v2/pythia/work/pythia_e-p_10x100_Q2_100k_msel2_DIS.txt
+/run/beamOn 1
 exit

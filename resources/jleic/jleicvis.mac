@@ -134,12 +134,13 @@
 #/run/initialize
 #/run/beamOn 1
 #--------------CMS vis
-/vis/viewer/set/viewpointThetaPhi 30. 30.
+/vis/viewer/set/viewpointThetaPhi -30. -30.
 #/vis/viewer/zoomTo 25
 /vis/viewer/clearCutawayPlanes
-/vis/viewer/addCutawayPlane 0 0 0 m 0 0 -1
-/vis/viewer/addCutawayPlane 0 0 0 m -1 0 0
-/vis/viewer/addCutawayPlane 0 0 0 m 0 -1 0
+
+/vis/viewer/addCutawayPlane 0 0 5 m 0 0 1
+/vis/viewer/addCutawayPlane 0 0 5 m 1 0 0
+/vis/viewer/addCutawayPlane 0 0 5 m 0 -1 0
 #/vis/viewer/set/style surface
 #/vis/viewer/colourByDensity 1 g/cm3 .5 3 10
 #---------------------------------------------------

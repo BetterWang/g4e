@@ -180,3 +180,9 @@ tmp
 docs_old/build/
 
 docs/_build/
+
+resources/erhic/__MACOSX/
+
+resources/erhic/madx_eRHIC.zip
+
+*.mac~

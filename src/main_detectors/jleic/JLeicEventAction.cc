@@ -27,8 +27,8 @@
 
 #include "JLeicRunAction.hh"
 
-#include "design_main/jleic/JLeicCalorHit.hh"
-#include "design_main/jleic/JLeicVTXHit.hh"
+#include "main_detectors/jleic/JLeicCalorHit.hh"
+#include "main_detectors/jleic/JLeicVTXHit.hh"
 #include "JLeicEventActionMessenger.hh"
 #include "JleicHistogramming.hh"
 

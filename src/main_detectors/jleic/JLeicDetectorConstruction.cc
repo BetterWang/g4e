@@ -169,8 +169,10 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     ir_Lattice.SetIonBeamEnergy(fConfig.IonBeamEnergy);
     ir_Lattice.SetElectronBeamEnergy(fConfig.ElectronBeamEnergy);
 
-    ir_Lattice.LoadIonBeamLattice();
-    ir_Lattice.LoadElectronBeamLattice();
+ //   ir_Lattice.LoadIonBeamLattice();
+ //   ir_Lattice.LoadElectronBeamLattice();
+ir_Lattice.Read_ion_beam_lattice();
+ir_Lattice.Read_electron_beam_lattice();
 
     //=========================================================================
     //                    Sensitive detectors
@@ -1093,5 +1095,5 @@ void JLeicDetectorConstruction::checkVolumeOverlap()
 
 void JLeicDetectorConstruction::EnableHCalRings()
 {
-    cb_HCAL.ConstructRings();
+//    cb_HCAL.ConstructRings();
 }

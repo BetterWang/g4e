@@ -188,3 +188,5 @@ resources/erhic/__MACOSX/
 resources/erhic/madx_eRHIC.zip
 
 *.mac~
+
+*.cc#

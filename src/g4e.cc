@@ -27,7 +27,7 @@
 
 #include "MulticastEventAction.hh"
 
-#include "design_main/jleic/JLeicDetectorConstruction.hh"
+#include "main_detectors/jleic/JLeicDetectorConstruction.hh"
 #include "InputProcessor.hh"
 #include "JLeicPhysicsList.hh"
 #include "PrimaryGeneratorAction.hh"

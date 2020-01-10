@@ -1,7 +1,7 @@
 target_include_directories(g4e
         PUBLIC
             ./
-            design_subdetectors/all
+            subdetectors/all
             generator
             helpers
             root_output

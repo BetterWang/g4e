@@ -197,23 +197,12 @@ void JLeicCalorimeterSD::Initialize(G4HCofThisEvent *)
             //printf("reset energy \n");
         }
     }
-    //printf("JLeicCalorimeterSD()::Initialize 1\n");
-
-    //printf("--> JLeicCalorimeterSD::Initialize(%s) \n",collectionName[0].c_str());
-    if (save_frames_root) {
+     if (save_frames_root) {
         //  for (int in=0;in<12;in++) { hmatrix1[in]->Reset(" ");}
         hmatrix2->Reset(" ");
     }
 
-    /*
-    if (save_hits_root) {
-        mRootEventsOut.ClearForNewEvent();
-    }
-    */
-
-
-    //printf("JLeicCalorimeterSD()::Initialize 2\n");
-    if (use_crustals) for (int ii = 0; ii < (NumRow * NumCol); ii++) FRAME[ii] = 0; //-- 8000;  //-- reset pedestals
+     if (use_crustals) for (int ii = 0; ii < (NumRow * NumCol); ii++) FRAME[ii] = 0; //-- 8000;  //-- reset pedestals
     if (use_fdc) dedx_fadc->Reset(" ");
 
     mHitsCount = 0;
@@ -325,9 +314,7 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
 
             for (int in = 0; in < 12; in++) {
                 sprintf(buffer, "CAL_module_%d", in);
-                //	printf("CALmod.c_str()=%s, %s \n", CALmod.c_str(),buffer);
                 if (strcmp(CALmod.c_str(), buffer) == 0) {
-                    // printf("CALmod.c_str()=%s, %s  %d\n", CALmod.c_str(),buffer,in );
                     if (jDebug > 2) printf("hmatrix=%d,%d, %f \n", copyIDx_pre, copyIDy_pre, edep / keV);
                     hmatrix1[in]->Fill(copyIDx_pre, copyIDy_pre, edep / keV);
                     // hmatrixOccup[in]->Fill(copyIDx_pre,copyIDy_pre,1.);
@@ -485,14 +472,8 @@ void JLeicCalorimeterSD::EndOfEvent(G4HCofThisEvent *HCE)
         G4double etot = 0;
         for (int ii = 0; ii < 100; ii++) {
             etot += dEslice[ii];
-            //runaction->FillHist2d(1, dEslice[ii], (double) ii, 1.);
-            //runaction->FillHLikelihood(ii, dEslice[ii]);
-        }
-        //runaction->FillHist(10, etot);
-        //for (int ii = 0; ii < 3; ii++) runaction->FillHist(11, dEslice[ii]);
-        //for (int ii = 20; ii < 23; ii++) runaction->FillHist(12, dEslice[ii]);
-        //for (int ii = 30; ii < 33; ii++) runaction->FillHist(13, dEslice[ii]);
-        ntr = 0;
+         }
+         ntr = 0;
         ntr1 = 0;
         ntr2 = 0;
         ntr3 = 0;
@@ -503,14 +484,7 @@ void JLeicCalorimeterSD::EndOfEvent(G4HCofThisEvent *HCE)
                 if (ii < 10) ntr2++;
                 if (ii < 15) ntr3++;
             }
-        //runaction->FillHist(20, ntr);
-        //runaction->FillHist(21, ntr1);
-        //runaction->FillHist(22, ntr2);
-        //runaction->FillHist(23, ntr3);
-
-        //dedx_fadc->Write();
-        //printf(" new event:%6d",nevent);  for (int ii=0;  ii<30; ii++) printf(" %4.1f",dEslice[ii]);  printf("\n");
-    }
+     }
 
     if (save_frames_root) {
         for (int in = 0; in < 12; in++) { hmatrix1[in]->Write(); }

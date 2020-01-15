@@ -1,0 +1,4 @@
+exclude .gitignore
+
+include pip_readme.md
+recursive-include g4epy/ *.py

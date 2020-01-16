@@ -870,6 +870,7 @@ ir_Lattice.Read_electron_beam_lattice();
     RootGM::Factory rtFactory;
     rtFactory.SetDebug(0);
     g4Factory.Export(&rtFactory);
+
     //
     // Import Geant4 geometry to VGM
     Geant4GM::Factory factory;
@@ -879,7 +880,7 @@ ir_Lattice.Read_electron_beam_lattice();
     gdmlExporter.GenerateXMLGeometry();
     //
     gGeoManager->CloseGeometry();
-    gGeoManager->Export("geometryJLEIC.root");
+    gGeoManager->Export("geometryJLEIC.root", "jleic_geo");
     //
     // end VGM demo
     //---------------------------------------------------------------------------

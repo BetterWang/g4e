@@ -21,7 +21,7 @@ class BeagleSmokeTest(unittest.TestCase):
     def test_beagle_1_event(self):
         this_script_dir = os.path.dirname(inspect.stack()[0][1])
         os.chdir(this_script_dir)
-        result = subprocess.run(["/home/romanov/eic/g4e/g4e-dev/cmake-build-debug/g4e", "beagle_io.mac"],
+        result = subprocess.run(["/home/romanov/eic/g4e-dev/cmake-build-debug/g4e", "beagle_io.mac"],
                         check=True,
                         stdout=subprocess.PIPE,
                         stderr=subprocess.PIPE)

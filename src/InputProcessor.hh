@@ -5,7 +5,7 @@
 #include <vector>
 #include <string>
 
-#include <argparse.hh>
+#include <CLI11.hpp>
 
 #include <StringHelpers.hh>
 #include <LogLevels.hh>
@@ -78,52 +78,44 @@ private:
 
 InputArguments InputProcessor::Process(int argc, char **argv)
 {
-    ArgumentParser parser("g4e - Geant 4 Electron Ion Collider");
-    parser.add_argument("-g", "--gui", "Shows Geant4 GUI", false);
-    parser.add_argument("-t", "--threads", "Number of threads. Single threaded mode if 0 or 1", false);
-    parser.add_argument("-j", "--jobs", "(alias to -t and --threads flags)", false);
-    parser.add_argument("-v", "--verbose", "Verbosity 0-5 or: off fatal error warn info debug trace. '-v' (no val) means 'debug'. Can be set with /g4r/logLevel", false);
-    parser.add_argument("files", "Input files. Macros (.mac) or generator files", false);
-
     InputArguments result;                                          // This function result
+    CLI::App app{"g4e - Geant 4 Electron Ion Collider"};
+
+    bool optShowGui = false;
+    int optThreads = 1;
+    std::string optVerbose("info");
+    std::vector<std::string> optAllFiles;
+    app.add_flag("-g,--gui", optShowGui, "Shows Geant4 GUI");
+    app.add_option("-t,-j,--threads,--jobs", optThreads, "Number of threads. Single threaded mode if 0 or 1", 1);
+    app.add_option("-v,--verbose", optVerbose,
+                   "Verbosity 0-5 or: off fatal error warn info debug trace. '-v' (no val) means 'debug'. Can be set with /g4r/logLevel", "info");
+    app.add_option("files", optAllFiles, "Input files. Macros (.mac) or generator files");
+
+    // Parse everything
     try {
-        parser.parse(argc, argv);                                   // Now parse the arguments
-    } catch (const ArgumentParser::ArgumentNotFound& ex) {
-        std::cout << ex.what() << std::endl;
+        app.parse(argc, argv);
+    } catch(const CLI::ParseError &e) {
+        app.exit(e);
         throw;
     }
 
-    // User wants just help
-    if(parser.is_help()) {
-        fmt::print("Detector simulation tool for EIC\n");
-        exit(1);
-    }
-
     // verbosity
-    if(parser.exists("v")) {     // is -v flag set?
-        result.LogLevel = ProcessVerbosity(parser.get<std::string>("v"));
-    } else {
-        result.LogLevel = LogLevels::INFO;
-    }
+    result.LogLevel = ProcessVerbosity(optVerbose);
+    fmt::print("ARG:LogLevel = {}\n", result.LogLevel.ToString());
 
     //
     // Open GUI?:
-    result.ShowGui =parser.get<bool>("g");
+    result.ShowGui = optShowGui;
     fmt::print("ARG:ShowGui = {}\n", result.ShowGui);
 
     //
     // Number of threads
-    if(parser.exists("t")) {
-        result.ThreadsCount = parser.get<int>("t");
-    }
-    if(parser.exists("j")) {                                // -j is the common alias to -t
-        result.ThreadsCount = parser.get<int>("j");
-    }
+    result.ThreadsCount = optThreads;
     fmt::print("ARG:ThreadsCount = {}\n", result.ThreadsCount);
 
     //
     // Input files (macros and data files)
-    result.AllFileNames = parser.getv<std::string>("");
+    result.AllFileNames = optAllFiles;
     ProcessFileNames(result);                               // Separate file names as macro / data files
 
     // G4E_HOME
@@ -146,6 +138,8 @@ LogLevels InputProcessor::ProcessVerbosity(const std::string &str) {
     else if (g4e::ToLowerCopy(str) == "4") return LogLevels::INFO;
     else if (g4e::ToLowerCopy(str) == "5") return LogLevels::DEBUG;
     else if (g4e::ToLowerCopy(str) == "6") return LogLevels::TRACE;
+
+    // it is not 0 - 6, so try to parse it (like there are 'debug' or 'info')
     return LogLevels::Parse(str);
 }
 

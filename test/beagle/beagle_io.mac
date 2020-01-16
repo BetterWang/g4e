@@ -11,5 +11,5 @@
 /generator/beagle/open beagle_test_data.txt
 /generator/beagle/verbose 2
 
-/run/beamOn 1
+/run/beamOn 3
 exit

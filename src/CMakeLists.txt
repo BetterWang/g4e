@@ -9,7 +9,7 @@ target_include_directories(g4e
         SYSTEM
             external/spdlog/include     # Header only library for str formatting and fast logging
 
-            external/argparse           # Header only library for argument parsing
+            external/CLI11           # Header only library for argument parsing
 
         # TODO configure install and build interfaces right
         # $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>

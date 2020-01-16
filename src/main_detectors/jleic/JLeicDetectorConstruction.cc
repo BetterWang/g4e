@@ -136,14 +136,14 @@ void JLeicDetectorConstruction::Create_ce_Endcap(JLeicDetectorConfig::ce_Endcap_
 
 void JLeicDetectorConstruction::SetUpJLEIC2019()
 {
-    fAbsorberMaterial = fMat->GetMaterial("Si");
+  //  fAbsorberMaterial = fMat->GetMaterial("Si");
 
     //===================================================================================
     //==                    create a world                                            ==
     //===================================================================================
 
-    fConfig.World.SizeR /= 3.;
-    fConfig.World.SizeZ /= 5.;
+  //  fConfig.World.SizeR /= 3.;
+ //   fConfig.World.SizeZ /= 1.;
 
     // World_Material    = Air;
     World_Material = fMat->GetMaterial("G4_Galactic");
@@ -164,15 +164,41 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     //==========================================================================
     //                          B E A M   E L E M E N T S
     //==========================================================================
-
+if(USE_FFQs && USE_JLEIC) {  // -- use JLEIC  lattice
+  /*
     ir_Lattice.SetMotherParams(World_Phys, World_Material);
     ir_Lattice.SetIonBeamEnergy(fConfig.IonBeamEnergy);
     ir_Lattice.SetElectronBeamEnergy(fConfig.ElectronBeamEnergy);
 
- //   ir_Lattice.LoadIonBeamLattice();
- //   ir_Lattice.LoadElectronBeamLattice();
-ir_Lattice.Read_ion_beam_lattice();
-ir_Lattice.Read_electron_beam_lattice();
+    //   ir_Lattice.LoadIonBeamLattice();
+    //   ir_Lattice.LoadElectronBeamLattice();
+    ir_Lattice.Read_JLEIC_ion_beam_lattice();
+    ir_Lattice.Read_JLEIC_electron_beam_lattice();
+  */
+} else if (USE_FFQs && USE_ERHIC){  // -- use eRHIC lattice
+  /*
+    ir_Lattice.SetMotherParams(World_Phys, World_Material);
+    ir_Lattice.SetIonBeamEnergy(fConfig.IonBeamEnergy);
+    ir_Lattice.SetElectronBeamEnergy(fConfig.ElectronBeamEnergy);
+  */
+  //       ir_Lattice.LoadIonBeamLattice();
+  //   ir_Lattice.LoadElectronBeamLattice();
+  // ir_Lattice.Read_ERHIC_ion_beam_lattice();
+  // ir_Lattice.Read_ERHIC_electron_beam_lattice();
+
+  printf("AcceleratorMagnets start...\n ");
+  AcceleratorMagnets* electron_line_magnets= new  AcceleratorMagnets("e_ir_10.txt",World_Phys, World_Material);
+  AcceleratorMagnets* ion_line_magnets= new  AcceleratorMagnets("ion_ir_275.txt",World_Phys, World_Material);
+
+
+
+  for (int i=0; i<electron_line_magnets->allmagnets.size(); i++) {
+
+    std::cout << " electron line magnets " << electron_line_magnets->allmagnets.at(i)->name << endl;
+
+  }
+
+}
 
     //=========================================================================
     //                    Sensitive detectors
@@ -181,17 +207,17 @@ ir_Lattice.Read_electron_beam_lattice();
     G4SDManager *SDman = G4SDManager::GetSDMpointer();
 
     if (!fCalorimeterSD) {
-
         fCalorimeterSD = new JLeicCalorimeterSD("CalorSD", this);
         SDman->AddNewDetector(fCalorimeterSD);
     }
     if (!fVertexSD) {
-
         fVertexSD = new JLeicVertexSD("VertexSD", this);
-        SDman->AddNewDetector(fVertexSD);
-        printf("VertexSD done\n");
+        SDman->AddNewDetector(fVertexSD);  printf("VertexSD done\n");
     }
 
+    //=========================================================================
+    //                    Create Central Detector
+    //=========================================================================
 
     if (USE_BARREL) {
         //----------------------CREATE SOLENOID ---------------------------------------------
@@ -202,10 +228,8 @@ ir_Lattice.Read_electron_beam_lattice();
 
     if (USE_E_ENDCAP) {
         // ------------------ create electon endcap ---------------------------------------------
-
         fConfig.ce_Endcap.ROut = fConfig.cb_Solenoid.ROut - 1 * cm;
         fConfig.ce_Endcap.PosZ = -fConfig.ce_Endcap.SizeZ / 2 - fConfig.cb_Solenoid.SizeZ / 2 + fConfig.World.ShiftVTX;
-
         Create_ce_Endcap(fConfig.ce_Endcap);
     }
 
@@ -269,7 +293,7 @@ ir_Lattice.Read_electron_beam_lattice();
     //***********************************************************************************
 
 
-    if (USE_BARREL_det) {
+    if (USE_BARREL && USE_BARREL_det)  {
         //===================================================================================
         //==                          VERTEX DETECTOR VOLUME                               ==
         //===================================================================================
@@ -303,7 +327,16 @@ ir_Lattice.Read_electron_beam_lattice();
             fConfig.cb_CTD.SizeZ = fConfig.cb_Solenoid.SizeZ - fConfig.cb_CTD.SizeZCut;
             cb_CTD.Construct(fConfig.cb_CTD, World_Material, cb_Solenoid.Phys);
 
-            if (USE_CB_CTD_Si) { cb_CTD.ConstructLadders(); }
+            if (USE_CB_CTD_Si) {
+                printf("Det construction cb_CTD_detSi::1 Number of layers=%d \n",fConfig.cb_CTD.SiLayerCount);
+                cb_CTD.ConstructLadders();
+                printf("Det construction cb_CTD_detSi::2 Number of layers =%d \n ",fConfig.cb_CTD.SiLayerCount);
+
+             //   for (int lay = 0; lay < fConfig.cb_CTD.SiLayerCount; lay++) {
+             //      cb_CTD.SiLogics[lay]->SetSensitiveDetector(fCalorimeterSD);
+             //  }
+
+            }
             else if (USE_CB_CTD_Straw) { cb_CTD.ConstructStraws(); };
 
         };// end CTD detector
@@ -324,7 +357,10 @@ ir_Lattice.Read_electron_beam_lattice();
 
             cb_DIRC.Construct(fConfig.cb_DIRC, World_Material, cb_Solenoid.Phys);
 
-            if (USE_CB_DIRC_bars) { cb_DIRC.ConstructBars(); }
+            if (USE_CB_DIRC_bars) {
+                cb_DIRC.ConstructBars();
+                cb_DIRC.cb_DIRC_bars_Logic->SetSensitiveDetector(fCalorimeterSD);
+            }
 
         }; // end DIRC detector
 
@@ -340,6 +376,7 @@ ir_Lattice.Read_electron_beam_lattice();
 
             cb_EMCAL.Construct(fConfig.cb_EMCAL, fConfig.cb_Solenoid, World_Material, cb_Solenoid.Phys);
             cb_EMCAL.ConstructBars();
+            cb_EMCAL.Logic->SetSensitiveDetector(fCalorimeterSD);
         }
 
 
@@ -362,13 +399,10 @@ ir_Lattice.Read_electron_beam_lattice();
 
             ce_GEM.Construct(fConfig.ce_GEM, World_Material, cb_Solenoid.Phys);
             ce_GEM.ConstructDetectors();
-            //   for (int lay = 0; lay < fConfig.ce_GEM.Nlayers; lay++) {
-            //       if (ce_GEM.lay_Logic[lay]) ce_GEM.lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD);
-            //   }
+               for (int lay = 0; lay < fConfig.ce_GEM.Nlayers; lay++) {
+                  if (ce_GEM.ce_GEM_lay_Logic[lay]) ce_GEM.ce_GEM_lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD);
+               }
 
-//    for (int lay = 0; lay < fConfig.ce_GEM.Nlayers; lay++) {
-//        if (ce_GEM.lay_Logic[lay]) ce_GEM.lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD);
-            //   }
         }  // end USE_CI_GEM
 
 //===================================================================================
@@ -391,7 +425,9 @@ ir_Lattice.Read_electron_beam_lattice();
             fConfig.ce_EMCAL.ROut = fConfig.ce_Endcap.ROut;
             ce_EMCAL.Construct(fConfig.ce_EMCAL, World_Material, ce_ENDCAP_GVol_Phys);
             ce_EMCAL.ConstructCrystals(); // --- inner detector with Crystals
+            ce_EMCAL.ce_EMCAL_detPWO_Logic->SetSensitiveDetector(fCalorimeterSD);
             ce_EMCAL.ConstructGlass();    // --- outer part with Glass
+            ce_EMCAL.ce_EMCAL_detGLASS_Logic->SetSensitiveDetector(fCalorimeterSD);
 
         }
 
@@ -458,6 +494,7 @@ ir_Lattice.Read_electron_beam_lattice();
             fConfig.ci_EMCAL.PosZ = -fConfig.ci_Endcap.SizeZ / 2 + fConfig.ci_DRICH.ThicknessZ + fConfig.ci_TRD.ThicknessZ + fConfig.ci_EMCAL.ThicknessZ / 2;
             ci_EMCAL.Construct(fConfig.ci_EMCAL, World_Material, ci_ENDCAP_GVol_Phys);
             ci_EMCAL.ConstructDetectors();    // --- outer part with Glass
+            ci_EMCAL.ci_EMCAL_det_Logic->SetSensitiveDetector(fCalorimeterSD);
 
         } // end USE_CI_EMCAL
     } // ============end USE_CI_ENDCAP  ===================================
@@ -471,6 +508,7 @@ ir_Lattice.Read_electron_beam_lattice();
         //-------------------------------------------------------------------------------
         //                      Place Si_disks inside D1a
         //-------------------------------------------------------------------------------
+      /*
         int mydipole_fi_trk1 = -1;
 
         for (int id = 0; id < 20; id++) {
@@ -495,7 +533,7 @@ ir_Lattice.Read_electron_beam_lattice();
 
         // fi_TRKD1.ConstructDetectorsB();
         //  if (f1_D1A_Lay_Logic) f1_D1A_Lay_Logic->SetSensitiveDetector(fCalorimeterSD);
-
+	*/
     }
 //------------------------------------------------
     if (USE_CI_HCAL) {
@@ -517,6 +555,7 @@ ir_Lattice.Read_electron_beam_lattice();
     //====================================================================================
     int mydipole_ffi_trk2;
     if (USE_FFI_TRKD2) {
+      /*
         for (int id = 0; id < 20; id++) {
             if (strcmp(ir_Lattice.fSolid_BigDi_ffqsNAME[id], "iBDS2") == 0) {
                 printf("fi_D2_GVol :: found D2=%s  Z=%f dZ=%f Rout=%f \n", ir_Lattice.fSolid_BigDi_ffqsNAME[id], ir_Lattice.fSolid_BigDi_ffqsZ[id],
@@ -533,7 +572,7 @@ ir_Lattice.Read_electron_beam_lattice();
         //   for (int lay = 0; lay < fConfig.ffi_TRKD2.Nlayers; lay++) {
         if (ffi_TRKD2.lay_Logic) ffi_TRKD2.lay_Logic->SetSensitiveDetector(fCalorimeterSD);
         //   }
-
+	*/
     }
     //------------------------------------------------
     if (USE_FFI_ZDC) {

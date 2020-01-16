@@ -91,7 +91,8 @@
 #include "ffi_RPOT_D2/ffi_RPOT_D2.hh"         // Far-forward Ion   - RomanPots system
 #include "ffi_RPOT_D3/ffi_RPOT_D3.hh"         // Far-forward Ion   - RomanPots system
 //---------Beam lattice ------------------------
-#include "ir_Lattice/ir_Lattice.hh"     // IR Lattice import from file
+//#include "ir_Lattice/ir_Lattice.hh"     // IR Lattice import from file
+#include "ir_Lattice/AccMag.hh"   // New IR Lattice import from file
 #include "ir_Beampipe/ir_Beampipe.hh"     // IR Lattice import from file
 
 
@@ -104,6 +105,9 @@ class JLeicDetectorConstruction : public G4VUserDetectorConstruction
 public:
 
     //--------BEAM elements------
+    bool USE_JLEIC = false;  // use either JLEIC or ERHIC optics
+    bool USE_ERHIC =true;   // use either JLEIC or ERHIC optics
+    // -----
     bool USE_FFQs = true;
     //bool USE_FFQs_iu
     //bool USE_FFQs_ed
@@ -131,26 +135,13 @@ public:
     //--------------------------------------------------------
 
     bool USE_CB_DIRC = true;
-    bool USE_CB_DIRC_bars = true;  // bars for DIRC
+    bool USE_CB_DIRC_bars = false;  // bars for DIRC
 
-    bool USE_CB_EMCAL = true;
+    bool USE_CB_EMCAL = true ;
     bool USE_CB_HCAL = true;
     bool USE_CB_HCAL_D = true; // hcal detector ( granularity)
 
-    //==============================================
-    //--------H-encap------
-    bool USE_CI_ENDCAP = true;
-    //------- subdetector-volumes H-encap -----
-    bool USE_CI_GEM = true;
-    bool USE_CI_DRICH = true;
-    bool USE_CI_TRD = true;
-    bool USE_CI_EMCAL = true;
-    bool USE_CI_HCAL = true;
-    bool USE_CI_HCAL_D = true;
-    //--------- Forward D1
-    bool USE_FI_EMCAL = false;
-    bool USE_FI_TRKD1 = true;
-    // ==============================================
+     // ==============================================
     //--------E-encap------
     bool USE_E_ENDCAP = true;
     //------- subdetector-volumes E-encap ----- 
@@ -158,18 +149,30 @@ public:
     bool USE_CE_EMCAL = true;
     bool USE_CE_MRICH = true;
 
-    //==============================================
+    // -------- polarimeter ------------
     bool USE_FFE_CPOL = false;
+    //==============================================
+    //--------H-encap------
+    bool USE_CI_ENDCAP = true;
+    //------- subdetector-volumes H-encap -----
+    bool USE_CI_GEM = true;
+    bool USE_CI_DRICH = true;
+    bool USE_CI_TRD = true;
+    bool USE_CI_EMCAL = false;
+    bool USE_CI_HCAL = true;
+    bool USE_CI_HCAL_D = false;
+    //--------- Forward D1 ------
+    bool USE_FI_EMCAL = false;
+    bool USE_FI_TRKD1 = false ;
     //--------FARFORWARD HADRON------
     //bool USE_DIPOLE1_SI
     //
     //bool USE_FI_DIPOLE1_B
     //bool USE_FI_DIPOLE2
-
-    bool USE_FFI_TRKD2 = true;
-    bool USE_FFI_ZDC = true;
-    bool USE_FFI_RPOT_D2 = true;
-    bool USE_FFI_RPOT_D3 = true;
+    bool USE_FFI_TRKD2 = false;
+    bool USE_FFI_ZDC = false;
+    bool USE_FFI_RPOT_D2 = false;
+    bool USE_FFI_RPOT_D3 = false;
     //bool USE_FARFORWARD_GEM
     //bool USE_FARFORWARD_VP
 
@@ -297,7 +300,7 @@ private:
     G4Material *World_Material;
 
     // Interaction region
-    ir_LatticeDesign ir_Lattice;
+   // ir_LatticeDesign ir_Lattice;
     ir_Beampipe_Design ir_Beampipe;
 
 //-----------------Hadron ENDCAP volume--------------------

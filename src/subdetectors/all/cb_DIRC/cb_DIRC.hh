@@ -109,6 +109,15 @@ public:
 
     }
 
+
+
+    G4Material *cb_DIRC_bars_Material;
+    G4VisAttributes* attr_cb_DIRC_bars;
+    // G4Tubs*            cb_DIRC_bars_Solid;    //pointer to the solid World
+    G4Box *cb_DIRC_bars_Solid;    //pointer to the solid World
+    G4LogicalVolume *cb_DIRC_bars_Logic;    //pointer to the logical World
+    G4VPhysicalVolume *cb_DIRC_bars_Phys;    //pointer to the physical World
+
 private:
 
     //--------------DIRC bars detector----------------------
@@ -120,13 +129,7 @@ private:
     G4double cb_DIRC_bars_DX;
     G4double cb_DIRC_bars_deltaphi;
 
-    G4Material *cb_DIRC_bars_Material;
-    G4VisAttributes* attr_cb_DIRC_bars;
-    // G4Tubs*            cb_DIRC_bars_Solid;    //pointer to the solid World
-    G4Box *cb_DIRC_bars_Solid;    //pointer to the solid World
-    G4LogicalVolume *cb_DIRC_bars_Logic;    //pointer to the logical World
-    G4VPhysicalVolume *cb_DIRC_bars_Phys;    //pointer to the physical World
-    //*************************************************************
+     //*************************************************************
 
 };
 

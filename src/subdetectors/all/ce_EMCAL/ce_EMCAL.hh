@@ -214,6 +214,18 @@ public:
     /// Parameters that was used in the moment of construction
     ce_EMCAL_Config ConstructionConfig;
 
+    //--- crystals
+    G4Material *ce_EMCAL_detPWO_Material;
+    G4VisAttributes *attr_ce_EMCAL_detPWO;
+    G4Box *ce_EMCAL_detPWO_Solid;
+    G4LogicalVolume *ce_EMCAL_detPWO_Logic;
+    //---glass
+    G4Material *ce_EMCAL_detGLASS_Material;
+    G4VisAttributes *attr_ce_EMCAL_detGLASS;
+    G4Box *ce_EMCAL_detGLASS_Solid;
+    G4LogicalVolume *ce_EMCAL_detGLASS_Logic;
+
+
 private:
     g4e::Materials *fMat;
     G4double ce_EMCAL_det_RIn;
@@ -235,10 +247,6 @@ private:
     G4double ce_EMCAL_detPWO_InnerR;
     G4double ce_EMCAL_detPWO_PosZ;
 
-    G4Material *ce_EMCAL_detPWO_Material;
-    G4VisAttributes *attr_ce_EMCAL_detPWO;
-    G4Box *ce_EMCAL_detPWO_Solid;
-    G4LogicalVolume *ce_EMCAL_detPWO_Logic;
 
 
     //............... EMCAL Glass modules ......................
@@ -249,10 +257,6 @@ private:
     G4double ce_EMCAL_detGLASS_Width;
     double ce_EMCAL_detGLASS_Gap ;
 
-    G4Material *ce_EMCAL_detGLASS_Material;
-    G4VisAttributes *attr_ce_EMCAL_detGLASS;
-    G4Box *ce_EMCAL_detGLASS_Solid;
-    G4LogicalVolume *ce_EMCAL_detGLASS_Logic;
 
 
 

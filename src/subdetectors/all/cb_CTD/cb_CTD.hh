@@ -45,7 +45,7 @@ public:
         visAttr->SetForceSolid(false);
         Logic->SetVisAttributes(visAttr);
     }
-
+//--------------------------Construct Silicon layers --------------------------
     inline void ConstructLadders() {
         static char abname[256];
         auto cfg = ConstructionConfig;
@@ -57,7 +57,13 @@ public:
         for (int ia = 0; ia < cfg.SiLayerCount; ia++) {
             layerRIn[ia] = cfg.RIn + (cfg.SiLayerGap * ia);
             layerROut[ia] = cfg.RIn + (0.01 + cfg.SiLayerGap * ia);
-            if(layerROut[ia] > cfg.ROut) continue;
+            printf("cb_CTD_detSi:: Number of layers =%d \n",cfg.SiLayerCount);
+            if(layerROut[ia] > cfg.ROut) {
+                printf("cb_CTD_detSi:: Radius of the layer=%d is too high \n",ia);
+                cfg.SiLayerCount =ia+1;
+                ConstructionConfig.SiLayerCount=ia+1;
+                printf("cb_CTD_detSi:: Number of layers =%d\n ",cfg.SiLayerCount);
+                continue; }
 
             printf("cb_CTD_detSi %d  Rout=%f \n", ia, layerROut[ia]);
             sprintf(abname, "cb_CTD_detSi_Solid_lay_%d", ia);
@@ -79,7 +85,7 @@ public:
             //----> Should be worked out          if (SiLogics[ia]) SiLogics[ia]->SetSensitiveDetector(fCalorimeterSD);
         }
     }
-
+//------------------Straw options -----------------------------------------
     inline void ConstructStraws() {
      printf("begin STRAW volume \n");
           static char abname[256];
@@ -231,13 +237,22 @@ sprintf(abname,"cb_CTD_det_Straw_Wall_Phys");
     /// Parameters that was used in the moment of construction
     cb_CTD_Config ConstructionConfig;
 
+// -----Silicone layers option----------------
+    G4Tubs *SiSolids[100];    //pointer to the solid World
+    G4LogicalVolume *SiLogics[100];    //pointer to the logical World
+    G4VPhysicalVolume *cb_CTD_detSi_Phys[100];    //pointer to the physical World
+
+ //---- Straw tracker options ----------------
+   // G4VisAttributes* Straws_Gas;
+    G4Material *Straw_Gas_Material;
+    G4Tubs *Straw_Gas_Solid;    //pointer to the solid World
+    G4LogicalVolume *Straw_Gas_Logic;    //pointer to the logical World
+    G4VPhysicalVolume *Straw_Gas_Phys;    //pointer to the physical World
+
 private:
     G4Material *siMaterial;
     G4double layerRIn[100];
     G4double layerROut[100];
-    G4Tubs *SiSolids[100];    //pointer to the solid World
-    G4LogicalVolume *SiLogics[100];    //pointer to the logical World
-    G4VPhysicalVolume *cb_CTD_detSi_Phys[100];    //pointer to the physical World
 
 //-------------straw---------------
  //-------------------CTD_Si barrel detector ------------------
@@ -261,11 +276,6 @@ private:
     G4LogicalVolume *Straw_Wall_Logic;    //pointer to the logical World
     G4VPhysicalVolume *Straw_Wall_Phys;    //pointer to the physical World
 
-   // G4VisAttributes* Straws_Gas;
-    G4Material *Straw_Gas_Material;
-    G4Tubs *Straw_Gas_Solid;    //pointer to the solid World
-    G4LogicalVolume *Straw_Gas_Logic;    //pointer to the logical World
-    G4VPhysicalVolume *Straw_Gas_Phys;    //pointer to the physical World
 
 
 };

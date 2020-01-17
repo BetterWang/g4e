@@ -19,5 +19,5 @@
 #---protons ---
 /generator/pythiaAscii/open /data/yuliapc/home/yulia/work/g4e/resources/pythia/pythia_cone_p_275GeV_25mrad.txt
 
-/run/beamOn 1
+#/run/beamOn 1
 exit

@@ -164,7 +164,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     //==========================================================================
     //                          B E A M   E L E M E N T S
     //==========================================================================
-if(USE_FFQs && USE_JLEIC) {  // -- use JLEIC  lattice
+ // -- use JLEIC  lattice
   /*
     ir_Lattice.SetMotherParams(World_Phys, World_Material);
     ir_Lattice.SetIonBeamEnergy(fConfig.IonBeamEnergy);
@@ -175,30 +175,54 @@ if(USE_FFQs && USE_JLEIC) {  // -- use JLEIC  lattice
     ir_Lattice.Read_JLEIC_ion_beam_lattice();
     ir_Lattice.Read_JLEIC_electron_beam_lattice();
   */
-} else if (USE_FFQs && USE_ERHIC){  // -- use eRHIC lattice
-  /*
-    ir_Lattice.SetMotherParams(World_Phys, World_Material);
-    ir_Lattice.SetIonBeamEnergy(fConfig.IonBeamEnergy);
-    ir_Lattice.SetElectronBeamEnergy(fConfig.ElectronBeamEnergy);
-  */
-  //       ir_Lattice.LoadIonBeamLattice();
-  //   ir_Lattice.LoadElectronBeamLattice();
-  // ir_Lattice.Read_ERHIC_ion_beam_lattice();
-  // ir_Lattice.Read_ERHIC_electron_beam_lattice();
+  if(USE_FFQs ) {
+      int USE_LINE;
+     std::string fileName;
+      printf("AcceleratorMagnets start... Ion energy %d   Electron energy %d World_Phys=%p \n ", fConfig.IonBeamEnergy, fConfig.ElectronBeamEnergy, World_Phys);
+      const char *home_cstr = std::getenv("G4E_HOME");
+     //---------------- Electron  line -----------------------------------
+      printf("========================================\n");
+      if (home_cstr) {
+          if (USE_ERHIC) { USE_LINE =1;
+              fileName = fmt::format("{}/resources/erhic/mdi/e_ir_{}.txt", home_cstr, fConfig.ElectronBeamEnergy);
+          } else if (USE_JLEIC) { USE_LINE=0;
+              fileName = fmt::format("{}/resources/jleic/mdi/e_ir_{}.txt", home_cstr, fConfig.ElectronBeamEnergy);
+          }
+      } else { printf("AcceleratorMagnets  file opening err :: please setup  G4E_HOME \n"); }
 
-  printf("AcceleratorMagnets start...\n ");
-  AcceleratorMagnets* electron_line_magnets= new  AcceleratorMagnets("e_ir_10.txt",World_Phys, World_Material);
-  AcceleratorMagnets* ion_line_magnets= new  AcceleratorMagnets("ion_ir_275.txt",World_Phys, World_Material);
+      printf("AcceleratorMagnets:: try to open file %s \n", fileName.c_str());
+
+      AcceleratorMagnets *electron_line_magnets = new AcceleratorMagnets(fileName, World_Phys, World_Material, USE_LINE);
 
 
+      for (int i = 0; i < electron_line_magnets->allmagnets.size(); i++) {
+          std::cout << " electron line magnets " << electron_line_magnets->allmagnets.at(i)->name << endl;
+      }
 
-  for (int i=0; i<electron_line_magnets->allmagnets.size(); i++) {
 
-    std::cout << " electron line magnets " << electron_line_magnets->allmagnets.at(i)->name << endl;
+      //-----------------Ion line -----------------------------------
+      printf("========================================\n");
+      if (home_cstr) {
+          if (USE_ERHIC) {USE_LINE=1;
+              fileName = fmt::format("{}/resources/erhic/mdi/ion_ir_{}.txt", home_cstr, fConfig.IonBeamEnergy);
+          } else if (USE_JLEIC) {USE_LINE=0;
+              fileName = fmt::format("{}/resources/jleic/mdi/ion_ir_{}.txt", home_cstr, fConfig.IonBeamEnergy);
+          } else { printf(" Please check corect settings for USE_FFQs && USE_JLEIC or USE_ERHIC"); }
+      } else { printf("AcceleratorMagnets  file opening err :: please setup  G4E_HOME \n"); }
+
+      printf("AcceleratorMagnets:: try to open file %s \n", fileName.c_str());
+
+
+       AcceleratorMagnets *ion_line_magnets = new AcceleratorMagnets(fileName, World_Phys, World_Material, USE_LINE);
+
+
+      for (int i = 0; i < ion_line_magnets->allmagnets.size(); i++) {
+          std::cout << " ion line magnets " << ion_line_magnets->allmagnets.at(i)->name << endl;
+      }
 
   }
 
-}
+
 
     //=========================================================================
     //                    Sensitive detectors

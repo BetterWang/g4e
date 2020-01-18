@@ -60,7 +60,6 @@ public:
     }
 
     inline void ConstructLaddersCentral() {
-        static char abname[256];
         auto cfg = ConstructionConfig;
 
         //--------------------------------------------------
@@ -78,7 +77,7 @@ public:
 
         int FDIV = 0;
         double dR;
-        double myL;
+        double length;
         double phi=0;
 
         // Materials are defined in JLeicMaterials
@@ -100,37 +99,37 @@ public:
         // Lay 5
         Lay.Dx=0.150 * mm; Lay.Dy=4*cm; Lay.Dz=48*cm; Lay.Rin=15.5 * cm; Lays.push_back(Lay);
 
-        if( Lays.size()>10) {printf("Nlayers in VERTEX >10 !!! \n"); exit(1); }
+        if( Lays.size()>10) {
+            printf("Nlayers in VERTEX >10 !!! \n"); exit(1);
+        }
 
         for (uint lay = 0; lay < Lays.size(); lay++) {
+            spdlog::debug("cb_VTX_ladder:: Layer loop::{}", lay);
 
-            printf("cb_VTX_ladder:: Layer loop:: %d\n", lay);
             double cb_VTX_ladder_DZ = Lays[lay].Dz;
             double cb_VTX_ladder_DY = Lays[lay].Dy;
             double cb_VTX_ladder_Thickness = Lays[lay].Dx;
             dR =  Lays[lay].Rin;
 
-            myL = 2*3.1415*dR;
-            int NUM = myL/cb_VTX_ladder_DY;
+            length = 2 * 3.1415 * dR;
+            int laddersCount = length / cb_VTX_ladder_DY;
 
             for(int i=0;i<2; i++){
-                double LN = cb_VTX_ladder_DY * NUM;
-                double LN1 = cb_VTX_ladder_DY * (NUM+1+i);
-                printf("cb_VTX_ladder:: LN= Orig NUM=%d\n",NUM);
-                if (LN/LN1>0.8) NUM=NUM+1;
-                printf("cb_VTX_ladder:: LN=%f, LN1=%f  delenie=%f NUM=%d \n",LN,LN1,LN/LN1,NUM);
+                double LN = cb_VTX_ladder_DY * laddersCount;
+                double LN1 = cb_VTX_ladder_DY * (laddersCount + 1 + i);
+
+                spdlog::debug("cb_VTX_ladder:: LN= Orig laddersCount={}", laddersCount);
+                if (LN/LN1>0.8) laddersCount= laddersCount + 1;
+                spdlog::debug("cb_VTX_ladder:: LN={}, LN1={}  delenie={} NUM={} \n", LN, LN1,LN/LN1, laddersCount);
             }
 
-            double cb_VTX_ladder_deltaphi = 2*3.1415926/NUM  ;
+            double cb_VTX_ladder_deltaphi = 2 * 3.1415926 / laddersCount  ;
 
+            auto boxName = fmt::format("cb_VTX_ladder_Solid_{}", lay);
+            cb_VTX_ladder_Solid[lay] = new G4Box(boxName, cb_VTX_ladder_Thickness / 2.,   cb_VTX_ladder_DY / 2.,cb_VTX_ladder_DZ / 2.  );
 
-            sprintf(abname, "cb_VTX_ladder_Solid_%d", lay);
-            cb_VTX_ladder_Solid[lay] = new G4Box(abname, cb_VTX_ladder_Thickness / 2.,   cb_VTX_ladder_DY / 2.,cb_VTX_ladder_DZ / 2.  );
-
-            sprintf(abname, "cb_VTX_ladder_Logic_%d", lay);
-            cb_VTX_ladder_Logic[lay] = new G4LogicalVolume(cb_VTX_ladder_Solid[lay], cb_VTX_ladder_Material,
-                                                           abname);
-
+            auto logicName = fmt::format("cb_VTX_ladder_Logic_{}", lay);
+            cb_VTX_ladder_Logic[lay] = new G4LogicalVolume(cb_VTX_ladder_Solid[lay], cb_VTX_ladder_Material, logicName);
 
             if (lay == 0 || lay == 1) { attr_cb_VTX_ladder = new G4VisAttributes(G4Color(0.0, 0.2, 0.8, 2.0)); }
             else if (lay == 2) { attr_cb_VTX_ladder = new G4VisAttributes(G4Color(0.0, 0.2, 0.8, 0.7)); }
@@ -140,16 +139,16 @@ public:
             attr_cb_VTX_ladder->SetForceSolid(true);
             cb_VTX_ladder_Logic[lay]->SetVisAttributes(attr_cb_VTX_ladder);
 
-            if( NUM>40) {
+            if(laddersCount > 40) {
                 printf("cb_VTX_ladder:: Nladders in VERTEX >40 lay=%f !!! \n",lay);
                 exit(1);
             }
 
 
-            for (int ia = 0; ia < NUM; ia++) {
+            for (int ia = 0; ia < laddersCount; ia++) {
                 //for (int ia=0;ia<1;ia++) {
-                printf("cb_VTX_ladder:: lay=%d  NUM=%d, dR=%f cb_VTX_ladder_deltaphi=%f %f \n",lay, NUM,  dR, cb_VTX_ladder_deltaphi,cfg.ladder_deltashi);
-                printf("cb_VTX_ladder:: Module  loop:: %d\n", ia);
+                spdlog::debug("cb_VTX_ladder:: lay={}  NUM={}, dR={} cb_VTX_ladder_deltaphi={} {} \n", lay, laddersCount, dR, cb_VTX_ladder_deltaphi, cfg.ladder_deltashi);
+                spdlog::debug("cb_VTX_ladder:: Module  loop:: {}\n", ia);
 
                 phi = (ia * (cb_VTX_ladder_deltaphi));
                 x = - dR * cos(phi) ;
@@ -157,10 +156,10 @@ public:
                 rm[lay][ia].rotateZ(cb_VTX_ladder_deltaphi * ia);
                 rm[lay][ia].rotateZ(cfg.ladder_deltashi);
 
-                printf("cb_VTX_ladder::  %d %d x=%f  y=%f  \n", lay, ia, x, y);
-                sprintf(abname, "cb_VTX_ladder_Phys_%d_%d", lay, ia);
+                spdlog::debug("cb_VTX_ladder::  {} {} x={}  y={}  \n", lay, ia, x, y);
+                auto physName = fmt::format("cb_VTX_ladder_Phys_{}_{}", lay, ia);
                 cb_VTX_ladder_Phys[lay] = new G4PVPlacement(G4Transform3D(rm[lay][ia], G4ThreeVector(x, y, z)),
-                                                            abname, cb_VTX_ladder_Logic[lay],
+                                                            physName, cb_VTX_ladder_Logic[lay],
                                                             Phys, false, 0.);
             }
             //-------------------------------------------------------------------------
@@ -184,15 +183,16 @@ public:
             G4double PixelDZ = cb_VTX_ladder_Thickness; // 0.450*mm
 
             if (FDIV >= 1) {
-                printf("cb_VTX_ladder_pxdSlice_:: construct slices %d \n", lay);
+                spdlog::debug("cb_VTX_ladder_pxdSlice_:: construct slices %d \n", lay);
 
-                sprintf(abname, "cb_VTX_ladder_pxdSlice_%d", lay);
-                pxdBox_slice[lay] = new G4Box(abname,
-                                              PixelDX / 2,                   //gD->GetPixelDX(),
-                                              cb_VTX_ladder_DY / 2., // 10.*mm,  //gD->GetHalfMPXWaferDY(),
-                                              cb_VTX_ladder_Thickness / 2.);    //gD->GetHalfMPXWaferDZ());
+                auto boxName = fmt::format("cb_VTX_ladder_pxdSlice_{}", lay);
+                pxdBox_slice[lay] = new G4Box(boxName,
+                                              PixelDX / 2,                       // gD->GetPixelDX(),
+                                              cb_VTX_ladder_DY / 2., // 10.*mm,  // gD->GetHalfMPXWaferDY(),
+                                              cb_VTX_ladder_Thickness / 2.);     // gD->GetHalfMPXWaferDZ());
 
-                pxdSlice_log[lay] = new G4LogicalVolume(pxdBox_slice[lay], cb_VTX_ladder_Material, abname, 0, 0, 0);
+
+                pxdSlice_log[lay] = new G4LogicalVolume(pxdBox_slice[lay], cb_VTX_ladder_Material, boxName, nullptr, nullptr, 0);
 
                 G4VisAttributes *pixelVisAtt = new G4VisAttributes(G4Color(0, 1, 1, 1));
                 pixelVisAtt->SetLineWidth(1);
@@ -201,8 +201,8 @@ public:
 
 
                 // divide in slices
-                sprintf(abname, "pxdSlice_%d", lay);
-                G4PVDivision *sliceDiv = new G4PVDivision(abname,
+                auto divName = fmt::format("pxdSlice_{}", lay);
+                G4PVDivision *sliceDiv = new G4PVDivision(divName,
                                                           pxdSlice_log[lay],
                                                           cb_VTX_ladder_Logic[lay],
                                                           kXAxis,
@@ -213,32 +213,26 @@ public:
 
                 if (FDIV >= 2) {
                     printf("SetUpVertex16():: construct pixels \n");
-                    if (lay < 2) { sprintf(abname, "pxdPixel"); }
-                    else {
-                        sprintf(abname, "svdPixel");
-                    }
+                    std::string vtx16BoxName = (lay < 2) ? "pxdPixel" : "svdPixel";
 
                     //sprintf(abname,"pxdPixel_%d",lay);
-                    pxdBox_pixel[lay] = new G4Box(abname,
+                    pxdBox_pixel[lay] = new G4Box(vtx16BoxName,
                                                   PixelDX / 2,
                                                   PixelDY / 2.,
                                                   PixelDZ / 2.);
-                    pxdPixel_log[lay] = new G4LogicalVolume(pxdBox_pixel[lay], cb_VTX_ladder_Material, abname, 0, 0, 0);
+                    pxdPixel_log[lay] = new G4LogicalVolume(pxdBox_pixel[lay], cb_VTX_ladder_Material, vtx16BoxName, 0, 0, 0);
                     pxdPixel_log[lay]->SetVisAttributes(pixelVisAtt);
 
                     // divide in pixels
-                    G4PVDivision *pixelDiv = new G4PVDivision(abname,
+                    G4PVDivision *pixelDiv = new G4PVDivision(vtx16BoxName,
                                                               pxdPixel_log[lay],
                                                               pxdSlice_log[lay],
                                                               kYAxis,
                                                               PixelDY,
                                                               0);
-                } //-- end if pixel division
-            } //-- end if slices division
-
-            //	 };  // -- end loop over modules
-
-        }; // --- end loop over layers
+                }  //-- end if pixel division
+            }  //-- end if slices division
+        }  // --- end loop over layers
     }
     inline void ConstructLaddersEndcaps() {
         static char abname[256];
@@ -371,18 +365,8 @@ public:
                 fPhysicsVTXEndH = new G4PVPlacement(G4Transform3D(rme2[lay][ia], G4ThreeVector(x, y, z)),
                                                     abname, fLogicVTXEndH[lay],
                                                    Phys, false, 0.);
-
-
             }
-
-
-
         }
-
-
-
-        //-----------------------------------------------------------------------
-
     }
 	
     G4Tubs *Solid;      //pointer to the solid

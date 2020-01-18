@@ -37,12 +37,14 @@
 #include "G4VVisManager.hh"
 #include "G4ios.hh"
 #include <iomanip>
+#include <G4ToolsAnalysisManager.hh>
 
 #include "Randomize.hh"
 #include "G4SystemOfUnits.hh"
 
 #include "rootlib.h"
 
+#include "JLeicAnalysis.hh"
 
 
 JLeicRunAction::JLeicRunAction(JLeicDetectorConstruction *DET, JLeicHistogramming *histos) : histName("histfile"), detector(DET), nbinStep(0), nbinEn(0), nbinTt(0), nbinTb(0), nbinTsec(0), nbinTh(0),
@@ -63,6 +65,41 @@ JLeicRunAction::~JLeicRunAction()
 
 void JLeicRunAction::BeginOfRunAction(const G4Run *aRun)
 {
+
+    // Create analysis manager
+    // The choice of persistency format is done via selectin of a namespace
+    // in Analysis.hh
+    auto analysisManager = (G4RootAnalysisManager*) G4AnalysisManager::Instance();
+    G4cout << "Using " << analysisManager->GetType() << G4endl;
+
+    // Default settings
+    analysisManager->SetVerboseLevel(1);
+    analysisManager->SetFileName("Tutorial");
+    // Open an output file
+    analysisManager->OpenFile("MyApplication");
+
+    // Book histograms, ntuple
+    //
+
+    // Creating 1D histograms
+    analysisManager->CreateH1("Chamber1","Drift Chamber 1 # Hits", 50, 0., 50); // h1 Id = 0
+    analysisManager->CreateH1("Chamber2","Drift Chamber 2 # Hits", 50, 0., 50); // h1 Id = 1
+
+    // Creating 2D histograms
+    analysisManager->CreateH2("Chamber1_XY","Drift Chamber 1 X vs Y",50, -1000., 1000, 50, -300., 300.); // h2 Id = 0
+    analysisManager->CreateH2("Chamber2_XY","Drift Chamber 2 X vs Y",50, -1500., 1500, 50, -300., 300.); // h2 Id = 1
+
+    // Creating ntuple
+    //
+    analysisManager->CreateNtuple("Tutorial", "Hits");
+    analysisManager->CreateNtupleIColumn("Dc1Hits"); // column Id = 0
+    analysisManager->CreateNtupleIColumn("Dc2Hits"); // column Id = 1
+    analysisManager->CreateNtupleDColumn("ECEnergy"); // column Id = 2
+    analysisManager->CreateNtupleDColumn("HCEnergy"); // column Id = 3
+    analysisManager->CreateNtupleDColumn("Time1"); // column Id = 4
+    analysisManager->CreateNtupleDColumn("Time2"); // column Id = 5
+    analysisManager->FinishNtuple(); //Do not forget this line!
+
     printf("RunAction:: Enter\n");
     G4cout << "### Run " << aRun->GetRunID() << " start." << G4endl;
 
@@ -292,6 +329,14 @@ void JLeicRunAction::EndOfRunAction(const G4Run *)
 
     G4cout << "(number) transmission coeff=" << Transmitted << "  reflection coeff=" << Reflected << G4endl;
     G4cout << G4endl;
+
+    // Get analysis manager
+    G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
+
+    // Write and close the output file
+    analysisManager->Write();
+    analysisManager->CloseFile();
+
     /*
     if(nbinStep>0)
     {G4double E , dnorm, norm ;

@@ -100,6 +100,9 @@ private:
     g4e::RootOutput* mRootEventsOut = nullptr;
     TFile * mHitsFile = nullptr;
 
+
+    static const uint_fast32_t mVerbose = 0;    // verbosity. 0=none, 1=some, 2=many, 3=all
+
     //---------------------------
 };
 

@@ -60,8 +60,6 @@ PrimaryGeneratorAction::~PrimaryGeneratorAction() {
 
 
 void PrimaryGeneratorAction::GeneratePrimaries(G4Event *anEvent) {
-
-    printf("PrimaryGeneratorAction:: Next event \n");
     if (currentGenerator)
         currentGenerator->GeneratePrimaryVertex(anEvent);
     else

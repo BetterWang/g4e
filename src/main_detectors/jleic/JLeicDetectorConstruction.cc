@@ -26,7 +26,8 @@
 
 
 
-#include "vector"
+#include <vector>
+
 #include "JLeicDetectorConstruction.hh"
 //#include "JLeicDetectorMessenger.hh"
 #include "JLeicCalorimeterSD.hh"
@@ -74,7 +75,9 @@
 
 
 
-JLeicDetectorConstruction::JLeicDetectorConstruction() : fWorldChanged(false)
+
+JLeicDetectorConstruction::JLeicDetectorConstruction() :
+    fWorldChanged(false)
 {
     fDetectorMessenger = new JLeicDetectorMessenger(this);
     fMat = new g4e::Materials();
@@ -136,14 +139,12 @@ void JLeicDetectorConstruction::Create_ce_Endcap(JLeicDetectorConfig::ce_Endcap_
 
 void JLeicDetectorConstruction::SetUpJLEIC2019()
 {
-  //  fAbsorberMaterial = fMat->GetMaterial("Si");
+    using namespace fmt;
+
 
     //===================================================================================
     //==                    create a world                                            ==
     //===================================================================================
-
-  //  fConfig.World.SizeR /= 3.;
- //   fConfig.World.SizeZ /= 1.;
 
     // World_Material    = Air;
     World_Material = fMat->GetMaterial("G4_Galactic");

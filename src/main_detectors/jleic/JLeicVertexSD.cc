@@ -61,7 +61,6 @@ static int jDebug = 7;
 //--- my 
 #include "Randomize.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
 JLeicVertexSD::JLeicVertexSD(G4String name, JLeicDetectorConstruction *det) : G4VSensitiveDetector(name), Detector(det)
 {
@@ -70,6 +69,7 @@ JLeicVertexSD::JLeicVertexSD(G4String name, JLeicDetectorConstruction *det) : G4
 
     NumRow = 10; // :64 depfet
     NumCol = 50; // :256 depfet
+
     FRAME.resize(NumRow * NumCol);
     nevent = 0;
     collectionName.insert("VTXCollection");
@@ -113,9 +113,8 @@ JLeicVertexSD::JLeicVertexSD(G4String name, JLeicDetectorConstruction *det) : G4
             printf("--> JLeicVertexSD::Constructor():: iz=%d, sigm=%f hist_charge(51,51)=%f \n", iz, sig1, cbin);
         }
 
-    //----------------------------------------------------
+
 }
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
 JLeicVertexSD::~JLeicVertexSD()
 {
@@ -130,20 +129,9 @@ JLeicVertexSD::~JLeicVertexSD()
     */
 
     delete[] HitID;
-
-    printf("JLeicVertexSD():: Delete dedx_fadc ...  \n");
-
     if (use_fdc) delete dedx_fadc;
-
-    printf("JLeicVertexSD():: Deleted dedx_fadc ...  \n");
-
-
-    printf("JLeicVertexSD():: Done ...  \n");
 }
 
-
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
 void JLeicVertexSD::Initialize(G4HCofThisEvent *)
 {
@@ -151,22 +139,10 @@ void JLeicVertexSD::Initialize(G4HCofThisEvent *)
     fmt::print("JLeicVertexSD()::Initialize enter nevent={}  Lays.size()={}\n", nevent, Detector->cb_VTX.Lays.size());
 
     VTXCollection = new JLeicVTXHitsCollection(SensitiveDetectorName, collectionName[0]);
-    for (G4int j = 0; j < 1; j++) { HitID[j] = -1; };
+    for (G4int i = 0; i < 1; i++) {
+        HitID[i] = -1;
+    };
 
-    if (nevent == 0) {
-        runaction = (JLeicRunAction *) (G4RunManager::GetRunManager()->GetUserRunAction());
-        //
-        //  NVAR=Detector->NannVAR;
-        //  sprintf(AnnFileName,"%s_nv%d.dat",runaction->GetAnnFileName().c_str(),NVAR);
-        // printf("AnnFileName=%s\n",AnnFileName);
-        // if((fann = fopen(AnnFileName,"w")) == NULL)  { printf("Can not open file %s \n",AnnFileName); };
-        //    fprintf(fann,"    %d\n",NVAR);
-        //  for (int ii=0;ii<NVAR;ii++) {
-        //  fprintf(fann,"E%d\n",ii);
-        // }
-        //
-        printf("JLeicVertexSD():: First Event ev=%d AnnFileName=%s \n", nevent, AnnFileName);
-    }
     nevent++;
     if (use_fdc) {
         for (int ii = 0; ii < 100; ii++) dEslice[ii] = 0; // reset
@@ -179,26 +155,18 @@ void JLeicVertexSD::Initialize(G4HCofThisEvent *)
             //printf("reset energy \n");
         }
     }
-    //printf("JLeicVertexSD()::Initialize 1\n");
 
-    //printf("--> JLeicVertexSD::Initialize(%s) \n",collectionName[0].c_str());
-
-    /*
-    if (save_hits_root) {
-        mRootEventsOut->ClearForNewEvent();
+    if (use_depfet) {
+        for (int ii = 0; ii < (NumRow * NumCol); ii++) FRAME[ii] = 0;  //-- reset pedestals
     }
-    */
-
-
-    //printf("JLeicVertexSD()::Initialize 2\n");
-    if (use_depfet) for (int ii = 0; ii < (NumRow * NumCol); ii++) FRAME[ii] = 0; //-- 8000;  //-- reset pedestals
-    if (use_fdc) dedx_fadc->Reset(" ");
+    if (use_fdc) {
+        dedx_fadc->Reset(" ");
+    }
 
     mHitsCount = 0;
     printf("JLeicVertexSD()::Initialize exit\n");
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
 G4bool JLeicVertexSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
 {

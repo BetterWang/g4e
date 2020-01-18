@@ -27,22 +27,8 @@
 //
 #include <stdio.h>
 #include "G4UserRunAction.hh"
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
-
-
-//=====================================================================================================
-static int save_hits_root = 1;
-static int jDebug = 7;
-
-//=====================================================================================================
-
 #include "JLeicCalorimeterSD.hh"
-
 #include "JLeicCalorHit.hh"
-//#include "JLeicDetectorConstruction.hh"
-//#include "G4Step.hh"
 
 #include "G4VPhysicalVolume.hh"
 #include "G4VTouchable.hh"
@@ -54,7 +40,6 @@ static int jDebug = 7;
 //--- my 
 #include "Randomize.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
 JLeicCalorimeterSD::JLeicCalorimeterSD(G4String name, JLeicDetectorConstruction *det) : G4VSensitiveDetector(name), Detector(det)
 {
@@ -115,7 +100,7 @@ void JLeicCalorimeterSD::Initialize(G4HCofThisEvent *)
 
 G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
 {
-    if (jDebug > 2) printf("--> JLeicCalorimeterSD::ProcessHits() Enter\n");
+    if (mVerbose > 2) printf("--> JLeicCalorimeterSD::ProcessHits() Enter\n");
 
 
 
@@ -155,7 +140,7 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
     G4double yloc = (yinp + yend) / 2;
     G4double zloc = (zinp + zend) / 2;
 
-    if (jDebug > 2) printf("--> JLeicCalorimeterSD::ProcessHits() xloc=%f yloc=%f zloc=%f  copyIDy_pre=%d \n", xloc, yloc, zloc, copyIDy_pre);
+    if (mVerbose > 2) printf("--> JLeicCalorimeterSD::ProcessHits() xloc=%f yloc=%f zloc=%f  copyIDy_pre=%d \n", xloc, yloc, zloc, copyIDy_pre);
 
     if (aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName() == "gamma") {
         xloc = xend;
@@ -165,7 +150,7 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
 
       G4TouchableHistory *theTouchable = (G4TouchableHistory *) (aStep->GetPreStepPoint()->GetTouchable());
 
-    if (jDebug > 3)
+    if (mVerbose > 3)
         printf("--> JLeicCalorimeterSD::ProcessHits() Vol: 0=%s \n", theTouchable->GetVolume()->GetName().c_str());
 
     // process    track
@@ -185,48 +170,48 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
 
     if ((edep == 0.) && (stepl == 0.)) return false;
 
-    if(jDebug > 3)  printf("--> JLeicCalorimeterSD::ProcessHits() de=%f len=%f  IDxy=(%d,%d) step(x,y,z)=(%f, %f %f) in=(%f, %f %f) um  out=(%f, %f %f) um \n  loc=(%f, %f %f) um part=%s\n"
+    if(mVerbose > 3)  printf("--> JLeicCalorimeterSD::ProcessHits() de=%f len=%f  IDxy=(%d,%d) step(x,y,z)=(%f, %f %f) in=(%f, %f %f) um  out=(%f, %f %f) um \n  loc=(%f, %f %f) um part=%s\n"
     	 ,edep,stepl/um,copyIDx_pre,copyIDy_pre,xstep,ystep,zstep,xinp/um,yinp/um,zinp/um,xend/um,yend/um,zend/um,xloc/um,yloc/um,zloc/um, aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName().c_str());
 
 
     //--- save hits ------
-    if (save_hits_root) {
-        if (jDebug > 6)
-            printf("New CAL Hit:: IdVect=%d XYZloc (%f,%f,%f) dEdx=%f \n", aStep->GetTrack()->GetTrackID(), xloc, yloc, zloc, edep / keV);
+//    if (save_hits_root) {
+//        if (mVerbose > 6)
+//            printf("New CAL Hit:: IdVect=%d XYZloc (%f,%f,%f) dEdx=%f \n", aStep->GetTrack()->GetTrackID(), xloc, yloc, zloc, edep / keV);
+//
+//        int curTrackID = aStep->GetTrack()->GetTrackID();
+//        std::string volumeName = theTouchable->GetVolume()->GetName().c_str();
+//        mRootEventsOut->AddHit(mHitsCount,  /* aHitId */
+//                               curTrackID,  /* aTrackId */
+//                               0, xstep / mm,  /* aX */
+//                               ystep / mm,  /* aY */
+//                               zstep / mm,  /* aZ */
+//                               edep / GeV,  /* aELoss */
+//                               copyIDx_pre,  /* aIRep */
+//                               copyIDy_pre,  /* aJRep */
+//                               volumeName    /* aVolNam */
+//        );
+//        mHitsCount++;
+//
+//
+//
+//
+//        //-- fill tracks --
+//        mRootEventsOut->AddTrack(curTrackID,                           /* int aTrackId,*/
+//                                 ParrentID,                            /* int aParentId,*/
+//                                 PDG,                                  /* int aTrackPdg,*/
+//                                 vertex.x() / mm,              /* double aXVertex,*/
+//                                 vertex.y() / mm,              /* double aYVertex,*/
+//                                 vertex.z() / mm,              /* double aZVertex,*/
+//                                 vertexMom.x(),                        /* double aXMom,*/
+//                                 vertexMom.y(),                        /* double aYMom,*/
+//                                 vertexMom.z(),                        /* double aZMom,*/
+//                                 momentum.mag() / GeV            /* double aMom*/
+//        );
+//
+//    } //  if (save_hits_root)
 
-        int curTrackID = aStep->GetTrack()->GetTrackID();
-        std::string volumeName = theTouchable->GetVolume()->GetName().c_str();
-        mRootEventsOut->AddHit(mHitsCount,  /* aHitId */
-                               curTrackID,  /* aTrackId */
-                               0, xstep / mm,  /* aX */
-                               ystep / mm,  /* aY */
-                               zstep / mm,  /* aZ */
-                               edep / GeV,  /* aELoss */
-                               copyIDx_pre,  /* aIRep */
-                               copyIDy_pre,  /* aJRep */
-                               volumeName    /* aVolNam */
-        );
-        mHitsCount++;
-
-
-
-
-        //-- fill tracks --
-        mRootEventsOut->AddTrack(curTrackID,                           /* int aTrackId,*/
-                                 ParrentID,                            /* int aParentId,*/
-                                 PDG,                                  /* int aTrackPdg,*/
-                                 vertex.x() / mm,                      /* double aXVertex,*/
-                                 vertex.y() / mm,                      /* double aYVertex,*/
-                                 vertex.z() / mm,                      /* double aZVertex,*/
-                                 vertexMom.x(),                        /* double aXMom,*/
-                                 vertexMom.y(),                        /* double aYMom,*/
-                                 vertexMom.z(),                        /* double aZMom,*/
-                                 momentum.mag() / GeV                  /* double aMom*/
-        );
-
-    } //  if (save_hits_root)
-
-   if (jDebug > 2) printf("--> JLeicCalorimeterSD::ProcessHits() Exit\n");
+   if (mVerbose > 2) printf("--> JLeicCalorimeterSD::ProcessHits() Exit\n");
 
     return true;
 }
@@ -241,50 +226,50 @@ void JLeicCalorimeterSD::EndOfEvent(G4HCofThisEvent *HCE)
     HCE->AddHitsCollection(HCID, CalCollection);
     //printf("--> JLeicCalorimeterSD::EndOfEvent() \n");
 
-     if (save_hits_root) { //--   fill tree  ----
-        const G4Event *evt = G4RunManager::GetRunManager()->GetCurrentEvent();
-
-        const G4int primeVtxCount = evt->GetNumberOfPrimaryVertex();
-        size_t particleId = 0;  // prime particle ID unique for all prime vertexes
-
-        for (G4int primeVtxIndex = 0; primeVtxIndex < primeVtxCount; primeVtxIndex++) {
-            auto primeVtx = evt->GetPrimaryVertex(primeVtxIndex);
-
-            // Add primary vertex to root output
-            mRootEventsOut->AddPrimaryVertex((size_t) primeVtxIndex,                    /* size_t aVtxIndex, */
-                                             (size_t) primeVtx->GetNumberOfParticle(),  /* size_t aParticleCount, */
-                                             primeVtx->GetX0(),                         /* double aX, */
-                                             primeVtx->GetY0(),                         /* double aY, */
-                                             primeVtx->GetZ0(),                         /* double aZ, */
-                                             primeVtx->GetT0(),                         /* double aTime, */
-                                             primeVtx->GetWeight());                    /* double aWeight */
-
-
-            const G4int partCount = primeVtx->GetNumberOfParticle();
-            for (G4int partIndex = 0; partIndex < partCount; partIndex++) {
-                auto particle = primeVtx->GetPrimary(partIndex);
-                mRootEventsOut->AddPrimaryParticle(particleId,                             /*size_t aId */
-                                                   (size_t) primeVtxIndex,                  /*size_t aPrimeVtxId */
-                                                   (size_t) particle->GetPDGcode(),         /*size_t aPDGCode */
-                                                   (size_t) particle->GetTrackID(),         /*size_t aTrackId */
-                                                   particle->GetCharge(),                  /*double aCharge */
-                                                   particle->GetMomentumDirection().x(),   /*double aMomDirX */
-                                                   particle->GetMomentumDirection().y(),   /*double aMomDirY */
-                                                   particle->GetMomentumDirection().z(),   /*double aMomDirZ */
-                                                   particle->GetTotalMomentum() / GeV,       /*double aTotalMomentum */
-                                                   particle->GetTotalEnergy() / GeV,         /*double aTotalEnergy */
-                                                   particle->GetProperTime() / ns,           /*double aProperTime */
-                                                   particle->GetPolX(),                    /*double aPolX */
-                                                   particle->GetPolY(),                    /*double aPolY */
-                                                   particle->GetPolZ()                     /*double aPolZ */
-                );
-
-                particleId++;
-            }
-        }
-
-        //mRootEventsOut.FillEvent((uint64_t)evt->GetEventID());
-    }
+//     if (save_hits_root) { //--   fill tree  ----
+//        const G4Event *evt = G4RunManager::GetRunManager()->GetCurrentEvent();
+//
+//        const G4int primeVtxCount = evt->GetNumberOfPrimaryVertex();
+//        size_t particleId = 0;  // prime particle ID unique for all prime vertexes
+//
+//        for (G4int primeVtxIndex = 0; primeVtxIndex < primeVtxCount; primeVtxIndex++) {
+//            auto primeVtx = evt->GetPrimaryVertex(primeVtxIndex);
+//
+//            // Add primary vertex to root output
+//            mRootEventsOut->AddPrimaryVertex((size_t) primeVtxIndex,                    /* size_t aVtxIndex, */
+//                                             (size_t) primeVtx->GetNumberOfParticle(),  /* size_t aParticleCount, */
+//                                             primeVtx->GetX0(),                         /* double aX, */
+//                                             primeVtx->GetY0(),                         /* double aY, */
+//                                             primeVtx->GetZ0(),                         /* double aZ, */
+//                                             primeVtx->GetT0(),                         /* double aTime, */
+//                                             primeVtx->GetWeight());                    /* double aWeight */
+//
+//
+//            const G4int partCount = primeVtx->GetNumberOfParticle();
+//            for (G4int partIndex = 0; partIndex < partCount; partIndex++) {
+//                auto particle = primeVtx->GetPrimary(partIndex);
+//                mRootEventsOut->AddPrimaryParticle(particleId,                             /*size_t aId */
+//                                                   (size_t) primeVtxIndex,                  /*size_t aPrimeVtxId */
+//                                                   (size_t) particle->GetPDGcode(),         /*size_t aPDGCode */
+//                                                   (size_t) particle->GetTrackID(),         /*size_t aTrackId */
+//                                                   particle->GetCharge(),                  /*double aCharge */
+//                                                   particle->GetMomentumDirection().x(),   /*double aMomDirX */
+//                                                   particle->GetMomentumDirection().y(),   /*double aMomDirY */
+//                                                   particle->GetMomentumDirection().z(),   /*double aMomDirZ */
+//                                                   particle->GetTotalMomentum() / GeV,       /*double aTotalMomentum */
+//                                                   particle->GetTotalEnergy() / GeV,         /*double aTotalEnergy */
+//                                                   particle->GetProperTime() / ns,           /*double aProperTime */
+//                                                   particle->GetPolX(),                    /*double aPolX */
+//                                                   particle->GetPolY(),                    /*double aPolY */
+//                                                   particle->GetPolZ()                     /*double aPolZ */
+//                );
+//
+//                particleId++;
+//            }
+//        }
+//
+//        //mRootEventsOut.FillEvent((uint64_t)evt->GetEventID());
+//    }
 
 
 

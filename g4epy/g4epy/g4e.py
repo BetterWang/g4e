@@ -1,8 +1,7 @@
 from g4epy.console_run_sink import ConsoleRunSink
 from g4epy.notebook_run_sink import NotebookRunSink
-from .ipython import is_notebook
+from .test_env import is_notebook
 from .runner import run
-
 
 
 class Geant4Eic(object):
@@ -20,40 +19,22 @@ class Geant4Eic(object):
                 self.sink = ConsoleRunSink()
 
         self.runner = None
-
         self.exec_path = 'g4e'
 
-
-    def plugin(self, plugin_name, **plugin_args):
-        """
-        Adds (activates) a plugin with a given name.
-        This function may stack: .plugin('a').plugin('b')
-
-        Example: jana.plugin('eic_smear', verbose=2, detector='beast')
-                     .plugin('eventless_writer')
-
-        :param plugin_name: Name of the plugin to activate
-        :param plugin_args: Plugin arguments
-        :return:
-        """
-
-        if plugin_name == 'jana' and plugin_args:
-            self.config['params'].update(plugin_args)
-        else:
-            self.config['plugins'][plugin_name] = plugin_args if plugin_args else {}
-        return self
-
-    def source(self, source_strings):
+    def source(self, source_strings, is_background=False):
         """Input source (usually files) configuration.
 
         This function stacks with plugins and another source
 
         ```python
-        jana.plugin('beagle_reader') \
-            .source('file1.txt')     \
-            .source(['file2.txt', 'file3.txt'])
+        g4e.source('file1.txt')     \
+           .source(['file2.txt', 'file3.txt'])
+           .source('background.txt', is_background=True)     \
         ```
         """
+
+
+
 
         if isinstance(source_strings, str):
             self.config['input_files'].append(source_strings)

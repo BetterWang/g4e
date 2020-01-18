@@ -1,0 +1,14 @@
+#------------------------------------------------------------------------
+# Example macro. Process one of
+#------------------------------------------------------------------------
+
+# Include default setup
+# Use jleic.mac for headless mode or jleicvis.mac for GUI visualization
+/control/execute jleic.mac
+
+# BEAGLE generator
+/generator/select hepmcAscii
+/generator/hepmcAscii/open /home/romanov/Downloads/herwig6_20k.hepmc
+
+/run/beamOn 5000
+exit

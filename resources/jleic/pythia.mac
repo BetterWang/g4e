@@ -4,6 +4,7 @@
 
 # Include default setup
 # Use jleic.mac for headless mode or jleicvis.mac for GUI visualization
+#/control/execute jleicvis.mac
 /control/execute jleicvis.mac
 
 # Select pythiaAScii generator

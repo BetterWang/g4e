@@ -44,7 +44,7 @@ public:
     G4LogicalVolume *fLogic_QUADS_hd_v[100], *fLogic_QUADS_hd_ir[100], *fLogic_QUADS_hd_m[100];
     G4PVPlacement *fPhysics_QUADS_hd_v[100], *fPhysics_QUADS_hd_ir[100], *fPhysics_QUADS_hd_m[100];
     G4FieldManager *fieldMgr_QUADS_hd[100];
-    G4RotationMatrix brm_hd[100];
+    G4RotationMatrix brm_hd[200];
 
     char fSolid_ffqsNAME[100][256];
     float fSolid_ffqsSizeZ[100], fSolid_ffqsRin[100], fSolid_ffqsRout[100];
@@ -62,26 +62,229 @@ public:
     G4RotationMatrix brm_as[40];
 
     //---------------- BEAM KICKERS/DIPOLES -------------------------------------------
-    G4Tubs *fSolid_BigDi_v[20], *fSolid_BigDi_ir[20], *fSolid_BigDi_m[20];
-    //  G4Box *fSolid_BigDi_v[20],*fSolid_BigDi_ir[20],*fSolid_BigDi_m[20];
-    G4LogicalVolume *fLogic_BigDi_v[20], *fLogic_BigDi_ir[20], *fLogic_BigDi_m[20];
-    G4PVPlacement *fPhysics_BigDi_v[20], *fPhysics_BigDi_ir[20], *fPhysics_BigDi_m[20];
-    G4RotationMatrix brmBigDi[20];
-    G4FieldManager *fieldMgr_BigDi[20];
-    float fSolid_BigDi_ffqsX[20], fSolid_BigDi_ffqsY[20], fSolid_BigDi_ffqsZ[20];
-    float fSolid_BigDi_ffqsSizeZDi[20], fSolid_BigDi_ffqsRinDi[20], fSolid_BigDi_ffqsRoutDi[20];
-    char fSolid_BigDi_ffqsNAME[20][256];
+    G4Tubs *fSolid_BigDi_v[100], *fSolid_BigDi_ir[100], *fSolid_BigDi_m[100];
+    //  G4Box *fSolid_BigDi_v[100],*fSolid_BigDi_ir[100],*fSolid_BigDi_m[100];
+    G4LogicalVolume *fLogic_BigDi_v[100], *fLogic_BigDi_ir[100], *fLogic_BigDi_m[100];
+    G4PVPlacement *fPhysics_BigDi_v[100], *fPhysics_BigDi_ir[100], *fPhysics_BigDi_m[100];
+    G4RotationMatrix brmBigDi[100];
+    G4FieldManager *fieldMgr_BigDi[100];
+    float fSolid_BigDi_ffqsX[100], fSolid_BigDi_ffqsY[100], fSolid_BigDi_ffqsZ[100];
+    float fSolid_BigDi_ffqsSizeZDi[100], fSolid_BigDi_ffqsRinDi[100], fSolid_BigDi_ffqsRoutDi[100];
+    char fSolid_BigDi_ffqsNAME[100][256];
     //----------------DIPOLES CHICANE -------------------------------------------
-    G4Box *fSolid_Chicane_v[20], *fSolid_Chicane_ir[20], *fSolid_Chicane_m[20];
-    G4LogicalVolume *fLogic_Chicane_v[20], *fLogic_Chicane_ir[20], *fLogic_Chicane_m[20];
-    G4PVPlacement *fPhysics_Chicane_v[20], *fPhysics_Chicane_ir[20], *fPhysics_Chicane_m[20];
-    G4RotationMatrix brmChicane[20];
-    G4FieldManager *fieldMgr_Chicane[20];
+    G4Box *fSolid_Chicane_v[100], *fSolid_Chicane_ir[100], *fSolid_Chicane_m[100];
+    G4LogicalVolume *fLogic_Chicane_v[100], *fLogic_Chicane_ir[100], *fLogic_Chicane_m[100];
+    G4PVPlacement *fPhysics_Chicane_v[100], *fPhysics_Chicane_ir[100], *fPhysics_Chicane_m[100];
+    G4RotationMatrix brmChicane[100];
+    G4FieldManager *fieldMgr_Chicane[100];
 
 
-    G4RotationMatrix brm_hk[20];
+    G4RotationMatrix brm_hk[500];
 
-    void Read_ion_beam_lattice() {
+    void Read_ERHIC_ion_beam_lattice() {
+          FILE *rc;
+        char buffer[512];
+        char ffqtype[256];
+        char mychar[40];
+        char ffqnameDi[256];
+        float ffqsRinDiG;
+        float ffqsRinDi;
+        float ffqsRoutDi;
+        float ffqsSizeZDi;
+        float qFIELDx;
+        float qFIELDy;
+        float qFIELQn;
+        float qFIELQs;
+        float qFIELSek;
+        float qFIELSol;
+        float ffqsZ;
+        float ffqsY;
+        float ffqsX;
+        float ffqsTheta;
+        float ffqsPhi;
+        int iqmax_i;
+
+        printf("DetectorConstruction::Read_ERHIC_ion_beam_lattice. %d \n",fIonBeamEnergy);
+        // If G4E_HOME is set get a file from resources, otherwise try to open what we have
+
+        std::string fileName = fmt::format("ion_ir_{}.txt",fIonBeamEnergy);
+        spdlog::debug("DetectorConstruction::Read_ERHIC_ion_beam_lattice. Opening file: '{}'", fileName);
+
+        const char* home_cstr = std::getenv("G4E_HOME");
+        if(home_cstr){
+            //--- USE_JLEIC      fileName = fmt::format("{}/resources/jleic/mdi/{}", home_cstr, fileName);
+            //--- USE_RHIC
+            fileName = fmt::format("{}/resources/erhic/mdi/{}", home_cstr, fileName);
+        }
+
+        spdlog::info("DetectorConstruction::Read_ERHIC_ion_beam_lattice. Opening file: '{}'", fileName);
+
+        rc = fopen(fileName.c_str(), "r");
+        if (rc == nullptr) {
+            spdlog::warn("DetectorConstruction::Read_ERHIC_ion_beam_lattice. fopen returned NULLPTR on file: '{}'", fileName);
+            return;
+        }
+        spdlog::debug("DetectorConstruction::Read_ERHIC_ion_beam_lattice. Opened file: '{}'", fileName);
+
+
+        int iq=0,ik=0,is=0;
+        while (fgets(buffer, 512, (FILE *) rc)) {
+
+            spdlog::debug("*********************************************************************************\n");
+            printf("%s\n", buffer);
+            sscanf(buffer, "%s", mychar);
+            printf("mychar=%s\n ", mychar);
+            if (mychar[0] != 'i') {
+                printf("SKIP LINE %s\n", buffer);
+                continue;
+            }
+            if (buffer[0] == '#' || buffer[0] == '\n') {
+                continue;
+            }
+
+            sscanf(buffer, "%s %s %f %f %f %f %f %f  %f %f %f %f %f  %f %f %f %f", ffqnameDi, ffqtype, &ffqsSizeZDi, &ffqsRinDiG, &ffqsRinDi, &ffqsRoutDi, &qFIELDx, &qFIELDy, &qFIELQn,
+                   &qFIELQs, &qFIELSek, &qFIELSol, &ffqsX, &ffqsY, &ffqsZ, &ffqsTheta, &ffqsPhi);
+
+            printf(" NUM: |%s| %s Dz=%f %f Rin=%f Rout=%f  Dipole =%f, %f Quads =%f, %f sec =%f sol= %f xyz= %f %f %f %f %f \n ", ffqnameDi, ffqtype, ffqsSizeZDi, ffqsRinDiG,
+                   ffqsRinDi, ffqsRoutDi, qFIELDx, qFIELDy, qFIELQn, qFIELQs, qFIELSek, qFIELSol, ffqsX, ffqsY, ffqsZ, ffqsTheta, ffqsPhi);
+
+            // ----------- create volumes for QUADRUPOLE----------
+            if (strcmp(ffqtype, "QUADRUPOLE") == 0) {
+                printf(" found QUAD %s iq=%d \n", ffqtype, iq);
+                CreateQuad(iq, ffqnameDi, ffqsSizeZDi, ffqsRinDiG*100, ffqsRinDi*100, ffqsRoutDi*100/2., qFIELDx, qFIELDy, qFIELQn, qFIELQs, qFIELSek, qFIELSol, ffqsX, ffqsY, ffqsZ, ffqsTheta,
+                           ffqsPhi);
+                iq++;
+                iqmax_i = iq;
+            }
+         // ----------- skip multipoles at the moment----------
+            if ((strcmp(ffqtype, "MULTIPOLE") == 0)) {
+                printf(" found  %s  ==> Skip it ! \n", ffqtype);
+            }
+            // ----------- create volumes for kickers and rbend----------
+            if ((strcmp(ffqtype, "KICKER") == 0) || (strcmp(ffqtype, "RBEND") == 0) || (strcmp(ffqtype, "SBEND") == 0)) {
+                printf(" found  %s \n", ffqtype);
+           //    ffqsRinDiG =1;  ffqsRinDi =1; ffqsRinDi=2.;  ffqsRoutDi=4.;
+
+                CreateDipole(ik, ffqnameDi, ffqsSizeZDi, ffqsRinDiG*100, ffqsRinDi*100, ffqsRoutDi*100/2., qFIELDx, qFIELDy, qFIELQn, qFIELQs, qFIELSek, qFIELSol, ffqsX, ffqsY, ffqsZ, ffqsTheta,
+                             ffqsPhi);
+                ik++;
+            }
+            // ----------- create volumes for solenoid  ----------
+            if ((strcmp(ffqtype, "SOLENOID") == 0) && ((strcmp(ffqnameDi, "iASDS") == 0) || (strcmp(ffqnameDi, "iASUS") == 0))) {
+                printf(" found SOLENOID %s \n", ffqtype);
+
+                CreateASolenoid(is, ffqnameDi, ffqsSizeZDi, ffqsRinDiG, ffqsRinDi, ffqsRoutDi, qFIELDx, qFIELDy, qFIELQn, qFIELQs, qFIELSek, qFIELSol, ffqsX, ffqsY, ffqsZ, ffqsTheta,
+                                ffqsPhi);
+                is++;
+            }
+        }
+
+
+        fclose(rc);
+    }
+
+    void Read_ERHIC_electron_beam_lattice() {
+
+        FILE *rc;
+        char buffer[512];
+        char ffqtype[256];
+        char fname[256];
+        char mychar[40];
+        char ffqnameDi[256];
+        float ffqsRinDiG;
+        float ffqsRinDi;
+        float ffqsRoutDi;
+        float ffqsSizeZDi;
+        float qFIELDx;
+        float qFIELDy;
+        float qFIELQn;
+        float qFIELQs;
+        float qFIELSek;
+        float qFIELSol;
+        float ffqsZ;
+        float ffqsY;
+        float ffqsX;
+        float ffqsTheta;
+        float ffqsPhi;
+
+
+        printf("DetectorConstruction::Read_ERHIC_electron_beam_lattice. %d \n",fElectronBeamEnergy);
+        // If G4E_HOME is set get a file from resources, otherwise try to open what we have
+
+        std::string fileName = fmt::format("e_ir_{}.txt",fElectronBeamEnergy);
+        spdlog::debug("DetectorConstruction::Read_ERHIC_electron_beam_lattice. Opening file: '{}'", fileName);
+
+        // If G4E_HOME is set get a file from resources, otherwise try to open what we have
+        //std::string fileName("e_ir.txt");
+        const char* home_cstr = std::getenv("G4E_HOME");
+        if(home_cstr){
+            fileName = fmt::format("{}/resources/erhic/mdi/{}", home_cstr, fileName);
+        }
+
+        // Opening the file
+        rc = fopen(fileName.c_str(), "r");
+        if (rc == nullptr) {
+            spdlog::warn("DetectorConstruction::Read_ERHIC_electron_beam_lattice. fopen returned NULLPTR on file: '{}'", fileName);
+            return;
+        }
+        spdlog::debug("DetectorConstruction::Read_ERHIC_electron_beam_lattice. Opened file: '{}'", fileName);
+
+        int iq=0,ik=0,is=0;
+        while (fgets(buffer, 512, (FILE *) rc)) {
+
+            printf("Read_dE*********************************************************************************\n");
+            printf("Read_dE %s\n", buffer);
+            sscanf(buffer, "%s", mychar);
+            printf("Read_dE:: mychar=%s\n ", mychar);
+            if (buffer[0] == '#' || buffer[0] == '\n') {
+                continue;
+            }
+
+
+            if (mychar[0] != 'e' || mychar[0] == '\n') {
+                printf("SKIP LINE %s\n", buffer);
+                continue;
+            }
+
+
+            sscanf(buffer, "%s %s %f %f %f %f %f %f  %f %f %f %f %f  %f %f %f %f", ffqnameDi, ffqtype, &ffqsSizeZDi, &ffqsRinDiG, &ffqsRinDi, &ffqsRoutDi, &qFIELDx, &qFIELDy, &qFIELQn,
+                   &qFIELQs, &qFIELSek, &qFIELSol, &ffqsX, &ffqsY, &ffqsZ, &ffqsTheta, &ffqsPhi);
+
+            printf("Read_dE dE NUM: |%s| %s Dz=%f %f Rin=%f Rout=%f  Dipole =%f, %f Quads =%f, %f sec =%f sol= %f xyz= %f %f %f %f %f \n ", ffqnameDi, ffqtype, ffqsSizeZDi, ffqsRinDiG,
+                   ffqsRinDi, ffqsRoutDi, qFIELDx, qFIELDy, qFIELQn, qFIELQs, qFIELSek, qFIELSol, ffqsX, ffqsY, ffqsZ, ffqsTheta, ffqsPhi);
+
+            // ----------- create volumes for QUADRUPOLE----------
+            if (strcmp(ffqtype, "QUADRUPOLE") == 0) {
+                printf("Read_dE found QUAD %s iq=%d\n", ffqtype, iq);
+                CreateQuad(iq, ffqnameDi, ffqsSizeZDi, ffqsRinDiG*100, ffqsRinDi*100, ffqsRoutDi*100/2., qFIELDx, qFIELDy, qFIELQn, qFIELQs, qFIELSek, qFIELSol, ffqsX, ffqsY, ffqsZ, ffqsTheta,
+                           ffqsPhi);
+                iq++;
+            }
+            // ----------- create volumes for kickers and rbend----------
+            if ((strcmp(ffqtype, "KICKER") == 0) || (strcmp(ffqtype, "RBEND") == 0)) {
+                printf("Read_dE found KICKER %s ik=%d \n", ffqtype, ik);
+                CreateDipoleChicane(ik, ffqnameDi, ffqsSizeZDi, ffqsRinDiG*100, ffqsRinDi*100, ffqsRoutDi*100/2., qFIELDx, qFIELDy, qFIELQn, qFIELQs, qFIELSek, qFIELSol, ffqsX, ffqsY, ffqsZ,
+                                    ffqsTheta, ffqsPhi);
+                ik++;
+            }
+            // ----------- create volumes for solenoid  ----------
+            if ((strcmp(ffqtype, "SOLENOID") == 0) && ((strcmp(ffqnameDi, "eASDS") == 0) || (strcmp(ffqnameDi, "eASUS") == 0))) {
+                printf("Read_dE found SOLENOID %s \n", ffqtype);
+
+                CreateASolenoid(is, ffqnameDi, ffqsSizeZDi, ffqsRinDiG, ffqsRinDi, ffqsRoutDi, qFIELDx, qFIELDy, qFIELQn, qFIELQs, qFIELSek, qFIELSol, ffqsX, ffqsY, ffqsZ, ffqsTheta,
+                                ffqsPhi);
+                is++;
+            }
+        }
+
+        fclose(rc);
+        return;
+    }
+
+
+    //=================================================================================
+    //=================================================================================
+    void Read_JLEIC_ion_beam_lattice() {
         //Downstream elements
         // Element name	Type	   Length [m] Good_field half-aperture [cm]
         // Inner Half-A [cm]
@@ -136,7 +339,9 @@ public:
 
         const char* home_cstr = std::getenv("G4E_HOME");
         if(home_cstr){
-            fileName = fmt::format("{}/resources/jleic/mdi/{}", home_cstr, fileName);
+       //--- USE_JLEIC      fileName = fmt::format("{}/resources/jleic/mdi/{}", home_cstr, fileName);
+        //--- USE_RHIC
+        fileName = fmt::format("{}/resources/erhic/mdi/{}", home_cstr, fileName);
         }
 
         spdlog::info("DetectorConstruction::Read_ion_beam_lattice. Opening file: '{}'", fileName);
@@ -201,7 +406,7 @@ public:
     }
 
 
-    void Read_electron_beam_lattice() {
+    void Read_JLEIC_electron_beam_lattice() {
         //Downstream elements
         // Element name	Type	   Length [m] Good_field half-aperture [cm]
         // Inner Half-A [cm]
@@ -379,7 +584,7 @@ public:
         fPhysics_QUADS_hd_m[j] = new G4PVPlacement(0, G4ThreeVector(), abname, fLogic_QUADS_hd_m[j], fPhysics_QUADS_hd_v[j], false, 0);
 
         //---------------- create  magnetic field ---------------
-        printf("CreateQuad:: j=%d  FIELD =%f %f --  %f %f -- %f %f \n", j, qFIELDx, qFIELDy, qFIELQn, qFIELQs, qFIELSek, qFIELSol);
+        printf("CreateQuad:: j=%d  FIELD = Dx %f  Dy %f --  Qn %f Qs %f -- Sek %f  Sol %f \n", j, qFIELDx, qFIELDy, qFIELQn, qFIELQs, qFIELSek, qFIELSol);
         fieldMgr_QUADS_hd[j] = SetQMagField(qFIELQn, qFIELQs, ffqsTheta, G4ThreeVector(ffqsX * m, ffqsY * m, ffqsZ * m));   // gradient tesla/m;
 
         //    G4FieldManager* fieldMgr = SetQMagField(qFIELDx[j],qFIELDy[j]);   // gradient tesla/m;

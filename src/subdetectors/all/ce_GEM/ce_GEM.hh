@@ -99,6 +99,11 @@ public:
     /// Parameters that was used in the moment of construction
     ce_GEM_Config  ConstructionConfig;
 
+    G4VisAttributes *attr_ce_GEM_lay;
+    G4Tubs *ce_GEM_lay_Solid[20];    //pointer to the solid World
+    G4LogicalVolume *ce_GEM_lay_Logic[20];    //pointer to the logical World
+    G4VPhysicalVolume *ce_GEM_lay_Phys[20];    //pointer to the physical World
+
 private:
 
     // define here local variables and parameter of detectors
@@ -108,10 +113,6 @@ private:
     G4double ce_GEM_lay_SizeZ[20];
     G4double ce_GEM_lay_PosZ[20];
     G4Material *ce_GEM_lay_Material;
-    G4VisAttributes *attr_ce_GEM_lay;
-    G4Tubs *ce_GEM_lay_Solid[20];    //pointer to the solid World
-    G4LogicalVolume *ce_GEM_lay_Logic[20];    //pointer to the logical World
-    G4VPhysicalVolume *ce_GEM_lay_Phys[20];    //pointer to the physical World
 
 
 

@@ -149,6 +149,7 @@ int main(int argc, char **argv)
     for(const auto& fileName: args.MacroFileNames) {
         std::string command = "/control/execute " + fileName;
         fmt::print("   {}\n", command);
+	std::cout << " exec command : " << command << std::endl;
         ui->ApplyCommand(command);
     }
 

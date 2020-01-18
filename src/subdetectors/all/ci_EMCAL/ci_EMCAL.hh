@@ -136,15 +136,15 @@ public:
 
     /// Parameters that was used in the moment of construction
     ci_EMCAL_Config  ConstructionConfig;
-
-private:
-
-    //  ------------ EMCAL modules -----
+   //  ------------ EMCAL modules -----
 
     G4Material *ci_EMCAL_det_Material ;
     G4VisAttributes *attr_ci_EMCAL_det;
     G4Box *ci_EMCAL_det_Solid ;
     G4LogicalVolume *ci_EMCAL_det_Logic ;
+
+private:
+
 
     // define here local variables and parameter of detectors
 };

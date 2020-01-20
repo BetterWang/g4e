@@ -32,15 +32,13 @@
 #include "JLeicDetectorConstruction.hh"
 #include "PrimaryGeneratorAction.hh"
 
-#include "G4Run.hh"
-#include "G4UImanager.hh"
-#include "G4VVisManager.hh"
-#include "G4ios.hh"
-#include <iomanip>
-#include <G4ToolsAnalysisManager.hh>
-
-#include "Randomize.hh"
-#include "G4SystemOfUnits.hh"
+// Geant4 includes
+#include <G4Run.hh>
+#include <G4UImanager.hh>
+#include <G4VVisManager.hh>
+#include <G4ios.hh>
+#include <Randomize.hh>
+#include <G4SystemOfUnits.hh>
 
 #include "rootlib.h"
 
@@ -717,18 +715,18 @@ void JLeicRunAction::CountEvent()
 
 /////////////////////////////////////////////////////////////////////////
 
-void JLeicRunAction::AddnStepsCharged(G4double ns)
+void JLeicRunAction::AddnStepsCharged(G4double steps)
 {
-    nStepSumCharged += ns;
-    nStepSum2Charged += ns * ns;
+    nStepSumCharged += steps;
+    nStepSum2Charged += steps * steps;
 }
 
 ////////////////////////////////////////////////////////////////////////
 
-void JLeicRunAction::AddnStepsNeutral(G4double ns)
+void JLeicRunAction::AddnStepsNeutral(G4double steps)
 {
-    nStepSumNeutral += ns;
-    nStepSum2Neutral += ns * ns;
+    nStepSumNeutral += steps;
+    nStepSum2Neutral += steps * steps;
 }
 
 ////////////////////////////////////////////////////////////////////////////

@@ -62,18 +62,8 @@
 #include "G4SystemOfUnits.hh"
 #include "JLeicSolenoid3D.hh"
 
-#define USE_TGEOM 1
-
-#ifdef USE_TGEOM
-// VGM
-#include "Geant4GM/volumes/Factory.h"
-#include "RootGM/volumes/Factory.h"
-#include "TGeoManager.h"
-#include "XmlVGM/GDMLExporter.h"
-// end VGM
-#endif
-
-
+// export geometry through VGM
+#include "GeometryExport.hh"
 
 
 JLeicDetectorConstruction::JLeicDetectorConstruction() :
@@ -911,44 +901,10 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 
 #endif
 
+    spdlog::info(" - exporting geometry");
+    g4e::GeometryExport::Export("jleic", World_Phys);
 
-
-
-//=========================================================================
-    printf("=================>  before printing parameters !!!\n");
     PrintGeometryParameters();
-//=========================================================================
-#ifdef USE_TGEOM
-    printf("=================>  EXPORT ROOT GEOMETRY !!!\n");
-    // ---------------------------------------------------------------------------
-    // VGM demo
-    // Export geometry in Root and save it in a file
-    //
-    //
-    // Import Geant4 geometry to VGM
-    Geant4GM::Factory g4Factory;
-    g4Factory.SetDebug(0);
-    g4Factory.Import(World_Phys);
-    //
-    // Export VGM geometry to Root
-    RootGM::Factory rtFactory;
-    rtFactory.SetDebug(0);
-    g4Factory.Export(&rtFactory);
-
-    //
-    // Import Geant4 geometry to VGM
-    Geant4GM::Factory factory;
-    factory.Import(World_Phys);
-    // Export VGM geometry in GDML
-    XmlVGM::GDMLExporter gdmlExporter(&factory);
-    gdmlExporter.GenerateXMLGeometry();
-    //
-    gGeoManager->CloseGeometry();
-    gGeoManager->Export("geometryJLEIC.root", "jleic_geo");
-    //
-    // end VGM demo
-    //---------------------------------------------------------------------------
-#endif
 
     printf("FoilNumbers3=%d\n", ci_TRD.ConstructionConfig.fFoilNumber);
     printf("exit Detector Construction\n");

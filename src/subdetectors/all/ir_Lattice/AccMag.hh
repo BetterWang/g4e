@@ -53,7 +53,7 @@ public:
 
        char abname[256];
 
-        printf("CreateDipole:: fMotherPhysVolume=%p \n",fMotherPhysVolume);
+        printf("CreateDipole:: fMotherPhysVolume=%p \n",(void*)fMotherPhysVolume);
 
         G4VisAttributes *vb1;
         //---------------- BEAM KICKERS/DIPOLES -------------------------------------------
@@ -144,7 +144,7 @@ public:
   
   void  CreateQuad (G4VPhysicalVolume *fMotherPhysVolume) {
     
-    printf("CreateQuad:: fMotherPhysVolume=%p \n",fMotherPhysVolume);
+    printf("CreateQuad:: fMotherPhysVolume=%p \n",(void*)fMotherPhysVolume);
     //return;
     G4VisAttributes *vb1;
     //mybrm = new G4RotationMatrix();

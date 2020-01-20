@@ -72,9 +72,9 @@ public:
 
     void AddTrackLength(G4double tlabs);
 
-    void AddnStepsCharged(G4double ns);
+    void AddnStepsCharged(G4double steps);
 
-    void AddnStepsNeutral(G4double ns);
+    void AddnStepsNeutral(G4double steps);
     void AddTrRef(G4double tr, G4double ref);
 
     g4e::RootOutput mRootEventsOut;

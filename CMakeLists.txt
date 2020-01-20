@@ -14,12 +14,29 @@ print_grand_header("    F I N D   B A S I C   P A C K A G E S    ")
 
 # Cern R O O T
 # ------------
-find_package(ROOT REQUIRED COMPONENTS Geom Core RIO Hist Tree)
-if(${ROOT_VERSION} MATCHES "6.*")
-    message(STATUS "Found Cern.ROOT version: ${ROOT_VERSION}")
+print_header(">>>>    C E R N    R O O T    <<<<")
+
+# Some debug text
+if(EXISTS "$ENV{ROOTSYS}")
+    message(STATUS "g4e: ROOTSYS provided $ENV{ROOTSYS}")
+    set(CERNROOT_DIR $ENV{ROOTSYS})
+elseif(CERNROOT_DIR)
+    message(STATUS "ejana: CERNROOT_DIR provided ${CERNROOT_DIR}")
 else()
-    message(FATAL_ERROR "GenFit and other components require CERN.ROOT version > 6.00.00")
+    message(STATUS "ejana warning: No ROOTSYS or CERNROOT_DIR provided")
+    message(STATUS "ejana warning: Build will try to use ROOTConfig.cmake or FindROOT.cmake")
 endif()
+
+# You need to tell CMake where to find the ROOT installation.
+#   - ROOT built with CMake. CMAKE_PREFIX_PATH the installation prefix for ROOT
+list(APPEND CMAKE_PREFIX_PATH ${CERNROOT_DIR})
+
+#---Locate the ROOT package and defines a number of variables (e.g. ROOT_INCLUDE_DIRS)
+find_package(ROOT REQUIRED COMPONENTS Geom Core RIO Hist Tree)
+
+#---Define useful ROOT functions and macros (e.g. ROOT_GENERATE_DICTIONARY)
+include(${ROOT_USE_FILE})
+
 
 
 # G E A N T 4
@@ -76,7 +93,6 @@ message(STATUS "g4e: VGM_XmlVGM   :${VGM_XmlVGM}   ")
 find_package(HepMC REQUIRED)    # easy one =)
 
 message(STATUS "g4e: HEPMC_INCLUDE_DIR :${HEPMC_INCLUDE_DIR}")
-message(STATUS "g4e: HEPMC_INCLUDE_DIR :${HEPMC_INCLUDE_DIR}")
 message(STATUS "g4e: HEPMC_LIBRARY_DIR  :${HEPMC_LIBRARY_DIR}")
 message(STATUS "g4e: HEPMC_LIBRARIES  :${HEPMC_LIBRARIES}")
 
@@ -130,13 +146,15 @@ target_link_libraries(g4e
         )
 
 target_include_directories(g4e
-        PUBLIC
         SYSTEM
+        PRIVATE
             ${ROOT_INCLUDE_DIRS}
             ${Geant4_INCLUDE_DIR}
             ${HEPMC_INCLUDE_DIR}
             ${VGM_DIRECTORY}/include
             ${VGM_DIRECTORY}/test/include
+            src/external/spdlog/include     # Header only library for str formatting and fast logging
+            src/external/CLI11              # Header only library for argument parsing
         )
 
 # All sources and includes for the project are there:

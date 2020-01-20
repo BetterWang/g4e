@@ -5,12 +5,6 @@ target_include_directories(g4e
             generator
             helpers
             root_output
-
-        SYSTEM
-            external/spdlog/include     # Header only library for str formatting and fast logging
-
-            external/CLI11           # Header only library for argument parsing
-
         # TODO configure install and build interfaces right
         # $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
         # $<INSTALL_INTERFACE:include/mylib>  # <prefix>/include/mylib
@@ -60,6 +54,9 @@ target_sources_local(g4e
 
         JLeicTrackingAction.cc
         JLeicTrackingAction.hh
+
+        GeometryExport.hh
+        GeometryExport.cc
         )
 
 add_subdirectory(main_detectors)

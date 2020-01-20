@@ -33,58 +33,16 @@ class Geant4Eic(object):
         ```
         """
 
-
-
+        destination = 'background_files' if is_background else 'input_files'
 
         if isinstance(source_strings, str):
-            self.config['input_files'].append(source_strings)
+            self.config[destination].append(source_strings)
         else:
-            self.config['input_files'].extend(source_strings)
+            self.config[destination].extend(source_strings)
 
         return self
 
-    def reset_plugins(self):
-        """
-        Resets the plugin configuration
-        """
 
-        self.config['plugins'] = {}
-        return self
-
-    def configure_plugins(self, plugins):
-        """ Configures plugins (using dicts). Replaces the previous configuration.
-
-        :param plugins:
-        :return: dict with plugins config
-        """
-        self.reset_plugins()
-
-        if not plugins:
-            return self.config['plugins']
-
-        def _update(plugin_name, plugin_data):
-            if plugin_name == 'jana' and plugin_data:
-                self.config['params'] = plugin_data
-            else:
-                self.config['plugins'][plugin_name] = plugin_data
-
-        assert isinstance(plugins, list)
-        for item in plugins:
-            if isinstance(item, str):
-                _update(item, {})
-            elif isinstance(item, tuple) or isinstance(item, list):
-                # plugin in form:
-                # ('name', {config})
-                assert isinstance(item[1], dict)
-                _update(item[0], item[1])
-            else:
-                assert isinstance(item, dict)
-                # dict must be with one key like:
-                # {'beagle_reader': { ... configs ... }}
-                plugin_name = list(item)[0]
-                _update(plugin_name, item[plugin_name])
-
-        return self.config['plugins']
 
     def run(self):
         # if not self.sink.is_displayed:

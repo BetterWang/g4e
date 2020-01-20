@@ -88,6 +88,7 @@ G4String LogLevels::ToString()
         case OFF:   return "off";
     }
     G4Exception("LogLevels::ToString()", "g4e", FatalException, "Case not implemented");
+    return "unknown";
 }
 
 

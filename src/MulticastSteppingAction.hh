@@ -6,6 +6,17 @@
 
 #include <G4UserSteppingAction.hh>
 
+/** The idea behind all MulticastXxxxxAction classes is to provide a Geant4-stylish
+ * way to add multiple Actions. For example, each detector which can create its own SteppingAction
+ *
+ * Usage:
+ *      MulticastSteppingAction multiSteppingAction;
+ *      multiSteppingAction.AddUserAction(action1);
+ *      multiSteppingAction.AddUserAction(action2);
+ *      ...
+ */
+
+namespace g4e{
 
 class MulticastSteppingAction : public G4UserSteppingAction
 {
@@ -13,7 +24,6 @@ public:
     MulticastSteppingAction() = default;
 
     ~MulticastSteppingAction() override = default;
-
 
     void UserSteppingAction(const G4Step *step) override;
 
@@ -43,5 +53,6 @@ void MulticastSteppingAction::UserSteppingAction(const G4Step *step)
     }
 }
 
+}
 
 #endif //G4E_MULTICASTSTEPPINGACTION_HH

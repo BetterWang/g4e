@@ -1,5 +1,5 @@
-#ifndef G4E_INPUTPROCESSOR_HH
-#define G4E_INPUTPROCESSOR_HH
+#ifndef G4E_ARGUMENTPROCESSOR_HH
+#define G4E_ARGUMENTPROCESSOR_HH
 
 
 #include <vector>
@@ -11,13 +11,13 @@
 #include <LogLevels.hh>
 
 /** \file
- *  InputProcessor manage users inputs on program start.
- *  By the inputs one means:
+ *  ArgumentProcessor manage users inputs on program start.
+ *  By the arguments one means:
  *      1. Program arguments
  *      2. Environment variables
- *      3. Pipe (if ever one would like to implement)
+ *      3. Pipe (when implemented)
  *
- *  InputArguments is the result of work of InputProcessor.
+ *  InputArguments is the result of work of ArgumentProcessor.
  *  InputArguments represents a set of ready to use parameters:
  *      1. Configure initialization
  *      2. Provide running aspects (verbosity, input, output)
@@ -38,15 +38,15 @@ struct InputArguments
     std::vector<std::string> SourceFileNames;       /// The list of all other input files
     std::string SourceGenerator;                    /// The generator to use
 
-    std::string MacroPath = "";      /// G4E_MACRO_PATH
-    bool IsSetMacroPath = false;     /// true if macro path was defined in environment variables
+    std::string MacroPath = "";              /// G4E_MACRO_PATH
+    bool IsSetMacroPath = false;             /// true if macro path was defined in environment variables
 
-    std::string HomePath = "";       /// G4E_HOME
-    bool IsSetHomePath = false;      /// true if G4E_HOME was determined
+    std::string HomePath = "";               /// G4E_HOME
+    bool IsSetHomePath = false;              /// true if G4E_HOME was determined
 
-    std::string ResourcePath;        /// Path to resources directory
+    std::string ResourcePath;                /// Path to resources directory
 
-    LogLevels LogLevel;              /// Controlled by -v. --verbosity
+    LogLevels LogLevel = LogLevels::INFO;    /// Controlled by -v. --verbosity
 
 };
 
@@ -200,4 +200,4 @@ void InputProcessor::ProcessMacroPath(InputArguments &result, const char *macroP
 }
 
 
-#endif //G4E_INPUTPROCESSOR_HH
+#endif //G4E_ARGUMENTPROCESSOR_HH

@@ -49,6 +49,18 @@ target_sources_local(g4e
 
             TRTDetectorConstruction.hh
             TRTMaterials.hh
+
+            JLeicHistoMConfig.hh
+            JLeicHistoMConfig.cc
+
+            JLeicStepCut.cc
+            JLeicStepCut.hh
+
+            JLeicSteppingVerbose.cc
+            JLeicSteppingVerbose.hh
+
+            JLeicTrackingAction.cc
+            JLeicTrackingAction.hh
         )
 
 target_include_directories(g4e PUBLIC ./)

@@ -17,16 +17,14 @@ target_sources_local(g4e
         PRIVATE
 
         g4e.cc
-        InputProcessor.hh
+        ArgumentProcessor.hh
 
         helpers/StringHelpers.cc
         helpers/StringHelpers.hh
 
-        InitializationContextInterface.hh
         LoggingMessenger.hh
         LogLevels.hh
         Logging.hh
-
 
         G4QuadrupoleMagField.cc
         G4QuadrupoleMagField.hh
@@ -43,20 +41,11 @@ target_sources_local(g4e
         JLeicPhysicsListMessenger.cc
         JLeicPhysicsListMessenger.hh
 
-        JLeicHistoMConfig.cc
-        JLeicHistoMConfig.hh
-
-        JLeicStepCut.cc
-        JLeicStepCut.hh
-
-        JLeicSteppingVerbose.cc
-        JLeicSteppingVerbose.hh
-
-        JLeicTrackingAction.cc
-        JLeicTrackingAction.hh
-
         GeometryExport.hh
         GeometryExport.cc
+
+        UserActionInitialization.hh
+        UserActionInitialization.cc
         )
 
 add_subdirectory(main_detectors)

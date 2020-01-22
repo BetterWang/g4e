@@ -27,13 +27,13 @@ struct cb_EMCAL_Config {
 class cb_EMCAL_Design {
 public:
     inline void Construct(cb_EMCAL_Config cfg, cb_Solenoid_Config cfgsolenoid,G4Material *worldMaterial, G4VPhysicalVolume *motherVolume) {
-        printf("Begin cb_CTD volume \n");
+
+
+        spdlog::debug("Begin cb_EMCAL volume \n");
 
         ConstructionConfig = cfg;
-        static char abname[256];
 
         //........................EMCAL Barrel detector----------------------------------------------
-        printf("Begin cb_EMCAL  volume \n");
 
         // working
 

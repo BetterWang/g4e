@@ -7,6 +7,10 @@ import tempfile
 this_file_dir = path.dirname(inspect.stack()[0][1]);
 
 g4e = Geant4Eic()
+g4e.batch()
+g4e.run()
+Jana.source(g4e)
+jana.run()
 g4e.config['output'] = 'test_run'
 g4e.config['input_file'] = '/home/romanov/Downloads/beagle_eD.txt'
 g4e.config['beamline'] = 'jleic'

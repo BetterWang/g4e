@@ -47,7 +47,6 @@ struct InputArguments
     std::string ResourcePath;                /// Path to resources directory
 
     LogLevels LogLevel = LogLevels::INFO;    /// Controlled by -v. --verbosity
-
 };
 
 

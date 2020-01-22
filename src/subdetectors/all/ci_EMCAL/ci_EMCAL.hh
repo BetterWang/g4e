@@ -34,7 +34,8 @@ struct ci_EMCAL_Config {
 class ci_EMCAL_Design {
 public:
     inline void Construct(ci_EMCAL_Config cfg, G4Material *worldMaterial, G4VPhysicalVolume *motherVolume) {
-        printf("Begin ci_EMCAL volume \n");
+
+        spdlog::debug("Begin ci_EMCAL volume");
 
         ConstructionConfig = cfg;
         // create  a global volume for your detectors
@@ -54,14 +55,16 @@ public:
     };
 
     inline void ConstructDetectors() {
-        printf("Begin ci_EMCAL detector volumes \n");
+        using namespace fmt;
+
+        spdlog::debug("Begin ci_EMCAL detector volumes");
+
 
         // construct here your detectors
 
         //--------------------------------------------------------------------
         //                           Ecal modules
         //--------------------------------------------------------------------
-       static char abname[256];
         auto cfg = ConstructionConfig;
 
 
@@ -96,16 +99,11 @@ public:
                 if (R_H < cfg.ROut - cfg.det_Width + cfg.det_Gap && R_H > cfg.det_Rin1) {
                     // printf("ci_EMCAL_det::k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ", kh, j, i, x_Ch, y_Ch, R_H, ci_EMCAL_det_Rin1);
 
+                    kh++;
+                    new G4PVPlacement(0, G4ThreeVector(x_Ch, y_Ch, 0.), format("ci_EMCAL_det_Phys_{}", kh), ci_EMCAL_det_Logic, Phys, false, kh);
 
                     kh++;
-                    sprintf(abname, "ci_EMCAL_det_Phys_%d", kh);
-
-                    new G4PVPlacement(0, G4ThreeVector(x_Ch, y_Ch, 0.), abname, ci_EMCAL_det_Logic,
-                                      Phys, false, kh);
-                    kh++;
-                    sprintf(abname, "ci_EMCAL_det_Phys_%d", kh);
-                    new G4PVPlacement(0, G4ThreeVector(x_Ch, -y_Ch, 0.), abname, ci_EMCAL_det_Logic,
-                                     Phys, false, kh);
+                    new G4PVPlacement(0, G4ThreeVector(x_Ch, -y_Ch, 0.), format("ci_EMCAL_det_Phys_{}", kh), ci_EMCAL_det_Logic, Phys, false, kh);
                 }
 
                 //----------------------- Remove right side (large ring)----------------
@@ -113,21 +111,15 @@ public:
                     // printf("ci_EMCAL_det::k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ", kh, j, i, x_Ch, y_Ch, R_H, ci_EMCAL_det_Rin2);
 
                     kh++;
-                    sprintf(abname, "ci_EMCAL_det_Phys_%d", kh);
-                    new G4PVPlacement(0, G4ThreeVector(-x_Ch, y_Ch, 0.), abname, ci_EMCAL_det_Logic,
+                    new G4PVPlacement(0, G4ThreeVector(-x_Ch, y_Ch, 0.), format("ci_EMCAL_det_Phys_{}", kh), ci_EMCAL_det_Logic,
                                       Phys, false, kh);
                     kh++;
-                    sprintf(abname, "ci_EMCAL_detPhys_%d", kh);
-                    new G4PVPlacement(0, G4ThreeVector(-x_Ch, -y_Ch, 0.), abname, ci_EMCAL_det_Logic,
+                    new G4PVPlacement(0, G4ThreeVector(-x_Ch, -y_Ch, 0.), format("ci_EMCAL_det_Phys_{}", kh), ci_EMCAL_det_Logic,
                                       Phys, false, kh);
                 }
                 x_Ch += cfg.det_Width + cfg.det_Gap;
-
             }
         }
-
-
-
     };
 
     G4Tubs *Solid;      //pointer to the solid

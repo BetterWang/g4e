@@ -1,5 +1,4 @@
 import inspect
-import sys
 import unittest
 import subprocess
 import os
@@ -25,5 +24,4 @@ class BeagleSmokeTest(unittest.TestCase):
                         check=True,
                         stdout=subprocess.PIPE,
                         stderr=subprocess.PIPE)
-
         print(str(result.stdout, 'utf-8'))

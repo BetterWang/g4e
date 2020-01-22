@@ -29,8 +29,6 @@ public:
         ConstructionConfig = cfg;
         // create  a global volume for your detectors
 
-
-
     };
 
     inline void ConstructDetectors() {

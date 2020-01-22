@@ -1,0 +1,1 @@
+{"config": {"output": "test_run", "input_file": "/home/romanov/Downloads/beagle_eD.txt", "beamline": "jleic", "detector": "jleic", "is_batch": true, "executable_path": "/home/romanov/eic/g4e-dev/cmake-build-debug/g4e", "work_dir": "/home/romanov/eic/g4e-dev/g4epy_lib/examples/work", "run_mac_file": "test_run.run.mac", "run_context_file": "test_run.run.json"}, "user_execs": []}

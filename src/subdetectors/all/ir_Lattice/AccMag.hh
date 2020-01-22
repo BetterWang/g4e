@@ -73,7 +73,7 @@ public:
 
         //-------------------------- Magnetic volume------------------------
         sprintf(abname, "Solid_DIPOLE_v_%s", name.c_str());
-        fSolid_BigDi_v = new G4Tubs(abname, 0., (Rout + 0.01) * cm, (LengthZ / 2.) * m, 0., 360 * deg);
+        fSolid_BigDi_v = new G4Tubs(abname, 0., (Rout + 0.1) * cm, (LengthZ / 2.+ 0.001) * m, 0., 360 * deg);
 
         // fSolid_BigDi_v[j] = new G4Box(abname, (double)(ffqsRoutDi+0.01)*cm, (double)(ffqsRoutDi+0.01)*cm,(double)(ffqsSizeZDi/2.)*m);
         sprintf(abname, "Logic_DIPOLE_v_%s", name.c_str());
@@ -84,7 +84,7 @@ public:
 
         //-------------------------- Magnet iron------------------------
         sprintf(abname, "Solid_DIPOLE_i_%s", name.c_str());
-        fSolid_BigDi_ir = new G4Tubs(abname, Rin2 * cm, Rout * cm, (LengthZ / 2.) * m, 0., 360 * deg);
+        fSolid_BigDi_ir = new G4Tubs(abname, (Rin2+0.1) * cm, Rout * cm, (LengthZ / 2.) * m, 0., 360 * deg);
         // fSolid_BigDi_ir[j] = new G4Box(abname, (double) ffqsRoutDi*cm, (double)ffqsRoutDi*cm,((double)ffqsSizeZDi/2.)*m);
         sprintf(abname, "Logic_DIPOLE_i_%s", name.c_str());
         fLogic_BigDi_ir = new G4LogicalVolume(fSolid_BigDi_ir, Material_Ir, abname);
@@ -165,21 +165,22 @@ public:
     G4Material *Material_Ir = G4Material::GetMaterial("IronAll");
     G4Material *Material_G = G4Material::GetMaterial("G4_Galactic");
     char abname[256];
+
     //--------------------Volumes ---------
     sprintf(abname, "Solid_QUADS_hd_v_%s", name.c_str());
-    fSolid_QUADS_hd_v= new G4Tubs(abname, 0., (Rout + 0.01) * cm, (LengthZ / 2.) * m, 0., 360 * deg);
+    fSolid_QUADS_hd_v= new G4Tubs(abname, 0., (Rout + 0.1) * cm, ((LengthZ + 0.01)/ 2.) * m, 0., 360 * deg);
+
     sprintf(abname, "Logic_QUADS_hd_v_%s", name.c_str());
     fLogic_QUADS_hd_v = new G4LogicalVolume(fSolid_QUADS_hd_v, Material_G, abname);
-    //fLogic_QUADS_hd_v[j] = new G4LogicalVolume(fSolid_QUADS_hd_v[j], World_Material, abname,fieldMgr_QUADS_hd[j]);
-    sprintf(abname, "Physics_QUADS_hd_v_%s", name.c_str());
+     sprintf(abname, "Physics_QUADS_hd_v_%s", name.c_str());
     fPhysics_QUADS_hd_v = new G4PVPlacement(G4Transform3D(mybrm, G4ThreeVector(Xcenter * m, Ycenter * m, Zcenter * m)), abname, fLogic_QUADS_hd_v, fMotherPhysVolume, false, 0);
 
-    fLogic_QUADS_hd_v->SetFieldManager(fieldMgr_QUADS_hd, true);
+   // fLogic_QUADS_hd_v->SetFieldManager(fieldMgr_QUADS_hd, true);
     //printf("create %s ");
 
     //--------------------Iron---------
     sprintf(abname, "Solid_QUADS_hd_ir_%s", name.c_str());
-    fSolid_QUADS_hd_ir = new G4Tubs(abname, Rin2 * cm, (Rout + 0.005) * cm, (LengthZ / 2.) * m, 0., 360 * deg);
+    fSolid_QUADS_hd_ir = new G4Tubs(abname, (Rin2+0.1) * cm, (Rout ) * cm, (LengthZ / 2.) * m, 0., 360 * deg);
     sprintf(abname, "Logic_QUADS_hd_ir_%s", name.c_str());
     fLogic_QUADS_hd_ir = new G4LogicalVolume(fSolid_QUADS_hd_ir, Material_Ir, abname);
     sprintf(abname, "Physics_QUADS_hd_ir_%s", name.c_str());
@@ -191,7 +192,7 @@ public:
     sprintf(abname, "Solid_QUADS_hd_m_%s", name.c_str());
     fSolid_QUADS_hd_m = new G4Tubs(abname, 0. * cm, Rin2 * cm, (LengthZ / 2.) * m, 0., 360 * deg);
     sprintf(abname, "Logic_QUADS_hd_m_%s", name.c_str());
-    fLogic_QUADS_hd_m = new G4LogicalVolume(fSolid_QUADS_hd_m, Material_G, abname, fieldMgr_QUADS_hd);
+    fLogic_QUADS_hd_m = new G4LogicalVolume(fSolid_QUADS_hd_m, Material_G, abname);
     sprintf(abname, "Physics_QUADS_hd_m_%s", name.c_str());
     fPhysics_QUADS_hd_m = new G4PVPlacement(0, G4ThreeVector(), abname, fLogic_QUADS_hd_m, fPhysics_QUADS_hd_v, false, 0);
 
@@ -203,7 +204,7 @@ public:
     //    G4FieldManager* fieldMgr = SetQMagField(qFIELDx[j],qFIELDy[j]);   // gradient tesla/m;
     // fLogic_QUADSm[j]->SetFieldManager(fieldMgr,true);
 
-    fLogic_QUADS_hd_m->SetFieldManager(fieldMgr_QUADS_hd, true);
+     fLogic_QUADS_hd_v->SetFieldManager(fieldMgr_QUADS_hd, true);
 
   }
 

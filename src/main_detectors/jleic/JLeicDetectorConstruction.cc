@@ -89,6 +89,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::Construct()
     G4SolidStore::GetInstance()->Clean();
 
     SetUpJLEIC2019();
+    //checkVolumeOverlap();// --- fsv
     return World_Phys;
 }
 
@@ -96,7 +97,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::Construct()
 void JLeicDetectorConstruction::Create_ci_Endcap(JLeicDetectorConfig::ci_Endcap_Config cfg)
 {
     /// This function creates ION-ENDCAP (but doesn't fill its contents)
-
+  
     // Make endcup radius the same as Barrel Hadron Calorimeter
     ci_ENDCAP_GVol_Solid = new G4Tubs("ci_ENDCAP_GVol_Solid", cfg.RIn, cfg.ROut, cfg.SizeZ / 2., 0., 360 * deg);
     ci_ENDCAP_GVol_Logic = new G4LogicalVolume(ci_ENDCAP_GVol_Solid, World_Material, "ci_ENDCAP_GVol_Logic");
@@ -107,6 +108,7 @@ void JLeicDetectorConstruction::Create_ci_Endcap(JLeicDetectorConfig::ci_Endcap_
     ci_ENDCAP_GVol_VisAttr->SetLineWidth(1);
     ci_ENDCAP_GVol_VisAttr->SetForceSolid(true);
     ci_ENDCAP_GVol_Logic->SetVisAttributes(ci_ENDCAP_GVol_VisAttr);
+  
 }
 
 
@@ -183,7 +185,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 
       printf("AcceleratorMagnets:: try to open file %s \n", fileName.c_str());
 
-      AcceleratorMagnets *electron_line_magnets = new AcceleratorMagnets(fileName, World_Phys, World_Material, USE_LINE);
+     AcceleratorMagnets *electron_line_magnets = new AcceleratorMagnets(fileName, World_Phys, World_Material, USE_LINE);
 
 
       for (int i = 0; i < electron_line_magnets->allmagnets.size(); i++) {
@@ -243,8 +245,8 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 
     if (USE_E_ENDCAP) {
         // ------------------ create electon endcap ---------------------------------------------
-        fConfig.ce_Endcap.ROut = fConfig.cb_Solenoid.ROut - 1 * cm;
-        fConfig.ce_Endcap.PosZ = -fConfig.ce_Endcap.SizeZ / 2 - fConfig.cb_Solenoid.SizeZ / 2 + fConfig.World.ShiftVTX;
+        fConfig.ce_Endcap.ROut = fConfig.cb_Solenoid.ROut -1 * cm;
+        fConfig.ce_Endcap.PosZ = -fConfig.ce_Endcap.SizeZ / 2 - fConfig.cb_Solenoid.SizeZ / 2 + fConfig.World.ShiftVTX -2*cm;
         Create_ce_Endcap(fConfig.ce_Endcap);
     }
 
@@ -437,7 +439,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 //===================================================================================
         if (USE_CE_EMCAL) {
             fConfig.ce_EMCAL.PosZ = -fConfig.ce_Endcap.SizeZ / 2 + fConfig.ce_EMCAL.Thickness / 2.;
-            fConfig.ce_EMCAL.ROut = fConfig.ce_Endcap.ROut;
+            fConfig.ce_EMCAL.ROut = fConfig.ce_Endcap.ROut -3*cm;
             ce_EMCAL.Construct(fConfig.ce_EMCAL, World_Material, ce_ENDCAP_GVol_Phys);
             ce_EMCAL.ConstructCrystals(); // --- inner detector with Crystals
             ce_EMCAL.ce_EMCAL_detPWO_Logic->SetSensitiveDetector(fCalorimeterSD);

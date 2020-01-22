@@ -105,8 +105,8 @@ class JLeicDetectorConstruction : public G4VUserDetectorConstruction
 public:
 
     //--------BEAM elements------
-    bool USE_JLEIC = false;  // use either JLEIC or ERHIC optics
-    bool USE_ERHIC =true;   // use either JLEIC or ERHIC optics
+    bool USE_JLEIC = true ;  // use either JLEIC or ERHIC optics
+    bool USE_ERHIC =false ;   // use either JLEIC or ERHIC optics
     // -----
     bool USE_FFQs = true;
     //bool USE_FFQs_iu
@@ -159,7 +159,7 @@ public:
     bool USE_CI_DRICH = true;
     bool USE_CI_TRD = true;
     bool USE_CI_EMCAL = false;
-    bool USE_CI_HCAL = false;
+    bool USE_CI_HCAL = true;
     bool USE_CI_HCAL_D = false;
     //--------- Forward D1 ------
     bool USE_FI_EMCAL = false;

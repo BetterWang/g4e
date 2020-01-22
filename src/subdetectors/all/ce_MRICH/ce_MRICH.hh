@@ -16,8 +16,8 @@
 
 struct ce_MRICH_Config {
 // define here Global volume parameters
-    double RIn= 12 * cm;
-    double ROut= 82 * cm;
+    double RIn= 15 * cm;
+    double ROut= 80 * cm;
     double SizeZ= 15 * cm;
     double PosZ;
     double InnerR= 15. * cm;

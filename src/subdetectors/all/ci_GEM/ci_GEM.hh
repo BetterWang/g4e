@@ -17,7 +17,7 @@
 struct ci_GEM_Config {
 // define here Global volume parameters
     double RIn = 10 * cm;
-    double ROut = 65 * cm + 50 * cm;
+    double ROut = 45 * cm + 50 * cm;
     double SizeZ = 30 * cm;
     double ShiftZ = 0 * cm;
     double PosZ = 0 * cm;

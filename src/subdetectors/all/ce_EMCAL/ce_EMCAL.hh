@@ -15,7 +15,7 @@
 #include "JLeicDetectorConfig.hh"
 
 struct ce_EMCAL_Config {
-    double RIn=12 * cm;;
+    double RIn=15 * cm;;
     double ROut;
     double ROutshift = 5*cm;
     double Thickness=40*cm;
@@ -156,7 +156,7 @@ public:
 
        double  x0 = 0 * cm;
        double  y0 = 0 * cm;
-        ce_EMCAL_detGLASS_InnerR= ce_EMCAL_detPWO_ROut;
+        ce_EMCAL_detGLASS_InnerR= ce_EMCAL_detPWO_ROut+3*cm;
        double  y_C = 0;
         double x_C=0.;
         ce_EMCAL_detGLASS_PosZ =cfg.Thickness/2.-ce_EMCAL_detGLASS_Thickness/2.;
@@ -174,7 +174,7 @@ public:
                 //   printf("EMCALLL::k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ",k, j,i, x_C,y_C, R, R0);
 
 
-                if (R <  cfg.ROut  - ce_EMCAL_detGLASS_Width + ce_EMCAL_detGLASS_Gap && R > ce_EMCAL_detGLASS_InnerR) {
+                if (R <  cfg.ROut-1*cm  - ce_EMCAL_detGLASS_Width + ce_EMCAL_detGLASS_Gap && R > ce_EMCAL_detGLASS_InnerR) {
                     // printf("ce_EMCAL_detGLASS::GLASS k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ",k, j,i, x_C,y_C, R, ce_EMCAL_detPWO_InnerR);
 
 

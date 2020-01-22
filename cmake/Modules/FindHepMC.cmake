@@ -34,7 +34,8 @@ set(HEPMC_FIO_LIBRARIES "-L${HEPMC_LIBRARY_DIR} -lHepMCfio")
 # handle the QUIETLY and REQUIRED arguments and set HEPMC_FOUND to TRUE if
 # all listed variables are TRUE
 #INCLUDE(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(HepMC DEFAULT_MSG HEPMC_LIBRARY HEPMC_INCLUDE_DIR)
+
+# find_package_handle_standard_args(HepMC DEFAULT_MSG HEPMC_LIBRARY HEPMC_INCLUDE_DIR)
 
 mark_as_advanced(HepMC_FOUND HEPMC_INCLUDE_DIR HEPMC_LIBRARY)
 

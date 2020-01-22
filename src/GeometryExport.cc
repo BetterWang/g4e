@@ -86,7 +86,7 @@ void g4e::GeometryExport::EnhanceTGeoVisual(TGeoNode *topNode)
 
         // Default for all elements
         volume->SetLineColor(12);
-        volume->SetTransparency(50);
+        //volume->SetTransparency(50);
 
         // electron end-cup EMCalorimeter
         if(StartsWith(name, "World")) {
@@ -96,13 +96,13 @@ void g4e::GeometryExport::EnhanceTGeoVisual(TGeoNode *topNode)
         // electron end-cup EMCalorimeter
         if(StartsWith(name, "ce_EMCAL")) {
             volume->SetLineColor(kAzure + 1);
-            volume->SetTransparency(50);
+            //volume->SetTransparency(50);
         }
 
         // electron end-cup EMCalorimeter
         else if(StartsWith(name, "cb_HCAL")) {
             volume->SetLineColor(kMagenta - 5);
-            volume->SetTransparency(50);
+            //volume->SetTransparency(50);
         }
     }
 }

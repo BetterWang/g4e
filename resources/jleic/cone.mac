@@ -14,10 +14,10 @@
 # Open file and run some MC file
 #------ cone at 50mrad ----
 #---protons ---
-#/generator/pythiaAscii/open /data/yuliapc/home/yulia/work/g4e/resources/pythia/pythia_cone_p_200GeV_50mrad.txt
+/generator/pythiaAscii/open /data/yuliapc/home/yulia/work/g4e/resources/pythia/pythia_cone_p_200GeV_50mrad.txt
 #------ cone at 25mrad ----
 #---protons ---
-/generator/pythiaAscii/open /data/yuliapc/home/yulia/work/g4e/resources/pythia/pythia_cone_p_275GeV_25mrad.txt
+#/generator/pythiaAscii/open /data/yuliapc/home/yulia/work/g4e/resources/pythia/pythia_cone_p_275GeV_25mrad.txt
 
 #/run/beamOn 1
 exit

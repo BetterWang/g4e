@@ -20,7 +20,7 @@ public:
   QMag( std::string _name, std::string _type,double  _LengthZ,double _Rin, double _Rin2, double _Rout, double _DipoleFieldBx, double _DipoleFieldBy, double _QuadrupolFieldQnorm, double _QuadrupolFieldQskew,
 	double _SextupoleField, double _SolenoidField, double _Xcenter, double _Ycenter, double _Zcenter, double _MagTheta, double _MagPhi, G4VPhysicalVolume *fMotherPhysVolume,int _USE_LINE)
   {
-
+   using namespace spdlog;
    USE_LINE = _USE_LINE;
 
    Rin=_Rin; Rin2=_Rin2; Rout=_Rout;
@@ -31,11 +31,11 @@ public:
 
   //  if (type == "SBEND" || type == "RBEND") {
     if (type == "QUADRUPOLE" ) {
-      printf("Qmag:: found  %s name=%s \n", type.c_str(), name.c_str());
+      debug("Qmag:: found  {} name={} ", type.c_str(), name.c_str());
       CreateQuad(fMotherPhysVolume);
     }
    if (type == "SBEND" || type == "RBEND") {
-      printf("QMag:: found  %s name=%s \n", type.c_str(), name.c_str());
+      debug("QMag:: found  {} name={} ", type.c_str(), name.c_str());
      CreateDipole(fMotherPhysVolume);
     }
 
@@ -50,7 +50,7 @@ public:
 //==============================================================================================================
 
     void CreateDipole(G4VPhysicalVolume *fMotherPhysVolume) {
-
+      using namespace spdlog;
        char abname[256];
 
         printf("CreateDipole:: fMotherPhysVolume=%p \n",(void*)fMotherPhysVolume);
@@ -80,7 +80,7 @@ public:
         fLogic_BigDi_v = new G4LogicalVolume(fSolid_BigDi_v, Material_G, abname);
         sprintf(abname, "Physics_DIPOLE_v_%s", name.c_str());
         fPhysics_BigDi_v = new G4PVPlacement(G4Transform3D(mybrm, G4ThreeVector(Xcenter * m, Ycenter * m, Zcenter * m)), abname, fLogic_BigDi_v, fMotherPhysVolume, false, 0);
-        printf(" Finish magnetic volume and start physics volume \n");
+        trace(" Finish magnetic volume and start physics volume ");
 
         //-------------------------- Magnet iron------------------------
         sprintf(abname, "Solid_DIPOLE_i_%s", name.c_str());
@@ -109,7 +109,7 @@ public:
         fLogic_BigDi_m->SetVisAttributes(vb1);
 
 
-        printf(" Start assign magnet  \n");
+        trace(" Start assign magnet  ");
         fieldMgr_BigDi = SetDipoleMagField(DipoleFieldBx, DipoleFieldBy, 0., MagTheta);   // gradient tesla/m;
         fLogic_BigDi_m->SetFieldManager(fieldMgr_BigDi, true);
 
@@ -143,7 +143,7 @@ public:
     //==============================================================================================================
   
   void  CreateQuad (G4VPhysicalVolume *fMotherPhysVolume) {
-    
+     using namespace spdlog;
     printf("CreateQuad:: fMotherPhysVolume=%p \n",(void*)fMotherPhysVolume);
     //return;
     G4VisAttributes *vb1;
@@ -158,7 +158,7 @@ public:
     vb1 = new G4VisAttributes(G4Color(0.8, 0.3, 0.1, 0.9));
     vb1->SetForceSolid(true);
 
-    printf("CreateQuad:: theta =%f rad=%f  deg=%f \n", MagTheta, MagTheta / rad, MagTheta / deg);
+    trace("CreateQuad:: theta =%f rad=%f  deg=%f \n", MagTheta, MagTheta / rad, MagTheta / deg);
     mybrm.rotateY(MagTheta * rad);
     // brm_hd.rotateY((0*180/3.1415)*deg);
 
@@ -198,7 +198,7 @@ public:
 
     //---------------- create  magnetic field ---------------
 
-    printf("CreateQuad:: name=%s  FIELD = Dx %f  Dy %f --  Qn %f Qs %f -- Sek %f  Sol %f \n", name.c_str(),  DipoleFieldBx, DipoleFieldBy, QuadrupolFieldQnorm, QuadrupolFieldQskew, SextupoleField, SolenoidField);
+    debug("CreateQuad:: name={}  FIELD = Dx {}  Dy {} --  Qn {} Qs {} -- Sek {}  Sol {} ", name.c_str(),  DipoleFieldBx, DipoleFieldBy, QuadrupolFieldQnorm, QuadrupolFieldQskew, SextupoleField, SolenoidField);
     fieldMgr_QUADS_hd = SetQMagField(QuadrupolFieldQnorm, QuadrupolFieldQskew, MagTheta, G4ThreeVector(Xcenter * m, Ycenter * m, Zcenter * m));   // gradient tesla/m;
 
     //    G4FieldManager* fieldMgr = SetQMagField(qFIELDx[j],qFIELDy[j]);   // gradient tesla/m;
@@ -211,14 +211,15 @@ public:
 
   G4FieldManager *SetQMagField(float field, float skew, float theta, G4ThreeVector fieldorigin)
   {
+      using namespace spdlog;
     G4RotationMatrix *qrm_f;
-    printf("SetQMagField:: got parameters %f %f \n", field, skew);
+    trace("SetQMagField:: got parameters {} {} ", field, skew);
 
     //G4double fGradient = -223.*tesla/m;
     G4double fGradient = sqrt(field * field + skew * skew) * tesla / m;
     fGradient = copysign(fGradient, field);
     G4double angle = atan2(skew, fabs(field)); //--   atan2(y,x);
-    printf("SetQMagField():: angle=%f(%f) theta=%f(%f) rad(deg) \n", angle, angle / deg, theta, theta / deg);
+    trace("SetQMagField():: angle={}({}) theta={}({}) rad(deg) ", angle, angle / deg, theta, theta / deg);
 
     qrm_f = new G4RotationMatrix();
     qrm_f->rotateZ(angle * rad);
@@ -293,7 +294,7 @@ public:
 
 
   AcceleratorMagnets(std::string fname,G4VPhysicalVolume *physicalVolume, G4Material *material,int _USE_LINE)  {
-
+ using namespace spdlog;
     fMotherPhysVolume=physicalVolume;
     printf("AcceleratorMagnets:: fMotherPhysVolume=%p\n",fMotherPhysVolume);
 
@@ -304,20 +305,19 @@ public:
     if (!sourcefile) {                     // if it does not work
       cerr << "Can't open File with Lattice!\n";
     } else {    
-      printf("AcceleratorMagnets file opened %s \n",fname.c_str());
+      info("AcceleratorMagnets file opened {} \n",fname);
       for (std::string line; std::getline(sourcefile, line);) {
 
 	std::istringstream in(line);      //make a stream for the line itself
-	std::cout << "AcceleratorMagnets:: read line = " << line << std::endl;
-	if (line[0] != 'e' && line[0] != 'i') { printf(" skip line %s\n",line.c_str()); continue; }
+	trace("AcceleratorMagnets:: read line = {} ",line);
+	if (line[0] != 'e' && line[0] != 'i') { trace(" skip line {}",line.c_str()); continue; }
 	parse_line(line,USE_LINE); //-- string--
       }
     }
   }
   //-----------------------------------------------------------
   void parse_line(std::string line,int USE_LINE)
-  {
-
+  {using namespace spdlog;
     string name, type;
     double LengthZ, Rin, Rin2, Rout, DipoleFieldBx, DipoleFieldBy, QuadrupolFieldQnorm, QuadrupolFieldQskew;
     double SextupoleField, SolenoidField, Xcenter, Ycenter, Zcenter, MagTheta, MagPhi;
@@ -327,9 +327,9 @@ public:
     in >> name >> type >> LengthZ >> Rin >> Rin2 >> Rout >> DipoleFieldBx >> DipoleFieldBy >> QuadrupolFieldQnorm >> QuadrupolFieldQskew >> SextupoleField >> SolenoidField
        >> Xcenter >> Ycenter >> Zcenter >> MagTheta >> MagPhi;
 
-    printf("AcceleratorMagnets::parse_line: Rin=%f, Rin2=%f Rout =%f \n",Rin, Rin2,Rout );
+    trace("AcceleratorMagnets::parse_line: Rin={}, Rin2={} Rout ={} ",Rin, Rin2,Rout );
     if(USE_LINE==1){Rin=Rin*100; Rin2=Rin2*100;  Rout=Rout*100/2.; } // different usints for ERHIC and JLEIC designs
-    printf("AcceleratorMagnets::parse_line: Rin=%f, Rin2=%f Rout =%f \n",Rin, Rin2,Rout );
+    trace("AcceleratorMagnets::parse_line: Rin={}, Rin2={} Rout ={} ",Rin, Rin2,Rout );
     QMag *qmag = new QMag(name, type, LengthZ, Rin, Rin2, Rout, DipoleFieldBx, DipoleFieldBy, QuadrupolFieldQnorm, QuadrupolFieldQskew, SextupoleField, SolenoidField, Xcenter,
 			  Ycenter, Zcenter, MagTheta, MagPhi, fMotherPhysVolume,USE_LINE);
 

@@ -47,25 +47,26 @@ public:
     }
 //--------------------------Construct Silicon layers --------------------------
     inline void ConstructLadders() {
+        using namespace spdlog;
         static char abname[256];
         auto cfg = ConstructionConfig;
 
-        printf("Create CTD  Size Z =%f \n ",cfg.SizeZ);
+        debug("Create CTD  Size Z ={} ",cfg.SizeZ);
 
         siMaterial =  G4Material::GetMaterial("Si");
         // ------- layers of Si in CTD
         for (int ia = 0; ia < cfg.SiLayerCount; ia++) {
             layerRIn[ia] = cfg.RIn + (cfg.SiLayerGap * ia);
             layerROut[ia] = cfg.RIn + (0.01 + cfg.SiLayerGap * ia);
-            printf("cb_CTD_detSi:: Number of layers =%d \n",cfg.SiLayerCount);
+            trace("cb_CTD_detSi:: Number of layers ={} ",cfg.SiLayerCount);
             if(layerROut[ia] > cfg.ROut) {
-                printf("cb_CTD_detSi:: Radius of the layer=%d is too high \n",ia);
+                info("cb_CTD_detSi:: Radius of the layer={} is too high \n",ia);
                 cfg.SiLayerCount =ia+1;
                 ConstructionConfig.SiLayerCount=ia+1;
-                printf("cb_CTD_detSi:: Number of layers =%d\n ",cfg.SiLayerCount);
+                trace("cb_CTD_detSi:: Number of layers ={} ",cfg.SiLayerCount);
                 continue; }
 
-            printf("cb_CTD_detSi %d  Rout=%f \n", ia, layerROut[ia]);
+            trace("cb_CTD_detSi {}  Rout={} \n", ia, layerROut[ia]);
             sprintf(abname, "cb_CTD_detSi_Solid_lay_%d", ia);
             SiSolids[ia] = new G4Tubs(abname, layerRIn[ia], layerROut[ia], cfg.SizeZ / 2., 0., 360 * deg);
 
@@ -87,7 +88,8 @@ public:
     }
 //------------------Straw options -----------------------------------------
     inline void ConstructStraws() {
-     printf("begin STRAW volume \n");
+         using namespace spdlog;
+     info("begin STRAW volume ");
           static char abname[256];
           auto cfg = ConstructionConfig;
 
@@ -226,7 +228,7 @@ sprintf(abname,"cb_CTD_det_Straw_Wall_Phys");
        }
 
 
-    printf("STRAW end  number=%d\n",counter );
+    info("STRAW end  number=%d\n",counter );
 
 
     }

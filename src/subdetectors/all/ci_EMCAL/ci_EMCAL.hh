@@ -20,13 +20,14 @@ struct ci_EMCAL_Config {
    double ROut = 200 * cm;
    double ThicknessZ = 40 * cm;
    double PosZ=0.*cm;
-
+   double PosX=0*cm;
    double det_Length = 40. * cm;
    double det_Width = 4. * cm;
    double det_Gap = 0.01 * mm;
    double  det_Rin1 = 20. * cm;
    double  det_Rin2 = 55. * cm;
-
+   bool USE_JLEIC =false;
+   bool USE_ERHIC =false;
 
 };
 
@@ -95,28 +96,32 @@ public:
 
                 // printf("ci_EMCAL_det:: k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ", kh, j, i, x_Ch, y_Ch, R_H, ci_EMCAL_det_Rin1);
 
-                //----------------------- Remove left side (small ring)----------------
-                if (R_H < cfg.ROut - cfg.det_Width + cfg.det_Gap && R_H > cfg.det_Rin1) {
-                    // printf("ci_EMCAL_det::k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ", kh, j, i, x_Ch, y_Ch, R_H, ci_EMCAL_det_Rin1);
+                  //----------------------- Remove left side (small ring)----------------
+                  if (R_H < cfg.ROut - cfg.det_Width + cfg.det_Gap && R_H > cfg.det_Rin1) {
+                      // printf("ci_EMCAL_det::k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ", kh, j, i, x_Ch, y_Ch, R_H, ci_EMCAL_det_Rin1);
 
-                    kh++;
-                    new G4PVPlacement(0, G4ThreeVector(x_Ch, y_Ch, 0.), format("ci_EMCAL_det_Phys_{}", kh), ci_EMCAL_det_Logic, Phys, false, kh);
+                      kh++;
+                      if(cfg.USE_JLEIC) { new G4PVPlacement(0, G4ThreeVector(x_Ch, y_Ch, 0.), format("ci_EMCAL_det_Phys_{}", kh), ci_EMCAL_det_Logic, Phys, false, kh);}
+                      if(cfg.USE_ERHIC) { new G4PVPlacement(0, G4ThreeVector(-x_Ch, y_Ch, 0.), format("ci_EMCAL_det_Phys_{}", kh), ci_EMCAL_det_Logic, Phys, false, kh);}
 
-                    kh++;
-                    new G4PVPlacement(0, G4ThreeVector(x_Ch, -y_Ch, 0.), format("ci_EMCAL_det_Phys_{}", kh), ci_EMCAL_det_Logic, Phys, false, kh);
-                }
+                      kh++;
+                     if(cfg.USE_JLEIC) { new G4PVPlacement(0, G4ThreeVector(x_Ch, -y_Ch, 0.), format("ci_EMCAL_det_Phys_{}", kh), ci_EMCAL_det_Logic, Phys, false, kh);}
+                     if(cfg.USE_ERHIC) { new G4PVPlacement(0, G4ThreeVector(-x_Ch, -y_Ch, 0.), format("ci_EMCAL_det_Phys_{}", kh), ci_EMCAL_det_Logic, Phys, false, kh);}
+                  }
 
-                //----------------------- Remove right side (large ring)----------------
-                if (R_H < cfg.ROut - cfg.det_Width + cfg.det_Gap && R_H > cfg.det_Rin2) {
-                    // printf("ci_EMCAL_det::k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ", kh, j, i, x_Ch, y_Ch, R_H, ci_EMCAL_det_Rin2);
+                  //----------------------- Remove right side (large ring)----------------
+                  if (R_H < cfg.ROut - cfg.det_Width + cfg.det_Gap && R_H > cfg.det_Rin2) {
+                      // printf("ci_EMCAL_det::k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ", kh, j, i, x_Ch, y_Ch, R_H, ci_EMCAL_det_Rin2);
 
-                    kh++;
-                    new G4PVPlacement(0, G4ThreeVector(-x_Ch, y_Ch, 0.), format("ci_EMCAL_det_Phys_{}", kh), ci_EMCAL_det_Logic,
-                                      Phys, false, kh);
-                    kh++;
-                    new G4PVPlacement(0, G4ThreeVector(-x_Ch, -y_Ch, 0.), format("ci_EMCAL_det_Phys_{}", kh), ci_EMCAL_det_Logic,
-                                      Phys, false, kh);
-                }
+                      kh++;
+                       if(cfg.USE_JLEIC) { new G4PVPlacement(0, G4ThreeVector(-x_Ch, y_Ch, 0.), format("ci_EMCAL_det_Phys_{}", kh), ci_EMCAL_det_Logic, Phys, false, kh);}
+                       if(cfg.USE_ERHIC) { new G4PVPlacement(0, G4ThreeVector(x_Ch, y_Ch, 0.), format("ci_EMCAL_det_Phys_{}", kh), ci_EMCAL_det_Logic, Phys, false, kh);}
+                      kh++;
+                     if(cfg.USE_JLEIC) { new G4PVPlacement(0, G4ThreeVector(-x_Ch, -y_Ch, 0.), format("ci_EMCAL_det_Phys_{}", kh), ci_EMCAL_det_Logic, Phys, false, kh);}
+                     if(cfg.USE_ERHIC) { new G4PVPlacement(0, G4ThreeVector(x_Ch, -y_Ch, 0.), format("ci_EMCAL_det_Phys_{}", kh), ci_EMCAL_det_Logic, Phys, false, kh);}
+                  }
+
+             // }  //  JLEIC configuration
                 x_Ch += cfg.det_Width + cfg.det_Gap;
             }
         }

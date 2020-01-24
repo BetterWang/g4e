@@ -21,7 +21,7 @@ struct ci_HCAL_Config {
     double SizeZ=195*cm;
     double ShiftZ=5*cm;
     double PosZ=0.*cm;
-
+    double det_RIn= 80*cm ;
 };
 
 
@@ -51,24 +51,25 @@ public:
 
     };
 
-    inline void ConstructDetectors() {
-        printf("Begin ci_HCAL detector volumes \n");
+    inline void ConstructDetectors(ci_HCAL_Config cfg) {
+        using namespace spdlog;
+        debug("Begin ci_HCAL detector volumes ");
 
         // construct here your detectors
 
         static char abname[256];
-        auto cfg = ConstructionConfig;
+       // auto cfg = ConstructionConfig;
 
-        ci_HCAL_det_RIn= 80*cm ;
+
         ci_HCAL_det_ROut=cfg.ROut -1*cm;
         ci_HCAL_det_ThicknessZ=2*cm;
         ci_HCAL_det_GapZ=2*cm;
         ci_HCAL_Nlay=25;
         ci_HCAL_det_Material= G4Material::GetMaterial("Iron");
-        printf("ci_HCAL_det::1 %f %f ,%f\n",ci_HCAL_det_RIn, ci_HCAL_det_ROut, ci_HCAL_det_ThicknessZ);
+        trace("ci_HCAL_det::1 {} {} , {}",cfg.det_RIn, ci_HCAL_det_ROut, ci_HCAL_det_ThicknessZ);
 
         sprintf(abname,"ci_HCAL_det_Solid");
-        ci_HCAL_det_Solid  = new G4Tubs(abname, ci_HCAL_det_RIn, ci_HCAL_det_ROut, ci_HCAL_det_ThicknessZ/2.,0.,360*deg);
+        ci_HCAL_det_Solid  = new G4Tubs(abname, cfg.det_RIn, ci_HCAL_det_ROut, ci_HCAL_det_ThicknessZ/2.,0.,360*deg);
 
         sprintf(abname,"ci_HCAL_det_Logic");
         ci_HCAL_det_Logic = new G4LogicalVolume(ci_HCAL_det_Solid, ci_HCAL_det_Material,abname);
@@ -81,7 +82,7 @@ public:
 
         for (hhlay=0;hhlay<ci_HCAL_Nlay;hhlay++){
             ci_HCAL_det_PosZ= -cfg.SizeZ/2   +(hhlay+1)*ci_HCAL_det_ThicknessZ +(hhlay+1)*5*cm;
-            printf("ci_HCAL_det::2 %f %f ,%f\n", ci_HCAL_det_PosZ,ci_HCAL_det_PosZ- ci_HCAL_det_ThicknessZ,cfg.SizeZ);
+            trace("ci_HCAL_det::2 {} {} ,{}", ci_HCAL_det_PosZ,ci_HCAL_det_PosZ- ci_HCAL_det_ThicknessZ,cfg.SizeZ);
 
             if( (ci_HCAL_det_PosZ- ci_HCAL_det_ThicknessZ) > cfg.SizeZ/2) continue;
             //   ci_HCAL_det_PosZ=-ci_HCAL_GVol_SizeZ/2+hhlay*ci_HCAL_det_ThicknessZ+ci_HCAL_det_GapZ*hhlay;
@@ -107,7 +108,7 @@ private:
     // define here local variables and parameter of detectors
 
     //---------------ENDCAP-H HCAL det iron-------------------
-    G4double ci_HCAL_det_RIn;
+
     G4double ci_HCAL_det_ROut;
     G4double ci_HCAL_det_ThicknessZ;
     G4double ci_HCAL_det_GapZ;

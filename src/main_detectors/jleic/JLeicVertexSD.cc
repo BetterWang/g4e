@@ -41,7 +41,7 @@ static int use_fdc = 0;
 static FILE *fann; //*fopen(const char *path, const char *mode);
 static char AnnFileName[128];
 static int NVAR;
-static int jDebug = 7;
+
 
 //=====================================================================================================
 
@@ -64,7 +64,10 @@ static int jDebug = 7;
 
 JLeicVertexSD::JLeicVertexSD(G4String name, JLeicDetectorConstruction *det) : G4VSensitiveDetector(name), Detector(det)
 {
-    printf("JLeicVertexSD()::constructor  enter\n");
+    using namespace spdlog;
+    using namespace fmt;
+
+    debug("JLeicVertexSD()::constructor  enter");
     //fRM=G4RunManager::GetRunManager();
 
     NumRow = 10; // :64 depfet
@@ -74,7 +77,7 @@ JLeicVertexSD::JLeicVertexSD(G4String name, JLeicDetectorConstruction *det) : G4
     nevent = 0;
     collectionName.insert("VTXCollection");
     HitID = new G4int[500];
-    printf("--> JLeicVertexSD::Constructor(%s) \n", name.c_str());
+    debug("--> JLeicVertexSD::Constructor({})", name);
 
     JLeicRunAction *runaction = (JLeicRunAction *) (G4RunManager::GetRunManager()->GetUserRunAction());
     JLeicRunAction *eventaction = (JLeicRunAction *) (G4RunManager::GetRunManager()->GetUserEventAction());
@@ -85,23 +88,24 @@ JLeicVertexSD::JLeicVertexSD(G4String name, JLeicDetectorConstruction *det) : G4
     if (use_depfet) for (int ii = 0; ii < (NumRow * NumCol); ii++) FRAME[ii] = 0; //-- 8000;  //-- set pedestals
     if (use_fdc) {
         dedx_fadc = new TH1F("dedx_fadc", " FDC dE/dX", 50, -0.5, 49.5);
-        printf(" SAVE Matrix file trd_frames.root \n");
+        trace(" SAVE Matrix file trd_frames.root");
         fm1 = new TFile("fdc_frames.root", "RECREATE");
         for (int ii = 0; ii < 100; ii++) dEslice[ii] = 0; // reset
     }
     //-----------------  charge sharing hist ------
     char_sh = 0;
     N_bin = 45;
-    char hname1[80], hname2[80];
     G4double Max_Sigm = 0.55;  //-- at 450 um
     if (use_depfet && char_sh) //--  diffusion
         for (int iz = 0; iz <= N_bin; iz++) {
 
             G4double mean1 = 0., mean2 = 0., sig1 = iz * Max_Sigm / N_bin, sig2 = iz * Max_Sigm / N_bin;
 
-            sprintf(hname1, "hist_charge_%d", iz);
-            sprintf(hname2, "charge sharting sigm=%f; Xpos ; Ypos;", sig1);
-            hist_charge[iz] = new TH2F(hname1, hname2, 100, -5., +5., 100, -5., +5.); //-- 5x5 pixels
+
+
+            hist_charge[iz] = new TH2F(format("hist_charge_{}", iz).c_str(),
+                                       format("charge sharting sigm={}; Xpos ; Ypos;", sig1).c_str(),
+                                       100, -5., +5., 100, -5., +5.); //-- 5x5 pixels
 
             for (int ig = 0; ig < 1000000; ig++) {
                 G4double g1rnd = G4RandGauss::shoot(mean1, sig1);
@@ -110,7 +114,7 @@ JLeicVertexSD::JLeicVertexSD(G4String name, JLeicDetectorConstruction *det) : G4
             }
 
             G4double cbin = hist_charge[iz]->GetBinContent(51, 51);
-            printf("--> JLeicVertexSD::Constructor():: iz=%d, sigm=%f hist_charge(51,51)=%f \n", iz, sig1, cbin);
+            trace("--> JLeicVertexSD::Constructor():: iz={}, sigm={} hist_charge(51,51)={} \n", iz, sig1, cbin);
         }
 
 
@@ -136,7 +140,7 @@ JLeicVertexSD::~JLeicVertexSD()
 void JLeicVertexSD::Initialize(G4HCofThisEvent *)
 {
 
-    fmt::print("JLeicVertexSD()::Initialize enter nevent={}  Lays.size()={}\n", nevent, Detector->cb_VTX.Lays.size());
+    spdlog::debug("JLeicVertexSD()::Initialize enter nevent={}  Lays.size()={}", nevent, Detector->cb_VTX.Lays.size());
 
     VTXCollection = new JLeicVTXHitsCollection(SensitiveDetectorName, collectionName[0]);
     for (G4int i = 0; i < 1; i++) {
@@ -164,13 +168,15 @@ void JLeicVertexSD::Initialize(G4HCofThisEvent *)
     }
 
     mHitsCount = 0;
-    printf("JLeicVertexSD()::Initialize exit\n");
+    spdlog::debug("JLeicVertexSD()::Initialize exit");
 }
 
 
 G4bool JLeicVertexSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
 {
-    if (jDebug > 2) printf("--> JLeicVertexSD::ProcessHits() Enter\n");
+    using namespace spdlog;
+
+    spdlog::trace("--> JLeicVertexSD::ProcessHits() Enter\n");
 
     //  const G4TouchableHandle touchablepre[128];
     G4double edep = aStep->GetTotalEnergyDeposit();
@@ -178,7 +184,6 @@ G4bool JLeicVertexSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
     G4double stepl = 0.;
     if (aStep->GetTrack()->GetDefinition()->GetPDGCharge() != 0.) //-- gamma ??
         stepl = aStep->GetStepLength();
-
 
     const G4TouchableHandle touchablepre = aStep->GetPreStepPoint()->GetTouchableHandle();
     const G4TouchableHandle touchablepost = aStep->GetPostStepPoint()->GetTouchableHandle();
@@ -208,7 +213,7 @@ G4bool JLeicVertexSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
     G4double yloc = (yinp + yend) / 2;
     G4double zloc = (zinp + zend) / 2;
 
-    if (jDebug > 2) printf("xloc=%f yloc=%f zloc=%f  \n", xloc, yloc, zloc);
+    trace("xloc=%f yloc=%f zloc=%f  \n", xloc, yloc, zloc);
     if (use_fdc) {  //----- FDC / TRD  ---
 
         int zbin = (zloc / mm + Detector->GetAbsorberThickness() / 2.) / Detector->fadc_slice; //-- z position , slice number
@@ -238,28 +243,27 @@ G4bool JLeicVertexSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
 
     G4TouchableHistory *theTouchable = (G4TouchableHistory *) (aStep->GetPreStepPoint()->GetTouchable());
 
-    if (jDebug > 3)
-        printf("--> JLeicVertexSD::ProcessHits() Vol: 0=%s \n", theTouchable->GetVolume()->GetName().c_str());
+    trace("--> JLeicVertexSD::ProcessHits() Vol: 0={} \n", theTouchable->GetVolume()->GetName());
 
-    if (jDebug > 3)
-        printf("--> JLeicVertexSD::ProcessHits() Vol: 0=%s 1=%s  2=%s 3=%s \n", theTouchable->GetVolume()->GetName().c_str(), theTouchable->GetVolume(1)->GetName().c_str(),
-               theTouchable->GetVolume(2)->GetName().c_str(), theTouchable->GetVolume(3)->GetName().c_str());
-    //               Detector->GetAbsorber()->GetName().c_str());
+    trace("--> JLeicVertexSD::ProcessHits() Vol: 0={} 1={}  2={} 3={} \n",
+            theTouchable->GetVolume()->GetName(),
+            theTouchable->GetVolume(1)->GetName(),
+            theTouchable->GetVolume(2)->GetName(),
+            theTouchable->GetVolume(3)->GetName());
 
     if (use_depfet > 0) {
         G4String VTXmod = theTouchable->GetVolume()->GetName();
-        if (jDebug > 2) printf("VTX_ladder=%s \n", VTXmod.c_str());
+        trace("VTX_ladder={} \n", VTXmod.c_str());
         //   int Mod=int (VTXmod<<10);
         // printf("VTX_ladder=%d \n",Mod);
-        if (jDebug > 2)
-            printf("--> JLeicVertexSD::ProcessHits() de=%f ADC=%d  len=%f Mod=%s  IDxy=(%d,%d,%d)\n", edep / keV, ADC, stepl / um, VTXmod.c_str(), copyIDx_pre, copyIDy_pre,
+        trace("--> JLeicVertexSD::ProcessHits() de={} ADC={}  len={} Mod={}  IDxy=({},{},{})\n", edep / keV, ADC, stepl / um, VTXmod.c_str(), copyIDx_pre, copyIDy_pre,
                    copyIDz_pre);
         for (int in = 0; in < 12; in++) {
             sprintf(buffer, "VTX_ladder1_%d", in);
-            if (strcmp(VTXmod.c_str(), buffer) == 0) {
+            if (VTXmod == buffer) {
 // TODO                runaction->FillHistmatrixOccup(in, copyIDx_pre, copyIDy_pre, edep / keV);
 // TODO                runaction->FillHistmatrixOccupCM(in, xstep, ystep, edep / keV);
-                if (jDebug > 2) printf("xstep=%f ystep=%f \n", xstep, ystep);
+                trace("xstep=%f ystep=%f \n", xstep, ystep);
             }
         }
     }
@@ -336,8 +340,7 @@ G4bool JLeicVertexSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
 
     //--- save hits ------
     if (save_hits_root) {
-        if (jDebug > 6)
-            printf("New VTX Hit:: IdVect=%d XYZloc (%f,%f,%f) dEdx=%f \n", aStep->GetTrack()->GetTrackID(), xloc, yloc, zloc, edep / keV);
+        trace("New VTX Hit:: IdVect=%d XYZloc (%f,%f,%f) dEdx=%f \n", aStep->GetTrack()->GetTrackID(), xloc, yloc, zloc, edep / keV);
 
         int curTrackID = aStep->GetTrack()->GetTrackID();
         std::string volumeName = theTouchable->GetVolume()->GetName().c_str();
@@ -376,8 +379,7 @@ G4bool JLeicVertexSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
     //theTouchable->MoveUpHistory();
     G4int JLeicNumber = 0;
 
-    if (jDebug > 2)
-        printf("--> JLeicVertexSD::ProcessHits() Vol=(%s) %p Abs=%p \n", physVol->GetName().c_str(), (void *) physVol, (void *) Detector->GetAbsorberPhysicalVolume());
+    trace("--> JLeicVertexSD::ProcessHits() Vol=({}) {} Abs={} \n", physVol->GetName().c_str(), (void *) physVol, (void *) Detector->GetAbsorberPhysicalVolume());
 
     if (HitID[JLeicNumber] == -1) {
         JLeicVTXHit *vtxHit = new JLeicVTXHit();
@@ -394,7 +396,7 @@ G4bool JLeicVertexSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
         //printf("--> JLeicVertexSD::ProcessHits()  Energy added to JLeic: %d  de=%f\n",JLeicNumber,edep/keV);
     }
 
-    if (jDebug > 2) printf("--> JLeicVertexSD::ProcessHits() Exit\n");
+    trace("--> JLeicVertexSD::ProcessHits() Exit");
 
     return true;
 }

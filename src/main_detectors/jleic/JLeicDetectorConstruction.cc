@@ -297,7 +297,9 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 
             //---------------------------- HCAL IRON--------------------------------------
             if (USE_CI_HCAL_D) {
-                ci_HCAL.ConstructDetectors();
+                if(USE_JLEIC) {fConfig.ci_HCAL.det_RIn=80*cm;}
+                if(USE_ERHIC) {fConfig.ci_HCAL.det_RIn=60*cm;}
+                ci_HCAL.ConstructDetectors(fConfig.ci_HCAL);
             }
         }
     }
@@ -349,9 +351,9 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
                 cb_CTD.ConstructLadders();
                 printf("Det construction cb_CTD_detSi::2 Number of layers =%d \n ",fConfig.cb_CTD.SiLayerCount);
 
-             //   for (int lay = 0; lay < fConfig.cb_CTD.SiLayerCount; lay++) {
-             //      cb_CTD.SiLogics[lay]->SetSensitiveDetector(fCalorimeterSD);
-             //  }
+               for (int lay = 0; lay < fConfig.cb_CTD.SiLayerCount; lay++) {
+                  if(cb_CTD.SiLogics[lay]) cb_CTD.SiLogics[lay]->SetSensitiveDetector(fCalorimeterSD);
+               }
 
             }
             else if (USE_CB_CTD_Straw) { cb_CTD.ConstructStraws(); };
@@ -440,6 +442,8 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
         if (USE_CE_EMCAL) {
             fConfig.ce_EMCAL.PosZ = -fConfig.ce_Endcap.SizeZ / 2 + fConfig.ce_EMCAL.Thickness / 2.;
             fConfig.ce_EMCAL.ROut = fConfig.ce_Endcap.ROut -3*cm;
+
+
             ce_EMCAL.Construct(fConfig.ce_EMCAL, World_Material, ce_ENDCAP_GVol_Phys);
             ce_EMCAL.ConstructCrystals(); // --- inner detector with Crystals
             ce_EMCAL.ce_EMCAL_detPWO_Logic->SetSensitiveDetector(fCalorimeterSD);
@@ -462,7 +466,10 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 
         if (USE_CI_GEM) {
             fConfig.ci_GEM.PosZ = fConfig.cb_Solenoid.SizeZ / 2 - fConfig.ci_GEM.SizeZ / 2;   // --- need to find out why this 5 cm are needed
-            fConfig.ci_GEM.PosX = -5 * cm;
+          if(USE_JLEIC)  { fConfig.ci_GEM.PosX = -5 * cm;}  // --- different crossing angle direction for JLEIC
+          else if ( USE_ERHIC ){ fConfig.ci_GEM.PosX = 5 * cm;} // --- different crossing angle direction for eRHIC
+            else {  fConfig.ci_GEM.PosX = 0 * cm;}
+
             ci_GEM.Construct(fConfig.ci_GEM, World_Material, cb_Solenoid.Phys);
             ci_GEM.ConstructDetectors();
             for (int lay = 0; lay < fConfig.ci_GEM.Nlayers; lay++) {
@@ -505,10 +512,13 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 
         if (USE_CI_EMCAL) {
             //===================================================================================
-            // ==                      EMCAL    Hadron endcap                                ==
+            // ==                      CI_EMCAL    Hadron endcap                              ==
             //==================================================================================
 
             fConfig.ci_EMCAL.PosZ = -fConfig.ci_Endcap.SizeZ / 2 + fConfig.ci_DRICH.ThicknessZ + fConfig.ci_TRD.ThicknessZ + fConfig.ci_EMCAL.ThicknessZ / 2;
+            if(USE_JLEIC)  { fConfig.ci_EMCAL.USE_JLEIC=USE_JLEIC;fConfig.ci_EMCAL.det_Rin1=20*cm;  fConfig.ci_EMCAL.det_Rin2=55*cm;  }
+            if (USE_ERHIC) {fConfig.ci_EMCAL.USE_ERHIC=USE_ERHIC; fConfig.ci_EMCAL.det_Rin1=30*cm;  fConfig.ci_EMCAL.det_Rin2=30*cm; }
+
             ci_EMCAL.Construct(fConfig.ci_EMCAL, World_Material, ci_ENDCAP_GVol_Phys);
             ci_EMCAL.ConstructDetectors();    // --- outer part with Glass
             ci_EMCAL.ci_EMCAL_det_Logic->SetSensitiveDetector(fCalorimeterSD);
@@ -593,9 +603,18 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     }
     //------------------------------------------------
     if (USE_FFI_ZDC) {
+        if (USE_JLEIC) {
         fConfig.ffi_ZDC.rot_matx.rotateY(fConfig.ffi_ZDC.Angle * rad);
         fConfig.ffi_ZDC.Zpos = 4000 * cm;
         fConfig.ffi_ZDC.Xpos = -190 * cm;
+        }
+    if( USE_ERHIC) {
+          fConfig.ffi_ZDC.rot_matx.rotateY(-fConfig.ffi_ZDC.Angle * rad);
+          fConfig.ffi_ZDC.Zpos = 3500 * cm;
+          fConfig.ffi_ZDC.Xpos = 90 * cm;
+
+
+    }
 
         ffi_ZDC.Construct(fConfig.ffi_ZDC, World_Material, World_Phys);
         ffi_ZDC.ConstructTowels();

@@ -17,7 +17,7 @@
 struct ce_MRICH_Config {
 // define here Global volume parameters
     double RIn= 15 * cm;
-    double ROut= 80 * cm;
+    double ROut= 100 * cm;
     double SizeZ= 15 * cm;
     double PosZ;
     double InnerR= 15. * cm;
@@ -48,7 +48,8 @@ public:
     };
 
     inline void ConstructModules() {
-        printf("Begin ce_MRICH detector volumes \n");
+         using namespace spdlog;
+        info("Begin ce_MRICH detector volumes ");
 
         // construct here your detectors
 
@@ -82,7 +83,7 @@ public:
                 //       y_mrich, MRICH_R, ce_MRICH_GVol_InnerR);
 
 
-                if (MRICH_R < (cfg.ROut - cfg.mod_Width/2 - cfg.mod_Gap/2) && MRICH_R > cfg.InnerR) {
+                if (MRICH_R < (cfg.ROut - cfg.mod_Width/2 - cfg.mod_Gap/2-5*cm) && MRICH_R > cfg.InnerR) {
 
                     kmrich++;
                     sprintf(abname, "ce_MRICH_mod_Phys_%d", kmrich);
@@ -102,7 +103,7 @@ public:
                     sprintf(abname, "ce_MRICH_mod_Phys_%d", kmrich);
                     new G4PVPlacement(0, G4ThreeVector(-x_mrich, -y_mrich, 0.), abname, ce_MRICH_mod_Logic,
                                       Phys, false, kmrich);
-                    printf("ce_MRICH::kmrich=%d  j=%d i =%d x=%f, y=%f  MRICH_R=%f ce_MRICH_GVol_InnerR=%f \n ", kmrich, j, i, x_mrich,
+                    trace("ce_MRICH::kmrich={}  j={} i ={} x={}, y={}  MRICH_R={} ce_MRICH_GVol_InnerR={} ", kmrich, j, i, x_mrich,
                            y_mrich, MRICH_R, cfg.InnerR);
 
                 }

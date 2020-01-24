@@ -44,9 +44,9 @@ void Logging::SetGlobalLevel(LogLevels level)
 void Logging::InitializeSpdLog()
 {
     spdlog::info("Initializing g4e, parsing arguments...");
-    auto osink = std::make_shared<spdlog::sinks::ostream_sink_mt> (G4cout);
-    spdlog::default_logger()->sinks().clear();
-    spdlog::default_logger()->sinks().push_back(osink);
+    //auto osink = std::make_shared<spdlog::sinks::ostream_sink_mt> (G4cout);
+    //spdlog::default_logger()->sinks().clear();
+    //spdlog::default_logger()->sinks().push_back(osink);
     spdlog::info("Initialized G4E sink");
     spdlog::set_level(spdlog::level::debug);
 }

@@ -1,67 +1,106 @@
 #include <TH1D.h>
 #include <TH2D.h>
 #include <TStyle.h>
+#include <spdlog/spdlog.h>
 
-#include "JleicHistogramming.hh"
+#include "JLeicHistogramManager.hh"
 
 
 
-void JLeicHistogramming::FillHLikelihood(int ihist, G4double val)
+void JLeicHistogramManager::FillHLikelihood(int ihist, G4double val)
 {
     if (ihist < NHIST && HLikelihood[ihist]) HLikelihood[ihist]->Fill(val);
 }
 
-void JLeicHistogramming::FillHist(int ihist, G4double val)
+void JLeicHistogramManager::FillHist(int ihist, G4double val)
 {
     if (hist[ihist]) hist[ihist]->Fill(val);
 }
 
-void JLeicHistogramming::FillHist(int ihist, G4double val, G4double w)
+void JLeicHistogramManager::FillHist(int ihist, G4double val, G4double w)
 {
     if (hist[ihist]) hist[ihist]->Fill(val, w);
 }
 
-void JLeicHistogramming::FillHist(int ihist, int bin, G4double w)
+void JLeicHistogramManager::FillHist(int ihist, int bin, G4double w)
 {
     if (hist[ihist]) hist[ihist]->Fill(bin, w);
 }
 
-void JLeicHistogramming::ResetHist(int ihist)
+void JLeicHistogramManager::ResetHist(int ihist)
 {
     if (hist[ihist]) hist[ihist]->Reset();
 }
 
 //---  2D ---
-void JLeicHistogramming::FillHist2d(int ihist, G4double valx, G4double valy, G4double w)
+void JLeicHistogramManager::FillHist2d(int ihist, G4double valx, G4double valy, G4double w)
 {
     if (d2_hist[ihist]) d2_hist[ihist]->Fill(valx, valy, w);
 }
 
-G4double JLeicHistogramming::GetHist2d(int ihist, G4int ix, G4int iy)
+G4double JLeicHistogramManager::GetHist2d(int ihist, G4int ix, G4int iy)
 {
     if (d2_hist[ihist]) return d2_hist[ihist]->GetBinContent(ix, iy);
 }
 
-void JLeicHistogramming::ResetHist2d(int ihist)
+void JLeicHistogramManager::ResetHist2d(int ihist)
 {
     if (d2_hist[ihist]) d2_hist[ihist]->Reset();
 }
 
-void JLeicHistogramming::FillHistmatrixOccup(int ihist, G4double valx, G4double valy, G4double w)
+void JLeicHistogramManager::FillHistmatrixOccup(int ihist, G4double valx, G4double valy, G4double w)
 {
     if (hmatrixOccup[ihist]) hmatrixOccup[ihist]->Fill(valx, valy, 1.);
 }
 
-void JLeicHistogramming::FillHistmatrixOccupCM(int ihist, G4double valx, G4double valy, G4double w)
+void JLeicHistogramManager::FillHistmatrixOccupCM(int ihist, G4double valx, G4double valy, G4double w)
 {
     if (hmatrixOccupCM[ihist]) hmatrixOccupCM[ihist]->Fill(valx, valy, 1.);
 }
 
 
-JLeicHistogramming::JLeicHistogramming()
+JLeicHistogramManager::JLeicHistogramManager()
 {
-    char myname[120];
+}
 
+
+void JLeicHistogramManager::Write() {
+    if (histo1) histo1->Write();
+    if (histo2) histo2->Write();
+    if (histo3) histo3->Write();
+    if (histo4) histo4->Write();
+    if (histo5) histo5->Write();
+    if (histo6) histo6->Write();
+    if (histo7) histo7->Write();
+    if (histo8) histo8->Write();
+    if (histo9) histo9->Write();
+    if (histo10) histo10->Write();
+    if (histo11) histo11->Write();
+    if (histo12) histo12->Write();
+    if (histo13) histo13->Write();
+    if (histo14) histo14->Write();
+
+
+    //------------------------------------------------------------
+    for (int ihi = 0; ihi < NHIST; ihi++) {
+        if (d2_hist[ihi]) d2_hist[ihi]->Write();
+        if (hist[ihi])  hist[ihi]->Write();
+    }
+
+    //------------------------------------------------------------
+    for (int in = 0; in < 12; in++) {
+        hmatrixOccup[in]->Write();
+        hmatrixOccupCM[in]->Write();
+    }
+
+    //------------------------------------------------------------
+    for (int ihi = 0; ihi < NHIST; ihi++) {
+        if (HLikelihood[ihi]) HLikelihood[ihi]->Write();
+    }
+}
+
+void JLeicHistogramManager::Book()
+{
     histo1 = new TH1D("histo1", "number of steps/event", nbinStep, Steplow, Stephigh);
 
     histo2 = new TH1D("histo2", "Energy Loss (keV)", nbinEn, Enlow / keV, Enhigh / keV);
@@ -277,47 +316,11 @@ JLeicHistogramming::JLeicHistogramming()
     d2_hist[34] = new TH2D("d2_hist34_iQDS4_out", " d2_pos_iQDS4_out ", nbinX, -2100., -1700., nbinY, dminY, dmaxY);
 
     for (int in = 0; in < 12; in++) {
-        sprintf(myname, "hmatrixOccup1_%d", in);
-        hmatrixOccup[in] = new TH2F(myname, myname, NumCol, -0.5, NumCol - 0.5, NumRow, -0.5, NumRow - 0.5);
-        sprintf(myname, "hmatrixOccupCM1_%d", in);
-        hmatrixOccupCM[in] = new TH2F(myname, myname, 100, -10., 10., 100, -10., 10.);
+        std::string name = fmt::format("hmatrixOccup1_{}", in);
+        hmatrixOccup[in] = new TH2F(name.c_str(), name.c_str(), NumCol, -0.5, NumCol - 0.5, NumRow, -0.5, NumRow - 0.5);
+        name = fmt::format("hmatrixOccupCM1_{}", in);
+        hmatrixOccupCM[in] = new TH2F(name.c_str(), name.c_str(), 100, -10., 10., 100, -10., 10.);
     }
 
     gStyle->SetOptStat("nemruo");
-}
-
-
-void JLeicHistogramming::Write() {
-    if (histo1) histo1->Write();
-    if (histo2) histo2->Write();
-    if (histo3) histo3->Write();
-    if (histo4) histo4->Write();
-    if (histo5) histo5->Write();
-    if (histo6) histo6->Write();
-    if (histo7) histo7->Write();
-    if (histo8) histo8->Write();
-    if (histo9) histo9->Write();
-    if (histo10) histo10->Write();
-    if (histo11) histo11->Write();
-    if (histo12) histo12->Write();
-    if (histo13) histo13->Write();
-    if (histo14) histo14->Write();
-
-
-    //------------------------------------------------------------
-    for (int ihi = 0; ihi < NHIST; ihi++) {
-        if (d2_hist[ihi]) d2_hist[ihi]->Write();
-        if (hist[ihi])  hist[ihi]->Write();
-    }
-
-    //------------------------------------------------------------
-    for (int in = 0; in < 12; in++) {
-        hmatrixOccup[in]->Write();
-        hmatrixOccupCM[in]->Write();
-    }
-
-    //------------------------------------------------------------
-    for (int ihi = 0; ihi < NHIST; ihi++) {
-        if (HLikelihood[ihi]) HLikelihood[ihi]->Write();
-    }
 }

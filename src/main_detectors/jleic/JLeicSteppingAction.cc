@@ -3,7 +3,7 @@
 #include "generator/PrimaryGeneratorAction.hh"
 #include "JLeicEventAction.hh"
 #include "JLeicRunAction.hh"
-
+#include "JLeicSteppingAction.hh"
 #include <G4ios.hh>
 #include <G4SystemOfUnits.hh>
 #include <G4SteppingManager.hh>
@@ -21,19 +21,13 @@ static FILE *rc5, *rc4;
 TLorentzVector ka;
 
 
-JLeicSteppingAction::JLeicSteppingAction(JLeicDetectorConstruction *detectorConstruction, JLeicEventAction *eventAction, JLeicRunAction *runAction, JLeicHistogramming *histo)
+JLeicSteppingAction::JLeicSteppingAction(JLeicHistogramManager *histo): fHistoManager(histo)
 {
-    //steppingMessenger = new JLeicSteppingMessenger(this);
-    detector = detectorConstruction;
-    eventaction = eventAction;
-    runaction = runAction;
-    fHistos = histo;
 }
 
 
 JLeicSteppingAction::~JLeicSteppingAction()
 {
-    delete steppingMessenger;
 }
 
 

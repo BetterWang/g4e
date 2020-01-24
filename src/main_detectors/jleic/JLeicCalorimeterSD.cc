@@ -30,6 +30,7 @@
 #include "JLeicCalorimeterSD.hh"
 #include "JLeicCalorHit.hh"
 
+
 #include "G4VPhysicalVolume.hh"
 #include "G4VTouchable.hh"
 #include "G4TouchableHistory.hh"
@@ -41,7 +42,10 @@
 #include "Randomize.hh"
 
 
-JLeicCalorimeterSD::JLeicCalorimeterSD(G4String name, JLeicDetectorConstruction *det) : G4VSensitiveDetector(name), Detector(det)
+JLeicCalorimeterSD::JLeicCalorimeterSD(G4String name, g4e::JLeicRootOutput* rootEventOut, JLeicDetectorConstruction *det) :
+    G4VSensitiveDetector(name),
+    Detector(det),
+    mRootEventsOut(rootEventOut)
 {
     printf("JLeicCalorimeterSD()::constructor  enter\n");
     //fRM=G4RunManager::GetRunManager();
@@ -50,11 +54,6 @@ JLeicCalorimeterSD::JLeicCalorimeterSD(G4String name, JLeicDetectorConstruction 
     HitID = new G4int[500];
     printf("--> JLeicCalorimeterSD::Constructor(%s) \n", name.c_str());
 
-    JLeicRunAction *runaction = (JLeicRunAction *) (G4RunManager::GetRunManager()->GetUserRunAction());
-    JLeicRunAction *eventaction = (JLeicRunAction *) (G4RunManager::GetRunManager()->GetUserEventAction());
-
-    mHitsFile = runaction->mHitsFile;
-    mRootEventsOut = &runaction->mRootEventsOut;
 }
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 

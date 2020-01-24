@@ -41,9 +41,10 @@ class JLeicTrackingAction : public G4UserTrackingAction
 public:
     JLeicTrackingAction();
 
-    virtual ~JLeicTrackingAction() {};
+    ~JLeicTrackingAction() override = default;
 
-    virtual void PreUserTrackingAction(const G4Track *);
+    void PreUserTrackingAction(const G4Track *) override;
+    void PostUserTrackingAction(const G4Track *) override;
 
 };
 

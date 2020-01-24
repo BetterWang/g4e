@@ -32,6 +32,7 @@
 #ifndef JLeicDetectorConstruction_h
 #define JLeicDetectorConstruction_h 1
 
+#include <InitializationContext.hh>
 #include "globals.hh"
 
 #include "G4VUserDetectorConstruction.hh"
@@ -96,9 +97,10 @@
 #include "ir_Beampipe/ir_Beampipe.hh"     // IR Lattice import from file
 
 
-class JLeicCalorimeterSD;
 
+class JLeicCalorimeterSD;
 class JLeicVertexSD;
+
 
 class JLeicDetectorConstruction : public G4VUserDetectorConstruction
 {
@@ -183,7 +185,7 @@ public:
     //bool  USE_EMCALe
     //bool  USE_VTXB 1
 
-    JLeicDetectorConstruction();
+    JLeicDetectorConstruction(g4e::InitializationContext*);
 
     ~JLeicDetectorConstruction();
 
@@ -447,6 +449,7 @@ private:
     G4Tubs *ffi_D2_GVol_Solid;    //pointer to the solid  FARFORWD
     G4LogicalVolume *ffi_D2_GVol_Logic;    //pointer to the logical FARFORWD
     G4VPhysicalVolume *ffi_D2_GVol_Phys;    //pointer to the physical FARFORWD
+
     //-------------- Si layers---------------
     G4double ffi_D2_TRK_Lay_RIn;
     G4double ffi_D2_TRK_Lay_ROut;
@@ -532,20 +535,15 @@ private:
 
     //   G4Box *fSolidRadiator;
 
-
-
     G4double fStartR;
     G4double fStartZ;
     G4LogicalVolume *fLogicAbsorber;    //pointer to the logical Absorber
     G4VPhysicalVolume *fPhysicsAbsorber;    //pointer to the physical Absorber
 
     //G4int fModuleNumber;   // the number of Rad-Det modules
-
-
     G4double fMylarThick;
     G4double fPipeLength;
     G4bool fPipe;
-
 
     G4double fWindowZ;
     G4double fGapZ;
@@ -559,6 +557,7 @@ private:
     JLeicVertexSD *fVertexSD;  //pointer to the sensitive detector
 
     g4e::Materials *fMat;
+    g4e::InitializationContext* fInitContext;
 
 };
 

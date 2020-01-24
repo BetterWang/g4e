@@ -1,1 +1,18 @@
-{"config": {"output": "test_run", "input_file": "/home/romanov/Downloads/beagle_eD.txt", "beamline": "jleic", "detector": "jleic", "is_batch": true, "executable_path": "/home/romanov/eic/g4e-dev/cmake-build-debug/g4e", "work_dir": "/home/romanov/eic/g4e-dev/g4epy_lib/examples/work", "run_mac_file": "test_run.run.mac", "run_context_file": "test_run.run.json"}, "user_execs": []}
+{
+    "config": {
+        "beamline": "jleic",
+        "detector": "jleic",
+        "executable": "/home/romanov/eic/g4e-dev/cmake-build-debug/g4e",
+        "is_batch": false,
+        "output": "test_run",
+        "run_context_file": "test_run.run.json",
+        "run_mac_file": "test_run.run.mac",
+        "source_file": "/home/romanov/Downloads/beagle_eD.txt",
+        "work_dir": "/home/romanov/eic/g4e-dev/g4epy_lib/examples"
+    },
+    "user_execs": [
+        "/generator/select beagle",
+        "/generator/beagle/open /home/romanov/Downloads/beagle_eD.txt",
+        "/run/beamOn 1"
+    ]
+}

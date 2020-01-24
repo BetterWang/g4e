@@ -28,7 +28,7 @@
 
 #include "JLeicRunAction.hh"
 #include "JLeicHistoMConfig.hh"
-#include "JleicHistogramming.hh"
+#include "JLeicHistogramManager.hh"
 #include "JLeicDetectorConstruction.hh"
 #include "PrimaryGeneratorAction.hh"
 
@@ -42,15 +42,17 @@
 
 #include "rootlib.h"
 
-#include "JLeicAnalysis.hh"
 
+#include <TFile.h>
 
-JLeicRunAction::JLeicRunAction(JLeicDetectorConstruction *DET, JLeicHistogramming *histos) : histName("histfile"), detector(DET), nbinStep(0), nbinEn(0), nbinTt(0), nbinTb(0), nbinTsec(0), nbinTh(0),
-                                                                 nbinThback(0), nbinR(0), nbinGamma(0), nbinvertexz(0), fHistos(histos)
+JLeicRunAction::JLeicRunAction(g4e::JLeicRootOutput* jLeicRootOutput, JLeicHistogramManager *histos) :
+    mRootEventsOut(jLeicRootOutput),
+    histName("histfile"),
+    nbinStep(0), nbinEn(0), nbinTt(0), nbinTb(0), nbinTsec(0), nbinTh(0),
+    nbinThback(0), nbinR(0), nbinGamma(0), nbinvertexz(0), fHistos(histos)
 {
     runMessenger = new JLeicHistoMConfig();
     saveRndm = 1;
-
 }
 
 
@@ -64,58 +66,14 @@ JLeicRunAction::~JLeicRunAction()
 void JLeicRunAction::BeginOfRunAction(const G4Run *aRun)
 {
 
-    // Create analysis manager
-    // The choice of persistency format is done via selectin of a namespace
-    // in Analysis.hh
-    auto analysisManager = (G4RootAnalysisManager*) G4AnalysisManager::Instance();
-    G4cout << "Using " << analysisManager->GetType() << G4endl;
-
-    // Default settings
-    analysisManager->SetVerboseLevel(1);
-    analysisManager->SetFileName("Tutorial");
-    // Open an output file
-    analysisManager->OpenFile("MyApplication");
-
-    // Book histograms, ntuple
-    //
-
-    // Creating 1D histograms
-    analysisManager->CreateH1("Chamber1","Drift Chamber 1 # Hits", 50, 0., 50); // h1 Id = 0
-    analysisManager->CreateH1("Chamber2","Drift Chamber 2 # Hits", 50, 0., 50); // h1 Id = 1
-
-    // Creating 2D histograms
-    analysisManager->CreateH2("Chamber1_XY","Drift Chamber 1 X vs Y",50, -1000., 1000, 50, -300., 300.); // h2 Id = 0
-    analysisManager->CreateH2("Chamber2_XY","Drift Chamber 2 X vs Y",50, -1500., 1500, 50, -300., 300.); // h2 Id = 1
-
-    // Creating ntuple
-    //
-    analysisManager->CreateNtuple("Tutorial", "Hits");
-    analysisManager->CreateNtupleIColumn("Dc1Hits"); // column Id = 0
-    analysisManager->CreateNtupleIColumn("Dc2Hits"); // column Id = 1
-    analysisManager->CreateNtupleDColumn("ECEnergy"); // column Id = 2
-    analysisManager->CreateNtupleDColumn("HCEnergy"); // column Id = 3
-    analysisManager->CreateNtupleDColumn("Time1"); // column Id = 4
-    analysisManager->CreateNtupleDColumn("Time2"); // column Id = 5
-    analysisManager->FinishNtuple(); //Do not forget this line!
-
     printf("RunAction:: Enter\n");
     G4cout << "### Run " << aRun->GetRunID() << " start." << G4endl;
 
-    // save Rndm status
-    if (saveRndm > 0) {
-        CLHEP::HepRandom::showEngineStatus();
-        CLHEP::HepRandom::saveEngineStatus("beginOfRun.rndm");
-    }
     G4UImanager *UI = G4UImanager::GetUIpointer();
 
     G4VVisManager *pVVisManager = G4VVisManager::GetConcreteInstance();
 
     if (pVVisManager) UI->ApplyCommand("/vis/scene/notifyHandlers");
-
-    //char rootfilename[]="g4e_output_VTX.root";
-    printf("RunAction:: open output roort file 1\n");
-    mHitsFile = new TFile("g4e_output_evt.root", "RECREATE");
-    mRootEventsOut.Initialize(mHitsFile);
 
 
     EnergySumAbs = 0.;
@@ -327,13 +285,6 @@ void JLeicRunAction::EndOfRunAction(const G4Run *)
 
     G4cout << "(number) transmission coeff=" << Transmitted << "  reflection coeff=" << Reflected << G4endl;
     G4cout << G4endl;
-
-    // Get analysis manager
-    G4AnalysisManager* analysisManager = G4AnalysisManager::Instance();
-
-    // Write and close the output file
-    analysisManager->Write();
-    analysisManager->CloseFile();
 
     /*
     if(nbinStep>0)
@@ -684,24 +635,18 @@ void JLeicRunAction::EndOfRunAction(const G4Run *)
         G4UImanager::GetUIpointer()->ApplyCommand("/vis/viewer/update");
     }
 
-    // save Rndm status
-
-    if (saveRndm == 1) {
-        CLHEP::HepRandom::showEngineStatus();
-        CLHEP::HepRandom::saveEngineStatus("endOfRun.rndm");
-    }
-
     auto myRootfile = new TFile("histos.root", "RECREATE");
     myRootfile->cd();
     fHistos->Write();
     myRootfile->Close();
 
 
-    if (mHitsFile) {
-        mHitsFile->cd();
-        mRootEventsOut.Write();
-        mHitsFile->Close();
-    }
+    //if (mHitsFile) {
+//        mHitsFile->cd();
+
+        mRootEventsOut->Write();
+  //      mHitsFile->Close();
+//    }
 
 
 }

@@ -39,16 +39,15 @@
 #include "globals.hh"
 #include "JLeicRootOutput.hh"
 
-class JLeicRunAction;
 
 class JLeicEventActionMessenger;
-class JLeicHistogramming;
+class JLeicHistogramManager;
 
 
 class JLeicEventAction : public G4UserEventAction
 {
 public:
-    JLeicEventAction(JLeicRunAction*, JLeicHistogramming*);
+    JLeicEventAction(g4e::JLeicRootOutput *, JLeicHistogramManager*);
 
     ~JLeicEventAction();
 
@@ -85,15 +84,14 @@ public:
     G4int GetPrintModulo() { return printModulo; }
 
     //----- EVENT STRUCTURE -----
-    g4e::RootOutput *mRootEventsOut = nullptr;
-    TFile *mHitsFile = nullptr;
+    g4e::JLeicRootOutput *mRootEventsOut = nullptr;
 
 private:
     G4int calorimeterCollID;
     G4int vertexCollID;
     JLeicEventActionMessenger *eventMessenger;
-    JLeicHistogramming* fHistos;
-    JLeicRunAction *runaction;
+    JLeicHistogramManager* fHistos;
+
     G4int fVerbose;
     G4double nstep, nstepCharged, nstepNeutral;
     G4double Nch, Nne, GamDE;

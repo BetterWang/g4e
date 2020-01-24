@@ -52,6 +52,8 @@
 #include "JLeicRunAction.hh"
 #include "G4RunManager.hh"
 
+#include "root_output/JLeicRootOutput.hh"
+
 #include "rootlib.h"
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
@@ -60,7 +62,7 @@ class JLeicCalorimeterSD : public G4VSensitiveDetector
 {
 public:
 
-    JLeicCalorimeterSD(G4String, JLeicDetectorConstruction *);
+    JLeicCalorimeterSD(G4String, g4e::JLeicRootOutput*, JLeicDetectorConstruction *);
 
     ~JLeicCalorimeterSD() override;
 
@@ -97,7 +99,7 @@ private:
 
 
     //----- EVENT STRUCTURE -----
-    g4e::RootOutput* mRootEventsOut = nullptr;
+    g4e::JLeicRootOutput* mRootEventsOut = nullptr;
     TFile * mHitsFile = nullptr;
 
 

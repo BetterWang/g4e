@@ -56,6 +56,3 @@ def build_file_open_command(file_type: McFileTypes, file_name: str):
     return [f"/generator/select {cmd_gen_name}",
             f"/generator/beagle/open {file_name}"]
 
-
-
-

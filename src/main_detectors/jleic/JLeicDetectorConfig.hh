@@ -5,6 +5,11 @@
 #ifndef G4E_JLeicDetectorParameters_HH
 #define G4E_JLeicDetectorParameters_HH
 
+// -------beampipe---------------
+#include "ir_Beampipe/ir_Beampipe.hh"
+
+
+//------- Barrel ----
 #include "cb_Solenoid/cb_Solenoid.hh"
 
 #include "cb_VTX/cb_VTX.hh"
@@ -13,12 +18,17 @@
 #include "cb_EMCAL/cb_EMCAL.hh"
 #include "cb_HCAL/cb_HCAL.hh"
 
+
+//---- Rear electron ----
+
 #include "ce_GEM/ce_GEM.hh"
 #include "ce_MRICH/ce_MRICH.hh"
 #include "ce_EMCAL/ce_EMCAL.hh"
 
 #include "ffe_CPOL/ffe_CPOL.hh"
+#include "ffe_LUMI/ffe_LUMI.hh"
 
+//------ Forward Hadron -----
 #include "ci_GEM/ci_GEM.hh"
 #include "ci_DRICH/ci_DRICH.hh"
 #include "ci_TRD/ci_TRD.hh"
@@ -32,8 +42,6 @@
 #include "ffi_ZDC/ffi_ZDC.hh"         // Far-forward Ion   - HCAL ZDC
 #include "ffi_RPOT_D2/ffi_RPOT_D2.hh"         // Far-forward Ion   -Roman Pots before D3
 #include "ffi_RPOT_D3/ffi_RPOT_D3.hh"         // Far-forward Ion   -Roman Pots after D3
-
-#include "ir_Beampipe/ir_Beampipe.hh" // -------beampipe---------------
 
 struct JLeicDetectorConfig {
     int ElectronBeamEnergy =10;
@@ -78,6 +86,7 @@ struct JLeicDetectorConfig {
 
     //------------Far-Forward-Electron-----
     ffe_CPOL_Config ffe_CPOL;
+    ffe_LUMI_Config ffe_LUMI;
 
     //------------H-ENDCAP-----
     ci_GEM_Config  ci_GEM;

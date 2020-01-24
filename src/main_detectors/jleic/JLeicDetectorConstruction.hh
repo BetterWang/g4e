@@ -76,7 +76,8 @@
 #include "ce_EMCAL/ce_EMCAL.hh"         // Central Electron Endcap - EMCAL
 
 //--------------FFe---------------
-#include "ffe_CPOL/ffe_CPOL.hh"         //  Far-forward electron direction ePolarimeter
+#include "ffe_CPOL/ffe_CPOL.hh"         //  Far-forward  electron direction ePolarimeter
+#include "ffe_LUMI/ffe_LUMI.hh"    //  Far -forward  electron   LUMI
 //--------------CI---------------
 #include "ci_GEM/ci_GEM.hh"             // Central Ion Endcap - TRD
 #include "ci_DRICH/ci_DRICH.hh"         // Central Ion Endcap - DRICH
@@ -107,8 +108,8 @@ class JLeicDetectorConstruction : public G4VUserDetectorConstruction
 public:
 
     //--------BEAM elements------
-    bool USE_JLEIC = true ;  // use either JLEIC or ERHIC optics
-    bool USE_ERHIC =false ;   // use either JLEIC or ERHIC optics
+    bool USE_JLEIC = false ;  // use either JLEIC or ERHIC optics
+    bool USE_ERHIC =true ;   // use either JLEIC or ERHIC optics
     // -----
     bool USE_FFQs = true;
     //bool USE_FFQs_iu
@@ -153,6 +154,7 @@ public:
 
     // -------- polarimeter ------------
     bool USE_FFE_CPOL = false;
+    bool USE_FFE_LUMI =true;
     //==============================================
     //--------H-encap------
     bool USE_CI_ENDCAP = true;
@@ -339,8 +341,11 @@ private:
     //==============================================
     //----------------Far-forward Electron  ---------
 
-    //----------------FFe  CPOL volume --------------
+    //---------------- CPOL volume --------------
     ffe_CPOL_Design ffe_CPOL;
+       //----------------  LUMI volume --------------
+    ffe_LUMI_Design ffe_LUMI;
+
     //==============================================
     //----------------Ion-ENDCAP -----------------------
     //----------------GEM volume ---------------------

@@ -11,7 +11,7 @@
 #-------- SETUP BEAM ENERGY-------
 
 /detsetup/eBeam 10
-/detsetup/pBeam 200
+/detsetup/pBeam 275
 #/detsetup/pBeam 200
 
 #--------Detector construction ------------------

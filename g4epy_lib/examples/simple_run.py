@@ -8,6 +8,7 @@ this_file_dir = path.dirname(inspect.stack()[0][1])
 
 g4e = Geant4Eic(detector='jleic', beamline='jleic').vis() \
     .source('/home/romanov/Downloads/beagle_eD.txt') \
+    .source(Cone()) \
     .output('test_run') \
     .beam_on(1) \
     .run()

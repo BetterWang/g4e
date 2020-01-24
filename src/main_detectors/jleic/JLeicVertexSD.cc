@@ -366,7 +366,7 @@ G4bool JLeicVertexSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
     //theTouchable->MoveUpHistory();
     G4int JLeicNumber = 0;
 
-    trace("--> JLeicVertexSD::ProcessHits() Vol=({}) {} Abs={} \n", physVol->GetName().c_str(), (void *) physVol, (void *) Detector->GetAbsorberPhysicalVolume());
+    trace("--> JLeicVertexSD::ProcessHits() Vol=({}) {} Abs={} \n", physVol->GetName().c_str(), (void *) physVol, (void *) mDetector->GetAbsorberPhysicalVolume());
 
     if (HitID[JLeicNumber] == -1) {
         JLeicVTXHit *vtxHit = new JLeicVTXHit();

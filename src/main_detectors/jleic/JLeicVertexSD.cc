@@ -62,7 +62,10 @@ static int jDebug = 7;
 #include "Randomize.hh"
 
 
-JLeicVertexSD::JLeicVertexSD(G4String name, JLeicDetectorConstruction *det) : G4VSensitiveDetector(name), Detector(det)
+JLeicVertexSD::JLeicVertexSD(G4String name, g4e::JLeicRootOutput* rootOutput, JLeicDetectorConstruction *det) :
+        G4VSensitiveDetector(name),
+        mDetector(det),
+        mRootEventsOut(rootOutput)
 {
     printf("JLeicVertexSD()::constructor  enter\n");
     //fRM=G4RunManager::GetRunManager();
@@ -75,12 +78,6 @@ JLeicVertexSD::JLeicVertexSD(G4String name, JLeicDetectorConstruction *det) : G4
     collectionName.insert("VTXCollection");
     HitID = new G4int[500];
     printf("--> JLeicVertexSD::Constructor(%s) \n", name.c_str());
-
-    JLeicRunAction *runaction = (JLeicRunAction *) (G4RunManager::GetRunManager()->GetUserRunAction());
-    JLeicRunAction *eventaction = (JLeicRunAction *) (G4RunManager::GetRunManager()->GetUserEventAction());
-
-    mHitsFile = runaction->mHitsFile;
-    mRootEventsOut = &runaction->mRootEventsOut;
 
     if (use_depfet) for (int ii = 0; ii < (NumRow * NumCol); ii++) FRAME[ii] = 0; //-- 8000;  //-- set pedestals
     if (use_fdc) {
@@ -118,16 +115,6 @@ JLeicVertexSD::JLeicVertexSD(G4String name, JLeicDetectorConstruction *det) : G4
 
 JLeicVertexSD::~JLeicVertexSD()
 {
-
-    /*
-      if(mHitsFile)
-      {
-          mHitsFile->cd();
-          mRootEventsOut->Write();
-          mHitsFile->Close();
-      }
-    */
-
     delete[] HitID;
     if (use_fdc) delete dedx_fadc;
 }
@@ -136,7 +123,7 @@ JLeicVertexSD::~JLeicVertexSD()
 void JLeicVertexSD::Initialize(G4HCofThisEvent *)
 {
 
-    fmt::print("JLeicVertexSD()::Initialize enter nevent={}  Lays.size()={}\n", nevent, Detector->cb_VTX.Lays.size());
+    fmt::print("JLeicVertexSD()::Initialize enter nevent={}  Lays.size()={}\n", nevent, mDetector->cb_VTX.Lays.size());
 
     VTXCollection = new JLeicVTXHitsCollection(SensitiveDetectorName, collectionName[0]);
     for (G4int i = 0; i < 1; i++) {
@@ -146,7 +133,7 @@ void JLeicVertexSD::Initialize(G4HCofThisEvent *)
     nevent++;
     if (use_fdc) {
         for (int ii = 0; ii < 100; ii++) dEslice[ii] = 0; // reset
-        if (!(nevent % Detector->fModuleNumber)) { //-- number of chambers simple aproximation ----
+        if (!(nevent % mDetector->fModuleNumber)) { //-- number of chambers simple aproximation ----
             //      for (int ii=0; ii<100; ii++) dEslice[ii]=0; // reset
             ntr = 0;
             ntr1 = 0;
@@ -179,7 +166,6 @@ G4bool JLeicVertexSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
     if (aStep->GetTrack()->GetDefinition()->GetPDGCharge() != 0.) //-- gamma ??
         stepl = aStep->GetStepLength();
 
-
     const G4TouchableHandle touchablepre = aStep->GetPreStepPoint()->GetTouchableHandle();
     const G4TouchableHandle touchablepost = aStep->GetPostStepPoint()->GetTouchableHandle();
     // depth 1 --> x
@@ -211,7 +197,7 @@ G4bool JLeicVertexSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
     if (jDebug > 2) printf("xloc=%f yloc=%f zloc=%f  \n", xloc, yloc, zloc);
     if (use_fdc) {  //----- FDC / TRD  ---
 
-        int zbin = (zloc / mm + Detector->GetAbsorberThickness() / 2.) / Detector->fadc_slice; //-- z position , slice number
+        int zbin = (zloc / mm + mDetector->GetAbsorberThickness() / 2.) / mDetector->fadc_slice; //-- z position , slice number
         //int zbin = (zloc/mm+Detector->GetAbsorberThickness()/2.) /  (Detector->GetAbsorberThickness()/10.)  ; //-- z position , slice 1/10
         //printf("zbin=%d zloc=%f zinp=%f  zend=%f wz=%f \n",zbin,zloc,zinp,zend,worldPosition.z());
 
@@ -377,17 +363,17 @@ G4bool JLeicVertexSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
     G4int JLeicNumber = 0;
 
     if (jDebug > 2)
-        printf("--> JLeicVertexSD::ProcessHits() Vol=(%s) %p Abs=%p \n", physVol->GetName().c_str(), (void *) physVol, (void *) Detector->GetAbsorberPhysicalVolume());
+        printf("--> JLeicVertexSD::ProcessHits() Vol=(%s) %p Abs=%p \n", physVol->GetName().c_str(), (void *) physVol, (void *) mDetector->GetAbsorberPhysicalVolume());
 
     if (HitID[JLeicNumber] == -1) {
         JLeicVTXHit *vtxHit = new JLeicVTXHit();
-        if (physVol == Detector->GetAbsorberPhysicalVolume()) vtxHit->AddAbs(edep, stepl);
+        if (physVol == mDetector->GetAbsorberPhysicalVolume()) vtxHit->AddAbs(edep, stepl);
         HitID[JLeicNumber] = VTXCollection->insert(vtxHit) - 1;
         if (verboseLevel > 0)
             G4cout << " New Vertex Hit on JLeic: " << JLeicNumber << G4endl;
         //printf("--> JLeicVertexSD::ProcessHits()  New Vertex Hit on JLeic: %d de=%f\n",JLeicNumber,edep/keV);
     } else {
-        if (physVol == Detector->GetAbsorberPhysicalVolume())
+        if (physVol == mDetector->GetAbsorberPhysicalVolume())
             (*VTXCollection)[HitID[JLeicNumber]]->AddAbs(edep, stepl);
         if (verboseLevel > 0)
             G4cout << " Energy added to JLeic: " << JLeicNumber << G4endl;
@@ -411,8 +397,8 @@ void JLeicVertexSD::EndOfEvent(G4HCofThisEvent *HCE)
 
     if (use_fdc) {
 
-        if (NVAR > Detector->GetAbsorberThickness() / Detector->fadc_slice) {
-            printf("Error FADC slices:: NVAR=%d Slices=%f \n", NVAR, Detector->GetAbsorberThickness() / Detector->fadc_slice);
+        if (NVAR > mDetector->GetAbsorberThickness() / mDetector->fadc_slice) {
+            printf("Error FADC slices:: NVAR=%d Slices=%f \n", NVAR, mDetector->GetAbsorberThickness() / mDetector->fadc_slice);
             exit(1);
         }
 

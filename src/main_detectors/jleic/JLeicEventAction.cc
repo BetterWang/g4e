@@ -30,7 +30,7 @@
 #include "main_detectors/jleic/JLeicCalorHit.hh"
 #include "main_detectors/jleic/JLeicVTXHit.hh"
 #include "JLeicEventActionMessenger.hh"
-#include "JleicHistogramming.hh"
+#include "JLeicHistogramManager.hh"
 
 #include "G4Event.hh"
 #include "G4PrimaryVertex.hh"
@@ -45,11 +45,10 @@
 
 
 
-JLeicEventAction::JLeicEventAction(JLeicRunAction *JLeicRA, JLeicHistogramming *histos)
+JLeicEventAction::JLeicEventAction(g4e::JLeicRootOutput *rootOutput, JLeicHistogramManager *histos)
         : calorimeterCollID(-1),
           vertexCollID(-1),
           eventMessenger(0),
-          runaction(JLeicRA),
           fVerbose(0),
           printModulo(10000),
           fHistos(histos)
@@ -57,8 +56,8 @@ JLeicEventAction::JLeicEventAction(JLeicRunAction *JLeicRA, JLeicHistogramming *
     eventMessenger = new JLeicEventActionMessenger(this);
     printf("JLeicEventAction:: Constructor \n");
 
-    mHitsFile = runaction->mHitsFile;
-    mRootEventsOut=&runaction->mRootEventsOut;
+
+    mRootEventsOut=rootOutput;
 }
 
 
@@ -142,18 +141,18 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
                     G4BestUnit(totLAbs, "Length")
                     << G4endl;
 
-        // count event, add deposits to the sum ...
-        runaction->CountEvent();
-        runaction->AddTrackLength(totLAbs);
-        runaction->AddnStepsCharged(nstepCharged);
-        runaction->AddnStepsNeutral(nstepNeutral);
-        if (fVerbose == 2)
-            G4cout << " Ncharged=" << Nch << "  ,   Nneutral=" << Nne << G4endl;
-        runaction->CountParticles(Nch, Nne);
-        runaction->AddEP(NE, NP);
-        // TODO        runaction->AddTrRef(Transmitted, Reflected);
-        runaction->AddEdeps(totEAbs);
-        //runaction->FillGamDE(GamDE) ;; // move to step action
+//        // count event, add deposits to the sum ...
+//        runaction->CountEvent();
+//        runaction->AddTrackLength(totLAbs);
+//        runaction->AddnStepsCharged(nstepCharged);
+//        runaction->AddnStepsNeutral(nstepNeutral);
+//        if (fVerbose == 2)
+//            G4cout << " Ncharged=" << Nch << "  ,   Nneutral=" << Nne << G4endl;
+//        runaction->CountParticles(Nch, Nne);
+//        runaction->AddEP(NE, NP);
+//        // TODO        runaction->AddTrRef(Transmitted, Reflected);
+//        runaction->AddEdeps(totEAbs);
+//        //runaction->FillGamDE(GamDE) ;; // move to step action
 
         nstep = nstepCharged + nstepNeutral;
         // fHistos->FillEn(totEAbs);
@@ -188,22 +187,22 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
                     G4BestUnit(totLAbs, "Length")
                     << G4endl;
 
-        // count event, add deposits to the sum ...
-        runaction->CountEvent();
-        runaction->AddTrackLength(totLAbs);
-        runaction->AddnStepsCharged(nstepCharged);
-        runaction->AddnStepsNeutral(nstepNeutral);
-        if (fVerbose == 2)
-            G4cout << " Ncharged=" << Nch << "  ,   Nneutral=" << Nne << G4endl;
-        runaction->CountParticles(Nch, Nne);
-        runaction->AddEP(NE, NP);
-        //runaction->AddTrRef(Transmitted, Reflected);
-        runaction->AddEdeps(totEAbs);
-        //runaction->FillEn(totEAbs);
-        //runaction->FillGamDE(GamDE) ;; // move to step action
-
-        nstep = nstepCharged + nstepNeutral;
-        //runaction->FillNbOfSteps(nstep);
+//        // count event, add deposits to the sum ...
+//        runaction->CountEvent();
+//        runaction->AddTrackLength(totLAbs);
+//        runaction->AddnStepsCharged(nstepCharged);
+//        runaction->AddnStepsNeutral(nstepNeutral);
+//        if (fVerbose == 2)
+//            G4cout << " Ncharged=" << Nch << "  ,   Nneutral=" << Nne << G4endl;
+//        runaction->CountParticles(Nch, Nne);
+//        runaction->AddEP(NE, NP);
+//        //runaction->AddTrRef(Transmitted, Reflected);
+//        runaction->AddEdeps(totEAbs);
+//        //runaction->FillEn(totEAbs);
+//        //runaction->FillGamDE(GamDE) ;; // move to step action
+//
+//        nstep = nstepCharged + nstepNeutral;
+//        //runaction->FillNbOfSteps(nstep);
     }
 
 

@@ -1,7 +1,6 @@
 #ifndef G4E_ARGUMENTPROCESSOR_HH
 #define G4E_ARGUMENTPROCESSOR_HH
 
-
 #include <vector>
 #include <string>
 
@@ -28,7 +27,7 @@
 /// Program Configuration provided by arguments or environment variables
 /// This class provides all needed dynamic information about flags and
 /// environment variables provided by users
-struct InputArguments
+struct UserArguments
 {
     bool ShowGui = false;
     int ThreadsCount = 1;
@@ -46,6 +45,8 @@ struct InputArguments
 
     std::string ResourcePath;                /// Path to resources directory
 
+    std::string OutputBaseName;              /// Desired output file(s) name (without suffix and extension)
+
     LogLevels LogLevel = LogLevels::INFO;    /// Controlled by -v. --verbosity
 };
 
@@ -57,16 +58,16 @@ public:
 
     static LogLevels ProcessVerbosity(const std::string& str);
 
-    static InputArguments Process(int argc, char **argv);
+    static UserArguments Process(int argc, char **argv);
 
 private:
 
 
-    static void ProcessFileNames(InputArguments& result);
+    static void ProcessFileNames(UserArguments& result);
 
-    static void ProcessHomePath(InputArguments& result, const char *homeCstr);
+    static void ProcessHomePath(UserArguments& result, const char *homeCstr);
 
-    static void ProcessMacroPath(InputArguments& result, const char *macroPathCstr);
+    static void ProcessMacroPath(UserArguments& result, const char *macroPathCstr);
 
 /// Processes both program arguments and environment variables to build the right ProgramArguments
 
@@ -75,16 +76,18 @@ private:
 
 
 
-InputArguments InputProcessor::Process(int argc, char **argv)
+inline UserArguments InputProcessor::Process(int argc, char **argv)
 {
-    InputArguments result;                                          // This function result
+    UserArguments result;                                          // This function result
     CLI::App app{"g4e - Geant 4 Electron Ion Collider"};
 
     bool optShowGui = false;
     int optThreads = 1;
     std::string optVerbose("info");
+    std::string optOutputName("g4e_output");
     std::vector<std::string> optAllFiles;
     app.add_flag("-g,--gui", optShowGui, "Shows Geant4 GUI");
+    app.add_flag("-o,--output", optOutputName, "Base name for Output files");
     app.add_option("-t,-j,--threads,--jobs", optThreads, "Number of threads. Single threaded mode if 0 or 1", 1);
     app.add_option("-v,--verbose", optVerbose,
                    "Verbosity 0-5 or: off fatal error warn info debug trace. '-v' (no val) means 'debug'. Can be set with /g4r/logLevel", "info");
@@ -117,6 +120,9 @@ InputArguments InputProcessor::Process(int argc, char **argv)
     result.AllFileNames = optAllFiles;
     ProcessFileNames(result);                               // Separate file names as macro / data files
 
+    // Output file name:
+    result.OutputBaseName = optOutputName;
+
     // G4E_HOME
     const char* homeCstr = std::getenv("G4E_HOME");
     ProcessHomePath(result, homeCstr);
@@ -128,7 +134,7 @@ InputArguments InputProcessor::Process(int argc, char **argv)
     return result;
 }
 
-LogLevels InputProcessor::ProcessVerbosity(const std::string &str) {
+inline LogLevels InputProcessor::ProcessVerbosity(const std::string &str) {
     if(str.empty()) return LogLevels::DEBUG;    // empty means user put -v, he probably wants something more verbose!
     else if (g4e::ToLowerCopy(str) == "0") return LogLevels::OFF;
     else if (g4e::ToLowerCopy(str) == "1") return LogLevels::FATAL;
@@ -142,7 +148,7 @@ LogLevels InputProcessor::ProcessVerbosity(const std::string &str) {
     return LogLevels::Parse(str);
 }
 
-void InputProcessor::ProcessFileNames(InputArguments &result) {
+inline void InputProcessor::ProcessFileNames(UserArguments &result) {
     // Separate filenames to Mac and other files
     for(const auto& name: result.AllFileNames) {
         if(g4e::EndsWith(name, ".mac")) {
@@ -170,7 +176,7 @@ void InputProcessor::ProcessFileNames(InputArguments &result) {
 
 }
 
-void InputProcessor::ProcessHomePath(InputArguments &result, const char *homeCstr) {
+inline void InputProcessor::ProcessHomePath(UserArguments &result, const char *homeCstr) {
     result.IsSetHomePath = homeCstr != nullptr;
     result.HomePath = homeCstr ? homeCstr : "";
     fmt::print("ENV:G4E_HOME: is-set={}, value='{}'\n", result.IsSetHomePath, result.HomePath);
@@ -183,7 +189,7 @@ void InputProcessor::ProcessHomePath(InputArguments &result, const char *homeCst
     }
 }
 
-void InputProcessor::ProcessMacroPath(InputArguments &result, const char *macroPathCstr) {
+inline void InputProcessor::ProcessMacroPath(UserArguments &result, const char *macroPathCstr) {
     result.IsSetMacroPath = macroPathCstr != nullptr;
     result.MacroPath = macroPathCstr? macroPathCstr: "";
 

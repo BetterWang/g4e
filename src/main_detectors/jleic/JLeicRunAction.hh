@@ -29,8 +29,6 @@
 //
 // 
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
 #ifndef JLeicRunAction_h
 #define JLeicRunAction_h 1
@@ -40,20 +38,18 @@
 #include <iostream>
 #include "JLeicRootOutput.hh"
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-class JLeicDetectorConstruction;
 class JLeicHistoMConfig;
-class JLeicHistogramming;
+class JLeicHistogramManager;
 
 class G4Run;
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 class JLeicRunAction : public G4UserRunAction
 {
 public:
-    explicit JLeicRunAction(JLeicDetectorConstruction *, JLeicHistogramming *histos);
+    explicit JLeicRunAction(g4e::JLeicRootOutput*, JLeicHistogramManager *);
 
     ~JLeicRunAction() override;
 
@@ -77,7 +73,7 @@ public:
     void AddnStepsNeutral(G4double steps);
     void AddTrRef(G4double tr, G4double ref);
 
-    g4e::RootOutput mRootEventsOut;
+    g4e::JLeicRootOutput *mRootEventsOut;
     TFile *mHitsFile = nullptr;
 
 
@@ -86,7 +82,7 @@ private:
     G4String AnnFileName;
 
     G4String histName;
-    JLeicDetectorConstruction *detector;
+
 
     G4double EnergySumAbs, EnergySquareSumAbs;
     G4double tlSumAbs, tlsquareSumAbs;
@@ -133,7 +129,7 @@ private:
     G4int nbinvertexz;
 
     JLeicHistoMConfig *runMessenger;
-    JLeicHistogramming *fHistos;
+    JLeicHistogramManager *fHistos;
     G4int saveRndm;
 };
 

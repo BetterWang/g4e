@@ -59,7 +59,7 @@ private:
     Values value;
 };
 
-LogLevels::Values LogLevels::Parse(const G4String &str)
+inline LogLevels::Values LogLevels::Parse(const G4String &str)
 {
     if(str.empty() || g4e::ToLowerCopy(str) == "off") return Values::OFF;
     else if (g4e::ToLowerCopy(str) == "fatal") return FATAL;
@@ -74,9 +74,10 @@ LogLevels::Values LogLevels::Parse(const G4String &str)
     // Wrong word!
     auto message = fmt::format("Can't parse this log level: '{}'", str);
     G4Exception("LogLevels::LogLevels(const G4String& str)", "g4e", FatalException, message.c_str());
+    return TRACE;   // to remove compiler warning
 }
 
-G4String LogLevels::ToString()
+inline G4String LogLevels::ToString()
 {
     switch (value) {
         case FATAL: return "fatal";

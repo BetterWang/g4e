@@ -16,7 +16,8 @@
 
 namespace Logging { void SetGlobalLevel(LogLevels level);}
 
-    class LoggingMessenger : public G4UImessenger {
+
+class LoggingMessenger : public G4UImessenger {
 public:
 
     LoggingMessenger();

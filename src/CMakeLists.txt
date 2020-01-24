@@ -22,15 +22,15 @@ target_sources_local(g4e
         helpers/StringHelpers.cc
         helpers/StringHelpers.hh
 
+        root_output/MainRootOutput.cc
+        root_output/MainRootOutput.hh
+
         LoggingMessenger.hh
         LogLevels.hh
         Logging.hh
 
         G4QuadrupoleMagField.cc
         G4QuadrupoleMagField.hh
-
-        MulticastEventAction.hh
-        MulticastSteppingAction.hh
 
         Materials.cc
         Materials.hh
@@ -44,8 +44,11 @@ target_sources_local(g4e
         GeometryExport.hh
         GeometryExport.cc
 
-        UserActionInitialization.hh
-        UserActionInitialization.cc
+        ActionInitialization.hh
+        ActionInitialization.cc
+
+        DetectorConstructionContext.hh
+        InitializationContext.hh
         )
 
 add_subdirectory(main_detectors)

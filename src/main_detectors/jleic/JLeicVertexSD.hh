@@ -61,7 +61,7 @@ class JLeicVertexSD : public G4VSensitiveDetector
 {
 public:
 
-    JLeicVertexSD(G4String, JLeicDetectorConstruction *);
+    JLeicVertexSD(G4String, g4e::JLeicRootOutput*, JLeicDetectorConstruction *);
 
     ~JLeicVertexSD() override;
 
@@ -83,7 +83,7 @@ private:
     JLeicRunAction *runaction; // = fRM->runAction
 
     JLeicVTXHitsCollection *VTXCollection;
-    JLeicDetectorConstruction *Detector;
+    JLeicDetectorConstruction *mDetector;
     G4int *HitID;
     G4double dEslice[100];
     TH2F *hmatrix1[120], *hmatrix2;
@@ -102,7 +102,7 @@ private:
   std::vector <unsigned short> FRAME;
 
     //----- EVENT STRUCTURE -----
-    g4e::RootOutput* mRootEventsOut = nullptr;
+    g4e::JLeicRootOutput* mRootEventsOut = nullptr;
     TFile * mHitsFile = nullptr;
 
     //---------------------------

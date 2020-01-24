@@ -10,5 +10,5 @@
 /generator/select hepmcAscii
 /generator/hepmcAscii/open /home/romanov/Downloads/herwig6_20k.hepmc
 
-/run/beamOn 1
+/run/beamOn 10
 exit

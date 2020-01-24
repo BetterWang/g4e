@@ -25,23 +25,25 @@
 
 #include "StringHelpers.hh"
 
-#include "MulticastEventAction.hh"
 
 #include "main_detectors/jleic/JLeicDetectorConstruction.hh"
 #include "ArgumentProcessor.hh"
 #include "JLeicPhysicsList.hh"
 #include "PrimaryGeneratorAction.hh"
 
-#include "JleicHistogramming.hh"
+#include "JLeicHistogramManager.hh"
 #include "JLeicRunAction.hh"
 #include "JLeicEventAction.hh"
 #include "JLeicSteppingAction.hh"
 #include "JLeicSteppingVerbose.hh"
 #include "JLeicTrackingAction.hh"
+#include "JLeicActionInitialization.hh"
+#include "InitializationContext.hh"
 
-#include "MulticastEventAction.hh"
-#include "MulticastSteppingAction.hh"
+#include "MainRootOutput.hh"
+
 #include "Logging.hh"
+#include "ActionInitialization.hh"
 
 #include <G4MTRunManager.hh>
 #include <G4RunManager.hh>
@@ -53,6 +55,7 @@
 //-- physics processes --
 #include <FTFP_BERT.hh>
 #include <QGSP_BIC.hh>
+#include <TFile.h>
 
 
 int main(int argc, char **argv)
@@ -67,57 +70,51 @@ int main(int argc, char **argv)
     Logging::InitializeSpdLog();
 
     // Process user args and environment variables
-    auto args = InputProcessor::Process(argc, argv);
-    Logging::SetGlobalLevel(args.LogLevel);
-
+    auto appArgs = InputProcessor::Process(argc, argv);
+    Logging::SetGlobalLevel(appArgs.LogLevel);
 
     //choose the Random engine
     CLHEP::HepRandom::setTheEngine(new CLHEP::RanecuEngine);
+    CLHEP::HepRandom::showEngineStatus();
+    std::string rndmFilename(appArgs.OutputBaseName + ".bgn.rndm"); // Save state in the beginning of beginning
+    CLHEP::HepRandom::saveEngineStatus(rndmFilename.c_str());
 
     //my Verbose output class
     G4VSteppingVerbose::SetInstance(new JLeicSteppingVerbose);
 
+    //output root file
+    std::string rootFileName(appArgs.OutputBaseName + ".root");
+    std::unique_ptr<TFile> rootOutputFile(new TFile(rootFileName.c_str(), "RECREATE"));
+    std::unique_ptr<g4e::MainRootOutput> mainRootOutput(new g4e::MainRootOutput(rootOutputFile.get()));
+
     // Construct the default run manager
     G4RunManager * runManager;
-    if(args.ThreadsCount > 1) {
+    if(appArgs.ThreadsCount > 1) {
         // Multi-threaded run manager
         auto mtRunManager = new G4MTRunManager;
-        mtRunManager->SetNumberOfThreads(args.ThreadsCount);
+        mtRunManager->SetNumberOfThreads(appArgs.ThreadsCount);
         runManager = mtRunManager;
     } else {
         // Single threaded mode
         runManager = new G4RunManager;
     }
 
-    auto detector = new JLeicDetectorConstruction();
-    auto jleicHistos = new JLeicHistogramming();
+    // Action initialization
+    std::unique_ptr<g4e::ActionInitialization> actionInit(new g4e::ActionInitialization());
+    std::unique_ptr<G4VUserActionInitialization> jleicActionInit(new JLeicActionInitialization(mainRootOutput.get()));
+
+    actionInit->AddUserInitialization(jleicActionInit.get());
+
+    // After the run manager, we can combine initialization context
+    g4e::InitializationContext initContext {appArgs, mainRootOutput.get(), actionInit.get()};
+
+    auto detector = new JLeicDetectorConstruction(&initContext);
 
     runManager->SetUserInitialization(detector);
     runManager->SetUserInitialization(new JLeicPhysicsList(detector));
+    runManager->SetUserInitialization(initContext.ActionInitialization);
 
-    // RUN action
-    auto runAction = new JLeicRunAction(detector, jleicHistos);
-    runManager->SetUserAction(runAction);
 
-    // Primary Generator
-    auto pgAction = new PrimaryGeneratorAction();
-    runManager->SetUserAction(pgAction);
-
-    // Event action
-    auto eventAction = new MulticastEventAction();
-    auto jleicEventAction = new JLeicEventAction(runAction, jleicHistos);
-    eventAction->AddUserAction(jleicEventAction);
-
-    runManager->SetUserAction(eventAction);
-
-    // Stepping action
-
-    auto steppingAction = new JLeicSteppingAction(detector, jleicEventAction, runAction, jleicHistos);
-    runManager->SetUserAction(steppingAction);
-
-    // Tracking action
-    auto trackingAction = new JLeicTrackingAction();
-    runManager->SetUserAction(trackingAction);
 
     // Vis manager?
     G4VisExecutive* visManager = nullptr;
@@ -125,8 +122,8 @@ int main(int argc, char **argv)
     std::string defaultMacro = "jleic.mac";     // No GUI default macro. Default macro is used if no other macros given
 
     // We show GUI if user didn't provided any macros of if he has --gui/-g flag
-    if(args.MacroFileNames.empty() || args.ShowGui) {
-        args.ShowGui = true;
+    if(appArgs.MacroFileNames.empty() || appArgs.ShowGui) {
+        appArgs.ShowGui = true;
         defaultMacro = "jleicvis.mac";          // Default macro for GUI
         visManager = new G4VisExecutive;
         visManager->Initialize();
@@ -137,26 +134,29 @@ int main(int argc, char **argv)
     G4UImanager *ui = G4UImanager::GetUIpointer();
 
     // set macro path from environment if it is set
-    ui->ApplyCommand(format("/control/macroPath {}", args.MacroPath));
+    ui->ApplyCommand(format("/control/macroPath {}", appArgs.MacroPath));
 
     // No Macros provided by user? Use default macro
-    if (args.MacroFileNames.empty()) {
-        args.MacroFileNames.push_back(defaultMacro);
+    if (appArgs.MacroFileNames.empty()) {
+        appArgs.MacroFileNames.push_back(defaultMacro);
     }
 
     // Execute all macros
     fmt::print("Executing macro files:");
-    for(const auto& fileName: args.MacroFileNames) {
+    for(const auto& fileName: appArgs.MacroFileNames) {
         std::string command = "/control/execute " + fileName;
         fmt::print("   {}\n", command);
-	std::cout << " exec command : " << command << std::endl;
+	    std::cout << " exec command : " << command << std::endl;
         ui->ApplyCommand(command);
     }
 
     // We start visual mode if no files provided or if --gui flag is given
-    if(args.ShowGui && uiExec) {
+    if(appArgs.ShowGui && uiExec) {
         uiExec->SessionStart();
     }
+
+    rndmFilename = appArgs.OutputBaseName + ".end.rndm";
+    CLHEP::HepRandom::saveEngineStatus(rndmFilename.c_str());
 
     return 0;
 }

@@ -37,24 +37,21 @@ class JLeicDetectorConstruction;
 class JLeicRunAction;
 class JLeicEventAction;
 class JLeicSteppingMessenger;
-class JLeicHistogramming;
+class JLeicHistogramManager;
 
 
 class JLeicSteppingAction : public G4UserSteppingAction
 {
   public:
-    JLeicSteppingAction(JLeicDetectorConstruction *detectorConstruction, JLeicEventAction *eventAction, JLeicRunAction *runAction, JLeicHistogramming *histo);
+    JLeicSteppingAction(JLeicHistogramManager *histo);
     ~JLeicSteppingAction() override;
 
     void UserSteppingAction(const G4Step*) override;
    
   FILE* rc{};
   private:
-    JLeicDetectorConstruction* detector;
-    JLeicEventAction*          eventaction;
-    JLeicRunAction*            runaction;
-    JLeicSteppingMessenger*    steppingMessenger;
-    JLeicHistogramming*        fHistos;
+
+    JLeicHistogramManager*     fHistoManager;
 };
 
 #endif

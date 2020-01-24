@@ -66,8 +66,9 @@
 #include "GeometryExport.hh"
 
 
-JLeicDetectorConstruction::JLeicDetectorConstruction() :
-    fWorldChanged(false)
+JLeicDetectorConstruction::JLeicDetectorConstruction(g4e::InitializationContext *initContext) :
+    fWorldChanged(false),
+    fInitContext(initContext)
 {
     fDetectorMessenger = new JLeicDetectorMessenger(this);
     fMat = new g4e::Materials();
@@ -224,12 +225,13 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     G4SDManager *SDman = G4SDManager::GetSDMpointer();
 
     if (!fCalorimeterSD) {
-        fCalorimeterSD = new JLeicCalorimeterSD("CalorSD", this);
+        fCalorimeterSD = new JLeicCalorimeterSD("CalorSD", fInitContext->RootOutput->GetJLeicRootOutput(), this);
         SDman->AddNewDetector(fCalorimeterSD);
     }
     if (!fVertexSD) {
-        fVertexSD = new JLeicVertexSD("VertexSD", this);
-        SDman->AddNewDetector(fVertexSD);  printf("VertexSD done\n");
+        fVertexSD = new JLeicVertexSD("VertexSD", fInitContext->RootOutput->GetJLeicRootOutput(),  this);
+        SDman->AddNewDetector(fVertexSD);
+        printf("VertexSD done\n");
     }
 
     //=========================================================================

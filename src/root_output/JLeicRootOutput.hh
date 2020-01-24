@@ -12,7 +12,7 @@
 
 namespace g4e
 {
-    class RootOutput {
+    class JLeicRootOutput {
 
         struct HitIo {
             void BindToTree(TTree *tree)

@@ -14,18 +14,21 @@
 #include "G4SystemOfUnits.hh"
 #include "JLeicSolenoid3D.hh"
 #include "spdlog/spdlog.h"
-
+#include "G4UniformMagField.hh"
 
 struct cb_Solenoid_Config {
     bool UseMagneticField = true;                       // field in helium pipe used?
+    bool useFieldmap = false;   // -- true for 3D field map , and false for Uniform
+
 // default version     double FieldStrength = -2.0 * tesla;
-    double FieldStrength = 0.0 * tesla;
+    double FieldStrength = -2.0 * tesla;
 
     double AlphaB = 0. * degree;
     double SizeZ = 400. * cm;
     double ROut = 144. * cm;
     double RIn = 0.0 * cm;
     double ShiftZ = 0.;
+
 };
 
 class cb_Solenoid_Messenger : G4UImessenger {
@@ -73,11 +76,17 @@ public:
         delete MagneticField;   //delete the existing mag field
 
         auto direction = G4ThreeVector(p.FieldStrength * std::sin(p.AlphaB), 0., p.FieldStrength * std::cos(p.AlphaB));
-        //MagneticField = new G4UniformMagField(direction);
-        double zOffset = 0;
-        bool zInvert = true;
-        bool useFieldmap = true;
-        if (useFieldmap) {
+        if(!p.useFieldmap) {MagneticFieldUni = new G4UniformMagField(direction);
+          auto *fieldMgr = new G4FieldManager(MagneticFieldUni);
+            fieldMgr->SetDetectorField(MagneticFieldUni);
+            fieldMgr->CreateChordFinder(MagneticFieldUni);
+             G4bool forceToAllDaughters = true;
+            Logic->SetFieldManager(fieldMgr, forceToAllDaughters);
+        }
+
+        if (p.useFieldmap) {
+            double zOffset = 0;
+             bool zInvert = true;
 
             // FieldMap file
             std::string fileName("SolenoidMag3D.TABLE");
@@ -105,7 +114,7 @@ public:
     G4Tubs *Solid;      //pointer to the solid
     G4LogicalVolume *Logic;    //pointer to the logical
     G4VPhysicalVolume *Phys;  //pointer to the physical
-    //G4UniformMagField *MagneticField;      //pointer to the magnetic field
+    G4UniformMagField *MagneticFieldUni;      //pointer to the magnetic field
     JLeicSolenoid3D *MagneticField;      //pointer to the magnetic field
     //G4MagneticField *SolenoidField;  
 

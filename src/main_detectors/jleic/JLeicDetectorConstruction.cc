@@ -37,7 +37,7 @@
 //#include "G4Material.hh"
 //#include "G4Box.hh"
 //#include "G4LogicalVolume.hh"
-//#include "G4UniformMagField.hh"
+//
 #include "G4TransportationManager.hh"
 #include "G4SDManager.hh"
 #include "G4GeometryManager.hh"
@@ -352,7 +352,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
                 printf("Det construction cb_CTD_detSi::2 Number of layers =%d \n ",fConfig.cb_CTD.SiLayerCount);
 
                for (int lay = 0; lay < fConfig.cb_CTD.SiLayerCount; lay++) {
-                  if(cb_CTD.SiLogics[lay]) cb_CTD.SiLogics[lay]->SetSensitiveDetector(fCalorimeterSD);
+                  if(cb_CTD.SiLogics[lay]) cb_CTD.SiLogics[lay]->SetSensitiveDetector(fVertexSD);
                }
 
             }

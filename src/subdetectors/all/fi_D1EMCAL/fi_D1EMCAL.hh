@@ -2,8 +2,8 @@
 // Created by yulia on 6/21/19.
 //
 
-#ifndef G4E_FI_EMCAL_HH
-#define G4E_FI_EMCAL_HH
+#ifndef G4E_FI_D1EMCAL_HH
+#define G4E_FI_D1EMCAL_HH
 
 
 #include <G4PVDivision.hh>
@@ -15,7 +15,7 @@
 
 #include "JLeicDetectorConfig.hh"
 
-struct fi_EMCAL_Config {
+struct fi_D1EMCAL_Config {
 // define here Global volume parameters
 
     double SizeZ = 40. * cm;
@@ -30,22 +30,22 @@ struct fi_EMCAL_Config {
 };
 
 
-class fi_EMCAL_Design {
+class fi_D1EMCAL_Design {
 public:
-    inline void Construct(fi_EMCAL_Config cfg, G4Material *worldMaterial, G4VPhysicalVolume *motherVolume) {
-        printf("Begin fi_EMCAL volume \n");
+    inline void Construct(fi_D1EMCAL_Config cfg, G4Material *worldMaterial, G4VPhysicalVolume *motherVolume) {
+        printf("Begin fi_D1EMCAL volume \n");
         static char abname[256];
         ConstructionConfig = cfg;
         // create  a global volume for your detectors
         // ce_EMCAL_det_Material= fMat->GetMaterial("DSBCe");
-        G4Material *fi_EMCAL_Material = G4Material::GetMaterial("PbWO4");
+        G4Material *fi_D1EMCAL_Material = G4Material::GetMaterial("PbWO4");
         Solid= new G4Box("fi_D1_EMCAL_Solid", cfg.Width * 0.5, cfg.Width * 0.5, cfg.SizeZ / 2.);
-        Logic = new G4LogicalVolume(Solid,fi_EMCAL_Material, "fi_D1_EMCAL_Logic");
+        Logic = new G4LogicalVolume(Solid,fi_D1EMCAL_Material, "fi_D1_EMCAL_Logic");
 
-        G4VisAttributes *attr_fi_D1B_EMCAL = new G4VisAttributes(G4Color(0.1, 1.0, 0.9, 1.));
-        attr_fi_D1B_EMCAL->SetLineWidth(1);
-        attr_fi_D1B_EMCAL->SetForceSolid(true);
-        Logic->SetVisAttributes(attr_fi_D1B_EMCAL);
+        G4VisAttributes *attr_fi_D1EMCAL = new G4VisAttributes(G4Color(0.1, 1.0, 0.9, 1.));
+        attr_fi_D1EMCAL->SetLineWidth(1);
+        attr_fi_D1EMCAL->SetForceSolid(true);
+        Logic->SetVisAttributes(attr_fi_D1EMCAL);
 
 
         // Crystals
@@ -57,7 +57,7 @@ public:
         double x_C= 0*cm;
         int k = -1;
 
-        //    z = fi_D1B_GVol_SizeZ / 2 - fi_D1B_EMCAL_SizeZ / 2;
+        //    z = fi_D1B_GVol_SizeZ / 2 - fi_D1EMCAL_SizeZ / 2;
  //============  For sectors =====
         for (int j = 0; j < 50; j++) {
             y_C -= cfg.Width + cfg.Gap;
@@ -74,25 +74,25 @@ public:
 
 
                     k++;
-                    sprintf(abname, "fi_D1B_EMCAL_Phys_%d", k);
+                    sprintf(abname, "fi_D1EMCAL_Phys_%d", k);
 
-                    //               new G4PVPlacement(0, G4ThreeVector(x_C, y_C, z), abname, fi_D1B_EMCAL_Logic,
+                    //               new G4PVPlacement(0, G4ThreeVector(x_C, y_C, z), abname, fi_D1EMCAL_Logic,
                     //                fi_D1B_GVol_Phys, false, k);
                     new G4PVPlacement(G4Transform3D(cfg.rot_matx, G4ThreeVector(x_C+cfg.Shift, y_C, cfg.Zpos)), abname, Logic,
                                      motherVolume, false, k);
 
                     k++;
-                    sprintf(abname, "fi_D1B_EMCAL_Phys_%d", k);
+                    sprintf(abname, "fi_D1EMCAL_Phys_%d", k);
                     new G4PVPlacement(G4Transform3D(cfg.rot_matx, G4ThreeVector(-x_C+cfg.Shift, y_C, cfg.Zpos)), abname, Logic,
                                       motherVolume, false, k);
 
                     k++;
-                    sprintf(abname, "fi_D1B_EMCAL_Phys_%d", k);
+                    sprintf(abname, "fi_D1EMCAL_Phys_%d", k);
                     new G4PVPlacement(G4Transform3D(cfg.rot_matx, G4ThreeVector(x_C+cfg.Shift, -y_C,cfg.Zpos )), abname, Logic,
                                      motherVolume, false, k);
 
                     k++;
-                    sprintf(abname, "fi_D1B_EMCAL_Phys_%d", k);
+                    sprintf(abname, "fi_D1EMCAL_Phys_%d", k);
                     new G4PVPlacement(G4Transform3D(cfg.rot_matx, G4ThreeVector(-x_C+cfg.Shift, -y_C, cfg.Zpos)), abname, Logic,
                                       motherVolume, false, k);
                 }
@@ -105,7 +105,7 @@ public:
     };
 
     inline void ConstructDetectors() {
-        printf("Begin fi_EMCAL detector volumes \n");
+        printf("Begin fi_D1EMCAL detector volumes \n");
 
         // construct here your detectors
 
@@ -116,7 +116,7 @@ public:
     G4VPhysicalVolume *Phys;  //pointer to the physical
 
     /// Parameters that was used in the moment of construction
-    fi_EMCAL_Config  ConstructionConfig;
+    fi_D1EMCAL_Config  ConstructionConfig;
 
 private:
 
@@ -126,4 +126,4 @@ private:
 
 
 
-#endif //G4E_FI_EMCAL_HH
+#endif //G4E_FI_D1EMCAL_HH

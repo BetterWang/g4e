@@ -2,8 +2,8 @@
 // Created by yulia on 6/25/19.
 //
 
-#ifndef G4E_FI_TRKD1_HH
-#define G4E_FI_TRKD1_HH
+#ifndef G4E_FI_D1TRK_HH
+#define G4E_FI_D1TRK_HH
 
 
 
@@ -16,7 +16,7 @@
 
 #include "JLeicDetectorConfig.hh"
 
-struct fi_TRKD1_Config {
+struct fi_D1TRK_Config {
 // define here Global volume parameters
     double RIn = 0 * cm;
     double ROut;
@@ -25,21 +25,21 @@ struct fi_TRKD1_Config {
 };
 
 
-class fi_TRKD1_Design {
+class fi_D1TRK_Design {
 public:
-    inline void ConstructA(fi_TRKD1_Config cfg, G4Material *worldMaterial, G4VPhysicalVolume *motherVolume) {
-        printf("Begin fi_TRKD1 volume \n");
+    inline void ConstructA(fi_D1TRK_Config cfg, G4Material *worldMaterial, G4VPhysicalVolume *motherVolume) {
+        printf("Begin fi_D1TRK volume \n");
 
         ConstructionConfig = cfg;
         // create  a global volume for your detectors
 
-        Solid = new G4Tubs("fi_TRKD1_GVol_Solid",cfg.RIn, cfg.ROut,
+        Solid = new G4Tubs("fi_D1TRK_GVol_Solid",cfg.RIn, cfg.ROut,
                                        cfg.SizeZ / 2., 0., 360 * deg);
 
-        Logic = new G4LogicalVolume(Solid, worldMaterial, "fi_TRKD1_GVol_Logic");
+        Logic = new G4LogicalVolume(Solid, worldMaterial, "fi_D1TRK_GVol_Logic");
 
         // ci_GEM_GVol_PosZ= SizeZ/2-abs(World_ShiftVTX)+ci_GEM_GVol_SizeZ-5*cm;   // --- need to find out why this 5 cm are needed
-        Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, cfg.Zpos), "fi_TRKD1_GVol_Phys", Logic,
+        Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, cfg.Zpos), "fi_D1TRK_GVol_Phys", Logic,
                                              motherVolume, false, 0);
 
         //  G4VisAttributes* vgemff= new G4VisAttributes(G4Color(0.8,0.4,0.3,0.8));
@@ -52,7 +52,7 @@ public:
     };
 
     inline void ConstructDetectorsA() {
-        printf("Begin fi_TRKD1 detector volumes \n");
+        printf("Begin fi_D1TRK detector volumes \n");
         static char abname[256];
         auto cfg = ConstructionConfig;
 
@@ -93,7 +93,7 @@ public:
     G4VPhysicalVolume *Phys;  //pointer to the physical
 
     /// Parameters that was used in the moment of construction
-    fi_TRKD1_Config  ConstructionConfig;
+    fi_D1TRK_Config  ConstructionConfig;
 
 private:
 
@@ -113,4 +113,4 @@ private:
 
 
 
-#endif //G4E_FI_TRKD1_HH
+#endif //G4E_FI_D1TRK_HH

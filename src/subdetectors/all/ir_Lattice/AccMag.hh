@@ -16,6 +16,12 @@ public:
   double SextupoleField, SolenoidField, Xcenter, Ycenter, Zcenter, MagTheta, MagPhi;
   G4RotationMatrix  mybrm;
   int USE_LINE;
+       //---------------- BEAM DIPOLES -------------------------------------------
+         G4Tubs *fSolid_BigDi_v, *fSolid_BigDi_ir, *fSolid_BigDi_m;
+        //  G4Box *fSolid_BigDi_v[100],*fSolid_BigDi_ir[100],*fSolid_BigDi_m[100];
+         G4LogicalVolume *fLogic_BigDi_v, *fLogic_BigDi_ir, *fLogic_BigDi_m;
+         G4PVPlacement *fPhysics_BigDi_v, *fPhysics_BigDi_ir, *fPhysics_BigDi_m;
+         G4FieldManager *fieldMgr_BigDi;
 
   QMag( std::string _name, std::string _type,double  _LengthZ,double _Rin, double _Rin2, double _Rout, double _DipoleFieldBx, double _DipoleFieldBy, double _QuadrupolFieldQnorm, double _QuadrupolFieldQskew,
 	double _SextupoleField, double _SolenoidField, double _Xcenter, double _Ycenter, double _Zcenter, double _MagTheta, double _MagPhi, G4VPhysicalVolume *fMotherPhysVolume,int _USE_LINE)
@@ -56,14 +62,8 @@ public:
         printf("CreateDipole:: fMotherPhysVolume=%p \n",(void*)fMotherPhysVolume);
 
         G4VisAttributes *vb1;
-        //---------------- BEAM KICKERS/DIPOLES -------------------------------------------
-         G4Tubs *fSolid_BigDi_v, *fSolid_BigDi_ir, *fSolid_BigDi_m;
-        //  G4Box *fSolid_BigDi_v[100],*fSolid_BigDi_ir[100],*fSolid_BigDi_m[100];
-         G4LogicalVolume *fLogic_BigDi_v, *fLogic_BigDi_ir, *fLogic_BigDi_m;
-         G4PVPlacement *fPhysics_BigDi_v, *fPhysics_BigDi_ir, *fPhysics_BigDi_m;
-         G4FieldManager *fieldMgr_BigDi;
 
-     /*----------FFQs ions--------------*/
+       /*----------Dipole --------------*/
 
         G4Material *Material_Ir = G4Material::GetMaterial("IronAll");
         G4Material *Material_G = G4Material::GetMaterial("G4_Galactic");

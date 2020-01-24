@@ -206,7 +206,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
       printf("AcceleratorMagnets:: try to open file %s \n", fileName.c_str());
 
 
-       AcceleratorMagnets *ion_line_magnets = new AcceleratorMagnets(fileName, World_Phys, World_Material, USE_LINE);
+       ion_line_magnets = new AcceleratorMagnets(fileName, World_Phys, World_Material, USE_LINE);
 
 
       for (int i = 0; i < ion_line_magnets->allmagnets.size(); i++) {
@@ -526,52 +526,44 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
         } // end USE_CI_EMCAL
     } // ============end USE_CI_ENDCAP  ===================================
 
+    //====================================================================================
+    //==                         Forward Detectors                                     ==
+    //====================================================================================
 
     //====================================================================================
     //==                          DIPOLE-1 Tracker and EMCAL                            ==
     //====================================================================================
 
-    if (USE_FI_TRKD1) {
-        //-------------------------------------------------------------------------------
-        //                      Place Si_disks inside D1a
-        //-------------------------------------------------------------------------------
-      /*
-        int mydipole_fi_trk1 = -1;
+            if (USE_FI_D1TRK) {
+                //-------------------------------------------------------------------------------
+                //                      Place Si_disks inside D1a ir B0
+                //-------------------------------------------------------------------------------
 
-        for (int id = 0; id < 20; id++) {
-            if (strcmp(ir_Lattice.fSolid_BigDi_ffqsNAME[id], "iBDS1a") == 0) {
-                printf("found D21=%s  Z=%f dZ=%f Rout=%f \n", ir_Lattice.fSolid_BigDi_ffqsNAME[id], ir_Lattice.fSolid_BigDi_ffqsZ[id], ir_Lattice.fSolid_BigDi_ffqsSizeZDi[id],
-                       ir_Lattice.fSolid_BigDi_ffqsRinDi[id]);
-                mydipole_fi_trk1 = id;
-            };
-        };
+              for (int i = 0; i < ion_line_magnets->allmagnets.size(); i++) {
+                  std::cout << " electron line magnets " << ion_line_magnets->allmagnets.at(i)->name << endl;
+                  if ((USE_JLEIC && ion_line_magnets->allmagnets.at(i)->name =="iBDS1a" ) ||
+                      (USE_ERHIC && ion_line_magnets->allmagnets.at(i)->name =="iB0PF"))  {
 
-        if (mydipole_fi_trk1 == -1) {
-            printf("ERROR mydipole_fi_trk1=-1\n");
-            sleep(3);
-            exit(1);
-        }
+                fConfig.fi_D1TRK.ROut = ion_line_magnets->allmagnets.at(i)->Rin2 * cm;
+                fConfig.fi_D1TRK.Zpos = (ion_line_magnets->allmagnets.at(i)->LengthZ  / 2.) * cm - fConfig.fi_D1TRK.SizeZ / 2.;
+                fi_D1TRK.ConstructA(fConfig.fi_D1TRK, World_Material, ion_line_magnets->allmagnets.at(i)->fPhysics_BigDi_m);
+                fi_D1TRK.ConstructDetectorsA();
 
-        fConfig.fi_TRKD1.ROut = ir_Lattice.fSolid_BigDi_ffqsRinDi[mydipole_fi_trk1] * cm;
-        fConfig.fi_TRKD1.Zpos = (ir_Lattice.fSolid_BigDi_ffqsSizeZDi[mydipole_fi_trk1] / 2.) * cm - fConfig.fi_TRKD1.SizeZ / 2.;
-        fi_TRKD1.ConstructA(fConfig.fi_TRKD1, World_Material, ir_Lattice.fPhysics_BigDi_m[mydipole_fi_trk1]);
-        fi_TRKD1.ConstructDetectorsA();
-
-
-        // fi_TRKD1.ConstructDetectorsB();
-        //  if (f1_D1A_Lay_Logic) f1_D1A_Lay_Logic->SetSensitiveDetector(fCalorimeterSD);
-	*/
-    }
+                  }
+              }
+                // fi_D1TRK.ConstructDetectorsB();
+                //  if (f1_D1A_Lay_Logic) f1_D1A_Lay_Logic->SetSensitiveDetector(fCalorimeterSD);
+            }
 //------------------------------------------------
     if (USE_CI_HCAL) {
 
-        if (USE_FI_EMCAL) {
+        if (USE_FI_D1EMCAL) {
             // Ecal module  AFTER !!!   Dipole1
 
-            fConfig.fi_EMCAL.Zpos = -fConfig.ci_HCAL.SizeZ / 2 + fConfig.fi_EMCAL.SizeZ / 2;
+            fConfig.fi_D1EMCAL.Zpos = -fConfig.ci_HCAL.SizeZ / 2 + fConfig.fi_D1EMCAL.SizeZ / 2;
 
-            fConfig.fi_EMCAL.rot_matx.rotateY(fConfig.fi_EMCAL.Angle * rad);
-            fi_EMCAL.Construct(fConfig.fi_EMCAL, World_Material, ci_HCAL.Phys);
+            fConfig.fi_D1EMCAL.rot_matx.rotateY(fConfig.fi_D1EMCAL.Angle * rad);
+            fi_D1EMCAL.Construct(fConfig.fi_D1EMCAL, World_Material, ci_HCAL.Phys);
 
 
         }

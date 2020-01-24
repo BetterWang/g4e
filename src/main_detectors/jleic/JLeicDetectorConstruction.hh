@@ -83,8 +83,8 @@
 #include "ci_EMCAL/ci_EMCAL.hh"         // Central Ion Endcap - EMCAL
 #include "ci_HCAL/ci_HCAL.hh"           // Central Ion Endcap - HCAL
 //--------------FFi---------------
-#include "fi_TRKD1/fi_TRKD1.hh"         // Far-forward Ion D1  - Tracking
-#include "fi_EMCAL/fi_EMCAL.hh"         // Far-forward Ion D1  - EMCAL
+#include "fi_D1TRK/fi_D1TRK.hh"         // Far-forward Ion D1  - Tracking
+#include "fi_D1EMCAL/fi_D1EMCAL.hh"         // Far-forward Ion D1  - EMCAL
 
 #include "ffi_TRKD2/ffi_TRKD2.hh"     // Far-forward Ion D2 - Tracking
 #include "ffi_ZDC/ffi_ZDC.hh"         // Far-forward Ion   - HCAL ZDC
@@ -162,9 +162,9 @@ public:
     bool USE_CI_HCAL = true;
     bool USE_CI_HCAL_D = true;
     //--------- Forward D1 ------
-    bool USE_FI_EMCAL = false;
-    bool USE_FI_TRKD1 = false ;
-    //--------FARFORWARD HADRON------
+     bool USE_FI_D1TRK = true ;
+     bool USE_FI_D1EMCAL = false;
+   //--------FARFORWARD HADRON------
     //bool USE_DIPOLE1_SI
     //
     //bool USE_FI_DIPOLE1_B
@@ -302,6 +302,7 @@ private:
     // Interaction region
    // ir_LatticeDesign ir_Lattice;
     ir_Beampipe_Design ir_Beampipe;
+     AcceleratorMagnets *ion_line_magnets;
 
 //-----------------Hadron ENDCAP volume--------------------
     G4VisAttributes *ci_ENDCAP_GVol_VisAttr;
@@ -357,9 +358,9 @@ private:
     //==============================================
     //----------------Far-forward ION  --------------
     //----------------Tracking volume ---------------------
-    fi_TRKD1_Design fi_TRKD1;
+    fi_D1TRK_Design fi_D1TRK;
     //----------------EMCAL volume ---------------------
-    fi_EMCAL_Design fi_EMCAL;
+    fi_D1EMCAL_Design fi_D1EMCAL;
 
     //----------------D2 Tracking volume  ---------------------
     ffi_TRKD2_Design ffi_TRKD2;

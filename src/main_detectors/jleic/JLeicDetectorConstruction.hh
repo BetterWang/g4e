@@ -86,7 +86,7 @@
 #include "fi_D1TRK/fi_D1TRK.hh"         // Far-forward Ion D1  - Tracking
 #include "fi_D1EMCAL/fi_D1EMCAL.hh"         // Far-forward Ion D1  - EMCAL
 
-#include "ffi_TRKD2/ffi_TRKD2.hh"     // Far-forward Ion D2 - Tracking
+#include "ffi_D2TRK/ffi_D2TRK.hh"     // Far-forward Ion D2 - Tracking ( JLEIC Second  big dipole )
 #include "ffi_ZDC/ffi_ZDC.hh"         // Far-forward Ion   - HCAL ZDC
 #include "ffi_RPOT_D2/ffi_RPOT_D2.hh"         // Far-forward Ion   - RomanPots system
 #include "ffi_RPOT_D3/ffi_RPOT_D3.hh"         // Far-forward Ion   - RomanPots system
@@ -105,8 +105,8 @@ class JLeicDetectorConstruction : public G4VUserDetectorConstruction
 public:
 
     //--------BEAM elements------
-    bool USE_JLEIC = false ;  // use either JLEIC or ERHIC optics
-    bool USE_ERHIC =true ;   // use either JLEIC or ERHIC optics
+    bool USE_JLEIC = true ;  // use either JLEIC or ERHIC optics
+    bool USE_ERHIC =false ;   // use either JLEIC or ERHIC optics
     // -----
     bool USE_FFQs = true;
     //bool USE_FFQs_iu
@@ -165,11 +165,8 @@ public:
      bool USE_FI_D1TRK = true ;
      bool USE_FI_D1EMCAL = false;
    //--------FARFORWARD HADRON------
-    //bool USE_DIPOLE1_SI
-    //
-    //bool USE_FI_DIPOLE1_B
-    //bool USE_FI_DIPOLE2
-    bool USE_FFI_TRKD2 = false;
+
+    bool USE_FFI_D2TRK = true;
     bool USE_FFI_ZDC = true;
     bool USE_FFI_RPOT_D2 = false;
     bool USE_FFI_RPOT_D3 = false;
@@ -363,7 +360,7 @@ private:
     fi_D1EMCAL_Design fi_D1EMCAL;
 
     //----------------D2 Tracking volume  ---------------------
-    ffi_TRKD2_Design ffi_TRKD2;
+    ffi_D2TRK_Design ffi_D2TRK;
 
     //---------------HCAL -ZDC -------------------------
     ffi_ZDC_Design ffi_ZDC;

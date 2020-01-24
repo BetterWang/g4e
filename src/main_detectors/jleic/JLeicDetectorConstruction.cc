@@ -526,9 +526,9 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
         } // end USE_CI_EMCAL
     } // ============end USE_CI_ENDCAP  ===================================
 
-    //====================================================================================
+    //************************************************************************************
     //==                         Forward Detectors                                     ==
-    //====================================================================================
+    //************************************************************************************
 
     //====================================================================================
     //==                          DIPOLE-1 Tracker and EMCAL                            ==
@@ -539,21 +539,20 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
                 //                      Place Si_disks inside D1a ir B0
                 //-------------------------------------------------------------------------------
 
-              for (int i = 0; i < ion_line_magnets->allmagnets.size(); i++) {
-                  std::cout << " electron line magnets " << ion_line_magnets->allmagnets.at(i)->name << endl;
-                  if ((USE_JLEIC && ion_line_magnets->allmagnets.at(i)->name =="iBDS1a" ) ||
-                      (USE_ERHIC && ion_line_magnets->allmagnets.at(i)->name =="iB0PF"))  {
+                for (int i = 0; i < ion_line_magnets->allmagnets.size(); i++) {
+                    std::cout << " ion line magnets " << ion_line_magnets->allmagnets.at(i)->name << endl;
+                    if ((USE_JLEIC && ion_line_magnets->allmagnets.at(i)->name == "iBDS1a") || (USE_ERHIC && ion_line_magnets->allmagnets.at(i)->name == "iB0PF")) {
 
-                fConfig.fi_D1TRK.ROut = ion_line_magnets->allmagnets.at(i)->Rin2 * cm;
-                fConfig.fi_D1TRK.Zpos = (ion_line_magnets->allmagnets.at(i)->LengthZ  / 2.) * cm - fConfig.fi_D1TRK.SizeZ / 2.;
-                fi_D1TRK.ConstructA(fConfig.fi_D1TRK, World_Material, ion_line_magnets->allmagnets.at(i)->fPhysics_BigDi_m);
-                fi_D1TRK.ConstructDetectorsA();
-
-                  }
-              }
-                // fi_D1TRK.ConstructDetectorsB();
-                //  if (f1_D1A_Lay_Logic) f1_D1A_Lay_Logic->SetSensitiveDetector(fCalorimeterSD);
-            }
+                        fConfig.fi_D1TRK.ROut = ion_line_magnets->allmagnets.at(i)->Rin2 * cm;
+                        fConfig.fi_D1TRK.Zpos = (ion_line_magnets->allmagnets.at(i)->LengthZ / 2.) * cm - fConfig.fi_D1TRK.SizeZ / 2.;
+                        fi_D1TRK.ConstructA(fConfig.fi_D1TRK, World_Material, ion_line_magnets->allmagnets.at(i)->fPhysics_BigDi_m);
+                        fi_D1TRK.ConstructDetectorsA();
+                        for (int lay = 0; lay < fConfig.fi_D1TRK.Nlayers; lay++) {
+                          if (fi_D1TRK.f1_D1_Lay_Logic) fi_D1TRK.f1_D1_Lay_Logic->SetSensitiveDetector(fCalorimeterSD);
+                         }
+                    }
+                }
+             }
 //------------------------------------------------
     if (USE_CI_HCAL) {
 
@@ -572,28 +571,27 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     //====================================================================================
     //==                    Far-Forward Area    D2, D3  ZDC. Roman Pots                 ==
     //====================================================================================
-    int mydipole_ffi_trk2;
-    if (USE_FFI_TRKD2) {
-      /*
-        for (int id = 0; id < 20; id++) {
-            if (strcmp(ir_Lattice.fSolid_BigDi_ffqsNAME[id], "iBDS2") == 0) {
-                printf("fi_D2_GVol :: found D2=%s  Z=%f dZ=%f Rout=%f \n", ir_Lattice.fSolid_BigDi_ffqsNAME[id], ir_Lattice.fSolid_BigDi_ffqsZ[id],
-                       ir_Lattice.fSolid_BigDi_ffqsSizeZDi[id], ir_Lattice.fSolid_BigDi_ffqsRinDi[id]);
-                mydipole_ffi_trk2 = id;
-            };
-        };
-        fConfig.ffi_TRKD2.RIn = 0 * cm;
-        fConfig.ffi_TRKD2.ROut = ir_Lattice.fSolid_BigDi_ffqsRinDi[mydipole_ffi_trk2] * cm;
-        fConfig.ffi_TRKD2.SizeZ = ir_Lattice.fSolid_BigDi_ffqsSizeZDi[mydipole_ffi_trk2] * m - 2. * cm;
+    if (USE_FFI_D2TRK) {
 
-        ffi_TRKD2.Construct(fConfig.ffi_TRKD2, World_Material, ir_Lattice.fPhysics_BigDi_m[mydipole_ffi_trk2]);
-        ffi_TRKD2.ConstructDetectors();
-        //   for (int lay = 0; lay < fConfig.ffi_TRKD2.Nlayers; lay++) {
-        if (ffi_TRKD2.lay_Logic) ffi_TRKD2.lay_Logic->SetSensitiveDetector(fCalorimeterSD);
-        //   }
-	*/
+        for (int i = 0; i < ion_line_magnets->allmagnets.size(); i++) {
+            std::cout << " ion line magnets " << ion_line_magnets->allmagnets.at(i)->name << endl;
+            if ((USE_JLEIC && ion_line_magnets->allmagnets.at(i)->name == "iBDS2")) {
+
+                fConfig.ffi_D2TRK.RIn = 0 * cm;
+                fConfig.ffi_D2TRK.ROut = ion_line_magnets->allmagnets.at(i)->Rin2 * cm -0.1*cm;
+                fConfig.ffi_D2TRK.SizeZ = ion_line_magnets->allmagnets.at(i)->LengthZ  * m - 2. * cm;
+
+                ffi_D2TRK.Construct(fConfig.ffi_D2TRK, World_Material, ion_line_magnets->allmagnets.at(i)->fPhysics_BigDi_m);
+                ffi_D2TRK.ConstructDetectors();
+                for (int lay = 0; lay < fConfig.ffi_D2TRK.Nlayers; lay++) {
+                  if (ffi_D2TRK.lay_Logic) ffi_D2TRK.lay_Logic->SetSensitiveDetector(fCalorimeterSD);
+                }
+            }
+        }
     }
     //------------------------------------------------
+    //             ZDC
+   //------------------------------------------------
     if (USE_FFI_ZDC) {
         if (USE_JLEIC) {
         fConfig.ffi_ZDC.rot_matx.rotateY(fConfig.ffi_ZDC.Angle * rad);
@@ -604,8 +602,6 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
           fConfig.ffi_ZDC.rot_matx.rotateY(-fConfig.ffi_ZDC.Angle * rad);
           fConfig.ffi_ZDC.Zpos = 3500 * cm;
           fConfig.ffi_ZDC.Xpos = 90 * cm;
-
-
     }
 
         ffi_ZDC.Construct(fConfig.ffi_ZDC, World_Material, World_Phys);
@@ -615,7 +611,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     } // end ffi_ZDC
 
     //------------------------------------------------
-    if (USE_FFI_RPOT_D2) {
+    if (USE_FFI_RPOT_D2 && USE_JLEIC) {
         fConfig.ffi_RPOT_D2.rot_matx.rotateY(fConfig.ffi_RPOT_D2.Angle * rad);
         fConfig.ffi_RPOT_D2.PosZ = 3100 * cm;
         fConfig.ffi_RPOT_D2.PosX = -170 * cm;
@@ -625,7 +621,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 
     } // end ffi_RPOT_D2
     //------------------------------------------------
-    if (USE_FFI_RPOT_D3) {
+    if (USE_FFI_RPOT_D3 && USE_JLEIC) {
         fConfig.ffi_RPOT_D3.Angle = -0.053;
         fConfig.ffi_RPOT_D3.rot_matx.rotateY(fConfig.ffi_RPOT_D3.Angle * rad);
         fConfig.ffi_RPOT_D3.PosZ = 5000 * cm;
@@ -645,274 +641,9 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     } // end ffe_CPOL
 
 
-#ifdef USE_FI_DIPOLE1_B
-
-    //-------------------------------------------------------------------------------
-    //                      Place Si_disks inside D1b
-    //-------------------------------------------------------------------------------
-
-    for (int id = 0; id < 20; id++) {
-        if (strcmp(fSolid_BigDi_ffqsNAME[id], "iBDS1b") == 0) {
-            printf("found D1b=%s  Z=%f dZ=%f Rout=%f \n", fSolid_BigDi_ffqsNAME[id], fSolid_BigDi_ffqsZ[id],
-                   fSolid_BigDi_ffqsSizeZDi[id],
-                   fSolid_BigDi_ffqsRinDi[id]);
-            mydipole_fi_trk2 = id;
-        };
-    };
-    fi_D1B_GVol_RIn = 0 * cm;
-    fi_D1B_GVol_ROut = fSolid_BigDi_ffqsRinDi[mydipole_fi_trk2] * cm;
-    fi_D1B_GVol_SizeZ = fSolid_BigDi_ffqsSizeZDi[mydipole_fi_trk2] * m;
-
-
-    fi_D1B_GVol_Solid = new G4Tubs("fi_D1B_GVol_Solid", fi_D1B_GVol_RIn, fi_D1B_GVol_ROut,
-                                    fi_D1B_GVol_SizeZ / 2., 0., 360 * deg);
-
-    fi_D1B_GVol_Logic = new G4LogicalVolume(fi_D1B_GVol_Solid, World_Material, "fi_D1B_GVol_Logic");
-
-    // ci_GEM_GVol_PosZ= SizeZ/2-abs(World_ShiftVTX)+ci_GEM_GVol_SizeZ-5*cm;   // --- need to find out why this 5 cm are needed
-    fi_D1B_GVol_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), "fi_D1B_GVol_Phys", fi_D1B_GVol_Logic,
-                                             fPhysics_BigDi_m[mydipole_fi_trk2], false, 0);
-
-    attr_fi_D1B_GVol = new G4VisAttributes(G4Color(0.3, 0, 3., 0.1));
-    attr_fi_D1B_GVol->SetLineWidth(1);
-    attr_fi_D1B_GVol->SetForceSolid(true);
-    fi_D1B_GVol_Logic->SetVisAttributes(attr_fi_D1B_GVol);
-
-    // ---------------------------------------------------------------------------
-    //                     Si all
-    // ---------------------------------------------------------------------------
-    fi_D1B_lay_RIn = 5 * cm;
-    fi_D1B_lay_ROut = fi_D1B_GVol_ROut - 1 * cm;
-    fi_D1B_lay_SizeZ = 1 * cm;
-
-    //  fi_D1B_lay_Material = fMat->GetMaterial("Ar10CO2");  //----   !!!!! ----
-    fi_D1B_lay_Material =fMat->GetMaterial("G4_Galactic");
-    fi_D1B_lay_Solid = new G4Tubs("fi_D1B_lay_Solid", fi_D1B_lay_RIn, fi_D1B_lay_ROut,
-                                        fi_D1B_lay_SizeZ / 2., 170., 330 * deg);
-    fi_D1B_lay_Logic = new G4LogicalVolume(fi_D1B_lay_Solid, fi_D1B_lay_Material, "fi_D1B_lay_Logic");
-
-    if (fi_D1B_lay_Logic) fi_D1B_lay_Logic->SetSensitiveDetector(fCalorimeterSD);
-
-
-    ffsi_counter = 0;
-    for (int fflay = 0; fflay < 5; fflay++) {
-        double Z = -fi_D1B_GVol_SizeZ / 2 + (fflay + 1) * fi_D1B_lay_SizeZ / 2 + (fflay + 1) * 5 * cm;
-        fi_D1B_lay_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, Z),
-                                                     "fi_D1B_lay_Phys", fi_D1B_lay_Logic,
-                                                     fi_D1B_GVol_Phys, false, ffsi_counter);
-        ffsi_counter++;
-        attr_fi_D1B_lay= new G4VisAttributes(G4Color(0.8, 0.4 + 0.1 * fflay, 0.3, 1.));
-        attr_fi_D1B_lay->SetLineWidth(1);
-        attr_fi_D1B_lay->SetForceSolid(true);
-        fi_D1B_lay_Logic->SetVisAttributes(attr_fi_D1B_lay);
-    }
-
-#endif
-
-
-    //*********************************************************************
-    //====================================================================================
-    //==                          DETECTOR VOLUME  FAR-FORWARD                           ==
-    //====================================================================================
-    //*********************************************************************
-
-
-    //====================================================================================
-    //==                         FI  VOLUMES  inside D2                      ==
-    //====================================================================================
-#ifdef USE_FI_DIPOLE2
-
-    //-------------------------------------------------------------------------------
-    //                      Place Si_disks inside D2
-    //-------------------------------------------------------------------------------
-
-    for (int id = 0; id < 20; id++) {
-        if (strcmp(fSolid_BigDi_ffqsNAME[id], "iBDS2") == 0) {
-            printf("fi_D2_GVol :: found D2=%s  Z=%f dZ=%f Rout=%f \n", fSolid_BigDi_ffqsNAME[id], fSolid_BigDi_ffqsZ[id],
-                   fSolid_BigDi_ffqsSizeZDi[id],
-                   fSolid_BigDi_ffqsRinDi[id]);
-            mydipole_id = id;
-        };
-    };
-    ffi_D2_GVol_RIn = 0 * cm;
-    ffi_D2_GVol_ROut = fSolid_BigDi_ffqsRinDi[mydipole_id] * cm;
-    ffi_D2_GVol_SizeZ = fSolid_BigDi_ffqsSizeZDi[mydipole_id] * m;
-
-
-    ffi_D2_GVol_Solid = new G4Tubs("ffi_D2_GVol_Solid", ffi_D2_GVol_RIn, ffi_D2_GVol_ROut,
-                                   ffi_D2_GVol_SizeZ / 2., 0., 360 * deg);
-
-    ffi_D2_GVol_Logic = new G4LogicalVolume(ffi_D2_GVol_Solid, World_Material, "ffi_D2_GVol_Logic");
-
-    // ci_GEM_GVol_PosZ= SizeZ/2-abs(World_ShiftVTX)+ci_GEM_GVol_SizeZ-5*cm;   // --- need to find out why this 5 cm are needed
-    ffi_D2_GVol_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, 0), "ffi_D2_GVol_Phys", ffi_D2_GVol_Logic,
-                                            fPhysics_BigDi_m[mydipole_id], false, 0);
-
-    attr_ffi_D2_GVol = new G4VisAttributes(G4Color(0.3, 0, 3., 0.1));
-    attr_ffi_D2_GVol->SetLineWidth(1);
-    attr_ffi_D2_GVol->SetForceSolid(true);
-    ffi_D2_GVol_Logic->SetVisAttributes(attr_ffi_D2_GVol);
-
-    // ---------------------------------------------------------------------------
-    //                     Tracking  all  D2
-     // ---------------------------------------------------------------------------
-    ffi_D2_TRK_Lay_RIn = 0 * cm;
-    ffi_D2_TRK_Lay_ROut = ffi_D2_GVol_ROut - 1 * cm;
-    ffi_D2_TRK_Lay_SizeZ = 1 * cm;
-
-    //  ffi_D2_TRK_Lay_Material = fMat->GetMaterial("Ar10CO2");  //----   !!!!! ----
-  ffi_D2_TRK_Lay_Material  =fMat->GetMaterial("G4_Galactic");
-    ffi_D2_TRK_Lay_Solid = new G4Tubs("ffi_D2_TRK_Lay_Solid", ffi_D2_TRK_Lay_RIn, ffi_D2_TRK_Lay_ROut,
-                                       ffi_D2_TRK_Lay_SizeZ / 2., 0., 360 * deg);
-    ffi_D2_TRK_Lay_Logic = new G4LogicalVolume(ffi_D2_TRK_Lay_Solid, ffi_D2_TRK_Lay_Material, "ffi_D2_TRK_Lay_Logic");
-
-    if (ffi_D2_TRK_Lay_Logic) ffi_D2_TRK_Lay_Logic->SetSensitiveDetector(fCalorimeterSD);
-
-
-    ffsi_counter = 0;
-    //------------------ in front ------
-    for (int fflay = 0; fflay < 5; fflay++) {
-        double Z = -ffi_D2_GVol_SizeZ / 2 + (fflay + 1) * ffi_D2_TRK_Lay_SizeZ / 2 + (fflay + 1) * 5 * cm;
-        ffi_D2_TRK_Lay_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, Z),
-                                                    "ffi_D2_TRK_Lay_Phys", ffi_D2_TRK_Lay_Logic, ffi_D2_GVol_Phys,
-                                                    false, ffsi_counter);
-        ffsi_counter++;
-        attr_ffi_D2_TRK_Lay = new G4VisAttributes(G4Color(0.8, 0.4 + 0.1 * fflay, 0.3, 1.));
-        attr_ffi_D2_TRK_Lay->SetLineWidth(1);
-        attr_ffi_D2_TRK_Lay->SetForceSolid(true);
-        ffi_D2_TRK_Lay_Logic->SetVisAttributes(attr_ffi_D2_TRK_Lay);
-    }
-
-    //------------------ in middle  ------
-    for (int fflay = 0; fflay < 5; fflay++) {
-        double Z = (fflay + 1) * ffi_D2_TRK_Lay_SizeZ / 2 + (fflay + 1) * 5 * cm;
-        ffi_D2_TRK_Lay_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, Z),
-                                                    "ffi_D2_TRK_Lay_Phys", ffi_D2_TRK_Lay_Logic, ffi_D2_GVol_Phys,
-                                                    false, ffsi_counter);
-        ffsi_counter++;
-        attr_ffi_D2_TRK_Lay= new G4VisAttributes(G4Color(0.8, 0.4 + 0.1 * fflay, 0.3, 1.));
-        attr_ffi_D2_TRK_Lay->SetLineWidth(1);
-        attr_ffi_D2_TRK_Lay->SetForceSolid(true);
-        ffi_D2_TRK_Lay_Logic->SetVisAttributes(attr_ffi_D2_TRK_Lay);
-    }
-#endif
-    //====================================================================================
-    //==                          GEM DETECTOR VOLUME  after  D2                      ==
-    //====================================================================================
-
-#ifdef USE_FARFORWARD_GEM
-
-    ffi_D2AFTER_GVol_RIn = 0 * cm;
-    ffi_D2AFTER_GVol_ROut = 90 * cm;
-    ffi_D2AFTER_GVol_SizeZ = 30 * cm;
-    //double fGEM_FARFORWD_Zshift=0*cm;
-    // ffi_D2AFTER_GVol_PosZ= 4000*cm;
-
-    for (int id = 0; id < 20; id++) {
-        if (strcmp(fSolid_BigDi_ffqsNAME[id], "iBDS2") ==
-            0) { //printf("found D2 =%s  Z=%f dZ=%f \n",fSolid_BigDi_ffqsNAME[id],fSolid_BigDi_ffqsZ[id], fSolid_BigDi_ffqsSizeZDi[id]);
-            ffi_D2AFTER_GVol_PosZ =
-                    fSolid_BigDi_ffqsZ[id] * m + fSolid_BigDi_ffqsSizeZDi[id] / 2 * m + ffi_D2AFTER_GVol_SizeZ / 2 +
-                    10 * cm;
-            ffi_D2AFTER_GVol_PosX = fSolid_BigDi_ffqsX[id] * m - 10 * cm;
-            //  printf("found D2 =%f \n", ffi_D2AFTER_GVol_PosZ);
-        };
-    };
-
-
-    ffi_D2AFTER_GVol_Solid = new G4Tubs("ffi_D2AFTER_GVol_Solid", ffi_D2AFTER_GVol_RIn, ffi_D2AFTER_GVol_ROut,
-                                    ffi_D2AFTER_GVol_SizeZ / 2., 0., 360 * deg);
-
-    ffi_D2AFTER_GVol_Logic = new G4LogicalVolume(ffi_D2AFTER_GVol_Solid, World_Material, "ffi_D2AFTER_GVol_Logic");
-
-    // ci_GEM_GVol_PosZ= SizeZ/2-abs(World_ShiftVTX)+ci_GEM_GVol_SizeZ-5*cm;   // --- need to find out why this 5 cm are needed
-    ffi_D2AFTER_GVol_Phys = new G4PVPlacement(0, G4ThreeVector(ffi_D2AFTER_GVol_PosX, 0, ffi_D2AFTER_GVol_PosZ),
-                                             "ffi_D2AFTER_GVol_Phys", ffi_D2AFTER_GVol_Logic,
-                                             World_Phys, false, 0);
-    attr_ffi_D2AFTER_GVol = new G4VisAttributes(G4Color(0.3, 0, 3., 0.1));
-    attr_ffi_D2AFTER_GVol->SetLineWidth(1);
-    attr_ffi_D2AFTER_GVol->SetForceSolid(true);
-    ffi_D2AFTER_GVol_Logic->SetVisAttributes(attr_ffi_D2AFTER_GVol);
-    // ---------------------------------------------------------------------------
-    //                     GEM detector layers
-    // ---------------------------------------------------------------------------
-    ffi_D2AFTER_TRK_Lay_RIn = 0 * cm;
-    ffi_D2AFTER_TRK_Lay_ROut = 45 * cm;
-    ffi_D2AFTER_TRK_Lay_SizeZ = 1 * cm;
-    //    ffi_D2AFTER_TRK_Lay_Material = fMat->GetMaterial("Ar10CO2");  //----   !!!!! ----
- ffi_D2AFTER_TRK_Lay_Material =fMat->GetMaterial("G4_Galactic");
-    ffi_D2AFTER_TRK_Lay_Solid = new G4Tubs("ffi_D2AFTER_TRK_Lay_Solid", ffi_D2AFTER_TRK_Lay_RIn, ffi_D2AFTER_TRK_Lay_ROut,
-                                        ffi_D2AFTER_TRK_Lay_SizeZ / 2., 0., 360 * deg);
-    ffi_D2AFTER_TRK_Lay_Logic = new G4LogicalVolume(ffi_D2AFTER_TRK_Lay_Solid, ffi_D2AFTER_TRK_Lay_Material, "ffi_D2AFTER_TRK_Lay_Logic");
-
-    if (ffi_D2AFTER_TRK_Lay_Logic) ffi_D2AFTER_TRK_Lay_Logic->SetSensitiveDetector(fCalorimeterSD);
-
-    attr_ffi_D2AFTER_TRK_Lay = new G4VisAttributes(G4Color(0.8, 0.4, 0.3, 0.8));
-    attr_ffi_D2AFTER_TRK_Lay->SetLineWidth(1);
-    attr_ffi_D2AFTER_TRK_Lay->SetForceSolid(true);
-    ffi_D2AFTER_TRK_Lay_Logic->SetVisAttributes(attr_ffi_D2AFTER_TRK_Lay);
-
-    //---------------------------- after D2-----------------------
-    int ff_counter = 0;
-    for (int fflay = 0; fflay < 5; fflay++) {
-        double Z = -ffi_D2AFTER_GVol_SizeZ / 2 + (fflay + 1) * ffi_D2AFTER_TRK_Lay_SizeZ / 2 + (fflay + 1) * 5 * cm;
-        ffi_D2AFTER_TRK_Lay_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, Z),
-                                                     "ffi_D2AFTER_TRK_Lay_Phys", ffi_D2AFTER_TRK_Lay_Logic,
-                                                     ffi_D2AFTER_GVol_Phys, false, ff_counter);
-        ff_counter++;
-    }
-
-#endif
-
-#ifdef USE_FARFORWARD_VP
-
-    //====================================================================================
-        //==                          VIRTUAL PLANES                                      ==
-        //====================================================================================
-
-        fFARFORWARD_VP_Rout = 90 * cm;
-        fFARFORWARD_VP_SizeZ = 1 * cm;
-        fFARFORWARD_VP_X = 0.;
-        fFARFORWARD_VP_Z = 0.;
-        fFARFORWARD_VP_angle = 0.;
-    //   float fSolid_ffqsSizeZ[100],  fSolid_ffqsRin[100],  fSolid_ffqsRout[100];
-    //  float  fSolid_ffqsX[100], fSolid_ffqsY[100],fSolid_ffqsZ[100];
-
-        fSolid_FARFORWARD_VP = new G4Tubs("VP_FARFORWD_solid", 0., fFARFORWARD_VP_Rout, fFARFORWARD_VP_SizeZ / 2., 0.,
-                                          360 * deg);
-        fLogic_FARFORWARD_VP = new G4LogicalVolume(fSolid_FARFORWARD_VP, ffqsMaterial_G, "VP_FARFORWD_logic");
-
-        int myid;
-        for (int id = 0; id < 20; id++) {
-            if (strcmp(fSolid_ffqsNAME[id], "iQDS1a") != 0) { continue; }
-            else { myid = id; }
-        }
-
-        printf("found iBDS1a =%s  Z=%f dZ=%f \n", fSolid_ffqsNAME[myid], fSolid_ffqsZ[myid], fSolid_ffqsSizeZ[myid]);
-        fFARFORWARD_VP_Z = fSolid_ffqsZ[myid] * m - fSolid_ffqsSizeZ[myid] / 2 * m - fFARFORWARD_VP_SizeZ / 2 - 2 * cm;
-        fFARFORWARD_VP_X = fSolid_ffqsX[myid] * m + 20 * cm;
-
-        fPhysics_FARFORWARD_VP = new G4PVPlacement(
-                G4Transform3D(brm_hd[myid], G4ThreeVector(fFARFORWARD_VP_X, 0, fFARFORWARD_VP_Z)), "VP_FARFORWD_physics_1",
-                fLogic_FARFORWARD_VP,
-                World_Phys, false, 0);
-
-        fFARFORWARD_VP_Z = fSolid_ffqsZ[myid] * m + fSolid_ffqsSizeZ[myid] / 2 * m + fFARFORWARD_VP_SizeZ / 2 + 5 * cm;
-        fFARFORWARD_VP_X = fSolid_ffqsX[myid] * m + 20 * cm;
-        fPhysics_FARFORWARD_VP = new G4PVPlacement(
-                G4Transform3D(brm_hd[myid], G4ThreeVector(fFARFORWARD_VP_X, 0, fFARFORWARD_VP_Z)), "VP_FARFORWD_physics_2",
-                fLogic_FARFORWARD_VP,
-                World_Phys, false, 0);
-
-
-        vvpf1 = new G4VisAttributes(G4Color(0.9, 0.3, 0., 1.));
-        vvpf1->SetLineWidth(1);
-        vvpf1->SetForceSolid(true);
-        fLogic_FARFORWARD_VP->SetVisAttributes(vtpc1);
-
-        //  if ( fLogic_FARFORWARD_VP)   fLogic_FARFORWARD_VP->SetSensitiveDetector(fCalorimeterSD);
-
-#endif
+   //===================================================================================
+   //                     END detector construction.... Exporting geometry
+   //===================================================================================
 
     spdlog::info(" - exporting geometry");
     g4e::GeometryExport::Export("jleic", World_Phys);

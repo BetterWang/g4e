@@ -30,9 +30,15 @@ class Geant4Eic(object):
                 self.sink = ConsoleRunSink()
 
         if 'G4E_HOME' not in os.environ:
+            self.config['g4e_home'] = ''
             print("WARNING. G4E_HOME environment variable is not set. "
                   "Looking for g4e executable and all resource files in this directory. Which probably is an error")
         else:
+            self.config['g4e_home'] = os.environ['G4E_HOME']
+
+            default_build_prefix = os.path.join(os.environ['G4E_HOME'], 'cmake-build-debug')
+            self.config['build_prefix'] = self.config.get('executable', default_build_prefix)
+
             default_path = os.path.join(os.environ['G4E_HOME'], 'cmake-build-debug', 'g4e')
             self.config['executable'] = self.config.get('executable', default_path)
 
@@ -169,7 +175,23 @@ class Geant4Eic(object):
         command = f"{self.config['executable']} {self.get_run_command()}"
         self.sink.show_running_command(command)
         run(command, self.sink)
-        return self
+
+    def build(self, threads='auto'):
+        """Builds G4E"""
+        # Generate execution file
+
+        if threads == 'auto':
+            import multiprocessing
+            threads = multiprocessing.cpu_count()
+            if threads > 2:
+                threads -= 1
+            print(f"Building with {threads} threads")
+
+        command = f"ejpm install -j {threads} g4e  --single"
+        self.sink.to_show = ["[", "Error", "ERROR"]   # "[" - Cmake like "[9%]"
+        self.sink.show_running_command(command)
+        run(command, self.sink)
+
 
     def get_run_command(self):
         params = " {}".format(self.config['run_mac_file'])

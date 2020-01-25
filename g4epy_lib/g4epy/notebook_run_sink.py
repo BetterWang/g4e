@@ -18,6 +18,8 @@ class NotebookRunSink:
         )
         self._command_label = widgets.HTML()
 
+        self.to_show = []
+
     # noinspection PyTypeChecker
     def display(self):
         # title_widget = widgets.HTML('<em>Vertical Box Example</em>')
@@ -35,13 +37,6 @@ class NotebookRunSink:
         self._is_displayed = True
 
     def add_line(self, line):
-        to_show = [
-            'Initializing plugin',
-            'Total events processed',
-            'events processed',
-            'ERROR'
-        ]
-
         tokens = line.split('\n')
         for token in tokens:
             for test in to_show:

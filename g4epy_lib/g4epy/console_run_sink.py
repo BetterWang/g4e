@@ -1,5 +1,8 @@
 class ConsoleRunSink:
 
+    def __init__(self):
+        self.to_show = []
+
     def add_line(self, line):
         print(line)
 

@@ -2,7 +2,6 @@ import shlex
 import subprocess
 from datetime import datetime
 
-
 def run(command, sink):
     """Wrapper around subprocess.Popen that returns:
 

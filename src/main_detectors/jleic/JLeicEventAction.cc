@@ -23,13 +23,13 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 
+#include <G4GenericMessenger.hh>
 #include "JLeicEventAction.hh"
 
 #include "JLeicRunAction.hh"
 
 #include "main_detectors/jleic/JLeicCalorHit.hh"
 #include "main_detectors/jleic/JLeicVTXHit.hh"
-#include "JLeicEventActionMessenger.hh"
 #include "JLeicHistogramManager.hh"
 
 #include "G4Event.hh"
@@ -48,37 +48,29 @@
 JLeicEventAction::JLeicEventAction(g4e::RootFlatIO *rootOutput, JLeicHistogramManager *histos)
         : calorimeterCollID(-1),
           vertexCollID(-1),
-          eventMessenger(0),
           fVerbose(0),
-          printModulo(10000),
-          fHistos(histos)
+          fPrintModulo(10),
+          fHistos(histos),
+          fMessenger(this, "/jleic/eventAction/")
 {
-    eventMessenger = new JLeicEventActionMessenger(this);
-    printf("JLeicEventAction:: Constructor \n");
-
-
     mRootEventsOut=rootOutput;
+
+    //messenger for detectors and components
+    fMessenger.DeclareProperty("verbose", fVerbose, "Sets verbosity. 0=nothing, 1=some, 2=all");
+    fMessenger.DeclareProperty("printModulo", fPrintModulo);
 }
-
-
-
-JLeicEventAction::~JLeicEventAction() {
-    delete eventMessenger;
-}
-
-
 
 void JLeicEventAction::BeginOfEventAction(const G4Event *evt) {
     G4int eventId = evt->GetEventID();
 
     mRootEventsOut->ClearForNewEvent();
 
-    if (eventId % printModulo == 0 && fVerbose > 0) {
+    if (eventId % fPrintModulo == 0 && fVerbose > 0) {
         G4cout << "\n---> Begin of Event: " << eventId << G4endl;
     }
 
     if (fVerbose > 1)
-        G4cout << "<<< Event  " << eventId << " started." << G4endl;
+        G4cout << "JLeicEventAction:: Event  " << eventId << " started." << G4endl;
 
     if (calorimeterCollID == -1) {
         G4SDManager *SDman = G4SDManager::GetSDMpointer();
@@ -102,19 +94,35 @@ void JLeicEventAction::BeginOfEventAction(const G4Event *evt) {
 
     if (eventId == 0) printf("----> Begin of Event: %d \n", eventId);
 
-
+    // Pretty prints generated particles and vertexes
+    if (fVerbose > 1) {
+        G4cout << "JLeicEventAction:: Event START " << evt->GetEventID() << G4endl;
+        G4cout << "  |  GetNumberOfGrips          " << evt->GetNumberOfGrips() << G4endl;
+        G4cout << "  |  GetNumberOfPrimaryVertex  " << evt->GetNumberOfPrimaryVertex() << G4endl;
+        G4cout << "  +-+    " <<  G4endl;
+        for(int vtxIndex=0; vtxIndex < evt->GetNumberOfPrimaryVertex(); vtxIndex++) {
+            auto vtx = evt->GetPrimaryVertex(vtxIndex);
+            fmt::print("   | VertexID: {}\n", vtxIndex);
+            fmt::print("   | x: {:<10} y: {:<10} z: {:<10}\n", vtx->GetX0(), vtx->GetY0(), vtx->GetZ0());
+            fmt::print("   | GetNumberOfParticle {}\n", vtx->GetNumberOfParticle());
+            fmt::print("   +-+\n");
+            for(int prtIndex=0; prtIndex < vtx->GetNumberOfParticle(); prtIndex++) {
+                auto particle = vtx->GetPrimary(prtIndex);
+                fmt::print("     | ID{:<10} trkId: {:<10}\n", prtIndex, particle->GetTrackID(), particle->GetTotalMomentum());
+            }
+        }
+    }
 }
 
 
 
 void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
-    G4HCofThisEvent *hitCollectionEvnt = evt->GetHCofThisEvent();
-    auto vertex = evt->GetPrimaryVertex(0);
-    if(vertex) {
-        G4cout << "vertex particles: " << vertex->GetNumberOfParticle() << G4endl;
-    }
 
-    JLeicCalorHitsCollection *hitCollectionCalo = 0;
+
+    G4HCofThisEvent *hitCollectionEvnt = evt->GetHCofThisEvent();
+
+
+    JLeicCalorHitsCollection *hitCollectionCalo = nullptr;
     if (hitCollectionEvnt) {
         hitCollectionCalo = (JLeicCalorHitsCollection *) (hitCollectionEvnt->GetHC(calorimeterCollID));
     }
@@ -145,195 +153,114 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
 
 
 
-        const G4int primeVtxCount = evt->GetNumberOfPrimaryVertex();
-        size_t particleId = 0;  // prime particle ID unique for all prime vertexes
 
-        for (G4int primeVtxIndex = 0; primeVtxIndex < primeVtxCount; primeVtxIndex++) {
-            auto primeVtx = evt->GetPrimaryVertex(primeVtxIndex);
-
-            // Add primary vertex to root output
-            mRootEventsOut->AddPrimaryVertex((size_t) primeVtxIndex,                    /* size_t aVtxIndex, */
-                                             (size_t) primeVtx->GetNumberOfParticle(),  /* size_t aParticleCount, */
-                                             primeVtx->GetX0(),                         /* double aX, */
-                                             primeVtx->GetY0(),                         /* double aY, */
-                                             primeVtx->GetZ0(),                         /* double aZ, */
-                                             primeVtx->GetT0(),                         /* double aTime, */
-                                             primeVtx->GetWeight());                    /* double aWeight */
-
-
-            const G4int partCount = primeVtx->GetNumberOfParticle();
-            for (G4int partIndex = 0; partIndex < partCount; partIndex++) {
-                auto particle = primeVtx->GetPrimary(partIndex);
-                mRootEventsOut->AddPrimaryParticle(particleId,                             /*size_t aId */
-                                                   (size_t) primeVtxIndex,                  /*size_t aPrimeVtxId */
-                                                   (size_t) particle->GetPDGcode(),         /*size_t aPDGCode */
-                                                   (size_t) particle->GetTrackID(),         /*size_t aTrackId */
-                                                   particle->GetCharge(),                  /*double aCharge */
-                                                   particle->GetMomentumDirection().x(),   /*double aMomDirX */
-                                                   particle->GetMomentumDirection().y(),   /*double aMomDirY */
-                                                   particle->GetMomentumDirection().z(),   /*double aMomDirZ */
-                                                   particle->GetTotalMomentum() / GeV,       /*double aTotalMomentum */
-                                                   particle->GetTotalEnergy() / GeV,         /*double aTotalEnergy */
-                                                   particle->GetProperTime() / ns,           /*double aProperTime */
-                                                   particle->GetPolX(),                    /*double aPolX */
-                                                   particle->GetPolY(),                    /*double aPolY */
-                                                   particle->GetPolZ()                     /*double aPolZ */
-                );
-
-                particleId++;
-            }
-        }
 
         //mRootEventsOut.FillEvent((uint64_t)evt->GetEventID());
-
-
-//        // count event, add deposits to the sum ...
-//        runaction->CountEvent();
-//        runaction->AddTrackLength(totLAbs);
-//        runaction->AddnStepsCharged(nstepCharged);
-//        runaction->AddnStepsNeutral(nstepNeutral);
-//        if (fVerbose == 2)
-//            G4cout << " Ncharged=" << Nch << "  ,   Nneutral=" << Nne << G4endl;
-//        runaction->CountParticles(Nch, Nne);
-//        runaction->AddEP(NE, NP);
-//        // TODO        runaction->AddTrRef(Transmitted, Reflected);
-//        runaction->AddEdeps(totEAbs);
-//        //runaction->FillGamDE(GamDE) ;; // move to step action
 
         nstep = nstepCharged + nstepNeutral;
         // fHistos->FillEn(totEAbs);
         // fHistos->FillNbOfSteps(nstep);
 
-	    mRootEventsOut->FillEvent((uint64_t)evt->GetEventID());
+
 
     }
 
-    JLeicVTXHitsCollection *VCH = 0;
-    if (hitCollectionEvnt)
-        VCH = (JLeicVTXHitsCollection *) (hitCollectionEvnt->GetHC(vertexCollID));
+    const G4int primeVtxCount = evt->GetNumberOfPrimaryVertex();
+    size_t particleId = 0;  // prime particle ID unique for all prime vertexes
 
-    if (VCH) {
-        int n_hit = VCH->entries();
+    // ROOOT OUTPUUUT
+    for (G4int primeVtxIndex = 0; primeVtxIndex < primeVtxCount; primeVtxIndex++) {
+        auto primeVtx = evt->GetPrimaryVertex(primeVtxIndex);
+
+        // Add primary vertex to root output
+        mRootEventsOut->AddPrimaryVertex((size_t) primeVtxIndex,                    /* size_t aVtxIndex, */
+                                         (size_t) primeVtx->GetNumberOfParticle(),  /* size_t aParticleCount, */
+                                         primeVtx->GetX0(),                         /* double aX, */
+                                         primeVtx->GetY0(),                         /* double aY, */
+                                         primeVtx->GetZ0(),                         /* double aZ, */
+                                         primeVtx->GetT0(),                         /* double aTime, */
+                                         primeVtx->GetWeight());                    /* double aWeight */
+
+        // Add generated particles to root output
+        const G4int partCount = primeVtx->GetNumberOfParticle();
+        for (G4int partIndex = 0; partIndex < partCount; partIndex++) {
+            auto particle = primeVtx->GetPrimary(partIndex);
+            mRootEventsOut->AddPrimaryParticle(particleId,                             /*size_t aId */
+                                               (size_t) primeVtxIndex,                  /*size_t aPrimeVtxId */
+                                               (size_t) particle->GetPDGcode(),         /*size_t aPDGCode */
+                                               (size_t) particle->GetTrackID(),         /*size_t aTrackId */
+                                               particle->GetCharge(),                  /*double aCharge */
+                                               particle->GetMomentumDirection().x(),   /*double aMomDirX */
+                                               particle->GetMomentumDirection().y(),   /*double aMomDirY */
+                                               particle->GetMomentumDirection().z(),   /*double aMomDirZ */
+                                               particle->GetTotalMomentum() / GeV,       /*double aTotalMomentum */
+                                               particle->GetTotalEnergy() / GeV,         /*double aTotalEnergy */
+                                               particle->GetProperTime() / ns,           /*double aProperTime */
+                                               particle->GetPolX(),                    /*double aPolX */
+                                               particle->GetPolY(),                    /*double aPolY */
+                                               particle->GetPolZ()                     /*double aPolZ */
+            );
+
+            particleId++;
+        }
+    }
+
+    mRootEventsOut->FillEvent((uint64_t)evt->GetEventID());
+
+
+    // VERTEX HITS
+    JLeicVTXHitsCollection *vertexHitsCollection = nullptr;
+    if (hitCollectionEvnt) {
+        vertexHitsCollection = (JLeicVTXHitsCollection *) (hitCollectionEvnt->GetHC(vertexCollID));
+    }
+
+    if (vertexHitsCollection) {
+        int n_hit = vertexHitsCollection->entries();
         if (fVerbose >= 1)
             G4cout << "     " << n_hit
                    << " hits are stored in JLeicVTXHitsCollection." << G4endl;
 
         G4double totEAbs = 0, totLAbs = 0;
         for (int i = 0; i < n_hit; i++) {
-            totEAbs += (*VCH)[i]->GetEdepAbs();
-            totLAbs += (*VCH)[i]->GetTrakAbs();
+            totEAbs += (*vertexHitsCollection)[i]->GetEdepAbs();
+            totLAbs += (*vertexHitsCollection)[i]->GetTrakAbs();
         }
 
     
-        if (fVerbose >= 1)
-            G4cout
-                    << "  VTX::  Absorber: total energy: " << std::setw(7) <<
+        if (fVerbose >= 1) {
+            G4cout << "  VTX::  Absorber: total energy: " << std::setw(7) <<
                     G4BestUnit(totEAbs, "Energy")
                     << "       total track length: " << std::setw(7) <<
                     G4BestUnit(totLAbs, "Length")
                     << G4endl;
-
-//        // count event, add deposits to the sum ...
-//        runaction->CountEvent();
-//        runaction->AddTrackLength(totLAbs);
-//        runaction->AddnStepsCharged(nstepCharged);
-//        runaction->AddnStepsNeutral(nstepNeutral);
-//        if (fVerbose == 2)
-//            G4cout << " Ncharged=" << Nch << "  ,   Nneutral=" << Nne << G4endl;
-//        runaction->CountParticles(Nch, Nne);
-//        runaction->AddEP(NE, NP);
-//        //runaction->AddTrRef(Transmitted, Reflected);
-//        runaction->AddEdeps(totEAbs);
-//        //runaction->FillEn(totEAbs);
-//        //runaction->FillGamDE(GamDE) ;; // move to step action
-//
-//        nstep = nstepCharged + nstepNeutral;
-//        //runaction->FillNbOfSteps(nstep);
+        }
     }
 
 
-    if (fVerbose > 0)
-        G4cout << "<<< Event  " << evt->GetEventID() << " ended." << G4endl;
+    if (fVerbose > 1) {
+        G4cout << "JLeicEventAction:: Event END " << evt->GetEventID() << G4endl;
+        G4cout << "  |  GetNumberOfGrips          " << evt->GetNumberOfGrips() << G4endl;
+        G4cout << "  |  GetNumberOfPrimaryVertex  " << evt->GetNumberOfPrimaryVertex() << G4endl;
+        G4cout << "  +-+    " <<  G4endl;
 
-
-    //save rndm status
-    /*
-    if (runaction->GetRndmFreq() == 2) {
-        CLHEP::HepRandom::saveEngineStatus("endOfEvent.rndm");
-        G4int evtNb = evt->GetEventID();
-        if (evtNb % printModulo == 0) {
-            G4cout << "\n---> End of Event: " << evtNb << G4endl;
-            CLHEP::HepRandom::showEngineStatus();
+        std::vector<G4PrimaryParticle*> allPrimaries;
+        for(int vtxIndex=0; vtxIndex < evt->GetNumberOfPrimaryVertex(); vtxIndex++) {
+            auto vtx = evt->GetPrimaryVertex(vtxIndex);
+            fmt::print("    | VertexID: {}\n", vtxIndex);
+            fmt::print("    | x: {:<10} y: {:<10} z: {:<10}\n", vtx->GetX0(), vtx->GetY0(), vtx->GetZ0());
+            fmt::print("    | GetNumberOfParticle {}\n", vtx->GetNumberOfParticle());
+            fmt::print("    +-+\n");
+            for(int prtIndex=0; prtIndex < vtx->GetNumberOfParticle(); prtIndex++) {
+                auto particle = vtx->GetPrimary(prtIndex);
+                fmt::print("      | ID{:<10} trkId: {:<10}\n", prtIndex, particle->GetTrackID());
+                allPrimaries.push_back(particle);
+            }
         }
-    }*/
+
+        G4cout << "  |  PrimaryParticlesNumber  " << allPrimaries.size() << G4endl;
+
+        for(auto particle: allPrimaries) {
+            fmt::print("    | PID{:<10} trkId: {:<10} P:{:<10}\n",particle->GetParticleDefinition()->GetPDGEncoding(), particle->GetTrackID(), particle->GetTotalMomentum());
+        }
+    }
 }
-
-
-
-G4int JLeicEventAction::GetEventno() {
-    G4int evno = fpEventManager->GetConstCurrentEvent()->GetEventID();
-    return evno;
-}
-
-
-
-
-
-
-
-void JLeicEventAction::CountStepsCharged() {
-    nstepCharged += 1.;
-}
-
-
-
-void JLeicEventAction::CountStepsNeutral() {
-    nstepNeutral += 1.;
-}
-
-
-
-
-void JLeicEventAction::AddCharged() {
-    Nch += 1.;
-}
-
-
-
-void JLeicEventAction::AddNeutral() {
-    Nne += 1.;
-}
-
-
-void JLeicEventAction::AddGammaDE(G4double de) {
-    GamDE += de;
-}
-
-
-
-void JLeicEventAction::AddE() {
-    NE += 1.;
-}
-
-
-
-void JLeicEventAction::AddP() {
-    NP += 1.;
-}
-
-
-
-void JLeicEventAction::SetTr() {
-    Transmitted = 1.;
-}
-
-
-
-void JLeicEventAction::SetRef() {
-    Reflected = 1.;
-}
-
-
-  
-
-

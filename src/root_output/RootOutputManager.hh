@@ -4,6 +4,8 @@
 #include "RootFlatIO.hh"
 #include "JLeicHistogramManager.hh"
 
+
+
 /** This class holds the main root file and various helper functions for it */
 
 class TFile;
@@ -17,6 +19,9 @@ namespace g4e {
 
         g4e::RootFlatIO* GetJLeicRootOutput() {return jleicRootOutput.get(); }
         JLeicHistogramManager* GetJLeicHistogramManager() { return jleicHistos.get(); }
+        void Write() {
+            jleicRootOutput->Write();
+        }
 
     private:
         TFile *mRootFile;

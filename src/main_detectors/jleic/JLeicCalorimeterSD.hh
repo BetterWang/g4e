@@ -76,36 +76,14 @@ public:
 
     void PrintAll() override;
 
-    void hits_reset();
-
 private:
-
-    //G4RunManager* fRM; //=G4RunManager::GetRunManager();
-    JLeicRunAction *runaction; // = fRM->runAction
 
     JLeicCalorHitsCollection *CalCollection;
     JLeicDetectorConstruction *Detector;
-    G4int *HitID;
-    G4double dEslice[100];
-    TH2F *hmatrix1[120], *hmatrix2;
-    TH1F *dedx_fadc;
-    int nevent;
-    G4int ntr, ntr1, ntr2, ntr3;
-    int N_bin, char_sh;
-    TH2F *hist_charge[45 + 1];
-    TFile *fm, *fm1;
-
     uint_fast64_t mHitsCount = 0;
-
-
-    //----- EVENT STRUCTURE -----
     g4e::RootFlatIO* mRootEventsOut = nullptr;
-    TFile * mHitsFile = nullptr;
-
 
     static const uint_fast32_t mVerbose = 0;    // verbosity. 0=none, 1=some, 2=many, 3=all
-
-    //---------------------------
 };
 
 #endif

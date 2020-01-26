@@ -188,7 +188,7 @@ JLeicCalorimeterSD::~JLeicCalorimeterSD() {
 
 void JLeicCalorimeterSD::Initialize(G4HCofThisEvent *) {
 
-    printf("JLeicCalorimeterSD()::Initialize enter nevent=%d\n", nevent);
+    spdlog::debug("JLeicCalorimeterSD()::Initialize enter nevent={}\n", nevent);
 
     CalCollection = new JLeicCalorHitsCollection
             (SensitiveDetectorName, collectionName[0]);
@@ -240,7 +240,7 @@ void JLeicCalorimeterSD::Initialize(G4HCofThisEvent *) {
     if (use_fdc) dedx_fadc->Reset(" ");
 
     mHitsCount = 0;
-    printf("JLeicCalorimeterSD()::Initialize exit\n");
+    spdlog::debug("JLeicCalorimeterSD()::Initialize exit\n");
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....

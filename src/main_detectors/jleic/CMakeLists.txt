@@ -24,9 +24,6 @@ target_sources_local(g4e
             JLeicEventAction.hh
             JLeicEventAction.cc
 
-            JLeicEventActionMessenger.cc
-            JLeicEventActionMessenger.hh
-
             JLeicRunAction.cc
             JLeicRunAction.hh
 

@@ -47,15 +47,15 @@ JLeicCalorimeterSD::JLeicCalorimeterSD(G4String name, g4e::RootFlatIO* rootEvent
     Detector(det),
     mRootEventsOut(rootEventOut)
 {
-    printf("JLeicCalorimeterSD()::constructor  enter\n");
-    //fRM=G4RunManager::GetRunManager();
-    nevent = 0;
+    if(mVerbose) {
+        printf("JLeicCalorimeterSD()::constructor  enter\n");
+    }
+
     collectionName.insert("CalCollection");
-    HitID = new G4int[500];
     printf("--> JLeicCalorimeterSD::Constructor(%s) \n", name.c_str());
 
 }
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+
 
 JLeicCalorimeterSD::~JLeicCalorimeterSD()
 {
@@ -69,33 +69,22 @@ JLeicCalorimeterSD::~JLeicCalorimeterSD()
       }
     */
 
-    delete[] HitID;
-
     printf("JLeicCalorimeterSD():: Done ...  \n");
 }
 
 
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
-
 void JLeicCalorimeterSD::Initialize(G4HCofThisEvent *)
 {
-
-    printf("JLeicCalorimeterSD()::Initialize enter nevent=%d\n", nevent);
+    if (mVerbose > 2) {
+        printf("JLeicCalorimeterSD()::Initialize\n");
+    }
 
     CalCollection = new JLeicCalorHitsCollection(SensitiveDetectorName, collectionName[0]);
-    for (G4int j = 0; j < 1; j++) { HitID[j] = -1; };
-
-    if (nevent == 0) {
-        runaction = (JLeicRunAction *) (G4RunManager::GetRunManager()->GetUserRunAction());
-    }
-    nevent++;
 
     mHitsCount = 0;
-    printf("JLeicCalorimeterSD()::Initialize exit\n");
+    spdlog::debug("JLeicCalorimeterSD()::Initialize exit\n");
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
 G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
 {
@@ -116,6 +105,7 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
     G4int copyIDy_pre = touchablepre->GetCopyNumber();
     G4int copyIDx_pre = touchablepre->GetCopyNumber(1);
     G4int copyIDz_pre = 0;
+
     //JMF got crash on "run beam on"   here. Needs to be fixed ... commenting this for a moment
     G4double xstep = (aStep->GetTrack()->GetStep()->GetPostStepPoint()->GetPosition()).x();
     G4double ystep = (aStep->GetTrack()->GetStep()->GetPostStepPoint()->GetPosition()).y();
@@ -214,7 +204,6 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
     return true;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
 void JLeicCalorimeterSD::EndOfEvent(G4HCofThisEvent *HCE)
 {
@@ -227,14 +216,11 @@ void JLeicCalorimeterSD::EndOfEvent(G4HCofThisEvent *HCE)
     mHitsCount = 0;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
 void JLeicCalorimeterSD::clear()
 {
     printf("--> JLeicCalorimeterSD::clear() \n");
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
 
 void JLeicCalorimeterSD::PrintAll()
@@ -242,8 +228,3 @@ void JLeicCalorimeterSD::PrintAll()
     printf("--> JLeicCalorimeterSD::PrintAll() \n");
 
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
-
-
-

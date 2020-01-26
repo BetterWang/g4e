@@ -28,6 +28,7 @@
 /// \file electromagnetic/VertexEIC/src/JLeicTrackingAction.cc
 /// \brief Implementation of the JLeicTrackingAction class
 //
+#include <external/spdlog/include/spdlog/spdlog.h>
 #include "JLeicTrackingAction.hh"
 
 #include "G4TrackingManager.hh"
@@ -41,6 +42,13 @@ JLeicTrackingAction::JLeicTrackingAction() : G4UserTrackingAction() {}
 
 void JLeicTrackingAction::PreUserTrackingAction(const G4Track *aTrack)
 {
+
+//    if(aTrack && aTrack->GetTrackID() < 40) {
+//        auto part = aTrack->GetDynamicParticle();
+//        spdlog::info("PreTracking  id: {:<7} parent: {:<7}  P: {:<12} GeV DynPrtP: {:<12}", aTrack->GetTrackID(), aTrack->GetParentID(), aTrack->GetMomentum().mag() / GeV, part->GetTotalMomentum()/GeV);
+//    }
+
+
 //
 ////    if (aTrack->GetParentID() == 1 && aTrack->GetKineticEnergy() > 100. * GeV) {
 //        G4cout << "[JLeicTrackingAction::PreUserTrackingAction]" << G4endl;
@@ -73,6 +81,12 @@ void JLeicTrackingAction::PreUserTrackingAction(const G4Track *aTrack)
 
 void JLeicTrackingAction::PostUserTrackingAction(const G4Track *aTrack)
 {
+    /*
+    if(aTrack && aTrack->GetTrackID() < 20) {
+        auto part = aTrack->GetDynamicParticle();
+        spdlog::info("PostTracking  id: {:<7} parent: {:<7}  P: {:<12} GeV DynPrtP: {:<12}", aTrack->GetTrackID(), aTrack->GetParentID(), aTrack->GetMomentum().mag() / GeV, part->GetTotalMomentum()/GeV);
+    }*/
+
 ////    if (aTrack->GetParentID() == 1 && aTrack->GetKineticEnergy() > 100. * GeV) {
 //    G4cout << "[JLeicTrackingAction::PostUserTrackingAction]" << G4endl;
 //    G4cout << "  Track ID:          " << aTrack->GetTrackID() << G4endl;

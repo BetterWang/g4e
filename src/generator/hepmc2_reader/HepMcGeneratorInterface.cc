@@ -96,12 +96,20 @@ void HepMcGeneratorInterface::HepMC2G4(const HepMC::GenEvent *hepmcevt, G4Event 
 
             G4int pdgcode = (*vpitr)->pdg_id();
 
+
+
             pos = (*vpitr)->momentum();
             G4LorentzVector p(pos.px(), pos.py(), pos.pz(), pos.e());
             auto *g4prim = new G4PrimaryParticle(pdgcode, p.x() * GeV, p.y() * GeV, -p.z() * GeV); //- fsv for HERWIG6 only : pz = - pz !!!
 
             g4vtx->SetPrimary(g4prim);
+
+            if(verbose) {
+                std::cout<<"HepMC2G4: Particle: "<<pdgcode<<std::endl;
+            }
         }
+
+
         g4event->AddPrimaryVertex(g4vtx);
     }
 

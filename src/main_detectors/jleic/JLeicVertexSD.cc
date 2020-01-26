@@ -127,7 +127,7 @@ JLeicVertexSD::~JLeicVertexSD()
 void JLeicVertexSD::Initialize(G4HCofThisEvent *)
 {
 
-    fmt::print("JLeicVertexSD()::Initialize enter nevent={}  Lays.size()={}\n", nevent, mDetector->cb_VTX.Lays.size());
+    spdlog::debug("JLeicVertexSD()::Initialize enter nevent={}  Lays.size()={}\n", nevent, mDetector->cb_VTX.Lays.size());
 
     VTXCollection = new JLeicVTXHitsCollection(SensitiveDetectorName, collectionName[0]);
     for (G4int i = 0; i < 1; i++) {

@@ -159,6 +159,7 @@ int main(int argc, char **argv)
 
     rndmFilename = appArgs.OutputBaseName + ".end.rndm";
     CLHEP::HepRandom::saveEngineStatus(rndmFilename.c_str());
+    mainRootOutput->Write();
 
     G4GeometryManager::GetInstance()->OpenGeometry();
     return 0;

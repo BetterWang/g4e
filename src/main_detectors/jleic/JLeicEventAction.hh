@@ -38,6 +38,7 @@
 #include "G4UserEventAction.hh"
 #include "globals.hh"
 #include "RootFlatIO.hh"
+#include <G4GenericMessenger.hh>
 
 
 class JLeicEventActionMessenger;
@@ -49,39 +50,19 @@ class JLeicEventAction : public G4UserEventAction
 public:
     JLeicEventAction(g4e::RootFlatIO *, JLeicHistogramManager*);
 
-    ~JLeicEventAction();
+    ~JLeicEventAction() = default;
 
 public:
-    void BeginOfEventAction(const G4Event *);
+    void BeginOfEventAction(const G4Event *) override;
 
-    void EndOfEventAction(const G4Event *);
-
-    G4int GetEventno();
+    void EndOfEventAction(const G4Event *) override;
 
     void SetVerbose(G4int level) { fVerbose = level; }    /// 0 = nothing, 1 = some, 2 = debug
     G4int GetVerbose() { return fVerbose; }                /// 0 = nothing, 1 = some, 2 = debug
 
-    void AddGammaDE(G4double de);   //---- fsv
-    void CountStepsCharged();
 
-    void CountStepsNeutral();
-
-    void AddCharged();
-
-    void AddNeutral();
-
-    void AddE();
-
-    void AddP();
-
-    void SetTr();
-
-    void SetRef();
-
-    void SetDrawFlag(G4String val) { drawFlag = val; };
-
-    void SetPrintModulo(G4int val) { printModulo = val; }
-    G4int GetPrintModulo() { return printModulo; }
+    void SetPrintModulo(G4int val) { fPrintModulo = val; }
+    G4int GetPrintModulo() { return fPrintModulo; }
 
     //----- EVENT STRUCTURE -----
     g4e::RootFlatIO *mRootEventsOut = nullptr;
@@ -92,6 +73,7 @@ private:
     JLeicEventActionMessenger *eventMessenger;
     JLeicHistogramManager* fHistos;
 
+
     G4int fVerbose;
     G4double nstep, nstepCharged, nstepNeutral;
     G4double Nch, Nne, GamDE;
@@ -99,7 +81,8 @@ private:
     G4double Transmitted, Reflected;
 
     G4String drawFlag;
-    G4int printModulo;
+    G4int fPrintModulo;
+    G4GenericMessenger fMessenger;
 };
 
 #endif

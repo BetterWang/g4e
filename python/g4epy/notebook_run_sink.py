@@ -39,7 +39,7 @@ class NotebookRunSink:
     def add_line(self, line):
         tokens = line.split('\n')
         for token in tokens:
-            for test in to_show:
+            for test in self.to_show:
                 if test in token:
                     self._label.value = token
 

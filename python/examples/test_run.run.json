@@ -1,0 +1,19 @@
+{
+    "config": {
+        "beamline": "jleic",
+        "detector": "jleic",
+        "executable": "g4e",
+        "g4e_home": "",
+        "is_batch": true,
+        "output": "test_run",
+        "run_context_file": "test_run.run.json",
+        "run_mac_file": "test_run.run.mac",
+        "source_file": "/home/romanov/Downloads/herwig6_20k.hepmc",
+        "work_dir": "/home/romanov/eic/g4e-dev/python/examples"
+    },
+    "user_execs": [
+        "/generator/select hepmcAscii",
+        "/generator/hepmcAscii/open /home/romanov/Downloads/herwig6_20k.hepmc",
+        "/run/beamOn 2000"
+    ]
+}

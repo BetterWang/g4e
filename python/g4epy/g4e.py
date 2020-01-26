@@ -18,7 +18,7 @@ class Geant4Eic(object):
 
         self.config.update(kwargs)  # update configs
 
-        sink = self.config.get('sink', '')
+        sink = self.config.get('sink', 'auto')
         if not sink:
             self.is_notebook = False
             self.sink = ConsoleRunSink()

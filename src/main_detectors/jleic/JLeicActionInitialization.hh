@@ -2,14 +2,14 @@
 #define G4E_ACTIONINITIALIZATION_HH
 
 #include <G4VUserActionInitialization.hh>
-#include <root_output/MainRootOutput.hh>
+#include <root_output/RootOutputManager.hh>
 
 class JLeicHistogramManager;
 
 class JLeicActionInitialization: public G4VUserActionInitialization
 {
 public:
-    JLeicActionInitialization(g4e::MainRootOutput *);
+    JLeicActionInitialization(g4e::RootOutputManager *);
 
     void Build() const override ;
     // Virtual method to be implemented by the user to instantiate user action
@@ -24,7 +24,7 @@ public:
 
 
 private:
-    g4e::MainRootOutput* mRootOuput;
+    g4e::RootOutputManager* mRootOuput;
 
 };
 

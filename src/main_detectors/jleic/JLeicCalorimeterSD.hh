@@ -42,7 +42,7 @@
 #include "G4Step.hh"
 
 #include "JLeicDetectorConstruction.hh"
-#include "JLeicRootOutput.hh"
+#include "RootFlatIO.hh"
 
 //class JLeicDetectorConstruction;
 //class G4HCofThisEvent;
@@ -52,7 +52,7 @@
 #include "JLeicRunAction.hh"
 #include "G4RunManager.hh"
 
-#include "root_output/JLeicRootOutput.hh"
+#include "root_output/RootFlatIO.hh"
 
 #include "rootlib.h"
 
@@ -62,7 +62,7 @@ class JLeicCalorimeterSD : public G4VSensitiveDetector
 {
 public:
 
-    JLeicCalorimeterSD(G4String, g4e::JLeicRootOutput*, JLeicDetectorConstruction *);
+    JLeicCalorimeterSD(G4String, g4e::RootFlatIO*, JLeicDetectorConstruction *);
 
     ~JLeicCalorimeterSD() override;
 
@@ -99,7 +99,7 @@ private:
 
 
     //----- EVENT STRUCTURE -----
-    g4e::JLeicRootOutput* mRootEventsOut = nullptr;
+    g4e::RootFlatIO* mRootEventsOut = nullptr;
     TFile * mHitsFile = nullptr;
 
 

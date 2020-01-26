@@ -37,7 +37,7 @@
 
 #include "G4UserEventAction.hh"
 #include "globals.hh"
-#include "JLeicRootOutput.hh"
+#include "RootFlatIO.hh"
 
 
 class JLeicEventActionMessenger;
@@ -47,7 +47,7 @@ class JLeicHistogramManager;
 class JLeicEventAction : public G4UserEventAction
 {
 public:
-    JLeicEventAction(g4e::JLeicRootOutput *, JLeicHistogramManager*);
+    JLeicEventAction(g4e::RootFlatIO *, JLeicHistogramManager*);
 
     ~JLeicEventAction();
 
@@ -84,7 +84,7 @@ public:
     G4int GetPrintModulo() { return printModulo; }
 
     //----- EVENT STRUCTURE -----
-    g4e::JLeicRootOutput *mRootEventsOut = nullptr;
+    g4e::RootFlatIO *mRootEventsOut = nullptr;
 
 private:
     G4int calorimeterCollID;

@@ -22,8 +22,8 @@ target_sources_local(g4e
         helpers/StringHelpers.cc
         helpers/StringHelpers.hh
 
-        root_output/MainRootOutput.cc
-        root_output/MainRootOutput.hh
+        root_output/RootOutputManager.cc
+        root_output/RootOutputManager.hh
 
         LoggingMessenger.hh
         LogLevels.hh
@@ -47,7 +47,6 @@ target_sources_local(g4e
         ActionInitialization.hh
         ActionInitialization.cc
 
-        DetectorConstructionContext.hh
         InitializationContext.hh
         )
 

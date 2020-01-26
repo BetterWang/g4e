@@ -45,7 +45,7 @@
 
 
 
-JLeicEventAction::JLeicEventAction(g4e::JLeicRootOutput *rootOutput, JLeicHistogramManager *histos)
+JLeicEventAction::JLeicEventAction(g4e::RootFlatIO *rootOutput, JLeicHistogramManager *histos)
         : calorimeterCollID(-1),
           vertexCollID(-1),
           eventMessenger(0),

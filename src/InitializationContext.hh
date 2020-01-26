@@ -3,12 +3,12 @@
 
 #include <ArgumentProcessor.hh>
 #include <ActionInitialization.hh>
-#include <MainRootOutput.hh>
+#include <RootOutputManager.hh>
 
 namespace g4e {
     struct InitializationContext {
         UserArguments Arguments;
-        g4e::MainRootOutput* RootOutput;
+        g4e::RootOutputManager* RootOutput;
         g4e::ActionInitialization* ActionInitialization;
     };
 }

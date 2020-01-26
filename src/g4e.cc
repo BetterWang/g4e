@@ -23,6 +23,8 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 
+#include <signal.h>
+
 #include "StringHelpers.hh"
 
 
@@ -40,7 +42,7 @@
 #include "JLeicActionInitialization.hh"
 #include "InitializationContext.hh"
 
-#include "MainRootOutput.hh"
+#include "RootOutputManager.hh"
 
 #include "Logging.hh"
 #include "ActionInitialization.hh"
@@ -56,7 +58,7 @@
 #include <FTFP_BERT.hh>
 #include <QGSP_BIC.hh>
 #include <TFile.h>
-
+#include <G4GeometryManager.hh>
 
 int main(int argc, char **argv)
 {
@@ -85,7 +87,7 @@ int main(int argc, char **argv)
     //output root file
     std::string rootFileName(appArgs.OutputBaseName + ".root");
     std::unique_ptr<TFile> rootOutputFile(new TFile(rootFileName.c_str(), "RECREATE"));
-    std::unique_ptr<g4e::MainRootOutput> mainRootOutput(new g4e::MainRootOutput(rootOutputFile.get()));
+    std::unique_ptr<g4e::RootOutputManager> mainRootOutput(new g4e::RootOutputManager(rootOutputFile.get()));
 
     // Construct the default run manager
     G4RunManager * runManager;
@@ -158,5 +160,6 @@ int main(int argc, char **argv)
     rndmFilename = appArgs.OutputBaseName + ".end.rndm";
     CLHEP::HepRandom::saveEngineStatus(rndmFilename.c_str());
 
+    G4GeometryManager::GetInstance()->OpenGeometry();
     return 0;
 }

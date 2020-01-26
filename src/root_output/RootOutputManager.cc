@@ -1,10 +1,10 @@
-#include "MainRootOutput.hh"
+#include "RootOutputManager.hh"
 
 #include <TFile.h>
 
-g4e::MainRootOutput::MainRootOutput(TFile *rootFile):
+g4e::RootOutputManager::RootOutputManager(TFile *rootFile):
     mRootFile(rootFile),
-    jleicRootOutput(new JLeicRootOutput()),
+    jleicRootOutput(new RootFlatIO()),
     jleicHistos(new JLeicHistogramManager())
 {
     // We also create JLeic root output here , while g4e is in transition

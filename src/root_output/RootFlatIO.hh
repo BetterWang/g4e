@@ -1,5 +1,5 @@
-#ifndef G4E_JLEICROOTOUTPUT_HH
-#define G4E_JLEICROOTOUTPUT_HH
+#ifndef G4E_ROOTFLATIO_HH
+#define G4E_ROOTFLATIO_HH
 
 
 #include <string>
@@ -12,7 +12,7 @@
 
 namespace g4e
 {
-    class JLeicRootOutput {
+    class RootFlatIO {
 
         struct HitIo {
             void BindToTree(TTree *tree)
@@ -372,4 +372,4 @@ namespace g4e
     };
 }
 
-#endif //G4E_JLEICROOTOUTPUT_HH
+#endif //G4E_ROOTFLATIO_HH

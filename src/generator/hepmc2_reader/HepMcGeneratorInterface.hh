@@ -42,7 +42,7 @@
 class HepMcGeneratorInterface : public G4VPrimaryGenerator {
 public:
     // service method for conversion from HepMC::GenEvent to G4Event
-    void HepMC2G4(const HepMC::GenEvent *hepmcevt, G4Event *g4event);
+    void HepMC2G4(const HepMC::GenEvent *hepmcevt, G4Event *g4event, bool b);
 
     // Implement this method in his/her own concrete class.
     // An empty event will be created in default.

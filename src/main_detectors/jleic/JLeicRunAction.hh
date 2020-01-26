@@ -36,7 +36,7 @@
 #include "G4UserRunAction.hh"
 #include "globals.hh"
 #include <iostream>
-#include "JLeicRootOutput.hh"
+#include "RootFlatIO.hh"
 
 
 class JLeicHistoMConfig;
@@ -49,7 +49,7 @@ class G4Run;
 class JLeicRunAction : public G4UserRunAction
 {
 public:
-    explicit JLeicRunAction(g4e::JLeicRootOutput*, JLeicHistogramManager *);
+    explicit JLeicRunAction(g4e::RootFlatIO*, JLeicHistogramManager *);
 
     ~JLeicRunAction() override;
 
@@ -73,7 +73,7 @@ public:
     void AddnStepsNeutral(G4double steps);
     void AddTrRef(G4double tr, G4double ref);
 
-    g4e::JLeicRootOutput *mRootEventsOut;
+    g4e::RootFlatIO *mRootEventsOut;
     TFile *mHitsFile = nullptr;
 
 

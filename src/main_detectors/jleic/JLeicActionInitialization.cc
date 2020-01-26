@@ -15,7 +15,7 @@
 #include <generator/PrimaryGeneratorAction.hh>
 
 
-JLeicActionInitialization::JLeicActionInitialization(g4e::MainRootOutput* rootOutput):
+JLeicActionInitialization::JLeicActionInitialization(g4e::RootOutputManager* rootOutput):
     mRootOuput(rootOutput)
 {
 

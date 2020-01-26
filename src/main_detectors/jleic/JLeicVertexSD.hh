@@ -43,7 +43,7 @@
 #include "G4Step.hh"
 
 #include "JLeicDetectorConstruction.hh"
-#include "JLeicRootOutput.hh"
+#include "RootFlatIO.hh"
 
 //class JLeicDetectorConstruction;
 //class G4HCofThisEvent;
@@ -61,7 +61,7 @@ class JLeicVertexSD : public G4VSensitiveDetector
 {
 public:
 
-    JLeicVertexSD(G4String, g4e::JLeicRootOutput*, JLeicDetectorConstruction *);
+    JLeicVertexSD(G4String, g4e::RootFlatIO*, JLeicDetectorConstruction *);
 
     ~JLeicVertexSD() override;
 
@@ -102,7 +102,7 @@ private:
   std::vector <unsigned short> FRAME;
 
     //----- EVENT STRUCTURE -----
-    g4e::JLeicRootOutput* mRootEventsOut = nullptr;
+    g4e::RootFlatIO* mRootEventsOut = nullptr;
     TFile * mHitsFile = nullptr;
 
     //---------------------------

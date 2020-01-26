@@ -62,7 +62,7 @@ static int NVAR;
 #include "Randomize.hh"
 
 
-JLeicVertexSD::JLeicVertexSD(G4String name, g4e::JLeicRootOutput* rootOutput, JLeicDetectorConstruction *det) :
+JLeicVertexSD::JLeicVertexSD(G4String name, g4e::RootFlatIO* rootOutput, JLeicDetectorConstruction *det) :
         G4VSensitiveDetector(name),
         mDetector(det),
         mRootEventsOut(rootOutput)

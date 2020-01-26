@@ -45,7 +45,7 @@
 
 #include <TFile.h>
 
-JLeicRunAction::JLeicRunAction(g4e::JLeicRootOutput* jLeicRootOutput, JLeicHistogramManager *histos) :
+JLeicRunAction::JLeicRunAction(g4e::RootFlatIO* jLeicRootOutput, JLeicHistogramManager *histos) :
     mRootEventsOut(jLeicRootOutput),
     histName("histfile"),
     nbinStep(0), nbinEn(0), nbinTt(0), nbinTb(0), nbinTsec(0), nbinTh(0),

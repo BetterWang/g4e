@@ -42,7 +42,7 @@
 #include "Randomize.hh"
 
 
-JLeicCalorimeterSD::JLeicCalorimeterSD(G4String name, g4e::JLeicRootOutput* rootEventOut, JLeicDetectorConstruction *det) :
+JLeicCalorimeterSD::JLeicCalorimeterSD(G4String name, g4e::RootFlatIO* rootEventOut, JLeicDetectorConstruction *det) :
     G4VSensitiveDetector(name),
     Detector(det),
     mRootEventsOut(rootEventOut)

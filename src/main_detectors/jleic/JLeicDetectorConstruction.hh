@@ -77,25 +77,28 @@
 
 //--------------FFe---------------
 #include "ffe_CPOL/ffe_CPOL.hh"         //  Far-forward  electron direction ePolarimeter
-#include "ffe_LUMI/ffe_LUMI.hh"    //  Far -forward  electron   LUMI
+#include "ffe_LUMI/ffe_LUMI.hh"         //  Far -forward  electron   LUMI
+
 //--------------CI---------------
 #include "ci_GEM/ci_GEM.hh"             // Central Ion Endcap - TRD
 #include "ci_DRICH/ci_DRICH.hh"         // Central Ion Endcap - DRICH
 #include "ci_TRD/ci_TRD.hh"             // Central Ion Endcap - TRD
 #include "ci_EMCAL/ci_EMCAL.hh"         // Central Ion Endcap - EMCAL
 #include "ci_HCAL/ci_HCAL.hh"           // Central Ion Endcap - HCAL
+
 //--------------FFi---------------
 #include "fi_D1TRK/fi_D1TRK.hh"         // Far-forward Ion D1  - Tracking
-#include "fi_D1EMCAL/fi_D1EMCAL.hh"         // Far-forward Ion D1  - EMCAL
+#include "fi_D1EMCAL/fi_D1EMCAL.hh"     // Far-forward Ion D1  - EMCAL
 
-#include "ffi_D2TRK/ffi_D2TRK.hh"     // Far-forward Ion D2 - Tracking ( JLEIC Second  big dipole )
-#include "ffi_ZDC/ffi_ZDC.hh"         // Far-forward Ion   - HCAL ZDC
-#include "ffi_RPOT_D2/ffi_RPOT_D2.hh"         // Far-forward Ion   - RomanPots system
-#include "ffi_RPOT_D3/ffi_RPOT_D3.hh"         // Far-forward Ion   - RomanPots system
-//---------Beam lattice ------------------------
-//#include "ir_Lattice/ir_Lattice.hh"     // IR Lattice import from file
-#include "ir_Lattice/AccMag.hh"   // New IR Lattice import from file
-#include "ir_Beampipe/ir_Beampipe.hh"     // IR Lattice import from file
+#include "ffi_D2TRK/ffi_D2TRK.hh"       // Far-forward Ion D2 - Tracking ( JLEIC Second  big dipole )
+#include "ffi_ZDC/ffi_ZDC.hh"           // Far-forward Ion   - HCAL ZDC
+#include "ffi_RPOT_D2/ffi_RPOT_D2.hh"   // Far-forward Ion   - RomanPots system
+#include "ffi_RPOT_D3/ffi_RPOT_D3.hh"   // Far-forward Ion   - RomanPots system
+
+//---------Beam lattice ----------
+//#include "ir_Lattice/ir_Lattice.hh"   // IR Lattice import from file
+#include "ir_Lattice/AccMag.hh"         // New IR Lattice import from file
+#include "ir_Beampipe/ir_Beampipe.hh"   // IR Lattice import from file
 
 
 
@@ -187,9 +190,9 @@ public:
     //bool  USE_EMCALe
     //bool  USE_VTXB 1
 
-    JLeicDetectorConstruction(g4e::InitializationContext*);
+    explicit JLeicDetectorConstruction(g4e::InitializationContext*);
 
-    ~JLeicDetectorConstruction();
+    ~JLeicDetectorConstruction() override;
 
     void EnableHCalRings();
 

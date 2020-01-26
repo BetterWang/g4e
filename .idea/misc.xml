@@ -3,8 +3,7 @@
   <component name="CMakeWorkspace" PROJECT_DIR="$PROJECT_DIR$" />
   <component name="CidrRootsConfiguration">
     <sourceRoots>
-      <file path="$PROJECT_DIR$/g4epy_lib" />
-      <file path="$PROJECT_DIR$/g4epy_lib/g4epy" />
+      <file path="$PROJECT_DIR$/python/g4epy" />
     </sourceRoots>
   </component>
   <component name="JavaScriptSettings">

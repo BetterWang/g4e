@@ -25,42 +25,24 @@
 //
 
 
-
 #include <vector>
 
 #include "JLeicDetectorConstruction.hh"
-//#include "JLeicDetectorMessenger.hh"
 #include "JLeicCalorimeterSD.hh"
 #include "JLeicVertexSD.hh"
-//#include "Materials.hh"
 
-//#include "G4Material.hh"
-//#include "G4Box.hh"
-//#include "G4LogicalVolume.hh"
-//
-#include "G4TransportationManager.hh"
 #include "G4SDManager.hh"
 #include "G4GeometryManager.hh"
 #include "G4RunManager.hh"
-
-//#include "G4Region.hh"
 #include "G4RegionStore.hh"
 #include "G4PhysicalVolumeStore.hh"
 #include "G4LogicalVolumeStore.hh"
 #include "G4SolidStore.hh"
 #include "G4ProductionCuts.hh"
-
 #include "G4VisAttributes.hh"
 #include "G4Colour.hh"
-
-#include "G4UnitsTable.hh"
 #include "G4ios.hh"
-
-#include "G4RotationMatrix.hh"
-
-#include "G4PVDivision.hh"
 #include "G4SystemOfUnits.hh"
-#include "JLeicSolenoid3D.hh"
 
 // export geometry through VGM
 #include "GeometryExport.hh"
@@ -158,8 +140,8 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     //==========================================================================
     //                          B E A M   E L E M E N T S
     //==========================================================================
- // -- use JLEIC  lattice
-  /*
+    // -- use JLEIC  lattice
+    /*
     ir_Lattice.SetMotherParams(World_Phys, World_Material);
     ir_Lattice.SetIonBeamEnergy(fConfig.IonBeamEnergy);
     ir_Lattice.SetElectronBeamEnergy(fConfig.ElectronBeamEnergy);
@@ -168,30 +150,34 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     //   ir_Lattice.LoadElectronBeamLattice();
     ir_Lattice.Read_JLEIC_ion_beam_lattice();
     ir_Lattice.Read_JLEIC_electron_beam_lattice();
-  */
-  if(USE_FFQs ) {
-      int USE_LINE;
-     std::string fileName;
-      printf("AcceleratorMagnets start... Ion energy %d   Electron energy %d World_Phys=%p \n ", fConfig.IonBeamEnergy, fConfig.ElectronBeamEnergy, World_Phys);
-      const char *home_cstr = std::getenv("G4E_HOME");
-     //---------------- Electron  line -----------------------------------
-      printf("========================================\n");
-      if (home_cstr) {
-          if (USE_ERHIC) { USE_LINE =1;
-              fileName = fmt::format("{}/resources/erhic/mdi/e_ir_{}.txt", home_cstr, fConfig.ElectronBeamEnergy);
-          } else if (USE_JLEIC) { USE_LINE=0;
-              fileName = fmt::format("{}/resources/jleic/mdi/e_ir_{}.txt", home_cstr, fConfig.ElectronBeamEnergy);
-          }
-      } else { printf("AcceleratorMagnets  file opening err :: please setup  G4E_HOME \n"); }
+    */
+    if(USE_FFQs )
+    {
+        int USE_LINE = 1;
+        std::string fileName;
+        printf("AcceleratorMagnets start... Ion energy %d   Electron energy %d World_Phys=%p \n ", fConfig.IonBeamEnergy, fConfig.ElectronBeamEnergy, World_Phys);
+        const char *home_cstr = std::getenv("G4E_HOME");
+        //---------------- Electron  line -----------------------------------
+        printf("========================================\n");
+        if (home_cstr) {
+            if (USE_ERHIC) {
+                USE_LINE =1;
+                fileName = fmt::format("{}/resources/erhic/mdi/e_ir_{}.txt", home_cstr, fConfig.ElectronBeamEnergy);
+            } else if (USE_JLEIC) {
+                USE_LINE = 0;
+                fileName = fmt::format("{}/resources/jleic/mdi/e_ir_{}.txt", home_cstr, fConfig.ElectronBeamEnergy);
+            }
+        } else {
+            printf("AcceleratorMagnets  file opening err :: please setup  G4E_HOME \n");
+        }
 
-      printf("AcceleratorMagnets:: try to open file %s \n", fileName.c_str());
+        printf("AcceleratorMagnets:: try to open file %s \n", fileName.c_str());
 
-     AcceleratorMagnets *electron_line_magnets = new AcceleratorMagnets(fileName, World_Phys, World_Material, USE_LINE);
+        AcceleratorMagnets *electron_line_magnets = new AcceleratorMagnets(fileName, World_Phys, World_Material, USE_LINE);
 
-
-      for (int i = 0; i < electron_line_magnets->allmagnets.size(); i++) {
-          std::cout << " electron line magnets " << electron_line_magnets->allmagnets.at(i)->name << endl;
-      }
+        for (auto & magnet : electron_line_magnets->allmagnets) {
+            std::cout << " electron line magnets " << magnet->name << endl;
+        }
 
 
       //-----------------Ion line -----------------------------------
@@ -207,7 +193,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
       printf("AcceleratorMagnets:: try to open file %s \n", fileName.c_str());
 
 
-       ion_line_magnets = new AcceleratorMagnets(fileName, World_Phys, World_Material, USE_LINE);
+      ion_line_magnets = new AcceleratorMagnets(fileName, World_Phys, World_Material, USE_LINE);
 
 
       for (int i = 0; i < ion_line_magnets->allmagnets.size(); i++) {
@@ -462,9 +448,9 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 // ***********************************************************************************
     if (USE_CI_ENDCAP) {
 
-//===================================================================================
-// ==                      GEM     Hadron endcap                                ==
-//==================================================================================
+    //===================================================================================
+    // ==                      GEM     Hadron endcap                                ==
+    //==================================================================================
 
         if (USE_CI_GEM) {
             fConfig.ci_GEM.PosZ = fConfig.cb_Solenoid.SizeZ / 2 - fConfig.ci_GEM.SizeZ / 2;   // --- need to find out why this 5 cm are needed
@@ -528,34 +514,35 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
         } // end USE_CI_EMCAL
     } // ============end USE_CI_ENDCAP  ===================================
 
-    //************************************************************************************
-    //==                         Forward Detectors                                     ==
-    //************************************************************************************
+//****************************************************************************************
+//==                         Forward Detectors                                          ==
+//****************************************************************************************
 
     //====================================================================================
     //==                          DIPOLE-1 Tracker and EMCAL                            ==
     //====================================================================================
 
-            if (USE_FI_D1TRK) {
-                //-------------------------------------------------------------------------------
-                //                      Place Si_disks inside D1a ir B0
-                //-------------------------------------------------------------------------------
+    if (USE_FI_D1TRK) {
+        //-------------------------------------------------------------------------------
+        //                      Place Si_disks inside D1a ir B0
+        //-------------------------------------------------------------------------------
 
-                for (int i = 0; i < ion_line_magnets->allmagnets.size(); i++) {
-                    std::cout << " ion line magnets " << ion_line_magnets->allmagnets.at(i)->name << endl;
-                    if ((USE_JLEIC && ion_line_magnets->allmagnets.at(i)->name == "iBDS1a") || (USE_ERHIC && ion_line_magnets->allmagnets.at(i)->name == "iB0PF")) {
+        for (int i = 0; i < ion_line_magnets->allmagnets.size(); i++) {
+            std::cout << " ion line magnets " << ion_line_magnets->allmagnets.at(i)->name << endl;
+            if ((USE_JLEIC && ion_line_magnets->allmagnets.at(i)->name == "iBDS1a") || (USE_ERHIC && ion_line_magnets->allmagnets.at(i)->name == "iB0PF")) {
 
-                        fConfig.fi_D1TRK.ROut = ion_line_magnets->allmagnets.at(i)->Rin2 * cm;
-                        fConfig.fi_D1TRK.Zpos = (ion_line_magnets->allmagnets.at(i)->LengthZ / 2.) * cm - fConfig.fi_D1TRK.SizeZ / 2.;
-                        fi_D1TRK.ConstructA(fConfig.fi_D1TRK, World_Material, ion_line_magnets->allmagnets.at(i)->fPhysics_BigDi_m);
-                        fi_D1TRK.ConstructDetectorsA();
-                        for (int lay = 0; lay < fConfig.fi_D1TRK.Nlayers; lay++) {
-                          if (fi_D1TRK.f1_D1_Lay_Logic) fi_D1TRK.f1_D1_Lay_Logic->SetSensitiveDetector(fCalorimeterSD);
-                         }
-                    }
-                }
-             }
-//------------------------------------------------
+                fConfig.fi_D1TRK.ROut = ion_line_magnets->allmagnets.at(i)->Rin2 * cm;
+                fConfig.fi_D1TRK.Zpos = (ion_line_magnets->allmagnets.at(i)->LengthZ / 2.) * cm - fConfig.fi_D1TRK.SizeZ / 2.;
+                fi_D1TRK.ConstructA(fConfig.fi_D1TRK, World_Material, ion_line_magnets->allmagnets.at(i)->fPhysics_BigDi_m);
+                fi_D1TRK.ConstructDetectorsA();
+                for (int lay = 0; lay < fConfig.fi_D1TRK.Nlayers; lay++) {
+                  if (fi_D1TRK.f1_D1_Lay_Logic) fi_D1TRK.f1_D1_Lay_Logic->SetSensitiveDetector(fCalorimeterSD);
+                 }
+            }
+        }
+     }
+
+    //------------------------------------------------
     if (USE_CI_HCAL) {
 
         if (USE_FI_D1EMCAL) {
@@ -591,9 +578,10 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
             }
         }
     }
+
     //------------------------------------------------
     //             ZDC
-   //------------------------------------------------
+    //------------------------------------------------
     if (USE_FFI_ZDC) {
         if (USE_JLEIC) {
         fConfig.ffi_ZDC.rot_matx.rotateY(fConfig.ffi_ZDC.Angle * rad);
@@ -645,7 +633,8 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 
         ffe_CPOL.Construct(fConfig.ffe_CPOL, World_Material, World_Phys);
     } // end ffe_CPOL
-   //===================================================================================
+
+    //===================================================================================
     //==                        Lumi                                                  ==
     //===================================================================================
 
@@ -663,7 +652,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
    //===================================================================================
 
     spdlog::info(" - exporting geometry");
-    g4e::GeometryExport::Export("jleic", World_Phys);
+    g4e::GeometryExport::Export(fInitContext->Arguments.OutputBaseName, World_Phys);
 
     PrintGeometryParameters();
 

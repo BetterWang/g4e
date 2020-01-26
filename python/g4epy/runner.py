@@ -2,6 +2,7 @@ import shlex
 import subprocess
 from datetime import datetime
 
+
 def run(command, sink):
     """Wrapper around subprocess.Popen that returns:
 
@@ -37,11 +38,10 @@ def run(command, sink):
     # Get return value and finishing time
     retval = process.poll()
     end_time = datetime.now()
-    sink.done()
-
     sink.add_line("------------------------------------------")
     sink.add_line(f"RUN DONE. RETVAL: {retval} \n\n")
     if retval != 0:
         sink.add_line(f"ERROR. Retval is not 0. Plese, look at the logs\n")
 
+    sink.done()
     return retval, start_time, end_time, lines

@@ -173,6 +173,8 @@ class Geant4Eic(object):
 
         # Generate execution file
         command = f"{self.config['executable']} {self.get_run_command()}"
+
+        self.sink.to_show = ["Event:", "Geant4 version"]
         self.sink.show_running_command(command)
         run(command, self.sink)
 

@@ -238,6 +238,7 @@ namespace g4e
                 const std::string &aVolName
                 )
         {
+
             mHitIo.IdVect.push_back(aHitId);
             mHitIo.XPosVect.push_back(aX);
             mHitIo.YPosVect.push_back(aY);

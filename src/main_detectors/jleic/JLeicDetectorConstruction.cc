@@ -653,6 +653,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
          fConfig.ffe_LUMI.PosX=+2 *m; fConfig.ffe_LUMI.PosY=0;  fConfig.ffe_LUMI.PosZ=-30*m;
 
         ffe_LUMI.Construct(fConfig.ffe_LUMI, World_Material, World_Phys);
+        ffe_LUMI.ConstructDetectors(fConfig.ffe_LUMI);
     } // end ffe_CPOL
 
 

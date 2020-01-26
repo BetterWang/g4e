@@ -190,3 +190,9 @@ resources/erhic/madx_eRHIC.zip
 *.mac~
 
 *.cc#
+
+*.root
+
+g4epy_lib/examples/test_run.run.json
+
+g4epy_lib/examples/test_run.run.mac

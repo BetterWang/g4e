@@ -133,13 +133,59 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
         }
 
     
-        if (fVerbose >= 1)
+        if (fVerbose >= 1){
             G4cout
                     << " CAL::  Absorber: total energy: " << std::setw(7) <<
                     G4BestUnit(totEAbs, "Energy")
                     << "       total track length: " << std::setw(7) <<
                     G4BestUnit(totLAbs, "Length")
                     << G4endl;
+        }
+
+
+
+
+        const G4int primeVtxCount = evt->GetNumberOfPrimaryVertex();
+        size_t particleId = 0;  // prime particle ID unique for all prime vertexes
+
+        for (G4int primeVtxIndex = 0; primeVtxIndex < primeVtxCount; primeVtxIndex++) {
+            auto primeVtx = evt->GetPrimaryVertex(primeVtxIndex);
+
+            // Add primary vertex to root output
+            mRootEventsOut->AddPrimaryVertex((size_t) primeVtxIndex,                    /* size_t aVtxIndex, */
+                                             (size_t) primeVtx->GetNumberOfParticle(),  /* size_t aParticleCount, */
+                                             primeVtx->GetX0(),                         /* double aX, */
+                                             primeVtx->GetY0(),                         /* double aY, */
+                                             primeVtx->GetZ0(),                         /* double aZ, */
+                                             primeVtx->GetT0(),                         /* double aTime, */
+                                             primeVtx->GetWeight());                    /* double aWeight */
+
+
+            const G4int partCount = primeVtx->GetNumberOfParticle();
+            for (G4int partIndex = 0; partIndex < partCount; partIndex++) {
+                auto particle = primeVtx->GetPrimary(partIndex);
+                mRootEventsOut->AddPrimaryParticle(particleId,                             /*size_t aId */
+                                                   (size_t) primeVtxIndex,                  /*size_t aPrimeVtxId */
+                                                   (size_t) particle->GetPDGcode(),         /*size_t aPDGCode */
+                                                   (size_t) particle->GetTrackID(),         /*size_t aTrackId */
+                                                   particle->GetCharge(),                  /*double aCharge */
+                                                   particle->GetMomentumDirection().x(),   /*double aMomDirX */
+                                                   particle->GetMomentumDirection().y(),   /*double aMomDirY */
+                                                   particle->GetMomentumDirection().z(),   /*double aMomDirZ */
+                                                   particle->GetTotalMomentum() / GeV,       /*double aTotalMomentum */
+                                                   particle->GetTotalEnergy() / GeV,         /*double aTotalEnergy */
+                                                   particle->GetProperTime() / ns,           /*double aProperTime */
+                                                   particle->GetPolX(),                    /*double aPolX */
+                                                   particle->GetPolY(),                    /*double aPolY */
+                                                   particle->GetPolZ()                     /*double aPolZ */
+                );
+
+                particleId++;
+            }
+        }
+
+        //mRootEventsOut.FillEvent((uint64_t)evt->GetEventID());
+
 
 //        // count event, add deposits to the sum ...
 //        runaction->CountEvent();

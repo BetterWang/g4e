@@ -1,4 +1,0 @@
-/control/execute jleicvis.mac
-/generator/select beagle
-/generator/beagle/open /home/romanov/Downloads/beagle_eD.txt
-/run/beamOn 1

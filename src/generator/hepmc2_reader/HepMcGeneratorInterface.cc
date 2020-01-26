@@ -79,7 +79,7 @@ void HepMcGeneratorInterface::HepMC2G4(const HepMC::GenEvent *hepmcevt, G4Event 
         }
         if (!isRealVertex) continue;
 
-        std::cout << "VERTEX id=" << vertex->barcode() << std::endl;
+        //std::cout << "VERTEX id=" << vertex->barcode() << std::endl;
 
 
         // check world boundary
@@ -98,15 +98,15 @@ void HepMcGeneratorInterface::HepMC2G4(const HepMC::GenEvent *hepmcevt, G4Event 
 
             //----------------------------------------------------------------------------
             int PID = pdgcode;
-            std::cout << "   Part = " << PID << "Its parents are: " << std::endl;
-            if ((*vpitr)->production_vertex()) {
-                for (auto mother = (*vpitr)->production_vertex()->particles_begin(HepMC::parents);
-                          mother != (*vpitr)->production_vertex()->particles_end(HepMC::parents);
-                          ++mother) {
-                    std::cout << "\t M:: ";
-                    (*mother)->print();
-                } //-- loop mother
-            } //-- mother
+            //std::cout << "   Part = " << PID << "Its parents are: " << std::endl;
+//            if ((*vpitr)->production_vertex()) {
+//                for (auto mother = (*vpitr)->production_vertex()->particles_begin(HepMC::parents);
+//                          mother != (*vpitr)->production_vertex()->particles_end(HepMC::parents);
+//                          ++mother) {
+//                    std::cout << "\t M:: ";
+//                    (*mother)->print();
+//                } //-- loop mother
+//            } //-- mother
             //----------------------------------------------------------------------------
 
             pos = (*vpitr)->momentum();

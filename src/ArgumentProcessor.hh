@@ -87,7 +87,7 @@ inline UserArguments InputProcessor::Process(int argc, char **argv)
     std::string optOutputName("g4e_output");
     std::vector<std::string> optAllFiles;
     app.add_flag("-g,--gui", optShowGui, "Shows Geant4 GUI");
-    app.add_flag("-o,--output", optOutputName, "Base name for Output files");
+    app.add_option("-o,--output", optOutputName, "Base name for Output files");
     app.add_option("-t,-j,--threads,--jobs", optThreads, "Number of threads. Single threaded mode if 0 or 1", 1);
     app.add_option("-v,--verbose", optVerbose,
                    "Verbosity 0-5 or: off fatal error warn info debug trace. '-v' (no val) means 'debug'. Can be set with /g4r/logLevel", "info");

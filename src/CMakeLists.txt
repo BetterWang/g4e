@@ -1,7 +1,6 @@
 target_include_directories(g4e
         PUBLIC
             ./
-            subdetectors/all
             generator
             helpers
             root_output
@@ -35,21 +34,19 @@ target_sources_local(g4e
         Materials.cc
         Materials.hh
 
-        JLeicPhysicsList.cc
-        JLeicPhysicsList.hh
-
-        JLeicPhysicsListMessenger.cc
-        JLeicPhysicsListMessenger.hh
+        EicPhysicsList.cc
+        EicPhysicsList.hh
 
         GeometryExport.hh
         GeometryExport.cc
 
-        ActionInitialization.hh
-        ActionInitialization.cc
+        MultiActionInitialization.hh
+        MultiActionInitialization.cc
 
         InitializationContext.hh
         )
 
 add_subdirectory(main_detectors)
+add_subdirectory(subdetectors)
 add_subdirectory(generator)
 

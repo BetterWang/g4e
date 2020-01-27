@@ -141,6 +141,8 @@ void Materials::Initialise()
 
     density = 1.39 * g / cm3;
     auto Mylar = new G4Material(name = "Mylar", density, nel = 3);
+
+
     Mylar->AddElement(elO, 2);
     Mylar->AddElement(elC, 5);
     Mylar->AddElement(elH, 4);

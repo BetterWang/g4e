@@ -38,6 +38,8 @@
 
 #--------------------------------------------------------------------
 /tracking/verbose 0
+
+/cuts/verbose 0
 #
 #/run/dumpCouples
 #/event/printModulo 1000

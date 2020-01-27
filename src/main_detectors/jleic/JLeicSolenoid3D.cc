@@ -48,9 +48,9 @@ JLeicSolenoid3D::JLeicSolenoid3D(const std::string& filename, double zOffset, bo
     int debug=0;
     double lenUnit = cm;
     double fieldUnit = tesla;
-    G4cout << "\n-----------------------------------------------------------" << "\n      Magnetic field" << "\n-----------------------------------------------------------";
-
-    G4cout << "\n ---> " "Reading the field grid from " << filename << " ... " << endl;
+//    G4cout << "\n-----------------------------------------------------------" << "\n      Magnetic field" << "\n-----------------------------------------------------------";
+//
+//    G4cout << "\n ---> " "Reading the field grid from " << filename << " ... " << endl;
 
     //
     //This is a thread-local class and we have to avoid that all workers open the
@@ -74,7 +74,7 @@ JLeicSolenoid3D::JLeicSolenoid3D(const std::string& filename, double zOffset, bo
     int tmp;
     file >> nx >> ny >> nz >> tmp; // Note dodgy order
 
-    std::cout << "  [ Number of values x,y,z: " << nx << " " << ny << " " << nz << " ] " << " tesla=" << tesla << endl;
+    //std::cout << "  [ Number of values x,y,z: " << nx << " " << ny << " " << nz << " ] " << " tesla=" << tesla << endl;
 
     // Set up storage space for table
     xField.resize(nx);
@@ -130,12 +130,12 @@ JLeicSolenoid3D::JLeicSolenoid3D(const std::string& filename, double zOffset, bo
     maxy = yval * lenUnit;
     maxz = zval * lenUnit;
 
-    G4cout << "\n ---> ... done reading " << endl;
-
-    // G4cout << " Read values of field from file " << filename << endl;
-    G4cout << " ---> assumed the order:  x, y, z, Bx, By, Bz " << "\n ---> Min values x,y,z: " << minx / cm << " " << miny / cm << " " << minz / cm << " cm "
-           << "\n ---> Max values x,y,z: " << maxx / cm << " " << maxy / cm << " " << maxz / cm << " cm " << "\n ---> The field will be offset by " << zOffset / cm << " cm "
-           << endl;
+//    G4cout << "\n ---> ... done reading " << endl;
+//
+//    // G4cout << " Read values of field from file " << filename << endl;
+//    G4cout << " ---> assumed the order:  x, y, z, Bx, By, Bz " << "\n ---> Min values x,y,z: " << minx / cm << " " << miny / cm << " " << minz / cm << " cm "
+//           << "\n ---> Max values x,y,z: " << maxx / cm << " " << maxy / cm << " " << maxz / cm << " cm " << "\n ---> The field will be offset by " << zOffset / cm << " cm "
+//           << endl;
 
     // Should really check that the limits are not the wrong way around.
     if (maxx < minx) {
@@ -150,14 +150,14 @@ JLeicSolenoid3D::JLeicSolenoid3D(const std::string& filename, double zOffset, bo
         swap(maxz, minz);
         invertZ = true;
     }
-    G4cout << "\nAfter reordering if neccesary" << "\n ---> Min values x,y,z: " << minx / cm << " " << miny / cm << " " << minz / cm << " cm " << " \n ---> Max values x,y,z: "
-           << maxx / cm << " " << maxy / cm << " " << maxz / cm << " cm ";
+//    G4cout << "\nAfter reordering if neccesary" << "\n ---> Min values x,y,z: " << minx / cm << " " << miny / cm << " " << minz / cm << " cm " << " \n ---> Max values x,y,z: "
+//           << maxx / cm << " " << maxy / cm << " " << maxz / cm << " cm ";
 
     dx = maxx - minx;
     dy = maxy - miny;
     dz = maxz - minz;
-    G4cout << "\n ---> Dif values x,y,z (range): " << dx / cm << " " << dy / cm << " " << dz / cm << " cm in z " << "\n-----------------------------------------------------------"
-           << endl;
+//    G4cout << "\n ---> Dif values x,y,z (range): " << dx / cm << " " << dy / cm << " " << dz / cm << " cm in z " << "\n-----------------------------------------------------------"
+//           << endl;
 }
 
 void JLeicSolenoid3D::GetFieldValue(const double point[4], double *Bfield) const {

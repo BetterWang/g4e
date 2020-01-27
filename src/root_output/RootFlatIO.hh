@@ -340,7 +340,7 @@ namespace g4e
         {
             mEventId = eventId;
 
-            fmt::print("Event: {:<7}  hits:{:<7}  tracks:{:<7} \n", mEventId+1, mHitIo.HitsCount, mTrackIo.TrackCount);
+            fmt::print("RooIO: {:<4} hits:{:<7} tracks:{:<7} genpart:{:<4} \n", mEventId+1, mHitIo.HitsCount, mTrackIo.TrackCount, mParticleIo.ParticleCount);
             mEventTree->Fill();
         }
 

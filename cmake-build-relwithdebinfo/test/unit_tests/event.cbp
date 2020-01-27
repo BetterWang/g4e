@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CodeBlocks_project_file>
+	<FileVersion major="1" minor="6"/>
+	<Project>
+		<Option title="event"/>
+		<Option makefile_is_custom="1"/>
+		<Option compiler="gcc"/>
+		<Option virtualFolders="CMake Files\;CMake Files\test\;CMake Files\test\unit_tests\;CMake Files\cmake\;CMake Files\cmake\Modules\;CMake Files\..\;CMake Files\..\root\;CMake Files\..\root\root-v6-18-04\;CMake Files\..\root\root-v6-18-04\cmake\;CMake Files\..\root\root-v6-18-04\cmake\modules\;CMake Files\..\geant\;CMake Files\..\geant\geant-v10.6.0\;CMake Files\..\geant\geant-v10.6.0\lib\;CMake Files\..\geant\geant-v10.6.0\lib\Geant4-10.6.0\;CMake Files\..\geant\geant-v10.6.0\lib\Geant4-10.6.0\Modules\;CMake Files\..\clhep\;CMake Files\..\clhep\clhep-master\;CMake Files\..\clhep\clhep-master\lib\;CMake Files\..\clhep\clhep-master\lib\CLHEP-2.4.1.0\;CMake Files\..\..\;CMake Files\..\..\..\;CMake Files\..\..\..\..\;CMake Files\..\..\..\..\usr\;CMake Files\..\..\..\..\usr\lib\;CMake Files\..\..\..\..\usr\lib\x86_64-linux-gnu\;CMake Files\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\;CMake Files\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\Qt5Core\;CMake Files\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\Qt5Gui\;CMake Files\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\Qt5Widgets\;CMake Files\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\Qt5OpenGL\;CMake Files\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\Qt5PrintSupport\;CMake Files\src\;CMake Files\src\main_detectors\;CMake Files\src\main_detectors\jleic\;CMake Files\src\subdetectors\;CMake Files\src\generator\;"/>
+		<Build>
+			<Target title="all">
+				<Option working_dir="/home/romanov/eic/g4e-dev/cmake-build-relwithdebinfo/test/unit_tests"/>
+				<Option type="4"/>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j32 -f &quot;/home/romanov/eic/g4e-dev/cmake-build-relwithdebinfo/test/unit_tests/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/usr/bin/make -j32 -f &quot;/home/romanov/eic/g4e-dev/cmake-build-relwithdebinfo/test/unit_tests/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j32 -f &quot;/home/romanov/eic/g4e-dev/cmake-build-relwithdebinfo/test/unit_tests/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j32 -f &quot;/home/romanov/eic/g4e-dev/cmake-build-relwithdebinfo/test/unit_tests/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="tests_g4e">
+				<Option output="/home/romanov/eic/g4e-dev/cmake-build-relwithdebinfo/test/unit_tests/tests_g4e" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/romanov/eic/g4e-dev/cmake-build-relwithdebinfo/test/unit_tests"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DG4UI_USE_TCSH"/>
+					<Add option="-DG4INTY_USE_XT"/>
+					<Add option="-DG4VIS_USE_RAYTRACERX"/>
+					<Add option="-DG4INTY_USE_QT"/>
+					<Add option="-DG4UI_USE_QT"/>
+					<Add option="-DG4VIS_USE_OPENGLQT"/>
+					<Add option="-DG4VIS_USE_OPENGLX"/>
+					<Add option="-DG4VIS_USE_OPENGL"/>
+					<Add option="-DG4LIB_BUILD_DLL"/>
+					<Add option="-DQT_GUI_LIB"/>
+					<Add option="-DQT_CORE_LIB"/>
+					<Add option="-DQT_NO_DEBUG"/>
+					<Add option="-DQT_WIDGETS_LIB"/>
+					<Add option="-DQT_PRINTSUPPORT_LIB"/>
+					<Add option="-DQT_OPENGL_LIB"/>
+					<Add directory="/home/romanov/eic/root/root-v6-18-04/include"/>
+					<Add directory="/home/romanov/eic/clhep/clhep-master/lib/CLHEP-2.4.1.0/../../include"/>
+					<Add directory="/home/romanov/eic/g4e-dev/test/unit_tests/SYSTEM"/>
+					<Add directory="/home/romanov/eic/hepmc/hepmc-HEPMC_02_06_09/include"/>
+					<Add directory="/home/romanov/eic/vgm/vgm-v4-5/include"/>
+					<Add directory="/home/romanov/eic/vgm/vgm-v4-5/test/include"/>
+					<Add directory="/home/romanov/eic/geant/geant-v10.6.0/include/Geant4"/>
+					<Add directory="/home/romanov/eic/clhep/clhep-master/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/qt5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/qt5/QtGui"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/qt5/QtCore"/>
+					<Add directory="/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/qt5/QtWidgets"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/qt5/QtPrintSupport"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/qt5/QtOpenGL"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j32 -f &quot;/home/romanov/eic/g4e-dev/cmake-build-relwithdebinfo/test/unit_tests/Makefile&quot;  VERBOSE=1 tests_g4e"/>
+					<CompileFile command="/usr/bin/make -j32 -f &quot;/home/romanov/eic/g4e-dev/cmake-build-relwithdebinfo/test/unit_tests/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j32 -f &quot;/home/romanov/eic/g4e-dev/cmake-build-relwithdebinfo/test/unit_tests/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j32 -f &quot;/home/romanov/eic/g4e-dev/cmake-build-relwithdebinfo/test/unit_tests/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+			<Target title="tests_g4e/fast">
+				<Option output="/home/romanov/eic/g4e-dev/cmake-build-relwithdebinfo/test/unit_tests/tests_g4e" prefix_auto="0" extension_auto="0"/>
+				<Option working_dir="/home/romanov/eic/g4e-dev/cmake-build-relwithdebinfo/test/unit_tests"/>
+				<Option object_output="./"/>
+				<Option type="1"/>
+				<Option compiler="gcc"/>
+				<Compiler>
+					<Add option="-DG4UI_USE_TCSH"/>
+					<Add option="-DG4INTY_USE_XT"/>
+					<Add option="-DG4VIS_USE_RAYTRACERX"/>
+					<Add option="-DG4INTY_USE_QT"/>
+					<Add option="-DG4UI_USE_QT"/>
+					<Add option="-DG4VIS_USE_OPENGLQT"/>
+					<Add option="-DG4VIS_USE_OPENGLX"/>
+					<Add option="-DG4VIS_USE_OPENGL"/>
+					<Add option="-DG4LIB_BUILD_DLL"/>
+					<Add option="-DQT_GUI_LIB"/>
+					<Add option="-DQT_CORE_LIB"/>
+					<Add option="-DQT_NO_DEBUG"/>
+					<Add option="-DQT_WIDGETS_LIB"/>
+					<Add option="-DQT_PRINTSUPPORT_LIB"/>
+					<Add option="-DQT_OPENGL_LIB"/>
+					<Add directory="/home/romanov/eic/root/root-v6-18-04/include"/>
+					<Add directory="/home/romanov/eic/clhep/clhep-master/lib/CLHEP-2.4.1.0/../../include"/>
+					<Add directory="/home/romanov/eic/g4e-dev/test/unit_tests/SYSTEM"/>
+					<Add directory="/home/romanov/eic/hepmc/hepmc-HEPMC_02_06_09/include"/>
+					<Add directory="/home/romanov/eic/vgm/vgm-v4-5/include"/>
+					<Add directory="/home/romanov/eic/vgm/vgm-v4-5/test/include"/>
+					<Add directory="/home/romanov/eic/geant/geant-v10.6.0/include/Geant4"/>
+					<Add directory="/home/romanov/eic/clhep/clhep-master/include"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/qt5"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/qt5/QtGui"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/qt5/QtCore"/>
+					<Add directory="/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/qt5/QtWidgets"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/qt5/QtPrintSupport"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/qt5/QtOpenGL"/>
+					<Add directory="/usr/include/c++/7"/>
+					<Add directory="/usr/include/x86_64-linux-gnu/c++/7"/>
+					<Add directory="/usr/include/c++/7/backward"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include"/>
+					<Add directory="/usr/local/include"/>
+					<Add directory="/usr/lib/gcc/x86_64-linux-gnu/7/include-fixed"/>
+					<Add directory="/usr/include/x86_64-linux-gnu"/>
+					<Add directory="/usr/include"/>
+				</Compiler>
+				<MakeCommands>
+					<Build command="/usr/bin/make -j32 -f &quot;/home/romanov/eic/g4e-dev/cmake-build-relwithdebinfo/test/unit_tests/Makefile&quot;  VERBOSE=1 tests_g4e/fast"/>
+					<CompileFile command="/usr/bin/make -j32 -f &quot;/home/romanov/eic/g4e-dev/cmake-build-relwithdebinfo/test/unit_tests/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/usr/bin/make -j32 -f &quot;/home/romanov/eic/g4e-dev/cmake-build-relwithdebinfo/test/unit_tests/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/usr/bin/make -j32 -f &quot;/home/romanov/eic/g4e-dev/cmake-build-relwithdebinfo/test/unit_tests/Makefile&quot;  VERBOSE=1 clean"/>
+				</MakeCommands>
+			</Target>
+		</Build>
+		<Unit filename="/home/romanov/eic/g4e-dev/test/unit_tests/catch.hh">
+			<Option target="tests_g4e"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/test/unit_tests/main.cpp">
+			<Option target="tests_g4e"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/test/unit_tests/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\test\unit_tests\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/cmake/print_functions.cmake">
+			<Option virtualFolder="CMake Files\cmake\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/cmake/target_sources_local.cmake">
+			<Option virtualFolder="CMake Files\cmake\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/cmake/Modules/FindGeant4.cmake">
+			<Option virtualFolder="CMake Files\cmake\Modules\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/cmake/Modules/FindHepMC.cmake">
+			<Option virtualFolder="CMake Files\cmake\Modules\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/../root/root-v6-18-04/cmake/ROOTConfig-targets-relwithdebinfo.cmake">
+			<Option virtualFolder="CMake Files\..\root\root-v6-18-04\cmake\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/../root/root-v6-18-04/cmake/ROOTConfig-targets.cmake">
+			<Option virtualFolder="CMake Files\..\root\root-v6-18-04\cmake\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/../root/root-v6-18-04/cmake/ROOTConfig-version.cmake">
+			<Option virtualFolder="CMake Files\..\root\root-v6-18-04\cmake\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/../root/root-v6-18-04/cmake/ROOTConfig.cmake">
+			<Option virtualFolder="CMake Files\..\root\root-v6-18-04\cmake\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/../root/root-v6-18-04/cmake/ROOTUseFile.cmake">
+			<Option virtualFolder="CMake Files\..\root\root-v6-18-04\cmake\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/../root/root-v6-18-04/cmake/modules/RootNewMacros.cmake">
+			<Option virtualFolder="CMake Files\..\root\root-v6-18-04\cmake\modules\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/../geant/geant-v10.6.0/lib/Geant4-10.6.0/G4EXPATShim.cmake">
+			<Option virtualFolder="CMake Files\..\geant\geant-v10.6.0\lib\Geant4-10.6.0\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/../geant/geant-v10.6.0/lib/Geant4-10.6.0/G4X11Shim.cmake">
+			<Option virtualFolder="CMake Files\..\geant\geant-v10.6.0\lib\Geant4-10.6.0\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/../geant/geant-v10.6.0/lib/Geant4-10.6.0/Geant4Config.cmake">
+			<Option virtualFolder="CMake Files\..\geant\geant-v10.6.0\lib\Geant4-10.6.0\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/../geant/geant-v10.6.0/lib/Geant4-10.6.0/Geant4LibraryDepends-relwithdebinfo.cmake">
+			<Option virtualFolder="CMake Files\..\geant\geant-v10.6.0\lib\Geant4-10.6.0\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/../geant/geant-v10.6.0/lib/Geant4-10.6.0/Geant4LibraryDepends.cmake">
+			<Option virtualFolder="CMake Files\..\geant\geant-v10.6.0\lib\Geant4-10.6.0\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/../geant/geant-v10.6.0/lib/Geant4-10.6.0/Geant4PackageCache.cmake">
+			<Option virtualFolder="CMake Files\..\geant\geant-v10.6.0\lib\Geant4-10.6.0\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/../geant/geant-v10.6.0/lib/Geant4-10.6.0/UseGeant4.cmake">
+			<Option virtualFolder="CMake Files\..\geant\geant-v10.6.0\lib\Geant4-10.6.0\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/../geant/geant-v10.6.0/lib/Geant4-10.6.0/Modules/IntelCompileFeatures.cmake">
+			<Option virtualFolder="CMake Files\..\geant\geant-v10.6.0\lib\Geant4-10.6.0\Modules\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/../geant/geant-v10.6.0/lib/Geant4-10.6.0/Modules/MSVCCompileFeatures.cmake">
+			<Option virtualFolder="CMake Files\..\geant\geant-v10.6.0\lib\Geant4-10.6.0\Modules\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/../clhep/clhep-master/lib/CLHEP-2.4.1.0/CLHEPConfig.cmake">
+			<Option virtualFolder="CMake Files\..\clhep\clhep-master\lib\CLHEP-2.4.1.0\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/../clhep/clhep-master/lib/CLHEP-2.4.1.0/CLHEPConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\clhep\clhep-master\lib\CLHEP-2.4.1.0\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/../clhep/clhep-master/lib/CLHEP-2.4.1.0/CLHEPLibraryDepends-relwithdebinfo.cmake">
+			<Option virtualFolder="CMake Files\..\clhep\clhep-master\lib\CLHEP-2.4.1.0\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/../clhep/clhep-master/lib/CLHEP-2.4.1.0/CLHEPLibraryDepends.cmake">
+			<Option virtualFolder="CMake Files\..\clhep\clhep-master\lib\CLHEP-2.4.1.0\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/../../../../usr/lib/x86_64-linux-gnu/cmake/Qt5Core/Qt5CoreConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\Qt5Core\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/../../../../usr/lib/x86_64-linux-gnu/cmake/Qt5Core/Qt5CoreConfigExtras.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\Qt5Core\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/../../../../usr/lib/x86_64-linux-gnu/cmake/Qt5Core/Qt5CoreConfigExtrasMkspecDir.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\Qt5Core\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/../../../../usr/lib/x86_64-linux-gnu/cmake/Qt5Core/Qt5CoreConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\Qt5Core\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/../../../../usr/lib/x86_64-linux-gnu/cmake/Qt5Core/Qt5CoreMacros.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\Qt5Core\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/../../../../usr/lib/x86_64-linux-gnu/cmake/Qt5Gui/Qt5GuiConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/../../../../usr/lib/x86_64-linux-gnu/cmake/Qt5Gui/Qt5GuiConfigExtras.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/../../../../usr/lib/x86_64-linux-gnu/cmake/Qt5Gui/Qt5GuiConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\Qt5Gui\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/../../../../usr/lib/x86_64-linux-gnu/cmake/Qt5Widgets/Qt5WidgetsConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\Qt5Widgets\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/../../../../usr/lib/x86_64-linux-gnu/cmake/Qt5Widgets/Qt5WidgetsConfigExtras.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\Qt5Widgets\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/../../../../usr/lib/x86_64-linux-gnu/cmake/Qt5Widgets/Qt5WidgetsConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\Qt5Widgets\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/../../../../usr/lib/x86_64-linux-gnu/cmake/Qt5Widgets/Qt5WidgetsMacros.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\Qt5Widgets\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/../../../../usr/lib/x86_64-linux-gnu/cmake/Qt5OpenGL/Qt5OpenGLConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\Qt5OpenGL\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/../../../../usr/lib/x86_64-linux-gnu/cmake/Qt5OpenGL/Qt5OpenGLConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\Qt5OpenGL\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/../../../../usr/lib/x86_64-linux-gnu/cmake/Qt5PrintSupport/Qt5PrintSupportConfig.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\Qt5PrintSupport\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/../../../../usr/lib/x86_64-linux-gnu/cmake/Qt5PrintSupport/Qt5PrintSupportConfigVersion.cmake">
+			<Option virtualFolder="CMake Files\..\..\..\..\usr\lib\x86_64-linux-gnu\cmake\Qt5PrintSupport\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/src/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/src/main_detectors/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\main_detectors\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/src/main_detectors/jleic/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\main_detectors\jleic\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/src/subdetectors/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\subdetectors\"/>
+		</Unit>
+		<Unit filename="/home/romanov/eic/g4e-dev/src/generator/CMakeLists.txt">
+			<Option virtualFolder="CMake Files\src\generator\"/>
+		</Unit>
+	</Project>
+</CodeBlocks_project_file>

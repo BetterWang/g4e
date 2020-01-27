@@ -175,10 +175,6 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 
         AcceleratorMagnets *electron_line_magnets = new AcceleratorMagnets(fileName, World_Phys, World_Material, USE_LINE);
 
-        for (auto & magnet : electron_line_magnets->allmagnets) {
-            std::cout << " electron line magnets " << magnet->name << endl;
-        }
-
 
       //-----------------Ion line -----------------------------------
       printf("========================================\n");
@@ -195,11 +191,6 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 
       ion_line_magnets = new AcceleratorMagnets(fileName, World_Phys, World_Material, USE_LINE);
 
-
-      for (int i = 0; i < ion_line_magnets->allmagnets.size(); i++) {
-          std::cout << " ion line magnets " << ion_line_magnets->allmagnets.at(i)->name << endl;
-      }
-
   }
 
 
@@ -211,11 +202,11 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     G4SDManager *SDman = G4SDManager::GetSDMpointer();
 
     if (!fCalorimeterSD) {
-        fCalorimeterSD = new JLeicCalorimeterSD("CalorSD", fInitContext->RootOutput->GetJLeicRootOutput(), this);
+        fCalorimeterSD = new JLeicCalorimeterSD("CalorSD", fInitContext->RootManager->GetJLeicRootOutput(), this);
         SDman->AddNewDetector(fCalorimeterSD);
     }
     if (!fVertexSD) {
-        fVertexSD = new JLeicVertexSD("VertexSD", fInitContext->RootOutput->GetJLeicRootOutput(),  this);
+        fVertexSD = new JLeicVertexSD("VertexSD", fInitContext->RootManager->GetJLeicRootOutput(), this);
         SDman->AddNewDetector(fVertexSD);
         printf("VertexSD done\n");
     }
@@ -527,8 +518,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
         //                      Place Si_disks inside D1a ir B0
         //-------------------------------------------------------------------------------
 
-        for (int i = 0; i < ion_line_magnets->allmagnets.size(); i++) {
-            std::cout << " ion line magnets " << ion_line_magnets->allmagnets.at(i)->name << endl;
+        for (size_t i = 0; i < ion_line_magnets->allmagnets.size(); i++) {
             if ((USE_JLEIC && ion_line_magnets->allmagnets.at(i)->name == "iBDS1a") || (USE_ERHIC && ion_line_magnets->allmagnets.at(i)->name == "iB0PF")) {
 
                 fConfig.fi_D1TRK.ROut = ion_line_magnets->allmagnets.at(i)->Rin2 * cm;
@@ -563,7 +553,6 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     if (USE_FFI_D2TRK) {
 
         for (int i = 0; i < ion_line_magnets->allmagnets.size(); i++) {
-            std::cout << " ion line magnets " << ion_line_magnets->allmagnets.at(i)->name << endl;
             if ((USE_JLEIC && ion_line_magnets->allmagnets.at(i)->name == "iBDS2")) {
 
                 fConfig.ffi_D2TRK.RIn = 0 * cm;
@@ -639,9 +628,11 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     //===================================================================================
 
     if (USE_FFE_LUMI) {
-         fConfig.ffe_LUMI.PosX=+2 *m; fConfig.ffe_LUMI.PosY=0;  fConfig.ffe_LUMI.PosZ=-30*m;
+         fConfig.ffe_LUMI.PosX=+2*m;
+         fConfig.ffe_LUMI.PosY=0;
+         fConfig.ffe_LUMI.PosZ=-30*m;
 
-        ffe_LUMI.Construct(fConfig.ffe_LUMI, World_Material, World_Phys);
+         ffe_LUMI.Construct(fConfig.ffe_LUMI, World_Material, World_Phys);
         //ffe_LUMI.ConstructDetectors(fConfig.ffe_LUMI);
     } // end ffe_CPOL
 
@@ -652,7 +643,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
    //===================================================================================
 
     spdlog::info(" - exporting geometry");
-    g4e::GeometryExport::Export(fInitContext->Arguments.OutputBaseName, World_Phys);
+    g4e::GeometryExport::Export(fInitContext->Arguments->OutputBaseName, World_Phys);
 
     PrintGeometryParameters();
 

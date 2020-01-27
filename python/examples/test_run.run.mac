@@ -1,4 +1,4 @@
 /control/execute jleic.mac
 /generator/select hepmcAscii
 /generator/hepmcAscii/open /home/romanov/Downloads/herwig6_20k.hepmc
-/run/beamOn 20
+/run/beamOn 2000

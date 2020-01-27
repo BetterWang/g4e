@@ -23,7 +23,7 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 
-#include <G4GenericMessenger.hh>
+
 #include "JLeicEventAction.hh"
 
 #include "JLeicRunAction.hh"
@@ -38,10 +38,8 @@
 #include "G4HCofThisEvent.hh"
 #include "G4VHitsCollection.hh"
 #include "G4SDManager.hh"
-#include "G4UImanager.hh"
 #include "G4ios.hh"
 #include "G4UnitsTable.hh"
-#include "Randomize.hh"
 
 
 
@@ -236,6 +234,7 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
         }
     }
 
+    G4cout << "Event processed: " << evt->GetEventID()+1 << G4endl;
 
     if (fVerbose > 1) {
         G4cout << "JLeicEventAction:: Event END " << evt->GetEventID() << G4endl;

@@ -2,14 +2,24 @@
 #define G4E_INITIALIZATIONCONTEXT_HH
 
 #include <ArgumentProcessor.hh>
-#include <ActionInitialization.hh>
+#include <MultiActionInitialization.hh>
 #include <RootOutputManager.hh>
 
 namespace g4e {
     struct InitializationContext {
-        UserArguments Arguments;
-        g4e::RootOutputManager* RootOutput;
-        g4e::ActionInitialization* ActionInitialization;
+
+        InitializationContext(UserArguments* args,
+                              g4e::RootOutputManager* rootMan,
+                              g4e::MultiActionInitialization* actionInit):
+            Arguments(args),
+            RootManager(rootMan),
+            ActionInitialization(actionInit)
+        {
+        }
+
+        UserArguments * Arguments;
+        g4e::RootOutputManager * RootManager;
+        g4e::MultiActionInitialization * ActionInitialization;
     };
 }
 

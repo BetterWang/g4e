@@ -1,11 +1,12 @@
 import json
 import os
 import sys
+import threading
 
 from g4epy.console_run_sink import ConsoleRunSink
 from g4epy.notebook_run_sink import NotebookRunSink
 from .test_env import is_notebook
-from .runner import run
+from .runner import run, do_execute, sink_printer, stream_subprocess, console_printer
 from .mc import build_file_open_command, detect_mc_type, McFileTypes
 
 
@@ -172,28 +173,11 @@ class Geant4Eic(object):
         self.sink.display()
 
         # Generate execution file
-        command = f"{self.config['executable']} {self.get_run_command()}"
+        command = f"{self.config['executable']} {self.get_run_command()} -o {self.config['output']}"
 
-        self.sink.to_show = ["Event:", "Geant4 version"]
+        self.sink.to_show = ["Event:", "Geant4 version", "Init"]
         self.sink.show_running_command(command)
         run(command, self.sink)
-
-    def build(self, threads='auto'):
-        """Builds G4E"""
-        # Generate execution file
-
-        if threads == 'auto':
-            import multiprocessing
-            threads = multiprocessing.cpu_count()
-            if threads > 2:
-                threads -= 1
-            print(f"Building with {threads} threads")
-
-        command = f"ejpm install -j {threads} g4e  --single"
-        self.sink.to_show = ["[", "Error", "ERROR"]   # "[" - Cmake like "[9%]"
-        self.sink.show_running_command(command)
-        run(command, self.sink)
-
 
     def get_run_command(self):
         params = " {}".format(self.config['run_mac_file'])

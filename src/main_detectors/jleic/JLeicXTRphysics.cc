@@ -64,7 +64,7 @@
 #include "JLeicXTRTransparentRegRadModel.hh"
 #include "JLeicDetectorConstruction.hh"
 #include "JLeicStepCut.hh"
-#include "JLeicPhysicsList.hh"
+#include "EicPhysicsList.hh"
 
 #include "JLeicXTRphysicsMessenger.hh"
 
@@ -72,12 +72,13 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-JLeicXTRphysics::JLeicXTRphysics(JLeicDetectorConstruction *p, JLeicPhysicsList *pl, const G4String &name) : G4VPhysicsConstructor(name), fJLeicXTRphysicsMessenger(0)
+JLeicXTRphysics::JLeicXTRphysics(JLeicDetectorConstruction *p, EicPhysicsList *pl, const G4String &name) : G4VPhysicsConstructor(name), fJLeicXTRphysicsMessenger(0)
 {
     pDet = p;
     pList = pl;
     SetXTRModel("none");
     fJLeicXTRphysicsMessenger = new JLeicXTRphysicsMessenger(this);
+    SetVerboseLevel(0);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
@@ -135,7 +136,7 @@ void JLeicXTRphysics::ConstructProcess()
         log::warn("Invalid XTR model name {}, or foil number = {} \n", fXTRModel, pDet->GetFoilNumber());
     }
 
-    if (processXTR) processXTR->SetVerboseLevel(1);
+    if (processXTR) processXTR->SetVerboseLevel(0);
     if (processXTR) processXTR->SetAngleRadDistr(true);
 
     auto theParticleIterator = GetParticleIterator();
@@ -144,6 +145,7 @@ void JLeicXTRphysics::ConstructProcess()
     while ((*theParticleIterator)()) {
         G4ParticleDefinition *particle = theParticleIterator->value();
         G4ProcessManager *pmanager = particle->GetProcessManager();
+        pmanager->SetVerboseLevel(0);
         G4String particleName = particle->GetParticleName();
 
         log::trace("JLeicXTRphysics::ConstructEM():: particle={} \n", particle->GetParticleName().c_str());
@@ -161,6 +163,7 @@ void JLeicXTRphysics::ConstructProcess()
             theeminusStepCut->SetMaxStep(MaxChargedStep);
             //theeminusStepCut->SetMaxStep(100*um) ;
             G4eIonisation *eioni = new G4eIonisation();
+            eioni->SetVerboseLevel(0);
             G4PAIModel *pai = new G4PAIModel(particle, "PAIModel");
             if (gas) eioni->AddEmModel(0, pai, pai, gas);
 
@@ -178,6 +181,7 @@ void JLeicXTRphysics::ConstructProcess()
             theeplusStepCut = new JLeicStepCut();
             theeplusStepCut->SetMaxStep(MaxChargedStep);
             G4eIonisation *eioni = new G4eIonisation();
+            eioni->SetVerboseLevel(0);
             G4PAIModel *pai = new G4PAIModel(particle, "PAIModel");
             if (gas) eioni->AddEmModel(0, pai, pai, gas);
 
@@ -201,6 +205,7 @@ void JLeicXTRphysics::ConstructProcess()
             G4PAIModel *pai = new G4PAIModel(particle, "PAIModel");
             if (gas) muioni->AddEmModel(0, pai, pai, gas);
 
+
             pmanager->AddProcess(new G4MuMultipleScattering(), -1, 1, 1);
             pmanager->AddProcess(muioni, -1, 2, 2);
             pmanager->AddProcess(new G4MuBremsstrahlung(), -1, 3, 3);
@@ -223,7 +228,7 @@ void JLeicXTRphysics::ConstructProcess()
             //if (processXTR) pmanager->AddDiscreteProcess(processXTR);
         } //-- charged hadrons --
     }
-    std::cout << " Exit ConstructEM " << std::endl;
+
     G4EmProcessOptions opt;
     opt.SetApplyCuts(true);
 
@@ -232,26 +237,21 @@ void JLeicXTRphysics::ConstructProcess()
 
 void JLeicXTRphysics::SetCuts()
 {
-
     G4Region *region;
     //* uncomment for FDC & depfet !!!!!!!!!!!!!!!!!!!!!!!!!!!
     if (!fRadiatorCuts) SetRadiatorCuts();
     region = (G4RegionStore::GetInstance())->GetRegion("XTRradiator");
     if (region) region->SetProductionCuts(fRadiatorCuts);
-    G4cout << "Radiator cuts are set" << G4endl;
 
     if (!fDetectorCuts) SetDetectorCuts();
     region = (G4RegionStore::GetInstance())->GetRegion("XTRdEdxDetector");
     if (region) region->SetProductionCuts(fDetectorCuts);
-    G4cout << "Detector cuts are set" << G4endl;
-
 }
 
 ///////////////////////////////////////////////////////////////////////////
 
 void JLeicXTRphysics::SetGammaCut(G4double val)
 {
-    printf("JLeicXTRphysics::SetGammaCut(%f) \n", val);
     cutForGamma = val;
 }
 
@@ -267,8 +267,6 @@ void JLeicXTRphysics::SetElectronCut(G4double val)
 void JLeicXTRphysics::SetMaxStep(G4double step)
 {
     MaxChargedStep = step;
-    G4cout << " MaxChargedStep=" << MaxChargedStep << G4endl;
-    G4cout << G4endl;
 }
 
 /////////////////////////////////////////////////////
@@ -281,9 +279,9 @@ void JLeicXTRphysics::SetRadiatorCuts()
     fRadiatorCuts->SetProductionCut(fElectronCut, idxG4ElectronCut);
     fRadiatorCuts->SetProductionCut(fPositronCut, idxG4PositronCut);
 
-    G4cout << "Radiator gamma cut    = " << fGammaCut / mm << " mm" << G4endl;
-    G4cout << "Radiator electron cut = " << fElectronCut / mm << " mm" << G4endl;
-    G4cout << "Radiator positron cut = " << fPositronCut / mm << " mm" << G4endl;
+//    G4cout << "Radiator gamma cut    = " << fGammaCut / mm << " mm" << G4endl;
+//    G4cout << "Radiator electron cut = " << fElectronCut / mm << " mm" << G4endl;
+//    G4cout << "Radiator positron cut = " << fPositronCut / mm << " mm" << G4endl;
 }
 
 /////////////////////////////////////////////////////////////
@@ -296,9 +294,9 @@ void JLeicXTRphysics::SetDetectorCuts()
     fDetectorCuts->SetProductionCut(fElectronCut, idxG4ElectronCut);
     fDetectorCuts->SetProductionCut(fPositronCut, idxG4PositronCut);
 
-    G4cout << "Detector gamma cut    = " << fGammaCut / mm << " mm" << G4endl;
-    G4cout << "Detector electron cut = " << fElectronCut / mm << " mm" << G4endl;
-    G4cout << "Detector positron cut = " << fPositronCut / mm << " mm" << G4endl;
+//    G4cout << "Detector gamma cut    = " << fGammaCut / mm << " mm" << G4endl;
+//    G4cout << "Detector electron cut = " << fElectronCut / mm << " mm" << G4endl;
+//    G4cout << "Detector positron cut = " << fPositronCut / mm << " mm" << G4endl;
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

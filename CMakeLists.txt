@@ -160,6 +160,13 @@ target_include_directories(g4e
 # All sources and includes for the project are there:
 add_subdirectory(src)
 
+
+# This is good for in JupyterLab Build
+if(${G4E_SILENCE_WARNINGS})
+    if ( CMAKE_COMPILER_IS_GNUCC )
+        target_compile_options(g4e PRIVATE "-w")
+    endif()
+endif()
 #${HEPMC_FIO_LIBRARIES}
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we

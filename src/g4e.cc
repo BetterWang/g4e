@@ -30,7 +30,7 @@
 
 #include "main_detectors/jleic/JLeicDetectorConstruction.hh"
 #include "ArgumentProcessor.hh"
-#include "JLeicPhysicsList.hh"
+#include "EicPhysicsList.hh"
 #include "PrimaryGeneratorAction.hh"
 
 #include "JLeicHistogramManager.hh"
@@ -45,7 +45,7 @@
 #include "RootOutputManager.hh"
 
 #include "Logging.hh"
-#include "ActionInitialization.hh"
+#include "MultiActionInitialization.hh"
 
 #include <G4MTRunManager.hh>
 #include <G4RunManager.hh>
@@ -102,18 +102,18 @@ int main(int argc, char **argv)
     }
 
     // Action initialization
-    std::unique_ptr<g4e::ActionInitialization> actionInit(new g4e::ActionInitialization());
+    std::unique_ptr<g4e::MultiActionInitialization> actionInit(new g4e::MultiActionInitialization());
     std::unique_ptr<G4VUserActionInitialization> jleicActionInit(new JLeicActionInitialization(mainRootOutput.get()));
 
     actionInit->AddUserInitialization(jleicActionInit.get());
 
     // After the run manager, we can combine initialization context
-    g4e::InitializationContext initContext {appArgs, mainRootOutput.get(), actionInit.get()};
+    g4e::InitializationContext initContext(&appArgs, mainRootOutput.get(), actionInit.get());
 
     auto detector = new JLeicDetectorConstruction(&initContext);
 
     runManager->SetUserInitialization(detector);
-    runManager->SetUserInitialization(new JLeicPhysicsList(detector));
+    runManager->SetUserInitialization(new EicPhysicsList(detector));
     runManager->SetUserInitialization(initContext.ActionInitialization);
 
 

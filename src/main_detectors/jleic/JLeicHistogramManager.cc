@@ -41,6 +41,7 @@ void JLeicHistogramManager::FillHist2d(int ihist, G4double valx, G4double valy, 
 G4double JLeicHistogramManager::GetHist2d(int ihist, G4int ix, G4int iy)
 {
     if (d2_hist[ihist]) return d2_hist[ihist]->GetBinContent(ix, iy);
+    return 0;
 }
 
 void JLeicHistogramManager::ResetHist2d(int ihist)

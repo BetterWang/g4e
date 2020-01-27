@@ -263,7 +263,7 @@ public:
 
     G4int GetFoilNumber()
     {
-        std::cout << " foil number4 = " << ci_TRD.ConstructionConfig.fFoilNumber << std::endl;
+        //std::cout << " foil number4 = " << ci_TRD.ConstructionConfig.fFoilNumber << std::endl;
         return ci_TRD.ConstructionConfig.fFoilNumber;
     }
 

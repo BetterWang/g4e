@@ -1,24 +1,7 @@
 #include "JLeicDetectorConstruction.hh"
 #include "JLeicSteppingAction.hh"
-#include "generator/PrimaryGeneratorAction.hh"
-#include "JLeicEventAction.hh"
-#include "JLeicRunAction.hh"
-#include "JLeicSteppingAction.hh"
-#include <G4ios.hh>
-#include <G4SystemOfUnits.hh>
 #include <G4SteppingManager.hh>
-#include <G4TrackVector.hh>
-#include "StringHelpers.hh"
-#include <iomanip>
 
-#include "TLorentzVector.h"
-
-static int FIRST = 0, FIRSTFOUT = 0;
-static int InsideD1 = 0, InsideQ4 = 0;
-int myevno = 0;
-static double pt = 0., pz = 0., xL = 0.;
-static FILE *rc5, *rc4;
-TLorentzVector ka;
 
 
 JLeicSteppingAction::JLeicSteppingAction(JLeicHistogramManager *histo): fHistoManager(histo)

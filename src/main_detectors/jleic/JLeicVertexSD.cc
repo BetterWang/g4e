@@ -39,7 +39,6 @@ static int use_depfet = 1;
 static int use_fdc = 0;
 
 static FILE *fann; //*fopen(const char *path, const char *mode);
-static char AnnFileName[128];
 static int NVAR;
 
 
@@ -440,54 +439,6 @@ void JLeicVertexSD::EndOfEvent(G4HCofThisEvent *HCE)
         //dedx_fadc->Write();
         //printf(" new event:%6d",nevent);  for (int ii=0;  ii<30; ii++) printf(" %4.1f",dEslice[ii]);  printf("\n");
     }
-
-    if (save_hits_root) { //--   fill tree  ----
-        const G4Event *evt = G4RunManager::GetRunManager()->GetCurrentEvent();
-
-        const G4int primeVtxCount = evt->GetNumberOfPrimaryVertex();
-        size_t particleId = 0;  // prime particle ID unique for all prime vertexes
-
-        for (G4int primeVtxIndex = 0; primeVtxIndex < primeVtxCount; primeVtxIndex++) {
-            auto primeVtx = evt->GetPrimaryVertex(primeVtxIndex);
-
-            // Add primary vertex to root output
-            mRootEventsOut->AddPrimaryVertex((size_t) primeVtxIndex,                    /* size_t aVtxIndex, */
-                                             (size_t) primeVtx->GetNumberOfParticle(),  /* size_t aParticleCount, */
-                                             primeVtx->GetX0(),                         /* double aX, */
-                                             primeVtx->GetY0(),                         /* double aY, */
-                                             primeVtx->GetZ0(),                         /* double aZ, */
-                                             primeVtx->GetT0(),                         /* double aTime, */
-                                             primeVtx->GetWeight());                    /* double aWeight */
-
-
-            const G4int partCount = primeVtx->GetNumberOfParticle();
-            for (G4int partIndex = 0; partIndex < partCount; partIndex++) {
-                auto particle = primeVtx->GetPrimary(partIndex);
-                mRootEventsOut->AddPrimaryParticle(particleId,                             /*size_t aId */
-                                                   (size_t) primeVtxIndex,                  /*size_t aPrimeVtxId */
-                                                   (size_t) particle->GetPDGcode(),         /*size_t aPDGCode */
-                                                   (size_t) particle->GetTrackID(),         /*size_t aTrackId */
-                                                   particle->GetCharge(),                  /*double aCharge */
-                                                   particle->GetMomentumDirection().x(),   /*double aMomDirX */
-                                                   particle->GetMomentumDirection().y(),   /*double aMomDirY */
-                                                   particle->GetMomentumDirection().z(),   /*double aMomDirZ */
-                                                   particle->GetTotalMomentum() / GeV,       /*double aTotalMomentum */
-                                                   particle->GetTotalEnergy() / GeV,         /*double aTotalEnergy */
-                                                   particle->GetProperTime() / ns,           /*double aProperTime */
-                                                   particle->GetPolX(),                    /*double aPolX */
-                                                   particle->GetPolY(),                    /*double aPolY */
-                                                   particle->GetPolZ()                     /*double aPolZ */
-                );
-
-                particleId++;
-            }
-        }
-
-        // mRootEventsOut->FillEvent((uint64_t)evt->GetEventID());
-    }
-
-
-
     // Total hits/steps per event. Set it back to 0
     mHitsCount = 0;
 }

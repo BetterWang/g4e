@@ -46,7 +46,7 @@ class Geant4Eic(object):
         # set defaults if they are not set for the user
         self.config['output'] = self.config.get('output', 'test_run')
         self.config['source_file'] = self.config.get('source_file', '/home/romanov/Downloads/beagle_eD.txt')
-        self.config['beamline'] = self.config.get('beamline', 'jleic')
+        self.config['beamline'] = self.config.get('beamline', 'erhic')
         self.config['detector'] = self.config.get('detector', 'jleic')
         self.config['is_batch'] = self.config.get('is_batch', True)
         self.config['executable'] = self.config.get('executable', 'g4e')
@@ -176,7 +176,7 @@ class Geant4Eic(object):
         # Generate execution file
         command = f"{self.config['executable']} {self.get_run_command()} -o {self.config['output']}"
 
-        self.sink.to_show = ["Event:", "Geant4 version", "Init"]
+        self.sink.to_show = ["Event", "Geant4 version", "Init", "Error", "Fatal", "Exception"]
         self.sink.show_running_command(command)
         run(command, self.sink)
 

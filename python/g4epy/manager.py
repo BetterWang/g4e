@@ -1,5 +1,7 @@
+import inspect
 import json
 import os
+import pathlib
 import sys
 import threading
 
@@ -36,6 +38,7 @@ class Geant4EicManager(object):
                   "Looking for g4e executable and all resource files in this directory. Which probably is an error")
         else:
             self.config['g4e_home'] = os.environ['G4E_HOME']
+            self.config['subdetectors_dir'] = os.path.join(os.environ['G4E_HOME'], 'src', 'subdetectors')
 
             default_build_prefix = os.path.join(os.environ['G4E_HOME'], 'cmake-build-debug')
             self.config['build_prefix'] = self.config.get('build_prefix', default_build_prefix)
@@ -55,7 +58,7 @@ class Geant4EicManager(object):
         
         self.sink.to_show = ["[", "Error", "ERROR", "FATAL"]   # "[" - Cmake like "[9%]"
         self.sink.show_running_command(command)
-        run(command, self.sink)
+        run(command, self.sink, cwd=self.config['build_prefix'])
 
     def build(self, threads='auto'):
         if threads == 'auto':
@@ -88,6 +91,17 @@ class Geant4EicManager(object):
 
         self.sink.show_running_command(command)
         run(command, self.sink, cwd=self.config['build_prefix'])
+
+    def add_subdetector(self, name):
+        this_file_dir = os.path.dirname(inspect.stack()[0][1])
+        target_file_dir = os.path.join(self.config['subdetectors_dir'], name)
+        pathlib.Path(target_file_dir).mkdir(parents=True, exist_ok=False)
+        target_file = os.path.join(target_file_dir, name + '.hh')
+        with open(os.path.join(this_file_dir, 'template.hh'), 'r') as fread:
+            with open(target_file, 'w') as fwrite:
+                for line in fread:
+                    line = line.replace("/*{{detector_name}}*/", name)
+                    fwrite.write(line)
 
     def _repr_html_(self):
         result_str = f"<strong>g4e</strong><br>"

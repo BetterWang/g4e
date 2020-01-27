@@ -65,7 +65,7 @@ namespace g4e
                 tree->Branch("trk_count", &TrackCount, "trk_count/l");
                 tree->Branch("trk_id", &IdVect);
                 tree->Branch("trk_pdg", &PdgVect);
-                tree->Branch("trk_part_id", &ParentId);
+                tree->Branch("trk_parent_id", &ParentId);
                 tree->Branch("trk_vtx_x", &XVtxVect);
                 tree->Branch("trk_vtx_y", &YVtxVect);
                 tree->Branch("trk_vtx_z", &ZVtxVect);

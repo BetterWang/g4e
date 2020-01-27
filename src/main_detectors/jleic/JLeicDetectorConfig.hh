@@ -46,7 +46,7 @@
 struct JLeicDetectorConfig {
     int ElectronBeamEnergy =10;
     int IonBeamEnergy=200;
-    std::string BeamlineName="jleic";
+    std::string BeamlineName="erhic";
 
     struct World_Config {
         double ShiftVTX = 40. * cm;

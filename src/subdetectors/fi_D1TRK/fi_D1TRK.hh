@@ -67,8 +67,8 @@ public:
         fi_D1_lay_ROut = cfg.ROut - 5 * cm;
         fi_D1_lay_SizeZ = 1 * cm;
 
-        //   fi_D1_lay_Material = fMat->GetMaterial("Ar10CO2");  //----   !!!!! ----
-        fi_D1_lay_Material =G4Material::GetMaterial("G4_Galactic");
+        fi_D1_lay_Material = G4Material::GetMaterial("Ar10CO2");  //----   !!!!! ----
+     //   fi_D1_lay_Material =G4Material::GetMaterial("G4_Galactic");
         f1_D1_lay_Solid = new G4Tubs("f1_D1_lay_Solid", fi_D1_lay_RIn, fi_D1_lay_ROut,
                                       fi_D1_lay_SizeZ / 2., 170., 330 * deg);
         f1_D1_Lay_Logic = new G4LogicalVolume(f1_D1_lay_Solid, fi_D1_lay_Material, "f1_D1_lay_Logic");

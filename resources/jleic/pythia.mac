@@ -16,5 +16,7 @@
 #------ cone at 50mrad ----
 #---protons ---
 /generator/pythiaAscii/open  /data/yulia/yulia-PCbackup/EIC-soft/pythia_jlab_v2/pythia/work/pythia_e-p_10x100_Q2_100k_msel2_DIS.txt
+
+/run/initialize
 /run/beamOn 1
 exit

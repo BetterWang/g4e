@@ -122,7 +122,7 @@ class Geant4Eic(object):
 
         # What we are saving:
         data = {"config": self.config,
-                "user_execs": self.user_commands}
+                "user_commands": self.user_commands}
 
         with open(run_context_file, "w") as f:
             json.dump(data, f, indent=4, sort_keys=True)
@@ -142,6 +142,7 @@ class Geant4Eic(object):
         base_mac_file += '.mac'
 
         self.commands.append(f"/control/execute {base_mac_file}")
+        self.commands.append(f"/detsetup/beamlineName {self.config['beamline']}")
         self.commands.extend(self.user_commands)
 
         with open(run_mac_file, "w") as f:
@@ -193,6 +194,7 @@ class Geant4Eic(object):
         return result_str
 
     def beam_on(self, value):
+        self.command("/run/initialize")
         self.command(f"/run/beamOn {value}")
         return self
 

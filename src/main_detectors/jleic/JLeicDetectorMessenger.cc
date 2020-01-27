@@ -60,6 +60,11 @@ JLeicDetectorMessenger::JLeicDetectorMessenger(JLeicDetectorConstruction *JLeicD
     PbeamECmd->SetDefaultValue(10);
     PbeamECmd->AvailableForStates(G4State_PreInit, G4State_Idle);
 
+    BeamlineNameCmd =  new G4UIcmdWithAString("/detsetup/beamlineName", this);
+    BeamlineNameCmd->SetGuidance("Select beamline erhic or jlab");
+    BeamlineNameCmd->SetParameterName("beamlineName", true);
+    BeamlineNameCmd->SetDefaultValue("erhic");
+
     TRDdetDir = new G4UIdirectory("/XTRdetector/");
     TRDdetDir->SetGuidance("TRD detector control.");
 
@@ -205,7 +210,6 @@ JLeicDetectorMessenger::~JLeicDetectorMessenger()
     delete PbeamECmd;
 
     delete DetDir;
-
 }
 
 /////////////////////////////////////////////////////////////////////////////
@@ -231,8 +235,15 @@ void JLeicDetectorMessenger::SetNewValue(G4UIcommand *command, G4String newValue
 //  {
 //    JLeicDetector->SetFoilNumber(FoilNumCmd->GetNewIntValue(newValue));
 //  }
-    if (command == EbeamECmd) { JLeicDetector->SetElectronBeamEnergy(EbeamECmd->GetNewIntValue(newValue)); }
-    if (command == PbeamECmd) { JLeicDetector->SetIonBeamEnergy(PbeamECmd->GetNewIntValue(newValue)); }
+    if (command == EbeamECmd) {
+        JLeicDetector->GetConfigRef().ElectronBeamEnergy = G4UIcmdWithAnInteger::GetNewIntValue(newValue);
+    }
+    if (command == PbeamECmd) {
+        JLeicDetector->GetConfigRef().IonBeamEnergy = G4UIcmdWithAnInteger::GetNewIntValue(newValue);
+    }
+    if (command == BeamlineNameCmd) {
+        JLeicDetector->GetConfigRef().BeamlineName = newValue;
+    }
 
     if (command == AbsMaterCmd) { JLeicDetector->SetAbsorberMaterial(newValue); }
 

@@ -102,13 +102,20 @@ int main(int argc, char **argv)
     }
 
     // Action initialization
-    std::unique_ptr<g4e::MultiActionInitialization> actionInit(new g4e::MultiActionInitialization());
+    g4e::MultiActionInitialization actionInit;
     std::unique_ptr<G4VUserActionInitialization> jleicActionInit(new JLeicActionInitialization(mainRootOutput.get()));
 
-    actionInit->AddUserInitialization(jleicActionInit.get());
+    // Event action
+    actionInit.AddUserActionGenerator([&mainRootOutput](){return new JLeicEventAction(mainRootOutput->GetJLeicRootOutput(), mainRootOutput->GetJLeicHistogramManager());});
+    actionInit.AddUserActionGenerator([&mainRootOutput](){return new JLeicRunAction(mainRootOutput->GetJLeicRootOutput(), mainRootOutput->GetJLeicHistogramManager());});
+
+
+
+
+    actionInit.AddUserInitialization(jleicActionInit.get());
 
     // After the run manager, we can combine initialization context
-    g4e::InitializationContext initContext(&appArgs, mainRootOutput.get(), actionInit.get());
+    g4e::InitializationContext initContext(&appArgs, mainRootOutput.get(), &actionInit);
 
     auto detector = new JLeicDetectorConstruction(&initContext);
 

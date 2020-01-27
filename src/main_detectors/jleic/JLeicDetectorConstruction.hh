@@ -111,8 +111,7 @@ class JLeicDetectorConstruction : public G4VUserDetectorConstruction
 public:
 
     //--------BEAM elements------
-    bool USE_JLEIC = false ;  // use either JLEIC or ERHIC optics
-    bool USE_ERHIC =true ;   // use either JLEIC or ERHIC optics
+
     // -----
     bool USE_FFQs = true;
     //bool USE_FFQs_iu
@@ -197,10 +196,6 @@ public:
     void EnableHCalRings();
 
 public:
-    void SetElectronBeamEnergy(G4int);
-
-    void SetIonBeamEnergy(G4int);
-
     void SetAbsorberMaterial(G4String);
 
     void SetAbsorberThickness(G4double);
@@ -231,11 +226,11 @@ public:
 
     void PrintGeometryParameters();
 
+    JLeicDetectorConfig& GetConfigRef() { return fConfig; }
+
+
     G4Material *GetWorldMaterial() { return World_Material; };
 
-    G4double GetWorldSizeZ() { return fConfig.World.SizeZ; };
-
-    G4double GetWorldSizeR() { return fConfig.World.SizeR; };
 
     void checkVolumeOverlap();
 
@@ -245,7 +240,7 @@ public:
 
     G4LogicalVolume *GetLogicalAbsorber() { return fLogicAbsorber; };
 
-    double GetAbsorberThickness() { return fConfig.ci_TRD.fAbsorberThickness; };
+
 
     G4Material *GetAbsorberMaterial() { return fConfig.ci_TRD.det_Material; };
 

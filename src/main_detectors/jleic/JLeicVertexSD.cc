@@ -202,7 +202,7 @@ G4bool JLeicVertexSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
     trace("xloc=%f yloc=%f zloc=%f  \n", xloc, yloc, zloc);
     if (use_fdc) {  //----- FDC / TRD  ---
 
-        int zbin = (zloc / mm + mDetector->GetAbsorberThickness() / 2.) / mDetector->fadc_slice; //-- z position , slice number
+        int zbin = (zloc / mm + mDetector->GetConfigRef().ci_TRD.ThicknessZ / 2.) / mDetector->fadc_slice; //-- z position , slice number
         //int zbin = (zloc/mm+Detector->GetAbsorberThickness()/2.) /  (Detector->GetAbsorberThickness()/10.)  ; //-- z position , slice 1/10
         //printf("zbin=%d zloc=%f zinp=%f  zend=%f wz=%f \n",zbin,zloc,zinp,zend,worldPosition.z());
 
@@ -399,8 +399,8 @@ void JLeicVertexSD::EndOfEvent(G4HCofThisEvent *HCE)
 
     if (use_fdc) {
 
-        if (NVAR > mDetector->GetAbsorberThickness() / mDetector->fadc_slice) {
-            printf("Error FADC slices:: NVAR=%d Slices=%f \n", NVAR, mDetector->GetAbsorberThickness() / mDetector->fadc_slice);
+        if (NVAR > mDetector->GetConfigRef().ci_TRD.ThicknessZ / mDetector->fadc_slice) {
+            printf("Error FADC slices:: NVAR=%d Slices=%f \n", NVAR, mDetector->GetConfigRef().ci_TRD.ThicknessZ / mDetector->fadc_slice);
             exit(1);
         }
 

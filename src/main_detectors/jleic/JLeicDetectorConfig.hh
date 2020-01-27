@@ -45,7 +45,8 @@
 
 struct JLeicDetectorConfig {
     int ElectronBeamEnergy =10;
-    int IonBeamEnergy =200;
+    int IonBeamEnergy=200;
+    std::string BeamlineName="jleic";
 
     struct World_Config {
         double ShiftVTX = 40. * cm;
@@ -105,8 +106,10 @@ struct JLeicDetectorConfig {
     ffi_ZDC_Config  ffi_ZDC;
     ffi_RPOT_D2_Config  ffi_RPOT_D2;
     ffi_RPOT_D3_Config  ffi_RPOT_D3;
-   //---------------Beampipe------------------------
-     ir_Beampipe_Config ir_Beampipe;
+
+    //---------------Beampipe------------------------
+    ir_Beampipe_Config ir_Beampipe;
 } ;
+
 
 #endif //G4E_JLeicDetectorParameters_HH

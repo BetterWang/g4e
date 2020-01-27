@@ -4,6 +4,7 @@
 #include <memory>
 
 #include <G4VUserActionInitialization.hh>
+#include <G4UserEventAction.hh>
 #include <ArgumentProcessor.hh>
 
 
@@ -27,8 +28,18 @@ public:
 
     void AddUserInitialization(G4VUserActionInitialization * init) { mActionInits.push_back(init); }
 
+    void AddUserActionGenerator(const std::function<G4UserEventAction*()>& generator) {
+        mEventActionGenerators.push_back(generator);
+    }
+
+    void AddUserActionGenerator(const std::function<G4UserRunAction*()>& generator) {
+        mRunActionGenerators.push_back(generator);
+    }
+
 private:
     std::vector<G4VUserActionInitialization*> mActionInits;
+    std::vector<std::function<G4UserEventAction*()>> mEventActionGenerators;
+    std::vector<std::function<G4UserRunAction*()>> mRunActionGenerators;
 };
 }
 

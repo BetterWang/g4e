@@ -23,15 +23,9 @@ JLeicActionInitialization::JLeicActionInitialization(g4e::RootOutputManager* roo
 
 void JLeicActionInitialization::Build() const
 {
-
-
     // Primary Generator
     auto pgAction = new PrimaryGeneratorAction();
     SetUserAction(pgAction);
-
-    // Event action
-    auto jleicEventAction = new JLeicEventAction(mRootOuput->GetJLeicRootOutput(), mRootOuput->GetJLeicHistogramManager());
-    SetUserAction(jleicEventAction);
 
     // Stepping action
     auto steppingAction = new JLeicSteppingAction(mRootOuput->GetJLeicHistogramManager());
@@ -44,9 +38,7 @@ void JLeicActionInitialization::Build() const
 
 void JLeicActionInitialization::BuildForMaster() const
 {
-    // RUN action
-    auto runAction = new JLeicRunAction(mRootOuput->GetJLeicRootOutput(), mRootOuput->GetJLeicHistogramManager());
-    SetUserAction(runAction);
+
 }
 
 

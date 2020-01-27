@@ -156,16 +156,16 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
         int USE_LINE = 1;
         std::string fileName;
         printf("AcceleratorMagnets start... Ion energy %d   Electron energy %d World_Phys=%p \n ", fConfig.IonBeamEnergy, fConfig.ElectronBeamEnergy, World_Phys);
-        const char *home_cstr = std::getenv("G4E_HOME");
+        const char *g4eHomeCStr = std::getenv("G4E_HOME");
         //---------------- Electron  line -----------------------------------
         printf("========================================\n");
-        if (home_cstr) {
-            if (USE_ERHIC) {
+        if (g4eHomeCStr) {
+            if (fConfig.BeamlineName == "erhic") {
                 USE_LINE =1;
-                fileName = fmt::format("{}/resources/erhic/mdi/e_ir_{}.txt", home_cstr, fConfig.ElectronBeamEnergy);
-            } else if (USE_JLEIC) {
+                fileName = fmt::format("{}/resources/erhic/mdi/e_ir_{}.txt", g4eHomeCStr, fConfig.ElectronBeamEnergy);
+            } else {
                 USE_LINE = 0;
-                fileName = fmt::format("{}/resources/jleic/mdi/e_ir_{}.txt", home_cstr, fConfig.ElectronBeamEnergy);
+                fileName = fmt::format("{}/resources/jleic/mdi/e_ir_{}.txt", g4eHomeCStr, fConfig.ElectronBeamEnergy);
             }
         } else {
             printf("AcceleratorMagnets  file opening err :: please setup  G4E_HOME \n");
@@ -176,15 +176,26 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
         AcceleratorMagnets *electron_line_magnets = new AcceleratorMagnets(fileName, World_Phys, World_Material, USE_LINE);
 
 
+
       //-----------------Ion line -----------------------------------
       printf("========================================\n");
-      if (home_cstr) {
-          if (USE_ERHIC) {USE_LINE=1;
-              fileName = fmt::format("{}/resources/erhic/mdi/ion_ir_{}.txt", home_cstr, fConfig.IonBeamEnergy);
-          } else if (USE_JLEIC) {USE_LINE=0;
-              fileName = fmt::format("{}/resources/jleic/mdi/ion_ir_{}.txt", home_cstr, fConfig.IonBeamEnergy);
-          } else { printf(" Please check corect settings for USE_FFQs && USE_JLEIC or USE_ERHIC"); }
-      } else { printf("AcceleratorMagnets  file opening err :: please setup  G4E_HOME \n"); }
+      if (g4eHomeCStr) {
+          if (fConfig.BeamlineName == "erhic") {
+              USE_LINE=1;
+              fileName = fmt::format("{}/resources/erhic/mdi/ion_ir_{}.txt", g4eHomeCStr, fConfig.IonBeamEnergy);
+          } else if (fConfig.BeamlineName == "jleic") {
+              USE_LINE=0;
+              fileName = fmt::format("{}/resources/jleic/mdi/ion_ir_{}.txt", g4eHomeCStr, fConfig.IonBeamEnergy);
+          } else {
+              G4Exception("JLeicDetectorConstruction::Construct",
+                          "InvalidSetup", FatalException,
+                          "BeamlineName should be 'erhic' or 'jleic'");
+          }
+      } else {
+          G4Exception("JLeicDetectorConstruction::Construct",
+                      "InvalidSetup", FatalException,
+                      "AcceleratorMagnets  file opening err :: please setup env. G4E_HOME");
+      }
 
       printf("AcceleratorMagnets:: try to open file %s \n", fileName.c_str());
 
@@ -276,8 +287,8 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 
             //---------------------------- HCAL IRON--------------------------------------
             if (USE_CI_HCAL_D) {
-                if(USE_JLEIC) {fConfig.ci_HCAL.det_RIn=80*cm;}
-                if(USE_ERHIC) {fConfig.ci_HCAL.det_RIn=60*cm;}
+                if(fConfig.BeamlineName == "jleic") {fConfig.ci_HCAL.det_RIn=80*cm;}
+                if(fConfig.BeamlineName == "erhic") {fConfig.ci_HCAL.det_RIn=60*cm;}
                 ci_HCAL.ConstructDetectors(fConfig.ci_HCAL);
             }
         }
@@ -335,7 +346,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
                }
 
             }
-            else if (USE_CB_CTD_Straw) { cb_CTD.ConstructStraws(); };
+            else if (USE_CB_CTD_Straw) { cb_CTD.ConstructStraws(); }
 
         };// end CTD detector
 
@@ -445,8 +456,8 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 
         if (USE_CI_GEM) {
             fConfig.ci_GEM.PosZ = fConfig.cb_Solenoid.SizeZ / 2 - fConfig.ci_GEM.SizeZ / 2;   // --- need to find out why this 5 cm are needed
-          if(USE_JLEIC)  { fConfig.ci_GEM.PosX = -5 * cm;}  // --- different crossing angle direction for JLEIC
-          else if ( USE_ERHIC ){ fConfig.ci_GEM.PosX = 5 * cm;} // --- different crossing angle direction for eRHIC
+          if(fConfig.BeamlineName == "jleic")  { fConfig.ci_GEM.PosX = -5 * cm;}  // --- different crossing angle direction for JLEIC
+          else if ( fConfig.BeamlineName == "erhic" ){ fConfig.ci_GEM.PosX = 5 * cm;} // --- different crossing angle direction for eRHIC
             else {  fConfig.ci_GEM.PosX = 0 * cm;}
 
             ci_GEM.Construct(fConfig.ci_GEM, World_Material, cb_Solenoid.Phys);
@@ -495,8 +506,16 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
             //==================================================================================
 
             fConfig.ci_EMCAL.PosZ = -fConfig.ci_Endcap.SizeZ / 2 + fConfig.ci_DRICH.ThicknessZ + fConfig.ci_TRD.ThicknessZ + fConfig.ci_EMCAL.ThicknessZ / 2;
-            if(USE_JLEIC)  { fConfig.ci_EMCAL.USE_JLEIC=USE_JLEIC;fConfig.ci_EMCAL.det_Rin1=20*cm;  fConfig.ci_EMCAL.det_Rin2=55*cm;  }
-            if (USE_ERHIC) {fConfig.ci_EMCAL.USE_ERHIC=USE_ERHIC; fConfig.ci_EMCAL.det_Rin1=30*cm;  fConfig.ci_EMCAL.det_Rin2=30*cm; }
+            if(fConfig.BeamlineName == "jleic")  {
+                fConfig.ci_EMCAL.USE_JLEIC = true;
+                fConfig.ci_EMCAL.det_Rin1 = 20*cm;
+                fConfig.ci_EMCAL.det_Rin2 = 55*cm;
+            }
+            if (fConfig.BeamlineName == "erhic") {
+                fConfig.ci_EMCAL.USE_ERHIC=true;
+                fConfig.ci_EMCAL.det_Rin1=30*cm;
+                fConfig.ci_EMCAL.det_Rin2=30*cm;
+            }
 
             ci_EMCAL.Construct(fConfig.ci_EMCAL, World_Material, ci_ENDCAP_GVol_Phys);
             ci_EMCAL.ConstructDetectors();    // --- outer part with Glass
@@ -519,7 +538,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
         //-------------------------------------------------------------------------------
 
         for (size_t i = 0; i < ion_line_magnets->allmagnets.size(); i++) {
-            if ((USE_JLEIC && ion_line_magnets->allmagnets.at(i)->name == "iBDS1a") || (USE_ERHIC && ion_line_magnets->allmagnets.at(i)->name == "iB0PF")) {
+            if ((fConfig.BeamlineName == "jleic" && ion_line_magnets->allmagnets.at(i)->name == "iBDS1a") || (fConfig.BeamlineName == "erhic" && ion_line_magnets->allmagnets.at(i)->name == "iB0PF")) {
 
                 fConfig.fi_D1TRK.ROut = ion_line_magnets->allmagnets.at(i)->Rin2 * cm;
                 fConfig.fi_D1TRK.Zpos = (ion_line_magnets->allmagnets.at(i)->LengthZ / 2.) * cm - fConfig.fi_D1TRK.SizeZ / 2.;
@@ -553,7 +572,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     if (USE_FFI_D2TRK) {
 
         for (int i = 0; i < ion_line_magnets->allmagnets.size(); i++) {
-            if ((USE_JLEIC && ion_line_magnets->allmagnets.at(i)->name == "iBDS2")) {
+            if ((fConfig.BeamlineName == "jleic" && ion_line_magnets->allmagnets.at(i)->name == "iBDS2")) {
 
                 fConfig.ffi_D2TRK.RIn = 0 * cm;
                 fConfig.ffi_D2TRK.ROut = ion_line_magnets->allmagnets.at(i)->Rin2 * cm -0.1*cm;
@@ -572,12 +591,12 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     //             ZDC
     //------------------------------------------------
     if (USE_FFI_ZDC) {
-        if (USE_JLEIC) {
+        if (fConfig.BeamlineName == "jleic") {
         fConfig.ffi_ZDC.rot_matx.rotateY(fConfig.ffi_ZDC.Angle * rad);
         fConfig.ffi_ZDC.Zpos = 4000 * cm;
         fConfig.ffi_ZDC.Xpos = -190 * cm;
         }
-    if( USE_ERHIC) {
+    if(fConfig.BeamlineName == "erhic") {
           fConfig.ffi_ZDC.rot_matx.rotateY(-fConfig.ffi_ZDC.Angle * rad);
           fConfig.ffi_ZDC.Zpos = 3500 * cm;
           fConfig.ffi_ZDC.Xpos = 90 * cm;
@@ -590,7 +609,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     } // end ffi_ZDC
 
     //------------------------------------------------
-    if (USE_FFI_RPOT_D2 && USE_JLEIC) {
+    if (USE_FFI_RPOT_D2 && fConfig.BeamlineName == "jleic") {
         fConfig.ffi_RPOT_D2.rot_matx.rotateY(fConfig.ffi_RPOT_D2.Angle * rad);
         fConfig.ffi_RPOT_D2.PosZ = 3100 * cm;
         fConfig.ffi_RPOT_D2.PosX = -170 * cm;
@@ -600,7 +619,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 
     } // end ffi_RPOT_D2
     //------------------------------------------------
-    if (USE_FFI_RPOT_D3 && USE_JLEIC) {
+    if (USE_FFI_RPOT_D3 && fConfig.BeamlineName == "jleic") {
         fConfig.ffi_RPOT_D3.Angle = -0.053;
         fConfig.ffi_RPOT_D3.rot_matx.rotateY(fConfig.ffi_RPOT_D3.Angle * rad);
         fConfig.ffi_RPOT_D3.PosZ = 5000 * cm;
@@ -733,22 +752,6 @@ void JLeicDetectorConstruction::SetWorldMaterial(G4String materialChoice)
     }
 }
 
-///////////////////////////////////////////////////////////////////////////
-//                  Set beam energy settings
-//
-void JLeicDetectorConstruction::SetElectronBeamEnergy(G4int val)
-{
-    //  electron beam energy settings
-    fConfig.ElectronBeamEnergy = val;
-    printf("ElectronBeamEnergy =%d \n", fConfig.ElectronBeamEnergy);
-}
-
-void JLeicDetectorConstruction::SetIonBeamEnergy(G4int val)
-{
-    // Ion beam energy settings
-    fConfig.IonBeamEnergy = val;
-    printf("IonBeamEnergy =%d \n", fConfig.IonBeamEnergy);
-}
 
 ///////////////////////////////////////////////////////////////////////////
 //

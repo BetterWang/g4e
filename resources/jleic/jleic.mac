@@ -33,7 +33,7 @@
 /emphyslist/setElectronCut 0.020
 /emphyslist/setPositronCut 0.020
 /emphyslist/setDetectorCuts 0.020
-/run/initialize
+
 #
 
 #--------------------------------------------------------------------

@@ -34,8 +34,7 @@ class Geant4EicManager(object):
 
         if 'G4E_HOME' not in os.environ:
             self.config['g4e_home'] = ''
-            print("WARNING. G4E_HOME environment variable is not set. "
-                  "Looking for g4e executable and all resource files in this directory. Which probably is an error")
+            raise ValueError("WARNING. G4E_HOME environment variable is not set. Set it pointing to g4e installation")
         else:
             self.config['g4e_home'] = os.environ['G4E_HOME']
             self.config['subdetectors_dir'] = os.path.join(os.environ['G4E_HOME'], 'src', 'subdetectors')
@@ -56,8 +55,10 @@ class Geant4EicManager(object):
 
         command = f"cmake --build {self.config['build_prefix']} --target {target} {suffix}"
         
-        self.sink.to_show = ["[", "Error", "ERROR", "FATAL"]   # "[" - Cmake like "[9%]"
+        self.sink.to_show = ["%]", "Error", "ERROR", "FATAL"]   # "[" - Cmake like "[9%]"
         self.sink.show_running_command(command)
+        # if not self.sink.is_displayed:
+        self.sink.display()
         run(command, self.sink, cwd=self.config['build_prefix'])
 
     def build(self, threads='auto'):
@@ -74,7 +75,7 @@ class Geant4EicManager(object):
     def clean(self):
         self.run_cmake_target('clean')
 
-    def configure(self, build_type='Debug', silence_warnings=True):
+    def cmake_configure(self, build_type='Debug', silence_warnings=True):
         """
         RelwithDebInfo
         :param build_type:
@@ -88,8 +89,10 @@ class Geant4EicManager(object):
 
         command = f"cmake {flags} -DCMAKE_BUILD_TYPE={build_type} {self.config['g4e_home']}"
         self.sink.to_show = [">>>", "-- Configuring done", "-- Generating done", "Error"]  # "[" - Cmake like "[9%]"
-
         self.sink.show_running_command(command)
+
+        # if not self.sink.is_displayed:
+        self.sink.display()
         run(command, self.sink, cwd=self.config['build_prefix'])
 
     def add_subdetector(self, name):
@@ -102,8 +105,9 @@ class Geant4EicManager(object):
                 for line in fread:
                     line = line.replace("/*{{detector_name}}*/", name)
                     fwrite.write(line)
+        print(target_file)
 
     def _repr_html_(self):
-        result_str = f"<strong>g4e</strong><br>"
+        result_str = f"<strong>g4e Manager</strong><br>"
         result_str += f"<br><strong>G4E_HOME:</strong><br>{self.config['g4e_home']}"
         return result_str

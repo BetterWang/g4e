@@ -196,3 +196,5 @@ resources/erhic/madx_eRHIC.zip
 g4epy_lib/examples/test_run.run.json
 
 g4epy_lib/examples/test_run.run.mac
+
+python/examples/lmon/

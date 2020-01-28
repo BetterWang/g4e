@@ -100,9 +100,18 @@ void g4e::GeometryExport::EnhanceTGeoVisual(TGeoNode *topNode)
         }
 
         // electron end-cup EMCalorimeter
+        else if(name.find("HCAL") != std::string::npos) {
+            volume->SetLineColor(kMagenta - 5);
+            //volume->SetTransparency(50);
+        }
+
+            // electron end-cup EMCalorimeter
         else if(StartsWith(name, "cb_HCAL")) {
             volume->SetLineColor(kMagenta - 5);
             //volume->SetTransparency(50);
+        }
+        else if (name.find("DIPOLE") != std::string::npos || name.find("QUAD") != std::string::npos) {
+            volume->SetLineColor(kGreen - 1);
         }
     }
 }

@@ -77,7 +77,7 @@
 
 //--------------FFe---------------
 #include "ffe_CPOL/ffe_CPOL.hh"         //  Far-forward  electron direction ePolarimeter
-#include "ffe_LUMI/ffe_LUMI.hh"         //  Far -forward  electron   LUMI
+
 
 //--------------CI---------------
 #include "ci_GEM/ci_GEM.hh"             // Central Ion Endcap - TRD
@@ -101,8 +101,8 @@
 #include "ir_Beampipe/ir_Beampipe.hh"   // IR Lattice import from file
 
 
-
 class JLeicCalorimeterSD;
+
 class JLeicVertexSD;
 
 
@@ -142,11 +142,11 @@ public:
     bool USE_CB_DIRC = true;
     bool USE_CB_DIRC_bars = false;  // bars for DIRC
 
-    bool USE_CB_EMCAL = true ;
+    bool USE_CB_EMCAL = true;
     bool USE_CB_HCAL = true;
     bool USE_CB_HCAL_D = true; // hcal detector ( granularity)
 
-     // ==============================================
+    // ==============================================
     //--------E-encap------
     bool USE_E_ENDCAP = true;
     //------- subdetector-volumes E-encap ----- 
@@ -156,7 +156,7 @@ public:
 
     // -------- polarimeter ------------
     bool USE_FFE_CPOL = false;
-    bool USE_FFE_LUMI =true;
+    bool USE_FFE_LUMI = true;
     //==============================================
     //--------H-encap------
     bool USE_CI_ENDCAP = true;
@@ -168,9 +168,9 @@ public:
     bool USE_CI_HCAL = true;
     bool USE_CI_HCAL_D = true;
     //--------- Forward D1 ------
-     bool USE_FI_D1TRK = true ;
-     bool USE_FI_D1EMCAL = false;
-   //--------FARFORWARD HADRON------
+    bool USE_FI_D1TRK = true;
+    bool USE_FI_D1EMCAL = false;
+    //--------FARFORWARD HADRON------
 
     bool USE_FFI_D2TRK = true;
     bool USE_FFI_ZDC = true;
@@ -189,7 +189,7 @@ public:
     //bool  USE_EMCALe
     //bool  USE_VTXB 1
 
-    explicit JLeicDetectorConstruction(g4e::InitializationContext*);
+    explicit JLeicDetectorConstruction(g4e::InitializationContext *);
 
     ~JLeicDetectorConstruction() override;
 
@@ -210,8 +210,6 @@ public:
 
     void SetGasGapThickness(G4double);
 
-    //   void SetFoilNumber(G4int i) { fFoilNumber = i; };
-
     void SetWorldMaterial(G4String);
 
     void SetWorldSizeZ(G4double);
@@ -226,11 +224,9 @@ public:
 
     void PrintGeometryParameters();
 
-    JLeicDetectorConfig& GetConfigRef() { return fConfig; }
-
+    JLeicDetectorConfig &GetConfigRef() { return fConfig; }
 
     G4Material *GetWorldMaterial() { return World_Material; };
-
 
     void checkVolumeOverlap();
 
@@ -239,8 +235,6 @@ public:
     const G4VPhysicalVolume *GetAbsorberPhysicalVolume() { return fPhysicsAbsorber; };
 
     G4LogicalVolume *GetLogicalAbsorber() { return fLogicAbsorber; };
-
-
 
     G4Material *GetAbsorberMaterial() { return fConfig.ci_TRD.det_Material; };
 
@@ -262,7 +256,6 @@ public:
         return ci_TRD.ConstructionConfig.fFoilNumber;
     }
 
-    G4String rootFileName;
     G4double fadc_slice;
 
     //---  fsv move to public ---
@@ -299,9 +292,9 @@ private:
     G4Material *World_Material;
 
     // Interaction region
-   // ir_LatticeDesign ir_Lattice;
+    // ir_LatticeDesign ir_Lattice;
     ir_Beampipe_Design ir_Beampipe;
-     AcceleratorMagnets *ion_line_magnets;
+    AcceleratorMagnets *fIonLineMagnets;
 
 //-----------------Hadron ENDCAP volume--------------------
     G4VisAttributes *ci_ENDCAP_GVol_VisAttr;
@@ -341,8 +334,9 @@ private:
 
     //---------------- CPOL volume --------------
     ffe_CPOL_Design ffe_CPOL;
-       //----------------  LUMI volume --------------
-    ffe_LUMI_Design ffe_LUMI;
+
+    //----------------  LUMI volume --------------
+    // ffe_LUMI_Design ffe_LUMI;
 
     //==============================================
     //----------------Ion-ENDCAP -----------------------
@@ -560,9 +554,137 @@ private:
     JLeicVertexSD *fVertexSD;  //pointer to the sensitive detector
 
     g4e::Materials *fMat;
-    g4e::InitializationContext* fInitContext;
-
+    g4e::InitializationContext *fInitContext;
+    AcceleratorMagnets *fElectronLineMagnets;
 };
+
+
+
+
+inline void JLeicDetectorConstruction::PrintGeometryParameters()
+{
+    G4cout << "\n The  WORLD   is made of " << fConfig.World.SizeZ / mm << "mm of " << World_Material->GetName();
+    G4cout << ", the transverse size (R) of the world is " << fConfig.World.SizeR / mm << " mm. " << G4endl;
+    G4cout << "WorldMaterial = " << World_Material->GetName() << G4endl;
+    //  G4cout<<"fVTX_END_Z = "<<fVTX_END_Z/mm<<" mm"<<G4endl;
+    G4cout << G4endl;
+}
+
+inline void JLeicDetectorConstruction::SetAbsorberMaterial(G4String materialChoice)
+{
+    // get the pointer to the material table
+    const G4MaterialTable *theMaterialTable = G4Material::GetMaterialTable();
+
+    // search the material by its name
+    G4Material *pttoMaterial;
+
+    for (size_t J = 0; J < theMaterialTable->size(); J++) {
+        pttoMaterial = (*theMaterialTable)[J];
+
+        if (pttoMaterial->GetName() == materialChoice) {
+            fAbsorberMaterial = pttoMaterial;
+            fLogicAbsorber->SetMaterial(pttoMaterial);
+            // PrintCalorParameters();
+        }
+    }
+}
+
+inline void JLeicDetectorConstruction::SetRadiatorMaterial(G4String materialChoice)
+{
+    // get the pointer to the material table
+
+    const G4MaterialTable *theMaterialTable = G4Material::GetMaterialTable();
+
+    // search the material by its name
+
+    G4Material *pttoMaterial;
+    for (size_t J = 0; J < theMaterialTable->size(); J++) {
+        pttoMaterial = (*theMaterialTable)[J];
+
+        if (pttoMaterial->GetName() == materialChoice) {
+            fConfig.ci_TRD.fRadiatorMat = pttoMaterial;
+            fLogicRadSlice->SetMaterial(pttoMaterial);
+            // PrintCalorParameters();
+        }
+    }
+}
+
+inline void JLeicDetectorConstruction::SetWorldMaterial(G4String materialChoice)
+{
+    // get the pointer to the material table
+    const G4MaterialTable *theMaterialTable = G4Material::GetMaterialTable();
+
+    // search the material by its name
+    for (auto material : *theMaterialTable) {
+        if (material->GetName() == materialChoice) {
+            World_Material = material;
+            World_Logic->SetMaterial(material);
+        }
+    }
+}
+
+inline void JLeicDetectorConstruction::SetAbsorberThickness(G4double val)
+{
+    // change Absorber thickness and recompute the calorimeter parameters
+    fConfig.ci_TRD.fAbsorberThickness = val;
+}
+
+inline void JLeicDetectorConstruction::SetRadiatorThickness(G4double val)
+{
+    // change XTR radiator thickness and recompute the calorimeter parameters
+    fConfig.ci_TRD.fRadThickness = val;
+}
+
+inline void JLeicDetectorConstruction::SetGasGapThickness(G4double val)
+{
+    // change XTR gas gap thickness and recompute the calorimeter parameters
+    fConfig.ci_TRD.fGasGap = val;
+}
+
+inline void JLeicDetectorConstruction::SetAbsorberRadius(G4double val)
+{
+    // change the transverse size and recompute the calorimeter parameters
+    fConfig.ci_TRD.fAbsorberRadius = val;
+}
+
+inline void JLeicDetectorConstruction::SetWorldSizeZ(G4double val)
+{
+    fWorldChanged = true;
+    fConfig.World.SizeZ = val;
+}
+
+inline void JLeicDetectorConstruction::SetWorldSizeR(G4double val)
+{
+    fWorldChanged = true;
+    fConfig.World.SizeR = val;
+}
+
+inline void JLeicDetectorConstruction::SetAbsorberZpos(G4double val)
+{
+    fConfig.ci_TRD.fAbsorberZ = val;
+}
+
+inline void JLeicDetectorConstruction::checkVolumeOverlap()
+{
+    // loop inside all the daughters volumes
+    G4cout << " loop inside all the daughters volumes" << G4endl;
+    //        bool bCheckOverlap;
+    //        bCheckOverlap=false;
+
+    int nSubWorlds, nSubWorlds2;
+    for (int i = 0; i < (int) World_Phys->GetLogicalVolume()->GetNoDaughters(); i++) {
+        World_Phys->GetLogicalVolume()->GetDaughter(i)->CheckOverlaps();
+        nSubWorlds = (int) World_Phys->GetLogicalVolume()->GetDaughter(i)->GetLogicalVolume()->GetNoDaughters();
+        for (int j = 0; j < nSubWorlds; j++) {
+            World_Phys->GetLogicalVolume()->GetDaughter(i)->GetLogicalVolume()->GetDaughter(j)->CheckOverlaps();
+            nSubWorlds2 = (int) World_Phys->GetLogicalVolume()->GetDaughter(i)->GetLogicalVolume()->GetDaughter(j)->GetLogicalVolume()->GetNoDaughters();
+            for (int k = 0; k < nSubWorlds2; k++) {
+                World_Phys->GetLogicalVolume()->GetDaughter(i)->GetLogicalVolume()->GetDaughter(j)->GetLogicalVolume()->GetDaughter(k)->CheckOverlaps();
+            }
+        }
+    }
+    G4cout << G4endl;
+}
 
 #endif
 

@@ -1,30 +1,3 @@
-//
-// ********************************************************************
-// * License and Disclaimer                                           *
-// *                                                                  *
-// * The  Geant4 software  is  copyright of the Copyright Holders  of *
-// * the Geant4 Collaboration.  It is provided  under  the terms  and *
-// * conditions of the Geant4 Software License,  included in the file *
-// * LICENSE and available at  http://cern.ch/geant4/license .  These *
-// * include a list of copyright holders.                             *
-// *                                                                  *
-// * Neither the authors of this software system, nox1r their employing *
-// * institutes,nor the agencies providing financial support for this *
-// * work  make  any representation or  warranty, express or implied, *
-// * regarding  this  software system or assume any liability for its *
-// * use.  Please see the license in the file  LICENSE  and URL above *
-// * for the full disclaimer and the limitation of liability.         *
-// *                                                                  *
-// * This  code  implementation is the result of  the  scientific and *
-// * technical work of the GEANT4 collaboration.                      *
-// * By using,  copying,  modifying or  distributing the software (or *
-// * any work based  on the software)  you  agree  to acknowledge its *
-// * use  in  resulting  scientific  publications,  and indicate your *
-// * acceptance of all terms of the Geant4 Software license.          *
-// ********************************************************************
-//
-
-
 #include <vector>
 
 #include "JLeicDetectorConstruction.hh"
@@ -127,83 +100,56 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     World_Logic = new G4LogicalVolume(World_Solid, World_Material, "World_Logic");
     World_Phys = new G4PVPlacement(nullptr, G4ThreeVector(), "World_Phys", World_Logic, nullptr, false, 0);
 
-    printf("==>> create a world : xyz= %f %f %f [m]\n", fConfig.World.SizeR * 2 / m, fConfig.World.SizeR * 2 / m, fConfig.World.SizeZ / m);
-    G4cout << "World_Solid->GetCubicVolume() = " << World_Solid->GetCubicVolume() << std::endl;
-    G4cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  " << fConfig.World.SizeR << std::endl;
-    G4cout << "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!  " << fConfig.World.SizeZ << std::endl;
-
-    printf("World_Solid->GetCubicVolume() %f \n", World_Solid->GetCubicVolume());
-    printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!! SizeR %f \n", fConfig.World.SizeR);
-    printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!! SizeZ %f \n", fConfig.World.SizeZ);
+    fmt::print("Initializing WORLD. x:{:<10}m y:{:<10}m z:{:<10}m", fConfig.World.SizeR * 2 / m, fConfig.World.SizeR * 2 / m, fConfig.World.SizeZ / m);
 
 
     //==========================================================================
     //                          B E A M   E L E M E N T S
     //==========================================================================
     // -- use JLEIC  lattice
-    /*
-    ir_Lattice.SetMotherParams(World_Phys, World_Material);
-    ir_Lattice.SetIonBeamEnergy(fConfig.IonBeamEnergy);
-    ir_Lattice.SetElectronBeamEnergy(fConfig.ElectronBeamEnergy);
 
-    //   ir_Lattice.LoadIonBeamLattice();
-    //   ir_Lattice.LoadElectronBeamLattice();
-    ir_Lattice.Read_JLEIC_ion_beam_lattice();
-    ir_Lattice.Read_JLEIC_electron_beam_lattice();
-    */
+    // Checking the beamline
+    if(fConfig.BeamlineName != "erhic" && fConfig.BeamlineName != "jleic") {
+        G4Exception("JLeicDetectorConstruction::Construct", "InvalidSetup", FatalException, "/detsetup/beamlineName should be 'erhic' or 'jleic'");
+    }
+
     if(USE_FFQs )
     {
         int USE_LINE = 1;
         std::string fileName;
-        printf("AcceleratorMagnets start... Ion energy %d   Electron energy %d World_Phys=%p \n ", fConfig.IonBeamEnergy, fConfig.ElectronBeamEnergy, World_Phys);
+        fmt::print("Init AcceleratorMagnets... I\n");
+        fmt::print(" |- Ion energy      {}\n", fConfig.IonBeamEnergy);
+        fmt::print(" |- Electron energy {}\n", fConfig.ElectronBeamEnergy);
+
         const char *g4eHomeCStr = std::getenv("G4E_HOME");
-        //---------------- Electron  line -----------------------------------
-        printf("========================================\n");
-        if (g4eHomeCStr) {
-            if (fConfig.BeamlineName == "erhic") {
-                USE_LINE =1;
-                fileName = fmt::format("{}/resources/erhic/mdi/e_ir_{}.txt", g4eHomeCStr, fConfig.ElectronBeamEnergy);
-            } else {
-                USE_LINE = 0;
-                fileName = fmt::format("{}/resources/jleic/mdi/e_ir_{}.txt", g4eHomeCStr, fConfig.ElectronBeamEnergy);
-            }
-        } else {
-            printf("AcceleratorMagnets  file opening err :: please setup  G4E_HOME \n");
+
+        if(!g4eHomeCStr) {
+            G4Exception("JLeicDetectorConstruction::Construct",
+                        "InvalidSetup", FatalException,
+                        "AcceleratorMagnets  file opening err :: please setup env. G4E_HOME");
+            return;
         }
-
-        printf("AcceleratorMagnets:: try to open file %s \n", fileName.c_str());
-
-        AcceleratorMagnets *electron_line_magnets = new AcceleratorMagnets(fileName, World_Phys, World_Material, USE_LINE);
-
-
-
-      //-----------------Ion line -----------------------------------
-      printf("========================================\n");
-      if (g4eHomeCStr) {
-          if (fConfig.BeamlineName == "erhic") {
-              USE_LINE=1;
-              fileName = fmt::format("{}/resources/erhic/mdi/ion_ir_{}.txt", g4eHomeCStr, fConfig.IonBeamEnergy);
-          } else if (fConfig.BeamlineName == "jleic") {
-              USE_LINE=0;
-              fileName = fmt::format("{}/resources/jleic/mdi/ion_ir_{}.txt", g4eHomeCStr, fConfig.IonBeamEnergy);
-          } else {
-              G4Exception("JLeicDetectorConstruction::Construct",
-                          "InvalidSetup", FatalException,
-                          "BeamlineName should be 'erhic' or 'jleic'");
-          }
-      } else {
-          G4Exception("JLeicDetectorConstruction::Construct",
-                      "InvalidSetup", FatalException,
-                      "AcceleratorMagnets  file opening err :: please setup env. G4E_HOME");
-      }
-
-      printf("AcceleratorMagnets:: try to open file %s \n", fileName.c_str());
+        //---------------- Electron  line -----------------------------------
+        if (fConfig.BeamlineName == "erhic") {
+            USE_LINE =1;
+            fileName = fmt::format("{}/resources/erhic/mdi/e_ir_{}.txt", g4eHomeCStr, fConfig.ElectronBeamEnergy);
+        } else {
+            USE_LINE = 0;
+            fileName = fmt::format("{}/resources/jleic/mdi/e_ir_{}.txt", g4eHomeCStr, fConfig.ElectronBeamEnergy);
+        }
+        fElectronLineMagnets = new AcceleratorMagnets(fileName, World_Phys, World_Material, USE_LINE);
 
 
-      ion_line_magnets = new AcceleratorMagnets(fileName, World_Phys, World_Material, USE_LINE);
-
-  }
-
+        //-----------------Ion line -----------------------------------
+        if (fConfig.BeamlineName == "erhic") {
+            USE_LINE=1;
+            fileName = fmt::format("{}/resources/erhic/mdi/ion_ir_{}.txt", g4eHomeCStr, fConfig.IonBeamEnergy);
+        } else {
+            USE_LINE = 0;
+            fileName = fmt::format("{}/resources/jleic/mdi/ion_ir_{}.txt", g4eHomeCStr, fConfig.IonBeamEnergy);
+        }
+        fIonLineMagnets = new AcceleratorMagnets(fileName, World_Phys, World_Material, USE_LINE);
+    }
 
 
     //=========================================================================
@@ -219,7 +165,6 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     if (!fVertexSD) {
         fVertexSD = new JLeicVertexSD("VertexSD", fInitContext->RootManager->GetJLeicRootOutput(), this);
         SDman->AddNewDetector(fVertexSD);
-        printf("VertexSD done\n");
     }
 
     //=========================================================================
@@ -234,7 +179,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 
 
     if (USE_E_ENDCAP) {
-        // ------------------ create electon endcap ---------------------------------------------
+        // ------------------ create electron endcap ---------------------------------------------
         fConfig.ce_Endcap.ROut = fConfig.cb_Solenoid.ROut -1 * cm;
         fConfig.ce_Endcap.PosZ = -fConfig.ce_Endcap.SizeZ / 2 - fConfig.cb_Solenoid.SizeZ / 2 + fConfig.World.ShiftVTX -2*cm;
         Create_ce_Endcap(fConfig.ce_Endcap);
@@ -294,12 +239,11 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
         }
     }
 
-
-    //***********************************************************************************
-    //***********************************************************************************
-    //**                                DETECTOR VOLUMES                               **
-    //***********************************************************************************
-    //***********************************************************************************
+//***********************************************************************************
+//***********************************************************************************
+//**                                DETECTOR VOLUMES                               **
+//***********************************************************************************
+//***********************************************************************************
 
 
     if (USE_BARREL && USE_BARREL_det)  {
@@ -323,7 +267,6 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
             }
             if (USE_CB_VTX_ENDCAPS) {
                 cb_VTX.ConstructLaddersEndcaps();
-                //         if (fLogicVTXEndH[lay]) { fLogicVTXEndH[lay]->SetSensitiveDetector(fCalorimeterSD); }
             }
 
         };    // end VTX detector
@@ -348,7 +291,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
             }
             else if (USE_CB_CTD_Straw) { cb_CTD.ConstructStraws(); }
 
-        };// end CTD detector
+        } // end CTD detector
 
 
         //===================================================================================
@@ -371,7 +314,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
                 cb_DIRC.cb_DIRC_bars_Logic->SetSensitiveDetector(fCalorimeterSD);
             }
 
-        }; // end DIRC detector
+        } // end DIRC detector
 
 
         //===================================================================================
@@ -387,8 +330,6 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
             cb_EMCAL.ConstructBars();
             cb_EMCAL.Logic->SetSensitiveDetector(fCalorimeterSD);
         }
-
-
     }  // end Barrel
 
 
@@ -399,66 +340,65 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     if (USE_E_ENDCAP) {
 
 
-        //===================================================================================
-        // ==                      GEM     Hadron endcap                                ==
-        //==================================================================================
+        //================================================================================
+        // ==                      Hadron endcap GEM
+        //================================================================================
 
         if (USE_CE_GEM) {
             fConfig.ce_GEM.PosZ = -fConfig.cb_Solenoid.SizeZ / 2 + fConfig.ce_GEM.SizeZ / 2;
 
             ce_GEM.Construct(fConfig.ce_GEM, World_Material, cb_Solenoid.Phys);
             ce_GEM.ConstructDetectors();
-               for (int lay = 0; lay < fConfig.ce_GEM.Nlayers; lay++) {
-                  if (ce_GEM.ce_GEM_lay_Logic[lay]) ce_GEM.ce_GEM_lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD);
-               }
+           for (int lay = 0; lay < fConfig.ce_GEM.Nlayers; lay++) {
+              if (ce_GEM.ce_GEM_lay_Logic[lay]) ce_GEM.ce_GEM_lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD);
+           }
 
         }  // end USE_CI_GEM
 
-//===================================================================================
-//                         mRICH
-//===================================================================================
-
+        //=================================================================================
+        //                         mRICH
+        //=================================================================================
         if (USE_CE_MRICH) {
             fConfig.ce_MRICH.PosZ = fConfig.ce_Endcap.SizeZ / 2 - fConfig.ce_MRICH.SizeZ / 2 - 2 * cm;
 
             ce_MRICH.Construct(fConfig.ce_MRICH, World_Material, ce_ENDCAP_GVol_Phys);
-
             ce_MRICH.ConstructModules();
-
         }
-//===================================================================================
-//                         CE_EMCAL
-//===================================================================================
+
+        //=================================================================================
+        //                         CE_EMCAL
+        //=================================================================================
         if (USE_CE_EMCAL) {
             fConfig.ce_EMCAL.PosZ = -fConfig.ce_Endcap.SizeZ / 2 + fConfig.ce_EMCAL.Thickness / 2.;
             fConfig.ce_EMCAL.ROut = fConfig.ce_Endcap.ROut -3*cm;
-
 
             ce_EMCAL.Construct(fConfig.ce_EMCAL, World_Material, ce_ENDCAP_GVol_Phys);
             ce_EMCAL.ConstructCrystals(); // --- inner detector with Crystals
             ce_EMCAL.ce_EMCAL_detPWO_Logic->SetSensitiveDetector(fCalorimeterSD);
             ce_EMCAL.ConstructGlass();    // --- outer part with Glass
             ce_EMCAL.ce_EMCAL_detGLASS_Logic->SetSensitiveDetector(fCalorimeterSD);
-
         }
 
     } //------------------end USE_E_ENDCAP -----------------------------------------------
-//
-//
-// ***********************************************************************************
-//                       CI_ENDCAP
-// ***********************************************************************************
+
+
+    // ***********************************************************************************
+    //                       CI_ENDCAP
+    // ***********************************************************************************
     if (USE_CI_ENDCAP) {
 
-    //===================================================================================
-    // ==                      GEM     Hadron endcap                                ==
-    //==================================================================================
-
+        //================================================================================
+        // ==                      Hadron endcap GEM
+        //================================================================================
         if (USE_CI_GEM) {
             fConfig.ci_GEM.PosZ = fConfig.cb_Solenoid.SizeZ / 2 - fConfig.ci_GEM.SizeZ / 2;   // --- need to find out why this 5 cm are needed
-          if(fConfig.BeamlineName == "jleic")  { fConfig.ci_GEM.PosX = -5 * cm;}  // --- different crossing angle direction for JLEIC
-          else if ( fConfig.BeamlineName == "erhic" ){ fConfig.ci_GEM.PosX = 5 * cm;} // --- different crossing angle direction for eRHIC
-            else {  fConfig.ci_GEM.PosX = 0 * cm;}
+
+            // --- different crossing angle direction for JLEIC and eRHIC
+            if(fConfig.BeamlineName == "jleic")  {
+                fConfig.ci_GEM.PosX = -5 * cm;
+            } else {
+                fConfig.ci_GEM.PosX = 5 * cm;
+            }
 
             ci_GEM.Construct(fConfig.ci_GEM, World_Material, cb_Solenoid.Phys);
             ci_GEM.ConstructDetectors();
@@ -467,44 +407,36 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
             }
         }  // end USE_CI_GEM
 
+        //================================================================================
+        // ==                       dRICH     Hadron endcap
+        //================================================================================
         if (USE_CI_DRICH) {
-            //===================================================================================
-            // ==                       dRICH     Hadron endcap                                ==
-            //==================================================================================
+
             fConfig.ci_DRICH.RIn = fConfig.ci_Endcap.RIn;
 
             fConfig.ci_DRICH.PosZ = -fConfig.ci_Endcap.SizeZ / 2. + fConfig.ci_DRICH.ThicknessZ / 2.;
             //    double ci_DRICH_GVol_PosZ= 0*cm;
             ci_DRICH.Construct(fConfig.ci_DRICH, World_Material, ci_ENDCAP_GVol_Phys);
             ci_DRICH.ConstructDetectors();
-
-            //===================================================================================
         } // end USE_CI_DRICH
 
-
+        //================================================================================
+        // ==                       TRD     Hadron endcap
+        //================================================================================
         if (USE_CI_TRD) {
-            //===================================================================================
-            // ==                       TRD     Hadron endcap                                ==
-            //==================================================================================
-            //   ci_TRD_GVol_PosZ = -fConfig.ci_Endcap.SizeZ / 2 + fConfig.ci_DRICH.ThicknessZ + ci_TRD_GVol_ThicknessZ/2.;
-
             fConfig.ci_TRD.RIn = fConfig.ci_Endcap.RIn;
-
             fConfig.ci_TRD.PosZ = -fConfig.ci_Endcap.SizeZ / 2. + fConfig.ci_DRICH.ThicknessZ + fConfig.ci_TRD.ThicknessZ / 2.;
+
             //    double ci_DRICH_GVol_PosZ= 0*cm;
             ci_TRD.Construct(fConfig.ci_TRD, World_Material, ci_ENDCAP_GVol_Phys);
-
             ci_TRD.ConstructDetectors();
-            printf("FoilNumbers=%d (%d) \n", fConfig.ci_TRD.fFoilNumber, ci_TRD.ConstructionConfig.fFoilNumber); // --- ????????? ---
-            //ci_TRD.ConstructionConfig.fFoilNumber
-            //===================================================================================
-        }// end USE_CI_TRD
 
+        } // end USE_CI_TRD
+
+        //================================================================================
+        // ==                      CI_EMCAL    Hadron endcap
+        //================================================================================
         if (USE_CI_EMCAL) {
-            //===================================================================================
-            // ==                      CI_EMCAL    Hadron endcap                              ==
-            //==================================================================================
-
             fConfig.ci_EMCAL.PosZ = -fConfig.ci_Endcap.SizeZ / 2 + fConfig.ci_DRICH.ThicknessZ + fConfig.ci_TRD.ThicknessZ + fConfig.ci_EMCAL.ThicknessZ / 2;
             if(fConfig.BeamlineName == "jleic")  {
                 fConfig.ci_EMCAL.USE_JLEIC = true;
@@ -520,65 +452,68 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
             ci_EMCAL.Construct(fConfig.ci_EMCAL, World_Material, ci_ENDCAP_GVol_Phys);
             ci_EMCAL.ConstructDetectors();    // --- outer part with Glass
             ci_EMCAL.ci_EMCAL_det_Logic->SetSensitiveDetector(fCalorimeterSD);
-
         } // end USE_CI_EMCAL
-    } // ============end USE_CI_ENDCAP  ===================================
+    }
 
 //****************************************************************************************
-//==                         Forward Detectors                                          ==
+//
+//                                   Forward Detectors
+//
 //****************************************************************************************
 
     //====================================================================================
     //==                          DIPOLE-1 Tracker and EMCAL                            ==
     //====================================================================================
 
+    //-------------------------------------------------------------------------------
+    //                      Place Si_disks inside D1a ir B0
+    //-------------------------------------------------------------------------------
     if (USE_FI_D1TRK) {
-        //-------------------------------------------------------------------------------
-        //                      Place Si_disks inside D1a ir B0
-        //-------------------------------------------------------------------------------
+        for (size_t i = 0; i < fIonLineMagnets->allmagnets.size(); i++) {
+            if ((fConfig.BeamlineName == "jleic" && fIonLineMagnets->allmagnets.at(i)->name == "iBDS1a")
+             || (fConfig.BeamlineName == "erhic" && fIonLineMagnets->allmagnets.at(i)->name == "iB0PF")) {
 
-        for (size_t i = 0; i < ion_line_magnets->allmagnets.size(); i++) {
-            if ((fConfig.BeamlineName == "jleic" && ion_line_magnets->allmagnets.at(i)->name == "iBDS1a") || (fConfig.BeamlineName == "erhic" && ion_line_magnets->allmagnets.at(i)->name == "iB0PF")) {
-
-                fConfig.fi_D1TRK.ROut = ion_line_magnets->allmagnets.at(i)->Rin2 * cm;
-                fConfig.fi_D1TRK.Zpos = (ion_line_magnets->allmagnets.at(i)->LengthZ / 2.) * cm - fConfig.fi_D1TRK.SizeZ / 2.;
-                fi_D1TRK.ConstructA(fConfig.fi_D1TRK, World_Material, ion_line_magnets->allmagnets.at(i)->fPhysics_BigDi_m);
+                fConfig.fi_D1TRK.ROut = fIonLineMagnets->allmagnets.at(i)->Rin2 * cm;
+                fConfig.fi_D1TRK.Zpos = (fIonLineMagnets->allmagnets.at(i)->LengthZ / 2.) * cm - fConfig.fi_D1TRK.SizeZ / 2.;
+                fi_D1TRK.ConstructA(fConfig.fi_D1TRK, World_Material, fIonLineMagnets->allmagnets.at(i)->fPhysics_BigDi_m);
                 fi_D1TRK.ConstructDetectorsA();
                 for (int lay = 0; lay < fConfig.fi_D1TRK.Nlayers; lay++) {
-                  if (fi_D1TRK.f1_D1_Lay_Logic) fi_D1TRK.f1_D1_Lay_Logic->SetSensitiveDetector(fCalorimeterSD);
-                 }
+                      if (fi_D1TRK.f1_D1_Lay_Logic) {
+                          fi_D1TRK.f1_D1_Lay_Logic->SetSensitiveDetector(fCalorimeterSD);
+                      }
+                }
             }
         }
      }
 
-    //------------------------------------------------
+
+    //-------------------------------------------------------------------------------
+    //                      Central IOn HCAL
+    //-------------------------------------------------------------------------------
     if (USE_CI_HCAL) {
 
         if (USE_FI_D1EMCAL) {
             // Ecal module  AFTER !!!   Dipole1
-
             fConfig.fi_D1EMCAL.Zpos = -fConfig.ci_HCAL.SizeZ / 2 + fConfig.fi_D1EMCAL.SizeZ / 2;
 
             fConfig.fi_D1EMCAL.rot_matx.rotateY(fConfig.fi_D1EMCAL.Angle * rad);
             fi_D1EMCAL.Construct(fConfig.fi_D1EMCAL, World_Material, ci_HCAL.Phys);
-
-
         }
     }
 
-    //====================================================================================
-    //==                    Far-Forward Area    D2, D3  ZDC. Roman Pots                 ==
-    //====================================================================================
+//====================================================================================
+//==                    Far-Forward Area    D2, D3  ZDC. Roman Pots                 ==
+//====================================================================================
     if (USE_FFI_D2TRK) {
 
-        for (int i = 0; i < ion_line_magnets->allmagnets.size(); i++) {
-            if ((fConfig.BeamlineName == "jleic" && ion_line_magnets->allmagnets.at(i)->name == "iBDS2")) {
+        for (int i = 0; i < fIonLineMagnets->allmagnets.size(); i++) {
+            if ((fConfig.BeamlineName == "jleic" && fIonLineMagnets->allmagnets.at(i)->name == "iBDS2")) {
 
                 fConfig.ffi_D2TRK.RIn = 0 * cm;
-                fConfig.ffi_D2TRK.ROut = ion_line_magnets->allmagnets.at(i)->Rin2 * cm -0.1*cm;
-                fConfig.ffi_D2TRK.SizeZ = ion_line_magnets->allmagnets.at(i)->LengthZ  * m - 2. * cm;
+                fConfig.ffi_D2TRK.ROut = fIonLineMagnets->allmagnets.at(i)->Rin2 * cm - 0.1 * cm;
+                fConfig.ffi_D2TRK.SizeZ = fIonLineMagnets->allmagnets.at(i)->LengthZ * m - 2. * cm;
 
-                ffi_D2TRK.Construct(fConfig.ffi_D2TRK, World_Material, ion_line_magnets->allmagnets.at(i)->fPhysics_BigDi_m);
+                ffi_D2TRK.Construct(fConfig.ffi_D2TRK, World_Material, fIonLineMagnets->allmagnets.at(i)->fPhysics_BigDi_m);
                 ffi_D2TRK.ConstructDetectors();
                 for (int lay = 0; lay < fConfig.ffi_D2TRK.Nlayers; lay++) {
                   if (ffi_D2TRK.lay_Logic) ffi_D2TRK.lay_Logic->SetSensitiveDetector(fCalorimeterSD);
@@ -596,11 +531,12 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
         fConfig.ffi_ZDC.Zpos = 4000 * cm;
         fConfig.ffi_ZDC.Xpos = -190 * cm;
         }
-    if(fConfig.BeamlineName == "erhic") {
-          fConfig.ffi_ZDC.rot_matx.rotateY(-fConfig.ffi_ZDC.Angle * rad);
-          fConfig.ffi_ZDC.Zpos = 3500 * cm;
-          fConfig.ffi_ZDC.Xpos = 90 * cm;
-    }
+
+        if(fConfig.BeamlineName == "erhic") {
+              fConfig.ffi_ZDC.rot_matx.rotateY(-fConfig.ffi_ZDC.Angle * rad);
+              fConfig.ffi_ZDC.Zpos = 3500 * cm;
+              fConfig.ffi_ZDC.Xpos = 90 * cm;
+        }
 
         ffi_ZDC.Construct(fConfig.ffi_ZDC, World_Material, World_Phys);
         ffi_ZDC.ConstructTowels();
@@ -630,235 +566,38 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 
     } // end ffi_RPOT_D3
 
-    //************************************************************************************
-    //==                         Rear  Detectors                                     ==
-    //************************************************************************************
+//************************************************************************************
+//
+//                           Rear  Detectors
+//
+//************************************************************************************
 
-    //===================================================================================
-    //==                        Compton Polarimeter                                  ==
-    //===================================================================================
+    //================================================================================
+    //==                        Compton Polarimeter
+    //================================================================================
     if (USE_FFE_CPOL) {
 
         ffe_CPOL.Construct(fConfig.ffe_CPOL, World_Material, World_Phys);
     } // end ffe_CPOL
 
-    //===================================================================================
-    //==                        Lumi                                                  ==
-    //===================================================================================
-
-    if (USE_FFE_LUMI) {
-         fConfig.ffe_LUMI.PosX=+2*m;
-         fConfig.ffe_LUMI.PosY=0;
-         fConfig.ffe_LUMI.PosZ=-30*m;
-
-         ffe_LUMI.Construct(fConfig.ffe_LUMI, World_Material, World_Phys);
-        //ffe_LUMI.ConstructDetectors(fConfig.ffe_LUMI);
-    } // end ffe_CPOL
+    //================================================================================
+    //==                        Lumi
+    //================================================================================
 
 
 
-   //===================================================================================
-   //                     END detector construction.... Exporting geometry
-   //===================================================================================
+   //=================================================================================
+   //                     END detector construction....
+   //=================================================================================
 
+    // Exporting geometry
     spdlog::info(" - exporting geometry");
     g4e::GeometryExport::Export(fInitContext->Arguments->OutputBaseName, World_Phys);
 
     PrintGeometryParameters();
-
-    printf("FoilNumbers3=%d\n", ci_TRD.ConstructionConfig.fFoilNumber);
-    printf("exit Detector Construction\n");
 }
-
-
-////////////////////////////////////////////////////////////////////////////
-//
-//
-void JLeicDetectorConstruction::PrintGeometryParameters()
-{
-    G4cout << "\n The  WORLD   is made of " << fConfig.World.SizeZ / mm << "mm of " << World_Material->GetName();
-    G4cout << ", the transverse size (R) of the world is " << fConfig.World.SizeR / mm << " mm. " << G4endl;
-    G4cout << "WorldMaterial = " << World_Material->GetName() << G4endl;
-    //  G4cout<<"fVTX_END_Z = "<<fVTX_END_Z/mm<<" mm"<<G4endl;
-    G4cout << G4endl;
-}
-
-///////////////////////////////////////////////////////////////////////////
-//
-//
-
-void JLeicDetectorConstruction::SetAbsorberMaterial(G4String materialChoice)
-{
-    // get the pointer to the material table
-    const G4MaterialTable *theMaterialTable = G4Material::GetMaterialTable();
-
-    // search the material by its name
-    G4Material *pttoMaterial;
-
-    for (size_t J = 0; J < theMaterialTable->size(); J++) {
-        pttoMaterial = (*theMaterialTable)[J];
-
-        if (pttoMaterial->GetName() == materialChoice) {
-            fAbsorberMaterial = pttoMaterial;
-            fLogicAbsorber->SetMaterial(pttoMaterial);
-            // PrintCalorParameters();
-        }
-    }
-}
-///////////////////////////////////////////////////////////////////////////
-//
-//
-
-void JLeicDetectorConstruction::SetRadiatorMaterial(G4String materialChoice)
-{
-    // get the pointer to the material table
-
-    const G4MaterialTable *theMaterialTable = G4Material::GetMaterialTable();
-
-    // search the material by its name
-
-    G4Material *pttoMaterial;
-    for (size_t J = 0; J < theMaterialTable->size(); J++) {
-        pttoMaterial = (*theMaterialTable)[J];
-
-        if (pttoMaterial->GetName() == materialChoice) {
-            fConfig.ci_TRD.fRadiatorMat = pttoMaterial;
-            fLogicRadSlice->SetMaterial(pttoMaterial);
-            // PrintCalorParameters();
-        }
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////
-//
-//
-
-void JLeicDetectorConstruction::SetWorldMaterial(G4String materialChoice)
-{
-    // get the pointer to the material table
-    const G4MaterialTable *theMaterialTable = G4Material::GetMaterialTable();
-
-    // search the material by its name
-    G4Material *pttoMaterial;
-
-    for (size_t J = 0; J < theMaterialTable->size(); J++) {
-        pttoMaterial = (*theMaterialTable)[J];
-
-        if (pttoMaterial->GetName() == materialChoice) {
-            World_Material = pttoMaterial;
-            World_Logic->SetMaterial(pttoMaterial);
-            //  PrintCalorParameters();
-        }
-    }
-}
-
-
-///////////////////////////////////////////////////////////////////////////
-//
-//
-
-void JLeicDetectorConstruction::SetAbsorberThickness(G4double val)
-{
-    // change Absorber thickness and recompute the calorimeter parameters
-    fConfig.ci_TRD.fAbsorberThickness = val;
-    //  ComputeCalorParameters();
-}
-
-///////////////////////////////////////////////////////////////////////////
-//
-//
-
-void JLeicDetectorConstruction::SetRadiatorThickness(G4double val)
-{
-    // change XTR radiator thickness and recompute the calorimeter parameters
-    fConfig.ci_TRD.fRadThickness = val;
-    // ComputeCalorParameters();
-}
-
-///////////////////////////////////////////////////////////////////////////
-//
-//
-
-void JLeicDetectorConstruction::SetGasGapThickness(G4double val)
-{
-    // change XTR gas gap thickness and recompute the calorimeter parameters
-    fConfig.ci_TRD.fGasGap = val;
-    // ComputeCalorParameters();
-}
-
-/////////////////////////////////////////////////////////////////////////////
-//
-//
-
-void JLeicDetectorConstruction::SetAbsorberRadius(G4double val)
-{
-    // change the transverse size and recompute the calorimeter parameters
-    fConfig.ci_TRD.fAbsorberRadius = val;
-    // ComputeCalorParameters();
-}
-
-////////////////////////////////////////////////////////////////////////////
-//
-//
-
-void JLeicDetectorConstruction::SetWorldSizeZ(G4double val)
-{
-    fWorldChanged = true;
-    fConfig.World.SizeZ = val;
-    // ComputeCalorParameters();
-}
-
-///////////////////////////////////////////////////////////////////////////
-//
-//
-
-void JLeicDetectorConstruction::SetWorldSizeR(G4double val)
-{
-    fWorldChanged = true;
-    fConfig.World.SizeR = val;
-    // ComputeCalorParameters();
-}
-
-//////////////////////////////////////////////////////////////////////////////
-//
-//
-
-void JLeicDetectorConstruction::SetAbsorberZpos(G4double val)
-{
-    fConfig.ci_TRD.fAbsorberZ = val;
-    // ComputeCalorParameters();
-}
-
 
 void JLeicDetectorConstruction::UpdateGeometry()
 {
     G4RunManager::GetRunManager()->DefineWorldVolume(World_Phys);
-}
-
-
-void JLeicDetectorConstruction::checkVolumeOverlap()
-{
-    // loop inside all the daughters volumes
-    G4cout << " loop inside all the daughters volumes" << G4endl;
-    //        bool bCheckOverlap;
-    //        bCheckOverlap=false;
-
-    int nSubWorlds, nSubWorlds2;
-    for (int i = 0; i < (int) World_Phys->GetLogicalVolume()->GetNoDaughters(); i++) {
-        World_Phys->GetLogicalVolume()->GetDaughter(i)->CheckOverlaps();
-        nSubWorlds = (int) World_Phys->GetLogicalVolume()->GetDaughter(i)->GetLogicalVolume()->GetNoDaughters();
-        for (int j = 0; j < nSubWorlds; j++) {
-            World_Phys->GetLogicalVolume()->GetDaughter(i)->GetLogicalVolume()->GetDaughter(j)->CheckOverlaps();
-            nSubWorlds2 = (int) World_Phys->GetLogicalVolume()->GetDaughter(i)->GetLogicalVolume()->GetDaughter(j)->GetLogicalVolume()->GetNoDaughters();
-            for (int k = 0; k < nSubWorlds2; k++) {
-                World_Phys->GetLogicalVolume()->GetDaughter(i)->GetLogicalVolume()->GetDaughter(j)->GetLogicalVolume()->GetDaughter(k)->CheckOverlaps();
-            }
-        }
-    }
-    G4cout << G4endl;
-}
-
-void JLeicDetectorConstruction::EnableHCalRings()
-{
-//    cb_HCAL.ConstructRings();
 }

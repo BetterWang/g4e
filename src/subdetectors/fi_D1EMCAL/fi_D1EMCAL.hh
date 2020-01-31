@@ -50,8 +50,6 @@ public:
 
         // Crystals
 
-        double x0 = 0*cm;
-        double y0 = 0 * cm;
         double R0 = 7. * cm;
          double y_C = 0;
         double x_C= 0*cm;

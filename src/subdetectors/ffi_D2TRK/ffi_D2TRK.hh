@@ -54,7 +54,6 @@ public:
 
     inline void ConstructDetectors() {
         printf("Begin ffi_D2TRK detector volumes \n");
-        static char abname[256];
         auto cfg = ConstructionConfig;
 
         // construct here your detectors

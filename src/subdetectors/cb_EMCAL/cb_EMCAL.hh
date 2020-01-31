@@ -14,21 +14,22 @@
 
 #include "JLeicDetectorConfig.hh"
 
-struct cb_EMCAL_Config {
+struct cb_EMCAL_Config
+{
     double RIn;
     double ROut;
-    double ROutshift = 5*cm;
-    double Thickness=40*cm;
+    double ROutshift = 5 * cm;
+    double Thickness = 40 * cm;
     double SizeZ;
 
 };
 
 
-class cb_EMCAL_Design {
+class cb_EMCAL_Design
+{
 public:
-    inline void Construct(cb_EMCAL_Config cfg, cb_Solenoid_Config cfgsolenoid,G4Material *worldMaterial, G4VPhysicalVolume *motherVolume) {
-
-
+    inline void Construct(cb_EMCAL_Config cfg, cb_Solenoid_Config cfgsolenoid, G4Material *worldMaterial, G4VPhysicalVolume *motherVolume)
+    {
         spdlog::debug("Begin cb_EMCAL volume \n");
 
         ConstructionConfig = cfg;
@@ -41,45 +42,37 @@ public:
         //  G4double cb_EMCAL_GVol_ConeZ[4]={ -SizeZ/2, -SizeZ/2+60*cm, SizeZ/2-60*cm, SizeZ/2};
 
 
-        double coneROut[4] = {cfg.ROut,           cfg.ROut,cfg.ROut, cfg.ROut};
-        double coneRIn[4] =  {cfg.ROut - 1. * cm, cfg.RIn, cfg.RIn,  cfg.ROut - 1. * cm};
-        double coneZ[4] = {-cfgsolenoid.SizeZ / 2, -cfgsolenoid.SizeZ / 2 + 30 * cm,
-                           cfgsolenoid.SizeZ / 2 - 30 * cm,
-                           cfgsolenoid.SizeZ / 2};
+        double coneROut[4] = {cfg.ROut, cfg.ROut, cfg.ROut, cfg.ROut};
+        double coneRIn[4] = {cfg.ROut - 1. * cm, cfg.RIn, cfg.RIn, cfg.ROut - 1. * cm};
+        double coneZ[4] = {-cfgsolenoid.SizeZ / 2, -cfgsolenoid.SizeZ / 2 + 30 * cm, cfgsolenoid.SizeZ / 2 - 30 * cm, cfgsolenoid.SizeZ / 2};
 
-        Solid = new G4Polycone("cb_EMCAL_GVol_Solid", 0. * deg, 360. * deg, 4, coneZ, coneRIn,
-                               coneROut);
+        Solid = new G4Polycone("cb_EMCAL_GVol_Solid", 0. * deg, 360. * deg, 4, coneZ, coneRIn, coneROut);
         Logic = new G4LogicalVolume(Solid, worldMaterial, "cb_EMCAL_GVol_Logic");
-        Phys = new G4PVPlacement(0, G4ThreeVector(), "cb_EMCAL_GVol_Phys", Logic,
-                                              motherVolume, false, 0);
+        Phys = new G4PVPlacement(0, G4ThreeVector(), "cb_EMCAL_GVol_Phys", Logic, motherVolume, false, 0);
 
 
         G4VisAttributes *visAttr = new G4VisAttributes(G4Color(0.3, 0.5, 0.9, 1.));
         visAttr->SetLineWidth(1);
         visAttr->SetForceSolid(false);
         Logic->SetVisAttributes(visAttr);
-
     }
 
 
-    inline void ConstructBars() {
-        static char abname[256];
-        auto cfg = ConstructionConfig;
+    inline void ConstructBars()
+    {
+        // Setting material
+        cb_EMCAL_det_Material = fMat->GetMaterial("PbWO4");
+        Logic->SetMaterial(cb_EMCAL_det_Material);
 
-    // cb_EMCAL_GVol_Logic->SetVisAttributes(G4VisAttributes::Invisible);
+        // Visualising it differently
+        auto visualAttributes = new G4VisAttributes(G4Color(0.3, 0.5, 0.9, 1.));
+        visualAttributes->SetLineWidth(1);
+        visualAttributes->SetForceSolid(true);
+        Logic->SetVisAttributes(visualAttributes);
+        //    fPhysicsEMCAL = new G4PVPlacement(0, G4ThreeVector(0,0,-40*cm), "EMCALbSolPhys",fLogicEMCAL,
+        //                               cb_EMCAL_GVol_Phys, false,     0 );
+    }
 
-    // Setting material
-    cb_EMCAL_det_Material = fMat->GetMaterial("PbWO4");
-    Logic-> SetMaterial(cb_EMCAL_det_Material);
-
-    // Visualising it differently
-    auto visualAttributes = new G4VisAttributes(G4Color(0.3, 0.5, 0.9, 1.));
-    visualAttributes->SetLineWidth(1);
-    visualAttributes->SetForceSolid(true);
-    Logic-> SetVisAttributes(visualAttributes);
-    //    fPhysicsEMCAL = new G4PVPlacement(0, G4ThreeVector(0,0,-40*cm), "EMCALbSolPhys",fLogicEMCAL,
-    //                               cb_EMCAL_GVol_Phys, false,     0 );
-}
     G4Polycone *Solid;      //pointer to the solid
     G4LogicalVolume *Logic;    //pointer to the logical
     G4VPhysicalVolume *Phys;  //pointer to the physical
@@ -87,7 +80,7 @@ public:
     /// Parameters that was used in the moment of construction
     cb_EMCAL_Config ConstructionConfig;
 
- private:
+private:
 
     g4e::Materials *fMat;
     G4double cb_EMCAL_det_RIn;

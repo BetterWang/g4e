@@ -28,8 +28,6 @@ struct cb_VTX_Config {
     double SizeZ = 50 * cm;    /// Guess what
     double ShiftZ;
     double ladder_deltashi = -7. * deg;
-
-
 };
 
 
@@ -118,8 +116,8 @@ public:
 
             double cb_VTX_ladder_deltaphi = 2 * 3.1415926 / laddersCount  ;
 
-            auto boxName = fmt::format("cb_VTX_ladder_Solid_{}", lay);
-            cb_VTX_ladder_Solid[lay] = new G4Box(boxName, cb_VTX_ladder_Thickness / 2.,   cb_VTX_ladder_DY / 2.,cb_VTX_ladder_DZ / 2.  );
+            auto ladderBoxName = fmt::format("cb_VTX_ladder_Solid_{}", lay);
+            cb_VTX_ladder_Solid[lay] = new G4Box(ladderBoxName, cb_VTX_ladder_Thickness / 2., cb_VTX_ladder_DY / 2., cb_VTX_ladder_DZ / 2.  );
 
             auto logicName = fmt::format("cb_VTX_ladder_Logic_{}", lay);
             cb_VTX_ladder_Logic[lay] = new G4LogicalVolume(cb_VTX_ladder_Solid[lay], cb_VTX_ladder_Material, logicName);

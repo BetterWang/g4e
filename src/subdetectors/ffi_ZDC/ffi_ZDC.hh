@@ -77,8 +77,6 @@ public:
 
           // Crystals
 
-          G4double x0 = 0 * cm;
-          G4double y0 = 0 * cm;
           ffi_ZDC_HCAL_InnerR = 0. * cm;
           G4double y_C = 0;
           G4double x_C;

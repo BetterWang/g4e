@@ -15,7 +15,8 @@
 #include "JLeicDetectorConfig.hh"
 
 
-struct ci_TRD_Config {
+struct ci_TRD_Config
+{
 // define here Global volume parameters
     double RIn = 20 * cm;
     double ROut = 200 * cm;
@@ -25,7 +26,7 @@ struct ci_TRD_Config {
     //----------------------------
     double fGasGap = 0.600 * mm;    // for ZEUS  300-publication
     double fRadThick = NAN;
-    int fFoilNumber = NAN;
+    int fFoilNumber = 0;
     //----------------------------
     double det_RIn = 20 * cm;
     double det_ROut = 100 * cm;
@@ -48,55 +49,54 @@ struct ci_TRD_Config {
 };
 
 
-class ci_TRD_Design {
+class ci_TRD_Design
+{
 public:
-    inline void Construct(ci_TRD_Config cfg, G4Material *worldMaterial, G4VPhysicalVolume *motherVolume) {
+    inline void Construct(ci_TRD_Config cfg, G4Material *worldMaterial, G4VPhysicalVolume *motherVolume)
+    {
         printf("Initialize ci_TRD volume \n");
 
         ConstructionConfig = cfg;
         // create  a global volume for your detectors
-        Solid = new G4Tubs("ci_TRD_GVol_Solid", cfg.RIn, cfg.ROut, cfg.ThicknessZ / 2., 0.,
-                           360 * deg);
+        Solid = new G4Tubs("ci_TRD_GVol_Solid", cfg.RIn, cfg.ROut, cfg.ThicknessZ / 2., 0., 360 * deg);
         Logic = new G4LogicalVolume(Solid, worldMaterial, "ci_TRD_GVol_Logic");
         G4VisAttributes *attr_ci_TRD_GVol = new G4VisAttributes(G4Color(0.3, 0.5, 0.9, 0.9));
         attr_ci_TRD_GVol->SetLineWidth(1);
         attr_ci_TRD_GVol->SetForceSolid(false);
         Logic->SetVisAttributes(attr_ci_TRD_GVol);
 
-        Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, cfg.PosZ), "H_CAP_TRD_Physics", Logic,
-                                 motherVolume, false, 0);
+        Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, cfg.PosZ), "H_CAP_TRD_Physics", Logic, motherVolume, false, 0);
     };
 
     //------------------------------------------------------------------
-    inline void ConstructDetectors() {
+    inline void ConstructDetectors()
+    {
         auto &cfg = ConstructionConfig;
         ConstructRadiator(cfg); // needs to be constructed always!
         ConstructAbsorber(cfg);
     };
 
     //------------------------------------------------------------------
-    inline void ConstructAbsorber(ci_TRD_Config& cfg) {
+    inline void ConstructAbsorber(ci_TRD_Config &cfg)
+    {
         static char abname[256];
 
         cfg.det_PosZ = cfg.fRadZ + cfg.fRadThick / 2 + cfg.det_ThicknessZ / 2.;
         cfg.det_Material = fMat->GetMaterial("Xe20CO2");
-        ci_TRD_det_Solid = new G4Tubs("ci_TRD_det_Solid", cfg.det_RIn, cfg.det_ROut, cfg.det_ThicknessZ / 2., 0.,
-                                      360 * deg);
+        ci_TRD_det_Solid = new G4Tubs("ci_TRD_det_Solid", cfg.det_RIn, cfg.det_ROut, cfg.det_ThicknessZ / 2., 0., 360 * deg);
         ci_TRD_det_Logic = new G4LogicalVolume(ci_TRD_det_Solid, cfg.det_Material, "ci_TRD_det_Logic");
         attr_ci_TRD_det = new G4VisAttributes(G4Color(0.8, 0.4, 0.3, 0.8));
         attr_ci_TRD_det->SetLineWidth(1);
         attr_ci_TRD_det->SetForceSolid(true);
         ci_TRD_det_Logic->SetVisAttributes(attr_ci_TRD_det);
 
-        ci_TRD_det_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, cfg.det_PosZ), "ci_TRD_det_Physics",
-                                            ci_TRD_det_Logic,
-                                            Phys, false, 0);
+        ci_TRD_det_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, cfg.det_PosZ), "ci_TRD_det_Physics", ci_TRD_det_Logic, Phys, false, 0);
 
 
     };
 
-    inline void ConstructRadiator(ci_TRD_Config& cfg) {
-        static char abname[256];
+    inline void ConstructRadiator(ci_TRD_Config &cfg)
+    {
         // construct here your detectors
         //=========================================================================
         //                   TR radiator envelope
@@ -127,8 +127,6 @@ public:
         G4Material *radiatorMat = new G4Material("radiatorMat", NewDensity, 1);
         radiatorMat->AddMaterial(radiatorMat0, 1.);
 
-        G4double XTR_density = radiatorMat->GetDensity();
-
         // default materials of the detector and TR radiator
         cfg.fRadiatorMat = radiatorMat;
         fFoilMat = CH2; // Kapton; // Mylar ; // Li ; // CH2 ;
@@ -145,18 +143,14 @@ public:
         foilGasRatio = cfg.fRadThickness / (cfg.fRadThickness + cfg.fGasGap);
 
         fSolidRadiator = new G4Tubs("ci_TRD_Radiator_Solid", cfg.det_RIn, cfg.det_ROut, 0.5 * cfg.fRadThick, 0., 360 * deg);
-        fLogicRadiator = new G4LogicalVolume(fSolidRadiator, cfg.fRadiatorMat,
-                                             "ci_TRD_Radiator_Logic");
+        fLogicRadiator = new G4LogicalVolume(fSolidRadiator, cfg.fRadiatorMat, "ci_TRD_Radiator_Logic");
 
         attr_ci_TRD_rad = new G4VisAttributes(G4Color(0.8, 0.7, 0.6, 0.8));
         attr_ci_TRD_rad->SetLineWidth(1);
         attr_ci_TRD_rad->SetForceSolid(true);
         fLogicRadiator->SetVisAttributes(attr_ci_TRD_rad);
 
-        fPhysicsRadiator = new G4PVPlacement(0,
-                                             G4ThreeVector(0, 0, cfg.fRadZ),
-                                             "ci_TRD_Radiator_Phys", fLogicRadiator,
-                                             Phys, false, 0);
+        fPhysicsRadiator = new G4PVPlacement(0, G4ThreeVector(0, 0, cfg.fRadZ), "ci_TRD_Radiator_Phys", fLogicRadiator, Phys, false, 0);
 
         delete fRadRegion;
         if (fRadRegion == nullptr) fRadRegion = new G4Region("XTRradiator");

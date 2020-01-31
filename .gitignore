@@ -198,3 +198,7 @@ g4epy_lib/examples/test_run.run.json
 g4epy_lib/examples/test_run.run.mac
 
 python/examples/lmon/
+
+test/beagle/beagle_smoke_test.run.mac
+
+test/beagle/beagle_smoke_test.run.json

@@ -110,8 +110,6 @@ int main(int argc, char **argv)
     actionInit.AddUserActionGenerator([&mainRootOutput](){return new JLeicRunAction(mainRootOutput->GetJLeicRootOutput(), mainRootOutput->GetJLeicHistogramManager());});
 
 
-
-
     actionInit.AddUserInitialization(jleicActionInit.get());
 
     // After the run manager, we can combine initialization context

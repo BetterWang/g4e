@@ -1,5 +1,5 @@
-#ifndef G4E_TEMPLATE_HH
-#define G4E_TEMPLATE_HH
+#ifndef /*{{detector_name}}*/_HH
+#define /*{{detector_name}}*/_HH
 
 #include <spdlog/spdlog.h>
 
@@ -54,7 +54,8 @@ public:
     /// Parameters that was used in the moment of construction
     /*{{detector_name}}*/_Config ConstructionConfig;
 
-    // constructor /*{{detector_name}}*/_Design(g4e::InitializationContext& context):fContext(context){}
+    // constructor
+    // /*{{detector_name}}*/_Design(g4e::InitializationContext& context):fContext(context){}
 private:
 
     // if initialization context is needed
@@ -64,4 +65,4 @@ private:
 };
 
 
-#endif //G4E_TEMPLATE_HH
+#endif // /*{{detector_name}}*/_HH

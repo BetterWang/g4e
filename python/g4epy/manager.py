@@ -6,7 +6,7 @@ import sys
 import threading
 
 from g4epy.console_run_sink import ConsoleRunSink
-from g4epy.notebook_run_sink import NotebookRunSink
+
 from .test_env import is_notebook
 from .runner import run, do_execute, sink_printer, stream_subprocess, console_printer
 from .mc import build_file_open_command, detect_mc_type, McFileTypes
@@ -28,6 +28,8 @@ class Geant4EicManager(object):
         else:
             self.is_notebook = is_notebook()
             if (sink == 'auto' and self.is_notebook) or sink == 'notebook':
+                # NotebookRunSink requires IPython which might not be installed if one only wants to work with console
+                from g4epy.notebook_run_sink import NotebookRunSink
                 self.sink = NotebookRunSink()
             else:
                 self.sink = ConsoleRunSink()

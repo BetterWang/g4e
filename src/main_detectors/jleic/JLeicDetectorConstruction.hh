@@ -1,36 +1,5 @@
-//
-// ********************************************************************
-// * License and Disclaimer                                           *
-// *                                                                  *
-// * The  Geant4 software  is  copyright of the Copyright Holders  of *
-// * the Geant4 Collaboration.  It is provided  under  the terms  and *
-// * conditions of the Geant4 Software License,  included in the file *
-// * LICENSE and available at  http://cern.ch/geant4/license .  These *
-// * include a list of copyright holders.                             *
-// *                                                                  *
-// * Neither the authors of this software system, nor their employing *
-// * institutes,nor the agencies providing financial support for this *
-// * work  make  any representation or  warranty, express or implied, *
-// * regarding  this  software system or assume any liability for its *
-// * use.  Please see the license in the file  LICENSE  and URL above *
-// * for the full disclaimer and the limitation of liability.         *
-// *                                                                  *
-// * This  code  implementation is the result of  the  scientific and *
-// * technical work of the GEANT4 collaboration.                      *
-// * By using,  copying,  modifying or  distributing the software (or *
-// * any work based  on the software)  you  agree  to acknowledge its *
-// * use  in  resulting  scientific  publications,  and indicate your *
-// * acceptance of all terms of the Geant4 Software license.          *
-// ********************************************************************
-//
-//
-// $Id: JLeicDetectorConstruction.hh,v 1.19 2006-06-29 16:37:46 gunter Exp $
-// GEANT4 tag $Name: geant4-09-04-patch-01 $
-//
-// 
-
-#ifndef JLeicDetectorConstruction_h
-#define JLeicDetectorConstruction_h 1
+#ifndef JLeicDetectorConstruction_HH
+#define JLeicDetectorConstruction_HH
 
 #include <InitializationContext.hh>
 #include "globals.hh"
@@ -373,181 +342,11 @@ private:
 
     G4bool fWorldChanged;
 
-    G4Material *fPipeMat;
-
-    G4Material *fWindowMat;
-    G4double fWindowThick;
-
-    G4Material *fElectrodeMat;
-    G4double fElectrodeThick;
-
-    G4Material *fGapMat;
-    G4double fGapThick;
-
-
-    // =========================================================================
-
-
-    //  G4Polycone*        ce_HCAL_GVol_Solid;    //pointer to the solid ECAP_HCAL volume
-
-    G4Tubs *ce_HCAL_GVol_Solid;    //pointer to the solid ECAP_HCAL volume
-    G4LogicalVolume *ce_HCAL_GVol_Logic;    //pointer to the logicalECAP_HCAL  volume
-    G4VPhysicalVolume *ce_HCAL_GVol_Phys;    //pointer to the physical EMCAL barrel volume
-
-    G4Tubs *ce_HCAL_det_Solid;    //pointer to the solid ECAP_HCAL volume
-    G4LogicalVolume *ce_HCAL_det_Logic;    //pointer to the logicalECAP_HCAL  volume
-    G4VPhysicalVolume *ce_HCAL_det_Phys;    //pointer to the physical EMCAL barrel volume
-
-    // =========================================================================
-    //------------- ENDCAP-E EMCAL -------------------
-
-    // =========================================================================
-
-
-
-
-    //===========================================================
-    //===========================================================
-    //-------------------------------------
-    //-----------------FARFORWARD  AREA-------------------
-    //===========================================================
-    //===========================================================
-    //-----------------FORWARD D1  volume--------------------
-
-    // ----- B----
-    G4double fi_D1B_GVol_RIn;
-    G4double fi_D1B_GVol_ROut;
-    G4double fi_D1B_GVol_SizeZ;
-    G4Material *fi_D1B_GVol_Material;
-    G4VisAttributes *attr_fi_D1B_GVol;
-
-    G4Tubs *fi_D1B_GVol_Solid;    //pointer to the solid  FARFORWD
-    G4LogicalVolume *fi_D1B_GVol_Logic;    //pointer to the logical FARFORWD
-    G4VPhysicalVolume *fi_D1B_GVol_Phys;    //pointer to the physical FARFORWD
-
-    G4double fi_D1B_lay_RIn;
-    G4double fi_D1B_lay_ROut;
-    G4double fi_D1B_lay_SizeZ;
-    G4Material *fi_D1B_lay_Material;
-    G4VisAttributes *attr_fi_D1B_lay;
-
-    G4Tubs *fi_D1B_lay_Solid;    //pointer to the solid  FARFORWD
-    G4LogicalVolume *fi_D1B_lay_Logic;    //pointer to the logical FARFORWD
-    G4VPhysicalVolume *fi_D1B_lay_Phys;    //pointer to the physical FARFORWD
-
-
-
-    //-----------------FORWARD TRD inside D2  volume--------------------
-    //
-    G4double ffi_D2_GVol_RIn;
-    G4double ffi_D2_GVol_ROut;
-    G4double ffi_D2_GVol_SizeZ;
-    G4VisAttributes *attr_ffi_D2_GVol;
-    G4Tubs *ffi_D2_GVol_Solid;    //pointer to the solid  FARFORWD
-    G4LogicalVolume *ffi_D2_GVol_Logic;    //pointer to the logical FARFORWD
-    G4VPhysicalVolume *ffi_D2_GVol_Phys;    //pointer to the physical FARFORWD
-
-    //-------------- Si layers---------------
-    G4double ffi_D2_TRK_Lay_RIn;
-    G4double ffi_D2_TRK_Lay_ROut;
-    G4double ffi_D2_TRK_Lay_SizeZ;
-    G4Material *ffi_D2_TRK_Lay_Material;
-    G4VisAttributes *attr_ffi_D2_TRK_Lay;
-    G4Tubs *ffi_D2_TRK_Lay_Solid;    //pointer to the solid  FARFORWD
-    G4LogicalVolume *ffi_D2_TRK_Lay_Logic;    //pointer to the logical FARFORWD
-    G4VPhysicalVolume *ffi_D2_TRK_Lay_Phys;    //pointer to the physical FARFORWD
-
-
-    //===========================================================
-    //===========================================================
-    //-------------------------------------
-    //-----------------FARFORWARD GEM  volume--------------------
-    //===========================================================
-    //===========================================================
-
-    G4double ffi_D2AFTER_GVol_RIn;
-    G4double ffi_D2AFTER_GVol_ROut;
-    G4double ffi_D2AFTER_GVol_SizeZ;
-    G4double ffi_D2AFTER_GVol_PosZ, ffi_D2AFTER_GVol_PosX;
-    G4VisAttributes *attr_ffi_D2AFTER_GVol;
-    G4Tubs *ffi_D2AFTER_GVol_Solid;    //pointer to the solid  FARFORWD
-    G4LogicalVolume *ffi_D2AFTER_GVol_Logic;    //pointer to the logical FARFORWD
-    G4VPhysicalVolume *ffi_D2AFTER_GVol_Phys;    //pointer to the physical FARFORWD
-
-
-    G4double ffi_D2AFTER_TRK_Lay_RIn;
-    G4double ffi_D2AFTER_TRK_Lay_ROut;
-    G4double ffi_D2AFTER_TRK_Lay_SizeZ;
-
-    G4Material *ffi_D2AFTER_TRK_Lay_Material;
-    G4VisAttributes *attr_ffi_D2AFTER_TRK_Lay;
-
-    G4Tubs *ffi_D2AFTER_TRK_Lay_Solid;    //pointer to the solid  FARFORWD lay
-    G4LogicalVolume *ffi_D2AFTER_TRK_Lay_Logic;    //pointer to the logical FARFORWD  lay
-    G4VPhysicalVolume *ffi_D2AFTER_TRK_Lay_Phys;    //pointer to the physical FARFORWD  lay
-
-
-
-    //-----------------FARFORWARD VIRTUAL VOLUMES--------------------
-    G4VisAttributes *vvpf1;
-
-
-    G4double fFARFORWARD_VP_Rout, fFARFORWARD_VP_angle;
-    G4double fFARFORWARD_VP_SizeZ;
-    G4double fFARFORWARD_VP_X, fFARFORWARD_VP_Z;
-
-    G4Tubs *fSolid_FARFORWARD_VP;    //pointer to the solid  FARFORWD
-    G4LogicalVolume *fLogic_FARFORWARD_VP;    //pointer to the logical FARFORWD
-    G4VPhysicalVolume *fPhysics_FARFORWARD_VP;    //pointer to the physical FARFORWD
-
-
-
-    //-------------------TPC barrel detector ------------------
-    G4double fTPCSizeRin;
-    G4double fTPCSizeRout;
-    G4double fTPCSizeZ;
-    G4double fTPCsteps;
-    G4Material *fTPCMaterial;
-
-    G4double TPCRin[20];
-    G4double TPCRout[20];
-    G4Tubs *fSolidTPCBarrel[20];    //pointer to the solid World
-    G4LogicalVolume *fLogicTPCBarrel[20];    //pointer to the logical World
-    G4VPhysicalVolume *fPhysicsTPCBarrel[20];    //pointer to the physical World
-
-    //--------------------------------------------------------------
-
-
-
-
-    // TR radiator volumes and dimensions
-
-    G4Box *fSolidRadSlice;   // pointer to the solid  z-slice
-    G4LogicalVolume *fLogicRadSlice;   // pointer to the logical z-slide
-    G4VPhysicalVolume *fPhysicRadSlice;  // pointer to the physical z-slide
-
-    G4Box *fSolidRadRing;    // pointer to the solid  R-slice
-    G4LogicalVolume *fLogicRadRing;    // pointer to the logical R-slide
-    G4VPhysicalVolume *fPhysicRadRing;   // pointer to the physical R-slide
 
     //   G4Box *fSolidRadiator;
-
-    G4double fStartR;
-    G4double fStartZ;
     G4LogicalVolume *fLogicAbsorber;    //pointer to the logical Absorber
     G4VPhysicalVolume *fPhysicsAbsorber;    //pointer to the physical Absorber
 
-    //G4int fModuleNumber;   // the number of Rad-Det modules
-    G4double fMylarThick;
-    G4double fPipeLength;
-    G4bool fPipe;
-
-    G4double fWindowZ;
-    G4double fGapZ;
-    G4double fElectrodeZ;
-
-
-    // G4double fElectronCut, fGammaCut, fPositronCut;
 
     JLeicDetectorMessenger *fDetectorMessenger;  //pointer to the Messenger
     JLeicCalorimeterSD *fCalorimeterSD;  //pointer to the sensitive detector
@@ -555,11 +354,7 @@ private:
 
     g4e::Materials *fMat;
     g4e::InitializationContext *fInitContext;
-    AcceleratorMagnets *fElectronLineMagnets;
 };
-
-
-
 
 inline void JLeicDetectorConstruction::PrintGeometryParameters()
 {

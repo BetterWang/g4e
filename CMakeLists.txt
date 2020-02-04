@@ -145,7 +145,7 @@ add_subdirectory(src/external/spdlog)
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
-add_executable(g4e )
+add_executable(g4e "")
 
 target_link_libraries(g4e
         ${Geant4_LIBRARIES}

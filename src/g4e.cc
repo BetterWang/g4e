@@ -87,7 +87,7 @@ int main(int argc, char **argv)
     //output root file
     std::string rootFileName(appArgs.OutputBaseName + ".root");
     std::unique_ptr<TFile> rootOutputFile(new TFile(rootFileName.c_str(), "RECREATE"));
-    std::unique_ptr<g4e::RootOutputManager> mainRootOutput(new g4e::RootOutputManager(rootOutputFile.get()));
+    g4e::RootOutputManager mainRootOutput(rootOutputFile.get());
 
     // Construct the default run manager
     G4RunManager * runManager;
@@ -103,25 +103,21 @@ int main(int argc, char **argv)
 
     // Action initialization
     g4e::MultiActionInitialization actionInit;
-    std::unique_ptr<G4VUserActionInitialization> jleicActionInit(new JLeicActionInitialization(mainRootOutput.get()));
+    JLeicActionInitialization jleicActionInit(&mainRootOutput);
 
     // Event action
-    actionInit.AddUserActionGenerator([&mainRootOutput](){return new JLeicEventAction(mainRootOutput->GetJLeicRootOutput(), mainRootOutput->GetJLeicHistogramManager());});
-    actionInit.AddUserActionGenerator([&mainRootOutput](){return new JLeicRunAction(mainRootOutput->GetJLeicRootOutput(), mainRootOutput->GetJLeicHistogramManager());});
-
-
-    actionInit.AddUserInitialization(jleicActionInit.get());
+    actionInit.AddUserActionGenerator([&mainRootOutput](){return new JLeicEventAction(mainRootOutput.GetJLeicRootOutput(), mainRootOutput.GetJLeicHistogramManager());});
+    actionInit.AddUserActionGenerator([&mainRootOutput](){return new JLeicRunAction(mainRootOutput.GetJLeicRootOutput(), mainRootOutput.GetJLeicHistogramManager());});
+    actionInit.AddUserInitialization(&jleicActionInit);
 
     // After the run manager, we can combine initialization context
-    g4e::InitializationContext initContext(&appArgs, mainRootOutput.get(), &actionInit);
+    g4e::InitializationContext initContext(&appArgs, &mainRootOutput, &actionInit);
 
     auto detector = new JLeicDetectorConstruction(&initContext);
 
     runManager->SetUserInitialization(detector);
     runManager->SetUserInitialization(new EicPhysicsList(detector));
     runManager->SetUserInitialization(initContext.ActionInitialization);
-
-
 
     // Vis manager?
     G4VisExecutive* visManager = nullptr;
@@ -164,7 +160,7 @@ int main(int argc, char **argv)
 
     rndmFilename = appArgs.OutputBaseName + ".end.rndm";
     CLHEP::HepRandom::saveEngineStatus(rndmFilename.c_str());
-    mainRootOutput->Write();
+    mainRootOutput.Write();
 
     G4GeometryManager::GetInstance()->OpenGeometry();
     return 0;

@@ -5,7 +5,9 @@ project(g4e)
 
 include(cmake/print_functions.cmake)                 # Helpers to print fancy headers, file names, etc
 include(cmake/target_sources_local.cmake)            # Add relative source path independently of cmake version or policy
+
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/Modules ${CMAKE_MODULE_PATH} )
+include(cotire)
 
 
 # -----------------------------------------------------------------
@@ -101,6 +103,11 @@ message(STATUS "g4e: HEPMC_LIBRARIES  :${HEPMC_LIBRARIES}")
 print_grand_header("    G E N E R A L   C O N F I G U R A T I O N    ")
 # ---------------------------------------------------------------------
 
+# >oO profiling
+# add_definitions("-ftime-trace")
+# >oO profiling add_definitions("-ftime-trace -ftime-report")
+# set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CMAKE_COMMAND} -E time")
+
 # C++ standard to use (controlled with -DCPP_STANDARD flag)
 if(NOT DEFINED CMAKE_CXX_STANDARD)
     SET(CMAKE_CXX_STANDARD 11)
@@ -133,10 +140,12 @@ if(POLICY CMP0079)
     cmake_policy(SET CMP0079 NEW)
 endif()
 
+add_subdirectory(src/external/spdlog)
+
 #----------------------------------------------------------------------------
 # Add the executable, and link it to the Geant4 libraries
 #
-add_executable(g4e "")
+add_executable(g4e )
 
 target_link_libraries(g4e
         ${Geant4_LIBRARIES}
@@ -146,7 +155,10 @@ target_link_libraries(g4e
         ${VGM_RootGM}
         ${VGM_XmlVGM}
         ${ROOT_LIBRARIES}
+        spdlog
         )
+
+#set_property(TARGET g4e APPEND_STRING PROPERTY CXX_FLAGS "")
 
 target_include_directories(g4e
         SYSTEM
@@ -163,10 +175,11 @@ target_include_directories(g4e
 # All sources and includes for the project are there:
 add_subdirectory(src)
 
+cotire(g4e)
 
 # This is good for in JupyterLab Build
 if(${G4E_SILENCE_WARNINGS})
-    if ( CMAKE_COMPILER_IS_GNUCC )
+    if ( CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX OR (CMAKE_C_COMPILER_ID MATCHES "Clang") OR (CMAKE_CXX_COMPILER_ID MATCHES "Clang") )
         target_compile_options(g4e PRIVATE "-w")
     endif()
 endif()

@@ -17,6 +17,7 @@ target_sources_local(g4e
 
         g4e.cc
         ArgumentProcessor.hh
+        ArgumentProcessor.cc
 
         helpers/StringHelpers.cc
         helpers/StringHelpers.hh

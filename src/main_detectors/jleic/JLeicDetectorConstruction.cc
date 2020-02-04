@@ -64,7 +64,7 @@ void JLeicDetectorConstruction::Create_ci_Endcap(JLeicDetectorConfig::ci_Endcap_
     ci_ENDCAP_GVol_VisAttr->SetLineWidth(1);
     ci_ENDCAP_GVol_VisAttr->SetForceSolid(true);
     ci_ENDCAP_GVol_Logic->SetVisAttributes(ci_ENDCAP_GVol_VisAttr);
-  
+
 }
 
 
@@ -268,8 +268,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
             if (USE_CB_VTX_ENDCAPS) {
                 cb_VTX.ConstructLaddersEndcaps();
             }
-
-        };    // end VTX detector
+        }     // end VTX detector
 
         //===================================================================================
         //==                         CTD DETECTOR                                          ==
@@ -594,6 +593,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     spdlog::info(" - exporting geometry");
     g4e::GeometryExport::Export(fInitContext->Arguments->OutputBaseName, World_Phys);
 
+    fmt::print("WriteObject ret={}", fInitContext->RootManager->GetMainRootFile()->WriteObject(&fConfig, "JLeicDetectorConfig"));
     PrintGeometryParameters();
 }
 

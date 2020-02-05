@@ -264,6 +264,7 @@ private:
     // ir_LatticeDesign ir_Lattice;
     ir_Beampipe_Design ir_Beampipe;
     AcceleratorMagnets *fIonLineMagnets;
+    AcceleratorMagnets *fElectronLineMagnets;
 
 //-----------------Hadron ENDCAP volume--------------------
     G4VisAttributes *ci_ENDCAP_GVol_VisAttr;
@@ -398,7 +399,7 @@ inline void JLeicDetectorConstruction::SetRadiatorMaterial(G4String materialChoi
 
         if (pttoMaterial->GetName() == materialChoice) {
             fConfig.ci_TRD.fRadiatorMat = pttoMaterial;
-            fLogicRadSlice->SetMaterial(pttoMaterial);
+            //fLogicRadSlice->SetMaterial(pttoMaterial);
             // PrintCalorParameters();
         }
     }

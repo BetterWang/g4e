@@ -19,15 +19,28 @@ class JLeicHistogramManager
 {
 public:
 
-    TH1D *histo1, *histo2, *histo3, *histo4, *histo5, *histo6, *histo7, *histo8, *histo9, *histo10, *histo11, *histo12, *histo13, *histo14;
+    TH1D *histo1 = nullptr;
+    TH1D *histo2 = nullptr;
+    TH1D *histo3 = nullptr;
+    TH1D *histo4 = nullptr;
+    TH1D *histo5 = nullptr;
+    TH1D *histo6 = nullptr;
+    TH1D *histo7 = nullptr;
+    TH1D *histo8 = nullptr;
+    TH1D *histo9 = nullptr;
+    TH1D *histo10 = nullptr;
+    TH1D *histo11 = nullptr;
+    TH1D *histo12 = nullptr;
+    TH1D *histo13 = nullptr;
+    TH1D *histo14 = nullptr;
+    TH1D *histo15 = nullptr;
+    TH1D *histo16 = nullptr;
+
     //static TH2D* d2_pos_ffq1;
     static const int NHIST = 50;
     TH1D *hist[NHIST];
-
     TH1D *HLikelihood[NHIST];
-    char Hname[256];
     TH2D *d2_hist[NHIST];
-
 
     int NumRow = 10;
     int NumCol = 50;

@@ -637,7 +637,7 @@ void JLeicRunAction::EndOfRunAction(const G4Run *)
 
     auto myRootfile = new TFile("histos.root", "RECREATE");
     myRootfile->cd();
-    fHistos->Write();
+    // fHistos->Write();
     myRootfile->Close();
 
 

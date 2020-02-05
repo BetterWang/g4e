@@ -50,6 +50,7 @@ class Geant4Eic(object):
         self.config['detector'] = self.config.get('detector', 'jleic')
         self.config['is_batch'] = self.config.get('is_batch', True)
         self.config['executable'] = self.config.get('executable', 'g4e')
+        self.config['thread_count'] = self.config.get('treads', 1)
 
         self.runner = None
 
@@ -160,6 +161,10 @@ class Geant4Eic(object):
         self.config['is_batch'] = not run_batch
         return self
 
+    def threads(self, thread_count=1):
+        self.config['thread_count'] = int(thread_count)
+        return self
+
     def run(self):
         """Runs the configuration"""
 
@@ -173,8 +178,13 @@ class Geant4Eic(object):
         # if not self.sink.is_displayed:
         self.sink.display()
 
+        if self.config['thread_count'] != 1:
+            threads_flag = f"-t{self.config['thread_count']}"
+        else:
+            threads_flag = ''
+
         # Generate execution file
-        command = f"{self.config['executable']} {self.get_run_command()} -o {self.config['output']}"
+        command = f"{self.config['executable']} {self.get_run_command()} {threads_flag} -o {self.config['output']}"
 
         self.sink.to_show = ["Event", "Geant4 version", "Init", "Error", "Fatal", "Exception"]
         self.sink.show_running_command(command)

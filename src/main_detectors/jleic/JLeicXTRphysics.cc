@@ -69,10 +69,8 @@
 #include "JLeicXTRphysicsMessenger.hh"
 
 
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
-
-JLeicXTRphysics::JLeicXTRphysics(JLeicDetectorConstruction *p, EicPhysicsList *pl, const G4String &name) : G4VPhysicsConstructor(name), fJLeicXTRphysicsMessenger(0)
+JLeicXTRphysics::JLeicXTRphysics(JLeicDetectorConstruction *p, EicPhysicsList *pl, const G4String &name) :
+    G4VPhysicsConstructor(name)
 {
     pDet = p;
     pList = pl;
@@ -81,14 +79,12 @@ JLeicXTRphysics::JLeicXTRphysics(JLeicDetectorConstruction *p, EicPhysicsList *p
     SetVerboseLevel(0);
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 JLeicXTRphysics::~JLeicXTRphysics()
 {
     delete fJLeicXTRphysicsMessenger;
 }
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void JLeicXTRphysics::ConstructProcess()
 {
@@ -248,28 +244,20 @@ void JLeicXTRphysics::SetCuts()
     if (region) region->SetProductionCuts(fDetectorCuts);
 }
 
-///////////////////////////////////////////////////////////////////////////
-
 void JLeicXTRphysics::SetGammaCut(G4double val)
 {
     cutForGamma = val;
 }
-
-///////////////////////////////////////////////////////////////////////////
 
 void JLeicXTRphysics::SetElectronCut(G4double val)
 {
     cutForElectron = val;
 }
 
-////////////////////////////////////////////////////////////////////////////
-
 void JLeicXTRphysics::SetMaxStep(G4double step)
 {
     MaxChargedStep = step;
 }
-
-/////////////////////////////////////////////////////
 
 void JLeicXTRphysics::SetRadiatorCuts()
 {
@@ -278,13 +266,7 @@ void JLeicXTRphysics::SetRadiatorCuts()
     fRadiatorCuts->SetProductionCut(fGammaCut, idxG4GammaCut);
     fRadiatorCuts->SetProductionCut(fElectronCut, idxG4ElectronCut);
     fRadiatorCuts->SetProductionCut(fPositronCut, idxG4PositronCut);
-
-//    G4cout << "Radiator gamma cut    = " << fGammaCut / mm << " mm" << G4endl;
-//    G4cout << "Radiator electron cut = " << fElectronCut / mm << " mm" << G4endl;
-//    G4cout << "Radiator positron cut = " << fPositronCut / mm << " mm" << G4endl;
 }
-
-/////////////////////////////////////////////////////////////
 
 void JLeicXTRphysics::SetDetectorCuts()
 {
@@ -293,10 +275,4 @@ void JLeicXTRphysics::SetDetectorCuts()
     fDetectorCuts->SetProductionCut(fGammaCut, idxG4GammaCut);
     fDetectorCuts->SetProductionCut(fElectronCut, idxG4ElectronCut);
     fDetectorCuts->SetProductionCut(fPositronCut, idxG4PositronCut);
-
-//    G4cout << "Detector gamma cut    = " << fGammaCut / mm << " mm" << G4endl;
-//    G4cout << "Detector electron cut = " << fElectronCut / mm << " mm" << G4endl;
-//    G4cout << "Detector positron cut = " << fPositronCut / mm << " mm" << G4endl;
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

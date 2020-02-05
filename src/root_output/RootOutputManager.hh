@@ -9,6 +9,7 @@
 /** This class holds the main root file and various helper functions for it */
 
 class TFile;
+class TTree;
 
 namespace g4e {
     class RootOutputManager {
@@ -25,6 +26,7 @@ namespace g4e {
 
     private:
         TFile *mRootFile;
+        TTree *mFlatEventTree;
         // We also create JLeic root output here , while g4e is in transition
         // TODO Move JLeic initialization to the appropriate phase
         std::unique_ptr<g4e::RootFlatIO> jleicRootOutput;

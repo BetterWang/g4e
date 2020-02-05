@@ -148,7 +148,7 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
     //G4DynamicParticle*     dParticle = aTrack->GetDynamicParticle();
     G4ThreeVector momentum = aTrack->GetMomentum();
     G4ThreeVector momentumDir = aTrack->GetMomentumDirection();
-    G4int ParrentID = aTrack->GetParentID();
+    G4int parentId = aTrack->GetParentID();
     G4ThreeVector position = aTrack->GetPosition();
     G4ThreeVector vertex = aTrack->GetVertexPosition();
     G4ThreeVector vertexMom = aTrack->GetVertexMomentumDirection();
@@ -185,7 +185,7 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
 
         //-- fill tracks --
         mRootEventsOut->AddTrack(curTrackID,                           /* int aTrackId,*/
-                                 ParrentID,                            /* int aParentId,*/
+                                 parentId,                            /* int aParentId,*/
                                  PDG,                                  /* int aTrackPdg,*/
                                  vertex.x() / mm,              /* double aXVertex,*/
                                  vertex.y() / mm,              /* double aYVertex,*/

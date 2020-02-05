@@ -1,51 +1,8 @@
-//
-// ********************************************************************
-// * License and Disclaimer                                           *
-// *                                                                  *
-// * The  Geant4 software  is  copyright of the Copyright Holders  of *
-// * the Geant4 Collaboration.  It is provided  under  the terms  and *
-// * conditions of the Geant4 Software License,  included in the file *
-// * LICENSE and available at  http://cern.ch/geant4/license .  These *
-// * include a list of copyright holders.                             *
-// *                                                                  *
-// * Neither the authors of this software system, nor their employing *
-// * institutes,nor the agencies providing financial support for this *
-// * work  make  any representation or  warranty, express or implied, *
-// * regarding  this  software system or assume any liability for its *
-// * use.  Please see the license in the file  LICENSE  and URL above *
-// * for the full disclaimer and the limitation of liability.         *
-// *                                                                  *
-// * This  code  implementation is the result of  the  scientific and *
-// * technical work of the GEANT4 collaboration.                      *
-// * By using,  copying,  modifying or  distributing the software (or *
-// * any work based  on the software)  you  agree  to acknowledge its *
-// * use  in  resulting  scientific  publications,  and indicate your *
-// * acceptance of all terms of the Geant4 Software license.          *
-// ********************************************************************
-//
-/// \file electromagnetic/VertexEIC/src/JLeicXTRphysicsMessenger.cc
-/// \brief Implementation of the JLeicXTRphysicsMessenger class
-//
-//
-// $Id: JLeicXTRphysicsMessenger.cc 67268 2013-02-13 11:38:40Z ihrivnac $
-//
-// 
-//
-///////////////////////////////////////////////////////////////////////
-
-
-
 #include "JLeicXTRphysicsMessenger.hh"
 #include "JLeicXTRphysics.hh"
-#include "G4UIcmdWithoutParameter.hh"
-#include "G4UIcmdWithADouble.hh"
 #include "G4UIcmdWithADoubleAndUnit.hh"
 #include "G4UIcmdWithAString.hh"
 
-
-//////////////////////////////////////////////////////////////////////////////
-//
-//
 
 JLeicXTRphysicsMessenger::JLeicXTRphysicsMessenger(JLeicXTRphysics *List) : G4UImessenger(), JLeicList(List)
 {
@@ -68,7 +25,6 @@ JLeicXTRphysicsMessenger::JLeicXTRphysicsMessenger(JLeicXTRphysics *List) : G4UI
     setMaxStepCmd->SetParameterName("mxStep", true);
     setMaxStepCmd->SetDefaultUnit("mm");
 
-
     ElectronCutCmd = new G4UIcmdWithADoubleAndUnit("/emphyslist/setElectronCut", this);
     ElectronCutCmd->SetGuidance("Set electron cut in mm for vertex region");
     ElectronCutCmd->SetParameterName("ElectronCut", false, false);
@@ -76,14 +32,12 @@ JLeicXTRphysicsMessenger::JLeicXTRphysicsMessenger(JLeicXTRphysics *List) : G4UI
     ElectronCutCmd->SetRange("ElectronCut>0.");
     ElectronCutCmd->AvailableForStates(G4State_PreInit, G4State_Idle);
 
-
     PositronCutCmd = new G4UIcmdWithADoubleAndUnit("/emphyslist/setPositronCut", this);
     PositronCutCmd->SetGuidance("Set positron cut in mm for vertex region");
     PositronCutCmd->SetParameterName("PositronCut", false, false);
     PositronCutCmd->SetDefaultUnit("mm");
     PositronCutCmd->SetRange("PositronCut>0.");
     PositronCutCmd->AvailableForStates(G4State_PreInit, G4State_Idle);
-
 
     GammaCutCmd = new G4UIcmdWithADoubleAndUnit("/emphyslist/setGammaCut", this);
     GammaCutCmd->SetGuidance("Set gamma cut in mm for vertex region");
@@ -113,7 +67,6 @@ JLeicXTRphysicsMessenger::JLeicXTRphysicsMessenger(JLeicXTRphysics *List) : G4UI
 
 }
 
-/////////////////////////////////////////////////////////////////////////////
 
 JLeicXTRphysicsMessenger::~JLeicXTRphysicsMessenger()
 {
@@ -128,7 +81,6 @@ JLeicXTRphysicsMessenger::~JLeicXTRphysicsMessenger()
     delete XTRModelCmd;
 }
 
-////////////////////////////////////////////////////////////////////////////////
 
 void JLeicXTRphysicsMessenger::SetNewValue(G4UIcommand *command, G4String newValue)
 {
@@ -158,8 +110,4 @@ void JLeicXTRphysicsMessenger::SetNewValue(G4UIcommand *command, G4String newVal
     if (command == XTRModelCmd) {
         JLeicList->SetXTRModel(newValue);
     }
-
 }
-
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
-

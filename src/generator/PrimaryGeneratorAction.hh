@@ -1,29 +1,3 @@
-//
-// ********************************************************************
-// * License and Disclaimer                                           *
-// *                                                                  *
-// * The  Geant4 software  is  copyright of the Copyright Holders  of *
-// * the Geant4 Collaboration.  It is provided  under  the terms  and *
-// * conditions of the Geant4 Software License,  included in the file *
-// * LICENSE and available at  http://cern.ch/geant4/license .  These *
-// * include a list of copyright holders.                             *
-// *                                                                  *
-// * Neither the authors of this software system, nor their employing *
-// * institutes,nor the agencies providing financial support for this *
-// * work  make  any representation or  warranty, express or implied, *
-// * regarding  this  software system or assume any liability for its *
-// * use.  Please see the license in the file  LICENSE  and URL above *
-// * for the full disclaimer and the limitation of liability.         *
-// *                                                                  *
-// * This  code  implementation is the result of  the  scientific and *
-// * technical work of the GEANT4 collaboration.                      *
-// * By using,  copying,  modifying or  distributing the software (or *
-// * any work based  on the software)  you  agree  to acknowledge its *
-// * use  in  resulting  scientific  publications,  and indicate your *
-// * acceptance of all terms of the Geant4 Software license.          *
-// ********************************************************************
-//
-
 /**
  * @file
  *
@@ -48,16 +22,10 @@
 #include "globals.hh"
 #include "G4VUserPrimaryGeneratorAction.hh"
 
-#include <spdlog/fmt/ostr.h>
-
 class G4Event;
-
 class G4VPrimaryGenerator;
-
 class PrimaryGeneratorMessenger;
-
 class JLeicRunAction;
-
 class JLeicDetectorConstruction;
 
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction {
@@ -80,7 +48,6 @@ public:
 
     static G4double GetPrimaryEnergy();
 
-
 private:
     G4VPrimaryGenerator *fParticleGunGenerator;       // Particle gun
     G4VPrimaryGenerator *fHepMcAsciiGenerator;        // Herwig, Pythia 8 and other HepMC ascii
@@ -98,19 +65,6 @@ private:
 
 inline void PrimaryGeneratorAction::SetGenerator(G4VPrimaryGenerator *gen) {
     currentGenerator = gen;
-}
-
-inline void PrimaryGeneratorAction::SelectGenerator(const G4String& name) {
-    auto pos = gentypeMap.find(name);
-
-    // Check we have such generator
-    if (pos == gentypeMap.end()) {
-        fmt::print(G4cerr, "PrimaryGeneratorAction::SelectGenerator no generator with name '{}'\n", name);
-        return;
-    }
-
-    currentGenerator = pos->second;
-    currentGeneratorName = name;
 }
 
 inline G4VPrimaryGenerator *PrimaryGeneratorAction::GetGenerator() const {

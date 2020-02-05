@@ -39,7 +39,6 @@
 #include "JLeicSteppingAction.hh"
 #include "JLeicSteppingVerbose.hh"
 #include "JLeicTrackingAction.hh"
-#include "JLeicActionInitialization.hh"
 #include "InitializationContext.hh"
 
 #include "RootOutputManager.hh"
@@ -60,9 +59,33 @@
 #include <TFile.h>
 #include <G4GeometryManager.hh>
 
+struct test {
+    int Xaaa;
+
+    test(std::string name):
+        fMessenger(this, "/mytest/"),
+        fName(name)
+    {
+        fMessenger.DeclareProperty("xaaa", Xaaa);
+    }
+
+    void print() {
+        fmt::print("test: {} : {}\n", fName, Xaaa);
+    }
+
+private:
+    G4GenericMessenger fMessenger;
+    std::string fName;
+};
+
 int main(int argc, char **argv)
 {
     using namespace fmt;
+
+    test test1("test1");
+    test1.Xaaa = 1;
+    test test2("test2");
+    test2.Xaaa = 2;
 
     if( argc > 1 ) {
         std::cout << "there are " << argc-1 << " (more) arguments, they are:\n" ;
@@ -103,12 +126,12 @@ int main(int argc, char **argv)
 
     // Action initialization
     g4e::MultiActionInitialization actionInit;
-    JLeicActionInitialization jleicActionInit(&mainRootOutput);
 
-    // Event action
+    // Event, tracking, stepping actions
     actionInit.AddUserActionGenerator([&mainRootOutput](){return new JLeicEventAction(mainRootOutput.GetJLeicRootOutput(), mainRootOutput.GetJLeicHistogramManager());});
     actionInit.AddUserActionGenerator([&mainRootOutput](){return new JLeicRunAction(mainRootOutput.GetJLeicRootOutput(), mainRootOutput.GetJLeicHistogramManager());});
-    actionInit.AddUserInitialization(&jleicActionInit);
+    actionInit.AddUserActionGenerator([&mainRootOutput](){return new JLeicTrackingAction();});
+
 
     // After the run manager, we can combine initialization context
     g4e::InitializationContext initContext(&appArgs, &mainRootOutput, &actionInit);
@@ -117,6 +140,15 @@ int main(int argc, char **argv)
 
     runManager->SetUserInitialization(detector);
     runManager->SetUserInitialization(new EicPhysicsList(detector));
+
+    // only after we added physics lists one can add generator action
+    // According to geant, 4VUserPrimaryGeneratorAction must be constructed AFTER
+    // G4VUserPhysicsList is instantiated and assigned to G4RunManager.
+    // At the same time we initialize it ASAP as it has an important messenger
+    PrimaryGeneratorAction generatorAction;
+    actionInit.SetGeneratorAction(&generatorAction);
+
+    // Add action initialization to a run manager
     runManager->SetUserInitialization(initContext.ActionInitialization);
 
     // Vis manager?
@@ -163,5 +195,8 @@ int main(int argc, char **argv)
     mainRootOutput.Write();
 
     G4GeometryManager::GetInstance()->OpenGeometry();
+
+    test1.print();
+    test2.print();
     return 0;
 }

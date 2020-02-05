@@ -98,7 +98,6 @@ EicPhysicsList::EicPhysicsList(JLeicDetectorConstruction *p) :
     pDet = p;
 
     // world cuts
-
     SetVerboseLevel(0);
 
     defaultCutValue = 1.0 * mm;
@@ -121,9 +120,16 @@ EicPhysicsList::EicPhysicsList(JLeicDetectorConstruction *p) :
     // all physics processes having to do with protons
     //RegisterPhysics( new G4EmStandardPhysics_option4() );   //--- electrons physics  !!
     // all physics processes having to do with electrons
+
     auto decayPhysics = new G4DecayPhysics();
     decayPhysics->SetVerboseLevel(0);
     RegisterPhysics(decayPhysics);
+
+    // Transition Radiation Physics
+    XTRphys = new JLeicXTRphysics(pDet, this, "XTRmodel");
+    XTRphys->SetVerboseLevel(0);
+    RegisterPhysics(XTRphys);
+
     // physics of unstable particles
 
     cutForGamma = defaultCutValue;
@@ -135,15 +141,6 @@ EicPhysicsList::EicPhysicsList(JLeicDetectorConstruction *p) :
     fGammaCut = defaultCutValue;
     fElectronCut = defaultCutValue;
     fPositronCut = defaultCutValue;
-
-    // Transition Radiation Physics
-    XTRphys = new JLeicXTRphysics(pDet, this, "XTRmodel");
-    RegisterPhysics(XTRphys);
-}
-
-EicPhysicsList::~EicPhysicsList()
-{
-
 }
 
 ///////////////////////////////////////////////////////////////////////
@@ -198,4 +195,5 @@ void EicPhysicsList::SetCuts()
 
     if (verboseLevel > 1) DumpCutValuesTable();
 }
+
 

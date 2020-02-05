@@ -5,7 +5,7 @@
 
 #include <G4VUserActionInitialization.hh>
 #include <G4UserEventAction.hh>
-#include <ArgumentProcessor.hh>
+
 
 
 namespace g4e{
@@ -26,20 +26,35 @@ public:
     */
     void BuildForMaster() const override;
 
-    void AddUserInitialization(G4VUserActionInitialization * init) { mActionInits.push_back(init); }
+    void AddUserActionGenerator(const std::function<G4UserSteppingAction*()>& generator) {
+        mSteppingActionGenerators.push_back(generator);
+    }
+
 
     void AddUserActionGenerator(const std::function<G4UserEventAction*()>& generator) {
         mEventActionGenerators.push_back(generator);
+    }
+
+    void AddUserActionGenerator(const std::function<G4UserTrackingAction*()>& generator) {
+        mTrackingActionGenerators.push_back(generator);
     }
 
     void AddUserActionGenerator(const std::function<G4UserRunAction*()>& generator) {
         mRunActionGenerators.push_back(generator);
     }
 
+
 private:
-    std::vector<G4VUserActionInitialization*> mActionInits;
+    std::vector<std::function<G4UserSteppingAction*()>> mSteppingActionGenerators;
+    std::vector<std::function<G4UserTrackingAction*()>> mTrackingActionGenerators;
     std::vector<std::function<G4UserEventAction*()>> mEventActionGenerators;
     std::vector<std::function<G4UserRunAction*()>> mRunActionGenerators;
+
+    G4VUserPrimaryGeneratorAction *mGeneratorAction;
+public:
+    G4VUserPrimaryGeneratorAction *GetGeneratorAction() const;
+
+    void SetGeneratorAction(G4VUserPrimaryGeneratorAction *mGeneratorAction);
 };
 }
 

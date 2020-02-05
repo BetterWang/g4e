@@ -1,13 +1,16 @@
 #include "MultiActionInitialization.hh"
+#include <G4MultiSteppingAction.hh>
+#include <G4MultiTrackingAction.hh>
 #include <G4MultiEventAction.hh>
 #include <G4MultiRunAction.hh>
 
+
 void g4e::MultiActionInitialization::Build() const
 {
-    for(auto& init: mActionInits) {
-        init->Build();
-    }
+    // Add Generator action
+    SetUserAction(mGeneratorAction);
 
+    // Event actions
     if(!mEventActionGenerators.empty()) {
         auto eventActions = new G4MultiEventAction();
 
@@ -18,24 +21,31 @@ void g4e::MultiActionInitialization::Build() const
         SetUserAction(eventActions);
     }
 
+    // Stepping actions
+    if(!mSteppingActionGenerators.empty()) {
+        auto multiSteppingAction = new G4MultiSteppingAction();
 
+        // Using generators to generate event actions
+        for(auto generator: mSteppingActionGenerators) {
+            multiSteppingAction->push_back(G4UserSteppingActionUPtr(generator()));
+        }
+        SetUserAction(multiSteppingAction);
+    }
 
+    // Tracking actions
+    if(!mTrackingActionGenerators.empty()) {
+        auto multiTrackingAction = new G4MultiTrackingAction();
 
-
-
-    //    std::unique_ptr<G4MultiRunAction> mRunAction;
-//    std::unique_ptr<G4MultiEventAction> mEventAction;
-//    std::unique_ptr<G4MultiTrackingAction> mTrackingAction;
-//    std::unique_ptr<G4MultiSteppingAction> mSteppingAction;
-    //UserArguments mArguments;
+        // Using generators to generate event actions
+        for(auto generator: mTrackingActionGenerators) {
+            multiTrackingAction->push_back(G4UserTrackingActionUPtr(generator()));
+        }
+        SetUserAction(multiTrackingAction);
+    }
 }
 
 void g4e::MultiActionInitialization::BuildForMaster() const
 {
-    for(auto& init: mActionInits) {
-        init->BuildForMaster();
-    }
-
     if(!mRunActionGenerators.empty()) {
         auto runActions = new G4MultiRunAction();
 
@@ -45,6 +55,16 @@ void g4e::MultiActionInitialization::BuildForMaster() const
         }
         SetUserAction(runActions);
     }
+}
+
+G4VUserPrimaryGeneratorAction *g4e::MultiActionInitialization::GetGeneratorAction() const
+{
+    return mGeneratorAction;
+}
+
+void g4e::MultiActionInitialization::SetGeneratorAction(G4VUserPrimaryGeneratorAction *mGeneratorAction)
+{
+    MultiActionInitialization::mGeneratorAction = mGeneratorAction;
 }
 
 

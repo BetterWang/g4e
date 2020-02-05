@@ -54,11 +54,11 @@ class EicPhysicsList : public G4VModularPhysicsList
 public:
     explicit EicPhysicsList(JLeicDetectorConstruction *);
 
-    ~EicPhysicsList() override;
+
 
     // Construct particle and physics
     void ConstructParticle() override;
-    //void ConstructProcess();
+//    void ConstructProcess() override ;
 
     void SetCuts() override;
 

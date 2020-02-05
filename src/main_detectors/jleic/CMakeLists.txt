@@ -1,9 +1,5 @@
 target_sources_local(g4e
         PRIVATE
-
-            JLeicActionInitialization.hh
-            JLeicActionInitialization.cc
-
             JLeicCalorHit.cc
             JLeicCalorHit.hh
 
@@ -18,8 +14,8 @@ target_sources_local(g4e
             JLeicDetectorMessenger.cc
             JLeicDetectorMessenger.hh
 
-        JLeicHistogramManager.hh
-        JLeicHistogramManager.cc
+            JLeicHistogramManager.hh
+            JLeicHistogramManager.cc
 
             JLeicEventAction.hh
             JLeicEventAction.cc

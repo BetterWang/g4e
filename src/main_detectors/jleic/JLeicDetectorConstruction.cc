@@ -22,7 +22,6 @@
 
 
 JLeicDetectorConstruction::JLeicDetectorConstruction(g4e::InitializationContext *initContext) :
-    fWorldChanged(false),
     fInitContext(initContext)
 {
     fDetectorMessenger = new JLeicDetectorMessenger(this);
@@ -592,8 +591,6 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     // Exporting geometry
     spdlog::info(" - exporting geometry");
     g4e::GeometryExport::Export(fInitContext->Arguments->OutputBaseName, World_Phys);
-
-    fmt::print("WriteObject ret={}", fInitContext->RootManager->GetMainRootFile()->WriteObject(&fConfig, "JLeicDetectorConfig"));
     PrintGeometryParameters();
 }
 

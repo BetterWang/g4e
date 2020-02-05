@@ -11,8 +11,6 @@
 #include "G4Color.hh"
 #include "G4VisAttributes.hh"
 
-#include "JLeicDetectorConfig.hh"
-
 struct ir_Beampipe_Config {
 // define here Global volume parameters
 

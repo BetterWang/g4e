@@ -80,44 +80,35 @@ class JLeicDetectorConstruction : public G4VUserDetectorConstruction
 public:
 
     //--------BEAM elements------
-
-    // -----
     bool USE_FFQs = true;
-    //bool USE_FFQs_iu
-    //bool USE_FFQs_ed
-    //bool USE_FFQs_eu
 
+    // --------BARREL------
     //===========================================
-    //--------BARREL------
+
     bool USE_BARREL = true;
     bool USE_BARREL_det = true;
 
-    //------- subdetector-volumes  barrel ----- 
-
+    // Central barrel vertex
     bool USE_CB_VTX = true;
-    //bool  USE_VTX0 1   // for simple vtx geom
     bool USE_CB_VTX_LADDERS = true;
     bool USE_CB_VTX_ENDCAPS = false;  // for vxt endcaps ladders
-    //bool  USE_VTX_DISKS    // for vxt disks along beampipe
-    //bool USE_VTX_E 1   // for vxt endcaps 
-
 
     bool USE_CB_CTD = true;
-    // -------- use one of the following options for CTD ---------------
-    bool USE_CB_CTD_Si = true;//  silicon version of CTD
-    bool USE_CB_CTD_Straw = false; // straw version of CTD
-    //--------------------------------------------------------
+    // use one of the following options for CTD:
+    bool USE_CB_CTD_Si = true;       // silicon version of CTD
+    bool USE_CB_CTD_Straw = false;   // straw version of CTD
 
     bool USE_CB_DIRC = true;
-    bool USE_CB_DIRC_bars = false;  // bars for DIRC
+    bool USE_CB_DIRC_bars = false;   // bars for DIRC
 
     bool USE_CB_EMCAL = true;
     bool USE_CB_HCAL = true;
-    bool USE_CB_HCAL_D = true; // hcal detector ( granularity)
+    bool USE_CB_HCAL_D = true;       // hcal detector ( granularity)
 
+    // Electron endcap
     // ==============================================
-    //--------E-encap------
     bool USE_E_ENDCAP = true;
+
     //------- subdetector-volumes E-encap ----- 
     bool USE_CE_GEM = true;
     bool USE_CE_EMCAL = true;
@@ -126,9 +117,11 @@ public:
     // -------- polarimeter ------------
     bool USE_FFE_CPOL = false;
     bool USE_FFE_LUMI = true;
-    //==============================================
+
     //--------H-encap------
+    //==============================================
     bool USE_CI_ENDCAP = true;
+
     //------- subdetector-volumes H-encap -----
     bool USE_CI_GEM = true;
     bool USE_CI_DRICH = true;
@@ -136,6 +129,7 @@ public:
     bool USE_CI_EMCAL = true;
     bool USE_CI_HCAL = true;
     bool USE_CI_HCAL_D = true;
+
     //--------- Forward D1 ------
     bool USE_FI_D1TRK = true;
     bool USE_FI_D1EMCAL = false;
@@ -145,39 +139,20 @@ public:
     bool USE_FFI_ZDC = true;
     bool USE_FFI_RPOT_D2 = false;
     bool USE_FFI_RPOT_D3 = false;
-    //bool USE_FARFORWARD_GEM
-    //bool USE_FARFORWARD_VP
 
-    //--------barrel------
-    //bool  USE_VTX0 1   // for simple vtx geom
-    //bool USE_VTX_E 1   // for vxt endcaps 
-    //-------------CTD----------
-    //bool  USE_CB_EMCAL 1
-    //--------Endcap ------
-    //bool USE_ENDCAP 1
-    //bool  USE_EMCALe
-    //bool  USE_VTXB 1
 
     explicit JLeicDetectorConstruction(g4e::InitializationContext *);
 
     ~JLeicDetectorConstruction() override;
-
-    void EnableHCalRings();
 
 public:
     void SetAbsorberMaterial(G4String);
 
     void SetAbsorberThickness(G4double);
 
-    void SetAbsorberRadius(G4double);
-
     void SetAbsorberZpos(G4double);
 
     void SetRadiatorMaterial(G4String);
-
-    void SetRadiatorThickness(G4double);
-
-    void SetGasGapThickness(G4double);
 
     void SetWorldMaterial(G4String);
 
@@ -204,6 +179,8 @@ public:
     const G4VPhysicalVolume *GetAbsorberPhysicalVolume() { return fPhysicsAbsorber; };
 
     G4LogicalVolume *GetLogicalAbsorber() { return fLogicAbsorber; };
+
+    // TODO: REMOVE from global JLeic DETECOTR CONSTRUCTION (Argh!!!)
 
     G4Material *GetAbsorberMaterial() { return fConfig.ci_TRD.det_Material; };
 
@@ -234,9 +211,6 @@ public:
 
     JLeicDetectorConfig fConfig;
 
-    //----------------VTX  volume ------------------
-    cb_VTX_Design cb_VTX;
-
     void SetUpJLEIC2019();
 
 private:
@@ -248,110 +222,80 @@ private:
 
 private:
 
-// ----------------------------------------------
-//           R E F A C T O R I N G
+    // D e t e c t o r   D e s i g n s:
+    // ========================================================================
 
+    //  C E N T R A L   (BARREL)
+    //==============================================
+    cb_Solenoid_Design cb_Solenoid;
+    cb_VTX_Design   cb_VTX;         // Central Vertex
+    cb_CTD_Design   cb_CTD;         // CTD
+    cb_DIRC_Design  cb_DIRC;        // DIRC
+    cb_EMCAL_Design cb_EMCAL;       // EMCAL
+    cb_HCAL_Design  cb_HCAL;        // HCAL
+
+    //  E - E N D C A P
+    //==============================================
+    ce_GEM_Design   ce_GEM;    // GEM volume
+    ce_MRICH_Design ce_MRICH;  // MRICH volume
+    ce_EMCAL_Design ce_EMCAL;  // EMCAL volume
+
+    // I O N  -  E N D C A P
+    //==============================================
+    ci_GEM_Design   ci_GEM;     //GEM
+    ci_DRICH_Design ci_DRICH;   //DRICH
+    ci_TRD_Design   ci_TRD;     //TRD
+    ci_EMCAL_Design ci_EMCAL;   //EMCAL
+    ci_HCAL_Design  ci_HCAL;    //HCAL
+
+    // Far-Forward Electron
+    //==============================================
+    ffe_CPOL_Design ffe_CPOL;       // CPOL volume
+    // ffe_LUMI_Design ffe_LUMI;    //  LUMI volume
+
+    // Far-Forward ION
+    //==============================================
+
+    fi_D1TRK_Design     fi_D1TRK;       // Tracking
+    fi_D1EMCAL_Design   fi_D1EMCAL;     // EMCAL
+    ffi_D2TRK_Design    ffi_D2TRK;      // D2 Tracking
+    ffi_ZDC_Design      ffi_ZDC;
+
+    // Roman Pot system
+    ffi_RPOT_D2_Design  ffi_RPOT_D2;
+    ffi_RPOT_D3_Design  ffi_RPOT_D3;
 
     //=========================================================================
-    //--------------World -------------------
-    // =========================================================================
-    G4Box *World_Solid;                 // pointer to the solid World
-    G4LogicalVolume *World_Logic;       // pointer to the logical World
-    G4VPhysicalVolume *World_Phys;      // pointer to the physical World
+
+    G4Box *World_Solid;                         // pointer to the solid World
+    G4LogicalVolume *World_Logic;               // pointer to the logical World
+    G4VPhysicalVolume *World_Phys;              // pointer to the physical World
     G4Material *World_Material;
 
     // Interaction region
-    // ir_LatticeDesign ir_Lattice;
     ir_Beampipe_Design ir_Beampipe;
     AcceleratorMagnets *fIonLineMagnets;
     AcceleratorMagnets *fElectronLineMagnets;
 
-//-----------------Hadron ENDCAP volume--------------------
+    // Hadron ENDCAP volume
     G4VisAttributes *ci_ENDCAP_GVol_VisAttr;
     G4Tubs *ci_ENDCAP_GVol_Solid;               // pointer to the solid  ENDCAP-H volume
     G4LogicalVolume *ci_ENDCAP_GVol_Logic;      // pointer to the logical  ENDCAP-H  volume
     G4VPhysicalVolume *ci_ENDCAP_GVol_Phys;     // pointer to the physical ENDCAP-H  volume
 
-//-----------------Electron ENDCAP  volume--------------------
+    // Electron ENDCAP  volume-
     G4VisAttributes *ce_ENDCAP_VisAttr;
     G4Tubs *ce_ENDCAP_GVol_Solid;               // pointer to the solid  ENDCAP-E volume
     G4LogicalVolume *ce_ENDCAP_GVol_Logic;      // pointer to the logical ENDCAP-E  volume
     G4VPhysicalVolume *ce_ENDCAP_GVol_Phys;     // pointer to the physical ENDCAP-E  volume
-    //==============================================
-    //----------------BARREL -----------------------
-    cb_Solenoid_Design cb_Solenoid;
-    //----------------VTX  volume ------------------
-    // cb_VTX_Design      cb_VTX;
-    //----------------CTD  volume -------------------
-    cb_CTD_Design cb_CTD;
-    //----------------DIRC  volume -------------------
-    cb_DIRC_Design cb_DIRC;
-    //----------------EMCAL  volume -------------------
-    cb_EMCAL_Design cb_EMCAL;
-    //----------------HCAL  volume -------------------
-    cb_HCAL_Design cb_HCAL;
-    //==============================================
-    //----------------E-ENDCAP -----------------------
-    //----------------GEM volume ---------------------
-    ce_GEM_Design ce_GEM;
-    //----------------MRICH volume -----------------------
-    ce_MRICH_Design ce_MRICH;
-    //----------------EMCAL volume -----------------------
-    ce_EMCAL_Design ce_EMCAL;
-
-    //==============================================
-    //----------------Far-forward Electron  ---------
-
-    //---------------- CPOL volume --------------
-    ffe_CPOL_Design ffe_CPOL;
-
-    //----------------  LUMI volume --------------
-    // ffe_LUMI_Design ffe_LUMI;
-
-    //==============================================
-    //----------------Ion-ENDCAP -----------------------
-    //----------------GEM volume ---------------------
-    ci_GEM_Design ci_GEM;
-    //----------------DRICH volume ---------------------
-    ci_DRICH_Design ci_DRICH;
-    //----------------TRD volume ---------------------
-    ci_TRD_Design ci_TRD;
-    //----------------EMCAL volume ---------------------
-    ci_EMCAL_Design ci_EMCAL;
-    //----------------HCAL volume ---------------------
-    ci_HCAL_Design ci_HCAL;
-
-    //==============================================
-    //----------------Far-forward ION  --------------
-    //----------------Tracking volume ---------------------
-    fi_D1TRK_Design fi_D1TRK;
-    //----------------EMCAL volume ---------------------
-    fi_D1EMCAL_Design fi_D1EMCAL;
-
-    //----------------D2 Tracking volume  ---------------------
-    ffi_D2TRK_Design ffi_D2TRK;
-
-    //---------------HCAL -ZDC -------------------------
-    ffi_ZDC_Design ffi_ZDC;
-    //---------------Roman Pot system -------------------------
-    ffi_RPOT_D2_Design ffi_RPOT_D2;
-    ffi_RPOT_D3_Design ffi_RPOT_D3;
-
-// ----------------------------------------------
 
 
-
-    G4bool fWorldChanged;
-
-
-    //   G4Box *fSolidRadiator;
-    G4LogicalVolume *fLogicAbsorber;    //pointer to the logical Absorber
-    G4VPhysicalVolume *fPhysicsAbsorber;    //pointer to the physical Absorber
-
-
-    JLeicDetectorMessenger *fDetectorMessenger;  //pointer to the Messenger
-    JLeicCalorimeterSD *fCalorimeterSD;  //pointer to the sensitive detector
-    JLeicVertexSD *fVertexSD;  //pointer to the sensitive detector
+    // G4Box *fSolidRadiator;
+    G4LogicalVolume *fLogicAbsorber;            // pointer to the logical Absorber
+    G4VPhysicalVolume *fPhysicsAbsorber;        // pointer to the physical Absorber
+    JLeicDetectorMessenger *fDetectorMessenger; // pointer to the Messenger
+    JLeicCalorimeterSD *fCalorimeterSD;         // pointer to the sensitive detector
+    JLeicVertexSD *fVertexSD;                   // pointer to the sensitive detector
 
     g4e::Materials *fMat;
     g4e::InitializationContext *fInitContext;
@@ -419,39 +363,13 @@ inline void JLeicDetectorConstruction::SetWorldMaterial(G4String materialChoice)
     }
 }
 
-inline void JLeicDetectorConstruction::SetAbsorberThickness(G4double val)
-{
-    // change Absorber thickness and recompute the calorimeter parameters
-    fConfig.ci_TRD.fAbsorberThickness = val;
-}
-
-inline void JLeicDetectorConstruction::SetRadiatorThickness(G4double val)
-{
-    // change XTR radiator thickness and recompute the calorimeter parameters
-    fConfig.ci_TRD.fRadThickness = val;
-}
-
-inline void JLeicDetectorConstruction::SetGasGapThickness(G4double val)
-{
-    // change XTR gas gap thickness and recompute the calorimeter parameters
-    fConfig.ci_TRD.fGasGap = val;
-}
-
-inline void JLeicDetectorConstruction::SetAbsorberRadius(G4double val)
-{
-    // change the transverse size and recompute the calorimeter parameters
-    fConfig.ci_TRD.fAbsorberRadius = val;
-}
-
 inline void JLeicDetectorConstruction::SetWorldSizeZ(G4double val)
 {
-    fWorldChanged = true;
     fConfig.World.SizeZ = val;
 }
 
 inline void JLeicDetectorConstruction::SetWorldSizeR(G4double val)
 {
-    fWorldChanged = true;
     fConfig.World.SizeR = val;
 }
 

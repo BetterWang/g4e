@@ -252,23 +252,27 @@ void JLeicDetectorMessenger::SetNewValue(G4UIcommand *command, G4String newValue
 
     if (command == WorldMaterCmd) { JLeicDetector->SetWorldMaterial(newValue); }
 
-    if (command == AbsThickCmd) { JLeicDetector->SetAbsorberThickness(AbsThickCmd->GetNewDoubleValue(newValue)); }
+    if (command == AbsThickCmd) {
+        JLeicDetector->GetConfigRef().ci_TRD.fAbsorberThickness = G4UIcmdWithADoubleAndUnit::GetNewDoubleValue(newValue);
+    }
 
     if (command == RadiatorThickCmd) {
-        JLeicDetector->SetRadiatorThickness(RadiatorThickCmd->GetNewDoubleValue(newValue));
+        JLeicDetector->GetConfigRef().ci_TRD.fRadThickness =  G4UIcmdWithADoubleAndUnit::GetNewDoubleValue(newValue);
     }
 
     if (command == GasGapThickCmd) {
-        JLeicDetector->SetGasGapThickness(GasGapThickCmd->GetNewDoubleValue(newValue));
+        JLeicDetector->GetConfigRef().ci_TRD.fGasGap = G4UIcmdWithADoubleAndUnit::GetNewDoubleValue(newValue);
     }
 
-    if (command == AbsRadCmd) { JLeicDetector->SetAbsorberRadius(AbsRadCmd->GetNewDoubleValue(newValue)); }
+    if (command == AbsRadCmd) {
+        JLeicDetector->GetConfigRef().ci_TRD.fAbsorberRadius = G4UIcmdWithADoubleAndUnit::GetNewDoubleValue(newValue);
+    }
 
-    if (command == AbsZposCmd) { JLeicDetector->SetAbsorberZpos(AbsZposCmd->GetNewDoubleValue(newValue)); }
+    if (command == AbsZposCmd) { JLeicDetector->SetAbsorberZpos(G4UIcmdWithADoubleAndUnit::GetNewDoubleValue(newValue)); }
 
-    if (command == WorldZCmd) { JLeicDetector->SetWorldSizeZ(WorldZCmd->GetNewDoubleValue(newValue)); }
+    if (command == WorldZCmd) { JLeicDetector->SetWorldSizeZ(G4UIcmdWithADoubleAndUnit::GetNewDoubleValue(newValue)); }
 
-    if (command == WorldRCmd) { JLeicDetector->SetWorldSizeR(WorldRCmd->GetNewDoubleValue(newValue)); }
+    if (command == WorldRCmd) { JLeicDetector->SetWorldSizeR(G4UIcmdWithADoubleAndUnit::GetNewDoubleValue(newValue)); }
 
     if (command == UpdateCmd) { JLeicDetector->UpdateGeometry(); }
 

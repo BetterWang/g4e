@@ -647,13 +647,27 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     //===================================================================================
 
     if (USE_FFE_LUMI) {
-         fConfig.ffe_LUMI.PosX=+2*m;
+         fConfig.ffe_LUMI.PosX=+0.7*m;
          fConfig.ffe_LUMI.PosY=0;
-         fConfig.ffe_LUMI.PosZ=-30*m;
+         fConfig.ffe_LUMI.PosZ=-25*m;
 
          ffe_LUMI.Construct(fConfig.ffe_LUMI, World_Material, World_Phys);
         //ffe_LUMI.ConstructDetectors(fConfig.ffe_LUMI);
-    } // end ffe_CPOL
+    } // end ffe_LUMI
+
+   //===================================================================================
+    //==                        Low-Q2                                                  ==
+    //===================================================================================
+
+    if (USE_FFE_LOWQ2) {
+         fConfig.ffe_LOWQ2.PosX=+0.3*m;
+         fConfig.ffe_LOWQ2.PosY=0;
+   //just after dipole      fConfig.ffe_LOWQ2.PosZ=-18*m;
+      fConfig.ffe_LOWQ2.PosZ=-28*m;
+
+         ffe_LOWQ2.Construct(fConfig.ffe_LOWQ2, World_Material, World_Phys);
+          ffe_LOWQ2.ConstructDetectors();
+     } // end ffe_LOWQ2
 
 
 

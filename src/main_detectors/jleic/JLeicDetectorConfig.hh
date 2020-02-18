@@ -27,6 +27,7 @@
 
 #include "ffe_CPOL/ffe_CPOL.hh"
 #include "ffe_LUMI/ffe_LUMI.hh"
+#include "ffe_LOWQ2/ffe_LOWQ2.hh"
 
 //------ Forward Hadron -----
 #include "ci_GEM/ci_GEM.hh"
@@ -88,6 +89,7 @@ struct JLeicDetectorConfig {
     //------------Far-Forward-Electron-----
     ffe_CPOL_Config ffe_CPOL;
     ffe_LUMI_Config ffe_LUMI;
+    ffe_LOWQ2_Config ffe_LOWQ2;
 
     //------------H-ENDCAP-----
     ci_GEM_Config  ci_GEM;

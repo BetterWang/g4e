@@ -20,7 +20,8 @@ struct ffe_LUMI_Config
 // define here Global volume parameters
     double SizeX = 2. * m;
     double SizeY = 2. * m;
-    double SizeZ = 30 * m;
+  // old   double SizeZ = 30 * m;
+    double SizeZ = 10 * m;
     double PosX = 2 * m;
     double PosY = 2 * m;
     double PosZ = 2 * m;

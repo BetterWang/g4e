@@ -78,6 +78,7 @@
 //--------------FFe---------------
 #include "ffe_CPOL/ffe_CPOL.hh"         //  Far-forward  electron direction ePolarimeter
 #include "ffe_LUMI/ffe_LUMI.hh"         //  Far -forward  electron   LUMI
+#include "ffe_LOWQ2/ffe_LOWQ2.hh"         //  Far -forward  electron   LOW-Q2
 
 //--------------CI---------------
 #include "ci_GEM/ci_GEM.hh"             // Central Ion Endcap - TRD
@@ -156,7 +157,9 @@ public:
 
     // -------- polarimeter ------------
     bool USE_FFE_CPOL = false;
-    bool USE_FFE_LUMI =true;
+    bool USE_FFE_LUMI =false;
+    bool USE_FFE_LOWQ2 =true;
+
     //==============================================
     //--------H-encap------
     bool USE_CI_ENDCAP = true;
@@ -343,6 +346,8 @@ private:
     ffe_CPOL_Design ffe_CPOL;
        //----------------  LUMI volume --------------
     ffe_LUMI_Design ffe_LUMI;
+    //----------------  LOWQ2 volume --------------
+    ffe_LOWQ2_Design ffe_LOWQ2;
 
     //==============================================
     //----------------Ion-ENDCAP -----------------------

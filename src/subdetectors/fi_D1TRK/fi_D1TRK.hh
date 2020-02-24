@@ -22,7 +22,10 @@ struct fi_D1TRK_Config {
     double ROut;
     double SizeZ = 30 * cm;
     double Zpos;
+    //---------tracking
     int Nlayers =5;
+    double PhiStart;
+    double PhiTot;
 
 };
 
@@ -47,7 +50,7 @@ public:
         //  G4VisAttributes* vgemff= new G4VisAttributes(G4Color(0.8,0.4,0.3,0.8));
         G4VisAttributes *attr_fi_D1_GVol = new G4VisAttributes(G4Color(0.3, 0, 3., 0.1));
         attr_fi_D1_GVol->SetLineWidth(1);
-        attr_fi_D1_GVol->SetForceSolid(true);
+        attr_fi_D1_GVol->SetForceSolid(false);
         Logic->SetVisAttributes(attr_fi_D1_GVol);
 
 
@@ -63,15 +66,19 @@ public:
         // ---------------------------------------------------------------------------
         //                     D1 tracking  all
         // ---------------------------------------------------------------------------
-        fi_D1_lay_RIn = 5 * cm;
+        fi_D1_lay_RIn = 3.4 * cm;
         fi_D1_lay_ROut = cfg.ROut - 5 * cm;
         fi_D1_lay_SizeZ = 1 * cm;
 
         fi_D1_lay_Material = G4Material::GetMaterial("Ar10CO2");  //----   !!!!! ----
      //   fi_D1_lay_Material =G4Material::GetMaterial("G4_Galactic");
         f1_D1_lay_Solid = new G4Tubs("f1_D1_lay_Solid", fi_D1_lay_RIn, fi_D1_lay_ROut,
-                                      fi_D1_lay_SizeZ / 2., 170., 330 * deg);
-        f1_D1_Lay_Logic = new G4LogicalVolume(f1_D1_lay_Solid, fi_D1_lay_Material, "f1_D1_lay_Logic");
+                                      fi_D1_lay_SizeZ / 2., cfg.PhiStart, cfg.PhiTot);
+
+ // for JLEIC        f1_D1_lay_Solid = new G4Tubs("f1_D1_lay_Solid", fi_D1_lay_RIn, fi_D1_lay_ROut,
+ //                                    fi_D1_lay_SizeZ / 2., 170., 330 * deg);
+
+         f1_D1_Lay_Logic = new G4LogicalVolume(f1_D1_lay_Solid, fi_D1_lay_Material, "f1_D1_lay_Logic");
 
 
 

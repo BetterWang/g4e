@@ -65,6 +65,7 @@
 //--------------CB---------------
 #include "cb_Solenoid/cb_Solenoid.hh"   // Central Barrel - Solenoid
 #include "cb_VTX/cb_VTX.hh"             // Central Barrel - Vertex
+#include "cb_SiDISCS/cb_SiDISCS.hh"     // Central Barrel -Si Discs along the beamline
 #include "cb_CTD/cb_CTD.hh"             // Central Barrel - Tracker
 #include "cb_DIRC/cb_DIRC.hh"           // Central Barrel - DIRC
 #include "cb_EMCAL/cb_EMCAL.hh"         // Central Barrel - EMCAL
@@ -124,13 +125,15 @@ public:
     bool USE_BARREL = true;
     bool USE_BARREL_det = true;
 
+    bool USE_BEAMPIPE = true;
+
     //------- subdetector-volumes  barrel ----- 
 
     bool USE_CB_VTX = true;
     //bool  USE_VTX0 1   // for simple vtx geom
     bool USE_CB_VTX_LADDERS = true;
     bool USE_CB_VTX_ENDCAPS = false;  // for vxt endcaps ladders
-    //bool  USE_VTX_DISKS    // for vxt disks along beampipe
+    bool  USE_CB_SiDISCS  = true;  // for vxt discs along beampipe
     //bool USE_VTX_E 1   // for vxt endcaps 
 
 
@@ -143,9 +146,9 @@ public:
     bool USE_CB_DIRC = true;
     bool USE_CB_DIRC_bars = false;  // bars for DIRC
 
-    bool USE_CB_EMCAL = true ;
+    bool USE_CB_EMCAL = false ;
     bool USE_CB_HCAL = true;
-    bool USE_CB_HCAL_D = true; // hcal detector ( granularity)
+    bool USE_CB_HCAL_D = false; // hcal detector ( granularity)
 
      // ==============================================
     //--------E-encap------
@@ -177,8 +180,8 @@ public:
 
     bool USE_FFI_D2TRK = true;
     bool USE_FFI_ZDC = true;
-    bool USE_FFI_RPOT_D2 = false;
-    bool USE_FFI_RPOT_D3 = false;
+    bool USE_FFI_RPOT_D2 = true;
+    bool USE_FFI_RPOT_D3 = true;
     //bool USE_FARFORWARD_GEM
     //bool USE_FARFORWARD_VP
 
@@ -303,7 +306,6 @@ private:
 
     // Interaction region
    // ir_LatticeDesign ir_Lattice;
-    ir_Beampipe_Design ir_Beampipe;
      AcceleratorMagnets *ion_line_magnets;
 
 //-----------------Hadron ENDCAP volume--------------------
@@ -318,10 +320,13 @@ private:
     G4LogicalVolume *ce_ENDCAP_GVol_Logic;      // pointer to the logical ENDCAP-E  volume
     G4VPhysicalVolume *ce_ENDCAP_GVol_Phys;     // pointer to the physical ENDCAP-E  volume
     //==============================================
+    ir_Beampipe_Design ir_Beampipe;
     //----------------BARREL -----------------------
     cb_Solenoid_Design cb_Solenoid;
     //----------------VTX  volume ------------------
-    // cb_VTX_Design      cb_VTX;
+//    cb_VTX_Design      cb_VTX;
+    //----------------VTX  volume ------------------
+    cb_SiDISCS_Design      cb_SiDISCS;
     //----------------CTD  volume -------------------
     cb_CTD_Design cb_CTD;
     //----------------DIRC  volume -------------------

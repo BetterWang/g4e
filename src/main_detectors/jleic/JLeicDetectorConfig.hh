@@ -13,6 +13,7 @@
 #include "cb_Solenoid/cb_Solenoid.hh"
 
 #include "cb_VTX/cb_VTX.hh"
+#include "cb_SiDISCS/cb_SiDISCS.hh"     // Central Barrel -Si Discs along the beamline
 #include "cb_CTD/cb_CTD.hh"
 #include "cb_DIRC/cb_DIRC.hh"
 #include "cb_EMCAL/cb_EMCAL.hh"
@@ -50,6 +51,7 @@ struct JLeicDetectorConfig {
     std::string BeamlineName="erhic";
 
     struct World_Config {
+
         double ShiftVTX = 40. * cm;
         double SizeR = 300. * cm;
         double SizeZ = 50000. * cm;
@@ -75,7 +77,10 @@ struct JLeicDetectorConfig {
     //------------ BAREL-----
     cb_Solenoid_Config cb_Solenoid;
 
+
     cb_VTX_Config   cb_VTX;
+    cb_SiDISCS_Config   cb_SiDISCS;
+
     cb_CTD_Config   cb_CTD;
     cb_DIRC_Config  cb_DIRC;
     cb_EMCAL_Config cb_EMCAL;

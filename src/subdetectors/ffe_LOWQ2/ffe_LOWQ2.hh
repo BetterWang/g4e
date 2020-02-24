@@ -157,7 +157,7 @@ public:
         printf("Begin ffe_LOWQ2 detector volumes \n");
         auto cfg = ConstructionConfig;
         // construct here your detectors
-
+        static char abname[256];
         // ---------------------------------------------------------------------------
         //                     Low-Q2 tracking
         // ---------------------------------------------------------------------------
@@ -169,18 +169,20 @@ public:
         //ffe_LOWQ2_lay_Material =G4Material::GetMaterial("G4_Galactic");
         lay_Solid = new G4Tubs("ffe_LOWQ2_lay_Solid", cfg.lay_RIn, cfg.lay_ROut,
                                cfg.lay_SizeZ / 2., 0., 360 * deg);
-        lay_Logic = new G4LogicalVolume(lay_Solid, ffe_LOWQ2_lay_Material, "ffe_LOWQ2_lay_Logic");
+        sprintf(abname, "ffe_LOWQ2_lay_Logic");
+        lay_Logic = new G4LogicalVolume(lay_Solid, ffe_LOWQ2_lay_Material, abname);
 
 
 
         int ffsi_counter = 0;
-        for (int fflay = 0; fflay < cfg.Nlayers; fflay++) {
-            double Z = -cfg.SizeZ / 2 + (fflay + 1) * cfg.lay_SizeZ / 2 + (fflay + 1) * cfg.lay_Zshift * cm;
-            lay_Phys = new G4PVPlacement(0, G4ThreeVector(cfg.lay_Xshift, 0, Z),
-                                         "ffe_LOWQ2_lay_Phys", lay_Logic,
+        for (int lay = 0; lay < cfg.Nlayers; lay++) {
+            double Z = -cfg.SizeZ / 2 + (lay + 1) * cfg.lay_SizeZ / 2 + (lay + 1) * cfg.lay_Zshift * cm;
+            sprintf(abname, "ffe_LOWQ2_lay_Phys_%d", lay);
+            lay_Phys [lay]= new G4PVPlacement(0, G4ThreeVector(cfg.lay_Xshift, 0, Z),
+                                         abname, lay_Logic,
                                          Phys, false, ffsi_counter);
             ffsi_counter++;
-            G4VisAttributes *attr_lay = new G4VisAttributes(G4Color(0.8, 0.4 + 0.1 * fflay, 0.3, 1.));
+            G4VisAttributes *attr_lay = new G4VisAttributes(G4Color(0.8, 0.4 + 0.1 * lay, 0.3, 1.));
             attr_lay->SetLineWidth(1);
             attr_lay->SetForceSolid(true);
             lay_Logic->SetVisAttributes(attr_lay);
@@ -196,7 +198,7 @@ public:
     ffe_LOWQ2_Config  ConstructionConfig;
     G4Tubs *lay_Solid;    //pointer to the solid  FARFORWD
     G4LogicalVolume *lay_Logic;    //pointer to the logical FARFORWD
-    G4VPhysicalVolume *lay_Phys;    //pointer to the physical FARFORWD
+    G4VPhysicalVolume *lay_Phys[20];    //pointer to the physical FARFORWD
 
     G4Material *ffe_LOWQ2_lay_Material;
     //-------------------------------------------------

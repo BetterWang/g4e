@@ -89,7 +89,7 @@ void JLeicDetectorConstruction::Create_ci_Endcap(JLeicDetectorConfig::ci_Endcap_
     // Visual attributes
     ci_ENDCAP_GVol_VisAttr = new G4VisAttributes(G4Color(0.3, 0, 3., 0.1));
     ci_ENDCAP_GVol_VisAttr->SetLineWidth(1);
-    ci_ENDCAP_GVol_VisAttr->SetForceSolid(true);
+    ci_ENDCAP_GVol_VisAttr->SetForceSolid(false);
     ci_ENDCAP_GVol_Logic->SetVisAttributes(ci_ENDCAP_GVol_VisAttr);
   
 }
@@ -121,8 +121,12 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     //==                    create a world                                            ==
     //===================================================================================
 
-    // World_Material    = Air;
-    World_Material = fMat->GetMaterial("G4_Galactic");
+    //Different Shifts for 0 IP
+    if(fConfig.BeamlineName == "erhic") {fConfig.World.ShiftVTX=0.;} else { fConfig.World.ShiftVTX=40*cm;};
+
+
+   // World_Material    = Air;
+   World_Material = fMat->GetMaterial("G4_Galactic");
     World_Solid = new G4Box("World_Solid", fConfig.World.SizeR, fConfig.World.SizeR, fConfig.World.SizeZ / 2.);
     World_Logic = new G4LogicalVolume(World_Solid, World_Material, "World_Logic");
     World_Phys = new G4PVPlacement(nullptr, G4ThreeVector(), "World_Phys", World_Logic, nullptr, false, 0);
@@ -203,9 +207,16 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
       ion_line_magnets = new AcceleratorMagnets(fileName, World_Phys, World_Material, USE_LINE);
 
   }
+    //=========================================================================
+    //                    Beampipe
+    //=========================================================================
+   if(USE_BEAMPIPE ) {
 
+       fConfig.ir_Beampipe.Zpos = fConfig.World.ShiftVTX;
+       ir_Beampipe.ConstructCentral(fConfig.ir_Beampipe, World_Material, World_Phys);
+       ir_Beampipe.ConstructForwardCone(fConfig.ir_Beampipe, World_Material, World_Phys);
 
-
+   }
     //=========================================================================
     //                    Sensitive detectors
     //=========================================================================
@@ -327,6 +338,16 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
             }
 
         };    // end VTX detector
+        //===================================================================================
+        //==                          Silicone detector along the beamline                  ==
+        //===================================================================================
+
+        if (USE_CB_SiDISCS) {
+
+            fConfig.cb_SiDISCS.Zpos = 100.*cm;
+            cb_SiDISCS.Construct(fConfig.cb_SiDISCS, World_Material, cb_Solenoid.Phys);
+        }
+
 
         //===================================================================================
         //==                         CTD DETECTOR                                          ==
@@ -539,7 +560,13 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 
         for (size_t i = 0; i < ion_line_magnets->allmagnets.size(); i++) {
             if ((fConfig.BeamlineName == "jleic" && ion_line_magnets->allmagnets.at(i)->name == "iBDS1a") || (fConfig.BeamlineName == "erhic" && ion_line_magnets->allmagnets.at(i)->name == "iB0PF")) {
-
+                if(fConfig.BeamlineName == "erhic") {
+                    fConfig.fi_D1TRK.PhiStart=-130.* deg;
+                    fConfig.fi_D1TRK.PhiTot=275 * deg;
+                } else if (fConfig.BeamlineName=="jleic") {
+                    fConfig.fi_D1TRK.PhiStart=170.;
+                    fConfig.fi_D1TRK.PhiTot=330 * deg;
+                };
                 fConfig.fi_D1TRK.ROut = ion_line_magnets->allmagnets.at(i)->Rin2 * cm;
                 fConfig.fi_D1TRK.Zpos = (ion_line_magnets->allmagnets.at(i)->LengthZ / 2.) * cm - fConfig.fi_D1TRK.SizeZ / 2.;
                 fi_D1TRK.ConstructA(fConfig.fi_D1TRK, World_Material, ion_line_magnets->allmagnets.at(i)->fPhysics_BigDi_m);
@@ -592,14 +619,16 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     //------------------------------------------------
     if (USE_FFI_ZDC) {
         if (fConfig.BeamlineName == "jleic") {
+            fConfig.ffi_ZDC.Angle=-0.0265;
         fConfig.ffi_ZDC.rot_matx.rotateY(fConfig.ffi_ZDC.Angle * rad);
         fConfig.ffi_ZDC.Zpos = 4000 * cm;
         fConfig.ffi_ZDC.Xpos = -190 * cm;
         }
     if(fConfig.BeamlineName == "erhic") {
+          fConfig.ffi_ZDC.Angle=-0.0125;
           fConfig.ffi_ZDC.rot_matx.rotateY(-fConfig.ffi_ZDC.Angle * rad);
-          fConfig.ffi_ZDC.Zpos = 3500 * cm;
-          fConfig.ffi_ZDC.Xpos = 90 * cm;
+          fConfig.ffi_ZDC.Zpos = 3800 * cm;
+          fConfig.ffi_ZDC.Xpos = 98.5 * cm;
     }
 
         ffi_ZDC.Construct(fConfig.ffi_ZDC, World_Material, World_Phys);
@@ -609,27 +638,65 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     } // end ffi_ZDC
 
     //------------------------------------------------
-    if (USE_FFI_RPOT_D2 && fConfig.BeamlineName == "jleic") {
-        fConfig.ffi_RPOT_D2.rot_matx.rotateY(fConfig.ffi_RPOT_D2.Angle * rad);
-        fConfig.ffi_RPOT_D2.PosZ = 3100 * cm;
-        fConfig.ffi_RPOT_D2.PosX = -170 * cm;
-
-        ffi_RPOT_D2.Construct(fConfig.ffi_RPOT_D2, World_Material, World_Phys);
-        if (ffi_RPOT_D2.Logic) ffi_RPOT_D2.Logic->SetSensitiveDetector(fCalorimeterSD);
-
-    } // end ffi_RPOT_D2
     //------------------------------------------------
-    if (USE_FFI_RPOT_D3 && fConfig.BeamlineName == "jleic") {
-        fConfig.ffi_RPOT_D3.Angle = -0.053;
-        fConfig.ffi_RPOT_D3.rot_matx.rotateY(fConfig.ffi_RPOT_D3.Angle * rad);
-        fConfig.ffi_RPOT_D3.PosZ = 5000 * cm;
-        fConfig.ffi_RPOT_D3.PosX = -153 * cm;
+    //            Roman Pots for eRHIC
+    //------------------------------------------------
+  if (fConfig.BeamlineName == "erhic") {
 
-        ffi_RPOT_D3.Construct(fConfig.ffi_RPOT_D3, World_Material, World_Phys);
-        if (ffi_RPOT_D3.Logic) ffi_RPOT_D3.Logic->SetSensitiveDetector(fCalorimeterSD);
+          if (USE_FFI_RPOT_D2 ) {  //---- First Roman Pot
+               fConfig.ffi_RPOT_D2.Angle = 0.025;
+                fConfig.ffi_RPOT_D2.ROut = 25 * cm;
+              fConfig.ffi_RPOT_D2.rot_matx.rotateY(fConfig.ffi_RPOT_D2.Angle * rad);
+              fConfig.ffi_RPOT_D2.PosZ = 2620 * cm;
+              fConfig.ffi_RPOT_D2.PosX = 82 * cm;
 
-    } // end ffi_RPOT_D3
+              ffi_RPOT_D2.Construct(fConfig.ffi_RPOT_D2, World_Material, World_Phys);
+              if (ffi_RPOT_D2.Logic) ffi_RPOT_D2.Logic->SetSensitiveDetector(fCalorimeterSD);
 
+          }
+           //------------------------------------------------
+        if (USE_FFI_RPOT_D3 ) {
+          fConfig.ffi_RPOT_D3.Angle = 0.025;
+          fConfig.ffi_RPOT_D3.rot_matx.rotateY(fConfig.ffi_RPOT_D3.Angle * rad);
+          fConfig.ffi_RPOT_D3.PosZ = 2820 * cm;
+          fConfig.ffi_RPOT_D3.PosX = 91 * cm;
+
+          ffi_RPOT_D3.Construct(fConfig.ffi_RPOT_D3, World_Material, World_Phys);
+          if (ffi_RPOT_D3.Logic) ffi_RPOT_D3.Logic->SetSensitiveDetector(fCalorimeterSD);
+
+      } // end ffi_RPOT_D3
+
+
+  }
+      //------------------------------------------------
+    //            Roman Pots for JLEIC
+    //------------------------------------------------
+
+    //------------------------------------------------
+  if(fConfig.BeamlineName == "jleic") {
+      if (USE_FFI_RPOT_D2 ) {
+            fConfig.ffi_RPOT_D2.Angle=-0.05;
+             fConfig.ffi_RPOT_D2.ROut = 120 * cm;
+          fConfig.ffi_RPOT_D2.rot_matx.rotateY(fConfig.ffi_RPOT_D2.Angle * rad);
+          fConfig.ffi_RPOT_D2.PosZ = 3100 * cm;
+          fConfig.ffi_RPOT_D2.PosX = -170 * cm;
+
+          ffi_RPOT_D2.Construct(fConfig.ffi_RPOT_D2, World_Material, World_Phys);
+          if (ffi_RPOT_D2.Logic) ffi_RPOT_D2.Logic->SetSensitiveDetector(fCalorimeterSD);
+
+      }// end ffi_RPOT_D2
+      //------------------------------------------------
+      if (USE_FFI_RPOT_D3 ) {
+          fConfig.ffi_RPOT_D3.Angle = -0.053;
+          fConfig.ffi_RPOT_D3.rot_matx.rotateY(fConfig.ffi_RPOT_D3.Angle * rad);
+          fConfig.ffi_RPOT_D3.PosZ = 5000 * cm;
+          fConfig.ffi_RPOT_D3.PosX = -153 * cm;
+
+          ffi_RPOT_D3.Construct(fConfig.ffi_RPOT_D3, World_Material, World_Phys);
+          if (ffi_RPOT_D3.Logic) ffi_RPOT_D3.Logic->SetSensitiveDetector(fCalorimeterSD);
+
+      } // end ffi_RPOT_D3
+  }
     //************************************************************************************
     //==                         Rear  Detectors                                     ==
     //************************************************************************************
@@ -667,6 +734,10 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 
          ffe_LOWQ2.Construct(fConfig.ffe_LOWQ2, World_Material, World_Phys);
           ffe_LOWQ2.ConstructDetectors();
+          for (int lay = 0; lay < fConfig.ffe_LOWQ2.Nlayers; lay++) {
+             if (ffe_LOWQ2.lay_Logic) ffe_LOWQ2.Logic->SetSensitiveDetector(fCalorimeterSD);
+          }
+             if (ffe_LOWQ2.BPC_Logic) ffe_LOWQ2.BPC_Logic->SetSensitiveDetector(fCalorimeterSD);
      } // end ffe_LOWQ2
 
 

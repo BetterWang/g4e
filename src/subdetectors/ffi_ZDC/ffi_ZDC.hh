@@ -23,6 +23,7 @@ struct ffi_ZDC_Config {
   double Zpos;
   double Xpos;
   double Angle=-0.0265;
+  double EMCAL_Thickness=30*cm;
   G4RotationMatrix rot_matx;
 
 };
@@ -60,7 +61,7 @@ public:
           //-------------------------------------------------------------------
 
           ffi_ZDC_HCAL_Thickness = cfg.Thickness;
-          ffi_ZDC_HCAL_ROut = 70 * cm;
+          ffi_ZDC_HCAL_ROut = 60 * cm;
           ffi_ZDC_HCAL_Width = 5. * cm;
           ffi_ZDC_HCAL_Gap = 0.01 * mm;
 

@@ -651,8 +651,10 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
               fConfig.ffi_RPOT_D2.PosX = 82 * cm;
 
               ffi_RPOT_D2.Construct(fConfig.ffi_RPOT_D2, World_Material, World_Phys);
-              if (ffi_RPOT_D2.Logic) ffi_RPOT_D2.Logic->SetSensitiveDetector(fCalorimeterSD);
-
+              ffi_RPOT_D2.ConstructDetectors();
+              for (int lay = 0; lay < fConfig.ffi_RPOT_D2.Nlayers; lay++) {
+               if (ffi_RPOT_D2.lay_Logic[lay]) ffi_RPOT_D2.lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD);
+              }
           }
            //------------------------------------------------
         if (USE_FFI_RPOT_D3 ) {
@@ -662,7 +664,11 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
           fConfig.ffi_RPOT_D3.PosX = 91 * cm;
 
           ffi_RPOT_D3.Construct(fConfig.ffi_RPOT_D3, World_Material, World_Phys);
-          if (ffi_RPOT_D3.Logic) ffi_RPOT_D3.Logic->SetSensitiveDetector(fCalorimeterSD);
+           ffi_RPOT_D3.ConstructDetectors();
+            for (int lay = 0; lay < fConfig.ffi_RPOT_D3.Nlayers; lay++) {
+                if (ffi_RPOT_D3.lay_Logic[lay]) ffi_RPOT_D3.lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD);
+            }
+            //  if (ffi_RPOT_D3.Logic) ffi_RPOT_D3.Logic->SetSensitiveDetector(fCalorimeterSD);
 
       } // end ffi_RPOT_D3
 

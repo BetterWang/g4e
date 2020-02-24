@@ -572,7 +572,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
                 fi_D1TRK.ConstructA(fConfig.fi_D1TRK, World_Material, ion_line_magnets->allmagnets.at(i)->fPhysics_BigDi_m);
                 fi_D1TRK.ConstructDetectorsA();
                 for (int lay = 0; lay < fConfig.fi_D1TRK.Nlayers; lay++) {
-                  if (fi_D1TRK.f1_D1_Lay_Logic) fi_D1TRK.f1_D1_Lay_Logic->SetSensitiveDetector(fCalorimeterSD);
+                  if (fi_D1TRK.f1_D1_Lay_Logic[lay]) fi_D1TRK.f1_D1_Lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD);
                  }
             }
         }
@@ -653,7 +653,8 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
               ffi_RPOT_D2.Construct(fConfig.ffi_RPOT_D2, World_Material, World_Phys);
               ffi_RPOT_D2.ConstructDetectors();
               for (int lay = 0; lay < fConfig.ffi_RPOT_D2.Nlayers; lay++) {
-               if (ffi_RPOT_D2.lay_Logic[lay]) ffi_RPOT_D2.lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD);
+
+               if (ffi_RPOT_D2.lay_Logic[lay]) ffi_RPOT_D2.lay_Logic[lay]->SetSensitiveDetector(fVertexSD);
               }
           }
            //------------------------------------------------
@@ -666,7 +667,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
           ffi_RPOT_D3.Construct(fConfig.ffi_RPOT_D3, World_Material, World_Phys);
            ffi_RPOT_D3.ConstructDetectors();
             for (int lay = 0; lay < fConfig.ffi_RPOT_D3.Nlayers; lay++) {
-                if (ffi_RPOT_D3.lay_Logic[lay]) ffi_RPOT_D3.lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD);
+                if (ffi_RPOT_D3.lay_Logic[lay]) ffi_RPOT_D3.lay_Logic[lay]->SetSensitiveDetector(fVertexSD);
             }
             //  if (ffi_RPOT_D3.Logic) ffi_RPOT_D3.Logic->SetSensitiveDetector(fCalorimeterSD);
 

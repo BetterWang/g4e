@@ -72,27 +72,30 @@ public:
 
         fi_D1_lay_Material = G4Material::GetMaterial("Ar10CO2");  //----   !!!!! ----
      //   fi_D1_lay_Material =G4Material::GetMaterial("G4_Galactic");
-        f1_D1_lay_Solid = new G4Tubs("f1_D1_lay_Solid", fi_D1_lay_RIn, fi_D1_lay_ROut,
+         int ffsi_counter = 0;
+        for (int lay = 0; lay < cfg.Nlayers; lay++) {
+            sprintf(abname, "fi_D1_TRK_lay_Solid_%d", lay);
+        f1_D1_lay_Solid[lay] = new G4Tubs(abname, fi_D1_lay_RIn, fi_D1_lay_ROut,
                                       fi_D1_lay_SizeZ / 2., cfg.PhiStart, cfg.PhiTot);
 
  // for JLEIC        f1_D1_lay_Solid = new G4Tubs("f1_D1_lay_Solid", fi_D1_lay_RIn, fi_D1_lay_ROut,
  //                                    fi_D1_lay_SizeZ / 2., 170., 330 * deg);
+          sprintf(abname, "fi_D1_TRK_lay_Logic_%d", lay);
 
-         f1_D1_Lay_Logic = new G4LogicalVolume(f1_D1_lay_Solid, fi_D1_lay_Material, "f1_D1_lay_Logic");
+         f1_D1_Lay_Logic[lay] = new G4LogicalVolume(f1_D1_lay_Solid[lay], fi_D1_lay_Material, abname);
 
 
 
-        int ffsi_counter = 0;
-        for (int fflay = 0; fflay < cfg.Nlayers; fflay++) {
-            double Z = -cfg.SizeZ / 2 + (fflay + 1) * fi_D1_lay_SizeZ / 2 + (fflay + 1) * 5 * cm;
-            f1_D1_lay_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, Z),
-                                                "f1_D1_lay_Phys", f1_D1_Lay_Logic,
+           double Z = -cfg.SizeZ / 2 + (lay + 1) * fi_D1_lay_SizeZ / 2 + (lay + 1) * 5 * cm;
+           sprintf(abname, "fi_D1_TRK_lay_Phys_%d", lay);
+        f1_D1_lay_Phys[lay] = new G4PVPlacement(0, G4ThreeVector(0, 0, Z),
+                                                abname, f1_D1_Lay_Logic[lay],
                                                 Phys, false, ffsi_counter);
             ffsi_counter++;
-            attr_fi_D1_lay = new G4VisAttributes(G4Color(0.8, 0.4 + 0.1 * fflay, 0.3, 1.));
+            attr_fi_D1_lay = new G4VisAttributes(G4Color(0.8, 0.4 + 0.1 * lay, 0.3, 1.));
             attr_fi_D1_lay->SetLineWidth(1);
             attr_fi_D1_lay->SetForceSolid(true);
-            f1_D1_Lay_Logic->SetVisAttributes(attr_fi_D1_lay);
+            f1_D1_Lay_Logic[lay]->SetVisAttributes(attr_fi_D1_lay);
         }
 
     };
@@ -100,9 +103,9 @@ public:
     G4Tubs *Solid;      //pointer to the solid
     G4LogicalVolume *Logic;    //pointer to the logical
     G4VPhysicalVolume *Phys;  //pointer to the physical
-    G4Tubs *f1_D1_lay_Solid;    //pointer to the solid  FARFORWD
-    G4LogicalVolume *f1_D1_Lay_Logic;    //pointer to the logical FARFORWD
-    G4VPhysicalVolume *f1_D1_lay_Phys;    //pointer to the physical FARFORWD
+    G4Tubs *f1_D1_lay_Solid[20];    //pointer to the solid  FARFORWD
+    G4LogicalVolume *f1_D1_Lay_Logic[20];    //pointer to the logical FARFORWD
+    G4VPhysicalVolume *f1_D1_lay_Phys[20];    //pointer to the physical FARFORWD
 
     /// Parameters that was used in the moment of construction
     fi_D1TRK_Config  ConstructionConfig;

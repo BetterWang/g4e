@@ -121,7 +121,7 @@
 /vis/viewer/clearCutawayPlanes
 
 ##/vis/viewer/addCutawayPlane 0  30  0  cm  0. -100 0
-/vis/viewer/addCutawayPlane 0  1  0  cm  0. -0.1 0
+#/vis/viewer/addCutawayPlane 0  1  0  cm  0. -0.1 0
 #/vis/viewer/addCutawayPlane 0  1  0  cm  0. -500. 1.
 #/vis/viewer/addCutawayPlane 0  1  0  cm  0. 100. 1.
 # XY 
@@ -136,10 +136,10 @@
 #/vis/viewer/zoomTo 25
 
 #========= CMS view =========================
-#/vis/viewer/addCutawayPlane 0 0 5 m 0 0 1
-#/vis/viewer/addCutawayPlane 0 0 5 m 1 0 0
-#/vis/viewer/addCutawayPlane 0 0 5 m 0 -1 0
-#/vis/viewer/set/style surface
-#/vis/viewer/colourByDensity 1 g/cm3 .5 3 10
+/vis/viewer/addCutawayPlane 0 0 7 m 0 0 1
+/vis/viewer/addCutawayPlane 0 0 7 m 1 0 0
+/vis/viewer/addCutawayPlane 0 0 7 m 0 -1 0
+/vis/viewer/set/style surface
+/vis/viewer/colourByDensity 1 g/cm3 .5 3 10
 #---------------------------------------------------
 exit

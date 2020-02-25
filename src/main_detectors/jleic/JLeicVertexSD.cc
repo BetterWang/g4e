@@ -230,12 +230,14 @@ G4bool JLeicVertexSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
 
     trace("--> JLeicVertexSD::ProcessHits() Vol: 0={} \n", theTouchable->GetVolume()->GetName());
 
+  /*  Need to check how many volumes... otherwise crashes...
     trace("--> JLeicVertexSD::ProcessHits() Vol: 0={} 1={}  2={} 3={} \n",
             theTouchable->GetVolume()->GetName(),
             theTouchable->GetVolume(1)->GetName(),
             theTouchable->GetVolume(2)->GetName(),
-            theTouchable->GetVolume(3)->GetName());
-
+            theTouchable->GetVolume(3)->GetName()
+            );
+*/
     if (use_depfet > 0) {
         G4String VTXmod = theTouchable->GetVolume()->GetName();
         trace("VTX_ladder={} \n", VTXmod.c_str());

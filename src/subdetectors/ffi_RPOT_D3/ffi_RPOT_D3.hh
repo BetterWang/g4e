@@ -19,14 +19,14 @@ struct ffi_RPOT_D3_Config {
 // define here Global volume parameters
     double RIn = 0 * cm;
     double ROut = 30 * cm;
-    double SizeZ = 300 * cm;
+    double SizeZ = 30 * cm;
     double ShiftZ = 0 * cm;
     double PosZ = 0 * cm;
     double PosX=0*cm;
     double Angle=0.0;
     G4RotationMatrix rot_matx;
 
-    int Nlayers=1;
+    int Nlayers=4;
 };
 
 
@@ -72,12 +72,12 @@ public:
 
         for (int lay = 0; lay < cfg.Nlayers; lay++) {
 
-            ffi_RPOT_D3_lay_RIn[lay] = cfg.RIn ;
-            ffi_RPOT_D3_lay_ROut[lay] = cfg.ROut - 5. * cm;;
+            ffi_RPOT_D3_lay_RIn[lay] = cfg.RIn +0.5*cm ;
+            ffi_RPOT_D3_lay_ROut[lay] = cfg.ROut - 0.5 * cm;;
 
             //      ffi_RPOT_D3_lay_PosZ[lay]=-ffi_RPOT_D3_GVol_PosZ/2+(double(lay)*5.)*cm;
             ffi_RPOT_D3_lay_PosZ[lay] = -cfg.SizeZ / 2 + 5 * cm + (double(lay) * 3.) * cm;
-            ffi_RPOT_D3_lay_SizeZ[lay] = 0.50 * mm;
+            ffi_RPOT_D3_lay_SizeZ[lay] = 0.10 * mm;
 
             sprintf(abname, "ffi_RPOT_D3_lay_Solid_%d", lay);
             lay_Solid[lay] = new G4Tubs(abname, ffi_RPOT_D3_lay_RIn[lay], ffi_RPOT_D3_lay_ROut[lay],

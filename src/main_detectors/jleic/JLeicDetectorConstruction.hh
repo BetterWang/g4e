@@ -34,6 +34,7 @@
 //--------------CB---------------
 #include "cb_Solenoid/cb_Solenoid.hh"   // Central Barrel - Solenoid
 #include "cb_VTX/cb_VTX.hh"             // Central Barrel - Vertex
+#include "cb_SiDISCS/cb_SiDISCS.hh"     // Central Barrel -Si Discs along the beamline
 #include "cb_CTD/cb_CTD.hh"             // Central Barrel - Tracker
 #include "cb_DIRC/cb_DIRC.hh"           // Central Barrel - DIRC
 #include "cb_EMCAL/cb_EMCAL.hh"         // Central Barrel - EMCAL
@@ -46,6 +47,8 @@
 
 //--------------FFe---------------
 #include "ffe_CPOL/ffe_CPOL.hh"         //  Far-forward  electron direction ePolarimeter
+#include "ffe_LUMI/ffe_LUMI.hh"         //  Far -forward  electron   LUMI
+#include "ffe_LOWQ2/ffe_LOWQ2.hh"         //  Far -forward  electron   LOW-Q2
 
 
 //--------------CI---------------
@@ -88,10 +91,15 @@ public:
     bool USE_BARREL = true;
     bool USE_BARREL_det = true;
 
-    // Central barrel vertex
+    bool USE_BEAMPIPE = true;
+
+    //------- subdetector-volumes  barrel ----- 
+
     bool USE_CB_VTX = true;
     bool USE_CB_VTX_LADDERS = true;
     bool USE_CB_VTX_ENDCAPS = false;  // for vxt endcaps ladders
+    bool  USE_CB_SiDISCS  = true;  // for vxt discs along beampipe
+    //bool USE_VTX_E 1   // for vxt endcaps 
 
     bool USE_CB_CTD = true;
     // use one of the following options for CTD:
@@ -101,9 +109,9 @@ public:
     bool USE_CB_DIRC = true;
     bool USE_CB_DIRC_bars = false;   // bars for DIRC
 
-    bool USE_CB_EMCAL = true;
+    bool USE_CB_EMCAL = false ;
     bool USE_CB_HCAL = true;
-    bool USE_CB_HCAL_D = true;       // hcal detector ( granularity)
+    bool USE_CB_HCAL_D = false; // hcal detector ( granularity)
 
     // Electron endcap
     // ==============================================
@@ -116,8 +124,10 @@ public:
 
     // -------- polarimeter ------------
     bool USE_FFE_CPOL = false;
-    bool USE_FFE_LUMI = true;
+    bool USE_FFE_LUMI =false;
+    bool USE_FFE_LOWQ2 =true;
 
+    //==============================================
     //--------H-encap------
     //==============================================
     bool USE_CI_ENDCAP = true;
@@ -137,8 +147,10 @@ public:
 
     bool USE_FFI_D2TRK = true;
     bool USE_FFI_ZDC = true;
-    bool USE_FFI_RPOT_D2 = false;
-    bool USE_FFI_RPOT_D3 = false;
+    bool USE_FFI_RPOT_D2 = true;
+    bool USE_FFI_RPOT_D3 = true;
+    //bool USE_FARFORWARD_GEM
+    //bool USE_FARFORWARD_VP
 
 
     explicit JLeicDetectorConstruction(g4e::InitializationContext *);
@@ -273,9 +285,8 @@ private:
     G4Material *World_Material;
 
     // Interaction region
-    ir_Beampipe_Design ir_Beampipe;
-    AcceleratorMagnets *fIonLineMagnets;
-    AcceleratorMagnets *fElectronLineMagnets;
+   // ir_LatticeDesign ir_Lattice;
+     AcceleratorMagnets *ion_line_magnets;
 
     // Hadron ENDCAP volume
     G4VisAttributes *ci_ENDCAP_GVol_VisAttr;
@@ -288,14 +299,38 @@ private:
     G4Tubs *ce_ENDCAP_GVol_Solid;               // pointer to the solid  ENDCAP-E volume
     G4LogicalVolume *ce_ENDCAP_GVol_Logic;      // pointer to the logical ENDCAP-E  volume
     G4VPhysicalVolume *ce_ENDCAP_GVol_Phys;     // pointer to the physical ENDCAP-E  volume
+    //==============================================
+    ir_Beampipe_Design ir_Beampipe;
+    //----------------BARREL -----------------------
+    cb_Solenoid_Design cb_Solenoid;
+    //----------------VTX  volume ------------------
+//    cb_VTX_Design      cb_VTX;
+    //----------------VTX  volume ------------------
+    cb_SiDISCS_Design      cb_SiDISCS;
+    //----------------CTD  volume -------------------
+    cb_CTD_Design cb_CTD;
+    //----------------DIRC  volume -------------------
+    cb_DIRC_Design cb_DIRC;
+    //----------------EMCAL  volume -------------------
+    cb_EMCAL_Design cb_EMCAL;
+    //----------------HCAL  volume -------------------
+    cb_HCAL_Design cb_HCAL;
+    //==============================================
+    //----------------E-ENDCAP -----------------------
+    //----------------GEM volume ---------------------
+    ce_GEM_Design ce_GEM;
+    //----------------MRICH volume -----------------------
+    ce_MRICH_Design ce_MRICH;
+    //----------------EMCAL volume -----------------------
+    ce_EMCAL_Design ce_EMCAL;
 
 
-    // G4Box *fSolidRadiator;
-    G4LogicalVolume *fLogicAbsorber;            // pointer to the logical Absorber
-    G4VPhysicalVolume *fPhysicsAbsorber;        // pointer to the physical Absorber
-    JLeicDetectorMessenger *fDetectorMessenger; // pointer to the Messenger
-    JLeicCalorimeterSD *fCalorimeterSD;         // pointer to the sensitive detector
-    JLeicVertexSD *fVertexSD;                   // pointer to the sensitive detector
+    //---------------- CPOL volume --------------
+    ffe_CPOL_Design ffe_CPOL;
+       //----------------  LUMI volume --------------
+    ffe_LUMI_Design ffe_LUMI;
+    //----------------  LOWQ2 volume --------------
+    ffe_LOWQ2_Design ffe_LOWQ2;
 
     g4e::Materials *fMat;
     g4e::InitializationContext *fInitContext;

@@ -1,0 +1,23 @@
+#------------------------------------------------------------------------
+# Example macro. Process one of
+#------------------------------------------------------------------------
+
+# Include default setup
+# Use jleic.mac for headless mode or jleicvis.mac for GUI visualization
+#/control/execute jleicvis.mac
+/control/execute jleicvis.mac
+
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+#^^^^^        HepMc v2.x ascii files
+#^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+/generator/select hepmcAscii
+/generator/hepmcAscii/verbose 1
+
+#---- Herwig Charm------
+#/generator/hepmcAscii/open  /data/yulia/Herwig6/herwig6_P19104_Q10_N5e+06_e-p_5x100.hepmc
+#/generator/hepmcAscii/open  /data/yulia/Herwig6/herwig6_P19000_Q0_N1e+05_e-p_18x275.hepmc
+/generator/hepmcAscii/open  /data/yulia/Herwig6/herwig6_P19000_Q0_N1e+06_e-p_10x275.hepmc
+/run/initialize
+/run/beamOn 1
+
+exit

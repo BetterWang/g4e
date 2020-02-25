@@ -256,6 +256,7 @@ G4bool JLeicVertexSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
     }
     //-------------------------------------------------------------------------------------
     if (char_sh > 0) {
+        // TODO wtheck is that?
         int iz = (225 - zloc / um) / 10;
         if (iz > N_bin) iz = N_bin;
         if (iz < 0) iz = 0;

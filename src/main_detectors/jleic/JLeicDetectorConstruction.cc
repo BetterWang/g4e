@@ -52,7 +52,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::Construct()
 void JLeicDetectorConstruction::Create_ci_Endcap(JLeicDetectorConfig::ci_Endcap_Config cfg)
 {
     /// This function creates ION-ENDCAP (but doesn't fill its contents)
-  
+
     // Make endcup radius the same as Barrel Hadron Calorimeter
     ci_ENDCAP_GVol_Solid = new G4Tubs("ci_ENDCAP_GVol_Solid", cfg.RIn, cfg.ROut, cfg.SizeZ / 2., 0., 360 * deg);
     ci_ENDCAP_GVol_Logic = new G4LogicalVolume(ci_ENDCAP_GVol_Solid, World_Material, "ci_ENDCAP_GVol_Logic");
@@ -93,12 +93,8 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     //==                    create a world                                            ==
     //===================================================================================
 
-    //Different Shifts for 0 IP
-    if(fConfig.BeamlineName == "erhic") {fConfig.World.ShiftVTX=0.;} else { fConfig.World.ShiftVTX=40*cm;};
-
-
-   // World_Material    = Air;
-   World_Material = fMat->GetMaterial("G4_Galactic");
+    // World_Material    = Air;
+    World_Material = fMat->GetMaterial("G4_Galactic");
     World_Solid = new G4Box("World_Solid", fConfig.World.SizeR, fConfig.World.SizeR, fConfig.World.SizeZ / 2.);
     World_Logic = new G4LogicalVolume(World_Solid, World_Material, "World_Logic");
     World_Phys = new G4PVPlacement(nullptr, G4ThreeVector(), "World_Phys", World_Logic, nullptr, false, 0);
@@ -113,85 +109,56 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 
     // Checking the beamline
     if(fConfig.BeamlineName != "erhic" && fConfig.BeamlineName != "jleic") {
-        G4Exception("JLeicDetectorConstruction::Construct", "InvalidSetup", FatalException, "/detsetup/beamlineName should be 'erhic' or 'jleic'");
+        G4Exception("JLeicDetectorConstruction::Construct",
+                    "InvalidSetup", FatalException,
+                    "/detsetup/beamlineName should be 'erhic' or 'jleic'");
     }
 
+    // beam line flag, that is going to be used in future
+    auto beamLine = fConfig.BeamlineName == "erhic" ? BeamLines::ERHIC : BeamLines::JLEIC;
+
+    //Different Shifts for 0 IP
+    if(BeamLines::ERHIC == beamLine) {
+        fConfig.World.ShiftVTX=0.;
+    } else {
+        fConfig.World.ShiftVTX=40*cm;
+    }
+
+    // Load beam lines
     if(USE_FFQs )
     {
-        int USE_LINE = 1;
-        std::string fileName;
-        fmt::print("Init AcceleratorMagnets... I\n");
-        fmt::print(" |- Ion energy      {}\n", fConfig.IonBeamEnergy);
-        fmt::print(" |- Electron energy {}\n", fConfig.ElectronBeamEnergy);
-
-        const char *g4eHomeCStr = std::getenv("G4E_HOME");
-
-        if(!g4eHomeCStr) {
+        if(!fInitContext->Arguments->IsSetHomePath) {
             G4Exception("JLeicDetectorConstruction::Construct",
                         "InvalidSetup", FatalException,
-                        "AcceleratorMagnets  file opening err :: please setup env. G4E_HOME");
+                        "AcceleratorMagnets file opening err :: please setup env. G4E_HOME");
             return;
         }
-        //---------------- Electron  line -----------------------------------
-        if (fConfig.BeamlineName == "erhic") {
-            USE_LINE =1;
-            fileName = fmt::format("{}/resources/erhic/mdi/e_ir_{}.txt", g4eHomeCStr, fConfig.ElectronBeamEnergy);
-        } else {
-            USE_LINE = 0;
-            fileName = fmt::format("{}/resources/jleic/mdi/e_ir_{}.txt", g4eHomeCStr, fConfig.ElectronBeamEnergy);
-        }
-        fElectronLineMagnets = new AcceleratorMagnets(fileName, World_Phys, World_Material, USE_LINE);
 
+        auto eFileName = fmt::format("{}/resources/{}/mdi/e_ir_{}.txt", fInitContext->Arguments->HomePath, fConfig.BeamlineName, fConfig.ElectronBeamEnergy);
+        auto ionFileName = fmt::format("{}/resources/{}/mdi/ion_ir_{}.txt", fInitContext->Arguments->HomePath, fConfig.BeamlineName, fConfig.ElectronBeamEnergy);
 
-        //-----------------Ion line -----------------------------------
-        if (fConfig.BeamlineName == "erhic") {
-            USE_LINE=1;
-            fileName = fmt::format("{}/resources/erhic/mdi/ion_ir_{}.txt", g4eHomeCStr, fConfig.IonBeamEnergy);
-        } else {
-            USE_LINE = 0;
-            fileName = fmt::format("{}/resources/jleic/mdi/ion_ir_{}.txt", g4eHomeCStr, fConfig.IonBeamEnergy);
-        }
-        fIonLineMagnets = new AcceleratorMagnets(fileName, World_Phys, World_Material, USE_LINE);
+        fmt::print("Init AcceleratorMagnets... I\n");
+        fmt::print(" |- Ion E      {}\n", fConfig.IonBeamEnergy);
+        fmt::print(" |- Electron E {}\n", fConfig.ElectronBeamEnergy);
+        fmt::print(" |- File names:\n");
+        fmt::print("    |- Electron {}\n", eFileName);
+        fmt::print("    |- Ion      {}\n", ionFileName);
+
+        // Create electron and ion beam lines
+        fElectronLineMagnets = new AcceleratorMagnets(eFileName, World_Phys, World_Material, beamLine);
+        fIonLineMagnets = new AcceleratorMagnets(ionFileName, World_Phys, World_Material, beamLine);
     }
 
-
-
-      //-----------------Ion line -----------------------------------
-      printf("========================================\n");
-      if (g4eHomeCStr) {
-          if (fConfig.BeamlineName == "erhic") {
-              USE_LINE=1;
-              fileName = fmt::format("{}/resources/erhic/mdi/ion_ir_{}.txt", g4eHomeCStr, fConfig.IonBeamEnergy);
-          } else if (fConfig.BeamlineName == "jleic") {
-              USE_LINE=0;
-              fileName = fmt::format("{}/resources/jleic/mdi/ion_ir_{}.txt", g4eHomeCStr, fConfig.IonBeamEnergy);
-          } else {
-              G4Exception("JLeicDetectorConstruction::Construct",
-                          "InvalidSetup", FatalException,
-                          "BeamlineName should be 'erhic' or 'jleic'");
-          }
-      } else {
-          G4Exception("JLeicDetectorConstruction::Construct",
-                      "InvalidSetup", FatalException,
-                      "AcceleratorMagnets  file opening err :: please setup env. G4E_HOME");
-      }
-
-      printf("AcceleratorMagnets:: try to open file %s \n", fileName.c_str());
-
-
-      ion_line_magnets = new AcceleratorMagnets(fileName, World_Phys, World_Material, USE_LINE);
-
-  }
     //=========================================================================
     //                    Beampipe
     //=========================================================================
-   if(USE_BEAMPIPE ) {
+    if(USE_BEAMPIPE ) {
 
        fConfig.ir_Beampipe.Zpos = fConfig.World.ShiftVTX;
        ir_Beampipe.ConstructCentral(fConfig.ir_Beampipe, World_Material, World_Phys);
        ir_Beampipe.ConstructForwardCone(fConfig.ir_Beampipe, World_Material, World_Phys);
 
-   }
+    }
     //=========================================================================
     //                    Sensitive detectors
     //=========================================================================
@@ -310,7 +277,6 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
             }
         }     // end VTX detector
 
-        };    // end VTX detector
         //===================================================================================
         //==                          Silicone detector along the beamline                  ==
         //===================================================================================
@@ -520,12 +486,8 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     //                      Place Si_disks inside D1a ir B0
     //-------------------------------------------------------------------------------
     if (USE_FI_D1TRK) {
-        for (size_t i = 0; i < fIonLineMagnets->allmagnets.size(); i++) {
-            if ((fConfig.BeamlineName == "jleic" && fIonLineMagnets->allmagnets.at(i)->name == "iBDS1a")
-             || (fConfig.BeamlineName == "erhic" && fIonLineMagnets->allmagnets.at(i)->name == "iB0PF")) {
-
-        for (size_t i = 0; i < ion_line_magnets->allmagnets.size(); i++) {
-            if ((fConfig.BeamlineName == "jleic" && ion_line_magnets->allmagnets.at(i)->name == "iBDS1a") || (fConfig.BeamlineName == "erhic" && ion_line_magnets->allmagnets.at(i)->name == "iB0PF")) {
+        for (auto magnet: fIonLineMagnets->fMagnets) {
+            if ((BeamLines::JLEIC == beamLine && magnet->name == "iBDS1a") || (BeamLines::ERHIC == beamLine && magnet->name == "iB0PF")) {
                 if(fConfig.BeamlineName == "erhic") {
                     fConfig.fi_D1TRK.PhiStart=-130.* deg;
                     fConfig.fi_D1TRK.PhiTot=275 * deg;
@@ -533,13 +495,14 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
                     fConfig.fi_D1TRK.PhiStart=170.;
                     fConfig.fi_D1TRK.PhiTot=330 * deg;
                 };
-                fConfig.fi_D1TRK.ROut = ion_line_magnets->allmagnets.at(i)->Rin2 * cm;
-                fConfig.fi_D1TRK.Zpos = (ion_line_magnets->allmagnets.at(i)->LengthZ / 2.) * cm - fConfig.fi_D1TRK.SizeZ / 2.;
-                fi_D1TRK.ConstructA(fConfig.fi_D1TRK, World_Material, ion_line_magnets->allmagnets.at(i)->fPhysics_BigDi_m);
+
+                fConfig.fi_D1TRK.ROut = magnet->Rin2 * cm;
+                fConfig.fi_D1TRK.Zpos = (magnet->LengthZ / 2.) * cm - fConfig.fi_D1TRK.SizeZ / 2.;
+                fi_D1TRK.ConstructA(fConfig.fi_D1TRK, World_Material, magnet->fPhysics_BigDi_m);
                 fi_D1TRK.ConstructDetectorsA();
                 for (int lay = 0; lay < fConfig.fi_D1TRK.Nlayers; lay++) {
-                  if (fi_D1TRK.f1_D1_Lay_Logic[lay]) fi_D1TRK.f1_D1_Lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD);
-                 }
+                    if (fi_D1TRK.f1_D1_Lay_Logic[lay]) fi_D1TRK.f1_D1_Lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD);
+                }
             }
         }
      }
@@ -564,14 +527,14 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 //====================================================================================
     if (USE_FFI_D2TRK) {
 
-        for (int i = 0; i < fIonLineMagnets->allmagnets.size(); i++) {
-            if ((fConfig.BeamlineName == "jleic" && fIonLineMagnets->allmagnets.at(i)->name == "iBDS2")) {
+        for (int i = 0; i < fIonLineMagnets->fMagnets.size(); i++) {
+            if ((fConfig.BeamlineName == "jleic" && fIonLineMagnets->fMagnets.at(i)->name == "iBDS2")) {
 
                 fConfig.ffi_D2TRK.RIn = 0 * cm;
-                fConfig.ffi_D2TRK.ROut = fIonLineMagnets->allmagnets.at(i)->Rin2 * cm - 0.1 * cm;
-                fConfig.ffi_D2TRK.SizeZ = fIonLineMagnets->allmagnets.at(i)->LengthZ * m - 2. * cm;
+                fConfig.ffi_D2TRK.ROut = fIonLineMagnets->fMagnets.at(i)->Rin2 * cm - 0.1 * cm;
+                fConfig.ffi_D2TRK.SizeZ = fIonLineMagnets->fMagnets.at(i)->LengthZ * m - 2. * cm;
 
-                ffi_D2TRK.Construct(fConfig.ffi_D2TRK, World_Material, fIonLineMagnets->allmagnets.at(i)->fPhysics_BigDi_m);
+                ffi_D2TRK.Construct(fConfig.ffi_D2TRK, World_Material, fIonLineMagnets->fMagnets.at(i)->fPhysics_BigDi_m);
                 ffi_D2TRK.ConstructDetectors();
                 for (int lay = 0; lay < fConfig.ffi_D2TRK.Nlayers; lay++) {
                   if (ffi_D2TRK.lay_Logic) ffi_D2TRK.lay_Logic->SetSensitiveDetector(fCalorimeterSD);

@@ -1,12 +1,14 @@
-#ifndef G4E_IR_LATTICE_HH
-#define G4E_IR_LATTICE_HH
+#ifndef G4E_IR_QMagnet_HH
+#define G4E_IR_QMagnet_HH
 
 #include <sstream>
 #include <string>
 #include <G4Material.hh>
 #include <G4FieldManager.hh>
 
-class QMag
+#include "BeamLines.hh"
+
+class QuadrupoleMagnet
 {
 
 public:
@@ -15,7 +17,7 @@ public:
     double LengthZ, Rin, Rin2, Rout, DipoleFieldBx, DipoleFieldBy, QuadrupolFieldQnorm, QuadrupolFieldQskew;
     double SextupoleField, SolenoidField, Xcenter, Ycenter, Zcenter, MagTheta, MagPhi;
     G4RotationMatrix mybrm;
-    int USE_LINE;
+    BeamLines beamLine;
     //---------------- BEAM DIPOLES -------------------------------------------
     G4Tubs *fSolid_BigDi_v, *fSolid_BigDi_ir, *fSolid_BigDi_m;
     //  G4Box *fSolid_BigDi_v[100],*fSolid_BigDi_ir[100],*fSolid_BigDi_m[100];
@@ -23,12 +25,12 @@ public:
     G4PVPlacement *fPhysics_BigDi_v, *fPhysics_BigDi_ir, *fPhysics_BigDi_m;
     G4FieldManager *fieldMgr_BigDi;
 
-    QMag(std::string _name, std::string _type, double _LengthZ, double _Rin, double _Rin2, double _Rout, double _DipoleFieldBx, double _DipoleFieldBy, double _QuadrupolFieldQnorm,
-         double _QuadrupolFieldQskew, double _SextupoleField, double _SolenoidField, double _Xcenter, double _Ycenter, double _Zcenter, double _MagTheta, double _MagPhi,
-         G4VPhysicalVolume *fMotherPhysVolume, int _USE_LINE)
+    QuadrupoleMagnet(std::string _name, std::string _type, double _LengthZ, double _Rin, double _Rin2, double _Rout, double _DipoleFieldBx, double _DipoleFieldBy, double _QuadrupolFieldQnorm,
+                     double _QuadrupolFieldQskew, double _SextupoleField, double _SolenoidField, double _Xcenter, double _Ycenter, double _Zcenter, double _MagTheta, double _MagPhi,
+                     G4VPhysicalVolume *fMotherPhysVolume, BeamLines _beamLine)
     {
         using namespace spdlog;
-        USE_LINE = _USE_LINE;
+        beamLine = _beamLine;
 
         Rin = _Rin;
         Rin2 = _Rin2;
@@ -57,10 +59,9 @@ public:
             debug("QMag:: found  {} name={} ", type.c_str(), name.c_str());
             CreateDipole(fMotherPhysVolume);
         }
-
     }
 
-    ~QMag()
+    ~QuadrupoleMagnet()
     {
         //-- delete all new obj
     }
@@ -288,95 +289,6 @@ public:
 
 
 };
-//==============================================================================================
-//==
-//==============================================================================================
-
-class AcceleratorMagnets
-{
-
-public:
-    std::vector<QMag *> allmagnets;
-    G4VPhysicalVolume *fMotherPhysVolume;
-    int32_t fElectronBeamEnergy;
-    int32_t fIonBeamEnergy;
-
-    int USE_LINE;
-
-    void SetMotherParams(G4VPhysicalVolume *physicalVolume)
-    {
-        // fMaterial = material;
-        fMotherPhysVolume = physicalVolume;
-    }
-
-    void SetElectronBeamEnergy(int32_t electronBeamEnergy)
-    {
-        AcceleratorMagnets::fElectronBeamEnergy = electronBeamEnergy;
-    }
-
-    void SetIonBeamEnergy(int32_t ionBeamEnergy)
-    {
-        AcceleratorMagnets::fIonBeamEnergy = ionBeamEnergy;
-    }
-
-
-    AcceleratorMagnets(std::string fname, G4VPhysicalVolume *physicalVolume, G4Material *material, int _USE_LINE)
-    {
-        using namespace spdlog;
-        fMotherPhysVolume = physicalVolume;
-        info("Initializing AcceleratorMagnets:: MotherVolume: '{}'\n", fMotherPhysVolume->GetName());
-
-        ifstream sourcefile;                    // build a read-Stream
-        sourcefile.open(fname, ios_base::in);  // open data
-        USE_LINE = _USE_LINE;
-
-        if (!sourcefile) {                     // if it does not work
-            cerr << "Can't open File with Lattice!\n";
-        } else {
-            debug("AcceleratorMagnets file opened {} \n", fname);
-            for (std::string line; std::getline(sourcefile, line);) {
-
-                std::istringstream in(line);      //make a stream for the line itself
-                trace("AcceleratorMagnets:: read line = {} ", line);
-                if (line[0] != 'e' && line[0] != 'i') {
-                    trace(" skip line {}", line.c_str());
-                    continue;
-                }
-                parse_line(line, USE_LINE); //-- string--
-            }
-        }
-    }
-
-    //-----------------------------------------------------------
-    void parse_line(std::string line, int USE_LINE)
-    {
-        using namespace spdlog;
-        string name, type;
-        double LengthZ, Rin, Rin2, Rout, DipoleFieldBx, DipoleFieldBy, QuadrupolFieldQnorm, QuadrupolFieldQskew;
-        double SextupoleField, SolenoidField, Xcenter, Ycenter, Zcenter, MagTheta, MagPhi;
-
-
-        std::istringstream in(line);
-        in >> name >> type >> LengthZ >> Rin >> Rin2 >> Rout >> DipoleFieldBx >> DipoleFieldBy >> QuadrupolFieldQnorm >> QuadrupolFieldQskew >> SextupoleField >> SolenoidField
-           >> Xcenter >> Ycenter >> Zcenter >> MagTheta >> MagPhi;
-
-        trace("AcceleratorMagnets::parse_line: Rin={}, Rin2={} Rout ={} ", Rin, Rin2, Rout);
-        if (USE_LINE == 1) {
-            Rin = Rin * 100;
-            Rin2 = Rin2 * 100;
-            Rout = Rout * 100 / 2.;
-        } // different usints for ERHIC and JLEIC designs
-        trace("AcceleratorMagnets::parse_line: Rin={}, Rin2={} Rout ={} ", Rin, Rin2, Rout);
-        QMag *qmag = new QMag(name, type, LengthZ, Rin, Rin2, Rout, DipoleFieldBx, DipoleFieldBy, QuadrupolFieldQnorm, QuadrupolFieldQskew, SextupoleField, SolenoidField, Xcenter,
-                              Ycenter, Zcenter, MagTheta, MagPhi, fMotherPhysVolume, USE_LINE);
-
-        allmagnets.push_back(qmag);
-    }
-
-};
-
-///---- usage in Constructor ..
-
 #endif //G4E_IR_LATTICE_HH
 
 

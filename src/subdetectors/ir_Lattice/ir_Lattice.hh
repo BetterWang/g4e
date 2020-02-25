@@ -1,7 +1,3 @@
-//
-// Created by yulia on 11/19/19.
-//
-
 #ifndef G4E_IR_LATTICE_HH
 #define G4E_IR_LATTICE_HH
 

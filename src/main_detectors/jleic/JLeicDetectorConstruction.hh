@@ -69,7 +69,8 @@
 
 //---------Beam lattice ----------
 //#include "ir_Lattice/ir_Lattice.hh"   // IR Lattice import from file
-#include "ir_Lattice/AccMag.hh"         // New IR Lattice import from file
+#include "ir_Lattice/QuadrupoleMagnet.hh"         // New IR Lattice import from file
+#include "ir_Lattice/AcceleratorMagnets.hh"      // New IR Lattice import from file
 #include "ir_Beampipe/ir_Beampipe.hh"   // IR Lattice import from file
 
 
@@ -186,27 +187,26 @@ public:
 
     void checkVolumeOverlap();
 
-    const G4VPhysicalVolume *GetWorldPhysicalVolume() { return World_Phys; };
+    const G4VPhysicalVolume *GetWorldPhysicalVolume() { return World_Phys; }
 
-    const G4VPhysicalVolume *GetAbsorberPhysicalVolume() { return fPhysicsAbsorber; };
+    const G4VPhysicalVolume *GetAbsorberPhysicalVolume() { return fPhysicsAbsorber; }
 
-    G4LogicalVolume *GetLogicalAbsorber() { return fLogicAbsorber; };
 
     // TODO: REMOVE from global JLeic DETECOTR CONSTRUCTION (Argh!!!)
 
-    G4Material *GetAbsorberMaterial() { return fConfig.ci_TRD.det_Material; };
+    G4Material *GetAbsorberMaterial() { return fConfig.ci_TRD.det_Material; }
 
     //TRD- related ---- needs to be moved move
 
-    G4LogicalVolume *GetLogicalRadiator() { return ci_TRD.fLogicRadiator; };
+    G4LogicalVolume *GetLogicalRadiator() { return ci_TRD.fLogicRadiator; }
 
-    G4Material *GetFoilMaterial() { return ci_TRD.fFoilMat; };
+    G4Material *GetFoilMaterial() { return ci_TRD.fFoilMat; }
 
-    G4Material *GetGasMaterial() { return ci_TRD.fGasMat; };
+    G4Material *GetGasMaterial() { return ci_TRD.fGasMat; }
 
-    G4double GetFoilThick() { return fConfig.ci_TRD.fRadThickness; };
+    G4double GetFoilThick() { return fConfig.ci_TRD.fRadThickness; }
 
-    G4double GetGasThick() { return fConfig.ci_TRD.fGasGap; };
+    G4double GetGasThick() { return fConfig.ci_TRD.fGasGap; }
 
     G4int GetFoilNumber()
     {
@@ -237,14 +237,19 @@ private:
     // D e t e c t o r   D e s i g n s:
     // ========================================================================
 
+    //  B E A M L I N E
+    //==============================================
+    ir_Beampipe_Design ir_Beampipe;
+
     //  C E N T R A L   (BARREL)
     //==============================================
     cb_Solenoid_Design cb_Solenoid;
-    cb_VTX_Design   cb_VTX;         // Central Vertex
-    cb_CTD_Design   cb_CTD;         // CTD
-    cb_DIRC_Design  cb_DIRC;        // DIRC
-    cb_EMCAL_Design cb_EMCAL;       // EMCAL
-    cb_HCAL_Design  cb_HCAL;        // HCAL
+    cb_VTX_Design     cb_VTX;         // Central Vertex
+    cb_SiDISCS_Design cb_SiDISCS;     // Silicon Vertex
+    cb_CTD_Design     cb_CTD;         // CTD
+    cb_DIRC_Design    cb_DIRC;        // DIRC
+    cb_EMCAL_Design   cb_EMCAL;       // EMCAL
+    cb_HCAL_Design    cb_HCAL;        // HCAL
 
     //  E - E N D C A P
     //==============================================
@@ -263,7 +268,8 @@ private:
     // Far-Forward Electron
     //==============================================
     ffe_CPOL_Design ffe_CPOL;       // CPOL volume
-    // ffe_LUMI_Design ffe_LUMI;    //  LUMI volume
+    ffe_LUMI_Design ffe_LUMI;       // Luminosity monitor
+    ffe_LOWQ2_Design ffe_LOWQ2;     // Low Q2 tagger
 
     // Far-Forward ION
     //==============================================
@@ -286,7 +292,7 @@ private:
 
     // Interaction region
    // ir_LatticeDesign ir_Lattice;
-     AcceleratorMagnets *ion_line_magnets;
+    AcceleratorMagnets *ion_line_magnets;
 
     // Hadron ENDCAP volume
     G4VisAttributes *ci_ENDCAP_GVol_VisAttr;
@@ -300,40 +306,16 @@ private:
     G4LogicalVolume *ce_ENDCAP_GVol_Logic;      // pointer to the logical ENDCAP-E  volume
     G4VPhysicalVolume *ce_ENDCAP_GVol_Phys;     // pointer to the physical ENDCAP-E  volume
     //==============================================
-    ir_Beampipe_Design ir_Beampipe;
-    //----------------BARREL -----------------------
-    cb_Solenoid_Design cb_Solenoid;
-    //----------------VTX  volume ------------------
-//    cb_VTX_Design      cb_VTX;
-    //----------------VTX  volume ------------------
-    cb_SiDISCS_Design      cb_SiDISCS;
-    //----------------CTD  volume -------------------
-    cb_CTD_Design cb_CTD;
-    //----------------DIRC  volume -------------------
-    cb_DIRC_Design cb_DIRC;
-    //----------------EMCAL  volume -------------------
-    cb_EMCAL_Design cb_EMCAL;
-    //----------------HCAL  volume -------------------
-    cb_HCAL_Design cb_HCAL;
-    //==============================================
-    //----------------E-ENDCAP -----------------------
-    //----------------GEM volume ---------------------
-    ce_GEM_Design ce_GEM;
-    //----------------MRICH volume -----------------------
-    ce_MRICH_Design ce_MRICH;
-    //----------------EMCAL volume -----------------------
-    ce_EMCAL_Design ce_EMCAL;
 
-
-    //---------------- CPOL volume --------------
-    ffe_CPOL_Design ffe_CPOL;
-       //----------------  LUMI volume --------------
-    ffe_LUMI_Design ffe_LUMI;
-    //----------------  LOWQ2 volume --------------
-    ffe_LOWQ2_Design ffe_LOWQ2;
 
     g4e::Materials *fMat;
     g4e::InitializationContext *fInitContext;
+    JLeicDetectorMessenger *fDetectorMessenger;
+    JLeicCalorimeterSD *fCalorimeterSD;
+    JLeicVertexSD *fVertexSD;
+    G4VPhysicalVolume *fPhysicsAbsorber;
+    AcceleratorMagnets* fElectronLineMagnets;
+    AcceleratorMagnets* fIonLineMagnets;
 };
 
 inline void JLeicDetectorConstruction::PrintGeometryParameters()
@@ -358,7 +340,7 @@ inline void JLeicDetectorConstruction::SetAbsorberMaterial(G4String materialChoi
 
         if (pttoMaterial->GetName() == materialChoice) {
             fAbsorberMaterial = pttoMaterial;
-            fLogicAbsorber->SetMaterial(pttoMaterial);
+            // fLogicAbsorber->SetMaterial(pttoMaterial);
             // PrintCalorParameters();
         }
     }

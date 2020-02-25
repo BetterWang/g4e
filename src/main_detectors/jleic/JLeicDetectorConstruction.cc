@@ -135,7 +135,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
         }
 
         auto eFileName = fmt::format("{}/resources/{}/mdi/e_ir_{}.txt", fInitContext->Arguments->HomePath, fConfig.BeamlineName, fConfig.ElectronBeamEnergy);
-        auto ionFileName = fmt::format("{}/resources/{}/mdi/ion_ir_{}.txt", fInitContext->Arguments->HomePath, fConfig.BeamlineName, fConfig.ElectronBeamEnergy);
+        auto ionFileName = fmt::format("{}/resources/{}/mdi/ion_ir_{}.txt", fInitContext->Arguments->HomePath, fConfig.BeamlineName, fConfig.IonBeamEnergy);
 
         fmt::print("Init AcceleratorMagnets... I\n");
         fmt::print(" |- Ion E      {}\n", fConfig.IonBeamEnergy);

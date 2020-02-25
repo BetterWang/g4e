@@ -27,8 +27,8 @@
 /detsetup/beamlineName erhic
 #-------- SETUP BEAM ENERGY-------
 
-/detsetup/eBeam 10
-/detsetup/pBeam 275
+#/detsetup/eBeam 10
+#/detsetup/pBeam 275
 /run/initialize
 #/run/beamOn 1
 exit

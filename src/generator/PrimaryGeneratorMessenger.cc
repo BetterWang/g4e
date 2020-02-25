@@ -41,7 +41,7 @@ PrimaryGeneratorMessenger::PrimaryGeneratorMessenger(PrimaryGeneratorAction *gen
     fSelectCmd = new G4UIcmdWithAString("/generator/select", this);
     fSelectCmd->SetGuidance("Select generator type");
     fSelectCmd->SetParameterName("generator_type", false, false);
-    fSelectCmd->SetCandidates("particleGun hepmcAscii pythiaAscii beagle");
+    fSelectCmd->SetCandidates("particleGun coneParticleGun hepmcAscii pythiaAscii beagle");
     fSelectCmd->SetDefaultValue("particleGun");
     fGeneratorAction->SelectGenerator("particleGun");
 }

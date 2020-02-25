@@ -45,7 +45,7 @@ class Geant4Eic(object):
 
         # set defaults if they are not set for the user
         self.config['output'] = self.config.get('output', 'test_run')
-        self.config['source_file'] = self.config.get('source_file', '/home/romanov/Downloads/beagle_eD.txt')
+        # self.config['source_file'] = self.config.get('source_file', '/home/romanov/Downloads/beagle_eD.txt')
         self.config['beamline'] = self.config.get('beamline', 'erhic')
         self.config['detector'] = self.config.get('detector', 'jleic')
         self.config['is_batch'] = self.config.get('is_batch', True)

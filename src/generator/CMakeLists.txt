@@ -4,6 +4,7 @@ target_include_directories(g4e PUBLIC
         beagle_reader
         hepmc2_reader
         pythia_ascii_reader
+        cone_particle_gun
         )
 
 target_sources_local(g4e
@@ -38,4 +39,12 @@ target_sources_local(g4e
             pythia_ascii_reader/PythiaAsciiReader.cc
             pythia_ascii_reader/PythiaAsciiReader.hh
             pythia_ascii_reader/PythiaAsciiReaderMessenger.cc
+
+            cone_particle_gun/ConeParticleGun.cc
+            cone_particle_gun/ConeParticleGun.hh
+            cone_particle_gun/ConeParticleGunMessenger.cc
+            cone_particle_gun/ConeParticleGunMessenger.hh
+
+            #cone_generator/ConeGenerator.cc
+            #cone_generator/ConeGenerator.hh
         )

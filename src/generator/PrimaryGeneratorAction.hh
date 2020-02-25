@@ -49,6 +49,7 @@ public:
     static G4double GetPrimaryEnergy();
 
 private:
+    G4VPrimaryGenerator *fConeParticleGunGenerator;       // Particle gun
     G4VPrimaryGenerator *fParticleGunGenerator;       // Particle gun
     G4VPrimaryGenerator *fHepMcAsciiGenerator;        // Herwig, Pythia 8 and other HepMC ascii
     G4VPrimaryGenerator *fPythiaAsciiGenerator;       // Pythia 6 lund format

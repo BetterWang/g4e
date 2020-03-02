@@ -92,7 +92,7 @@ public:
     bool USE_BARREL = true;
     bool USE_BARREL_det = true;
 
-    bool USE_BEAMPIPE = true;
+    bool USE_BEAMPIPE = false;
 
     //------- subdetector-volumes  barrel ----- 
 
@@ -110,9 +110,9 @@ public:
     bool USE_CB_DIRC = true;
     bool USE_CB_DIRC_bars = false;   // bars for DIRC
 
-    bool USE_CB_EMCAL = false ;
+    bool USE_CB_EMCAL = true ;
     bool USE_CB_HCAL = true;
-    bool USE_CB_HCAL_D = false; // hcal detector ( granularity)
+    bool USE_CB_HCAL_D = true; // hcal detector ( granularity)
 
     // Electron endcap
     // ==============================================

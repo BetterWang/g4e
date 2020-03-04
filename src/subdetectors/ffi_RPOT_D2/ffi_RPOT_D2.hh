@@ -17,7 +17,7 @@
 struct ffi_RPOT_D2_Config {
 // define here Global volume parameters
     double RIn = 0 * cm;
-    double ROut = 120 * cm;
+    double ROut = 10 * cm;
     double SizeZ = 30 * cm;
     double ShiftZ = 0 * cm;
     double PosZ = 0 * cm;

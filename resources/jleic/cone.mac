@@ -23,8 +23,9 @@
 #/generator/pythiaAscii/open /data/yuliapc/home/yulia/work/g4e/resources/pythia/pythia_1GeV_90.txt
 
 
-#------- SETUP JLEIC beam lattice
+#------- SETUP beam lattice
 /detsetup/beamlineName erhic
+#/detsetup/beamlineName jleic
 #-------- SETUP BEAM ENERGY-------
 
 #/detsetup/eBeam 10

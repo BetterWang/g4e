@@ -580,7 +580,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 
           if (USE_FFI_RPOT_D2 ) {  //---- First Roman Pot
                fConfig.ffi_RPOT_D2.Angle = 0.025;
-                fConfig.ffi_RPOT_D2.ROut = 25 * cm;
+                fConfig.ffi_RPOT_D2.ROut = 15 * cm;
               fConfig.ffi_RPOT_D2.rot_matx.rotateY(fConfig.ffi_RPOT_D2.Angle * rad);
               fConfig.ffi_RPOT_D2.PosZ = 2620 * cm;
               fConfig.ffi_RPOT_D2.PosX = 82 * cm;

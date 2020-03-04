@@ -1,0 +1,23 @@
+#------------------------------------------------------------------------
+# Example macro. Process one of
+#------------------------------------------------------------------------
+
+# Include default setup
+# Use jleic.mac for headless mode or jleicvis.mac for GUI visualization
+#/control/execute jleicvis.mac
+/control/execute jleicvis.mac
+
+# Select pythiaAScii generator
+# Options are: particleGun hepmcAscii pythiaAscii beagle
+/generator/select pythiaAscii
+
+
+# Open file and run some MC file
+#------ cone at 50mrad ----
+#---protons ---
+/generator/pythiaAscii/open TDIS_lund.dat
+
+/run/initialize
+/run/beamOn 10000
+
+exit

@@ -1,6 +1,6 @@
 /control/execute jleic.mac
 
-#-----------------------------------------------------------------------
+/run/initialize
 
 #/vis/open VRML2FILE
 #/vis/drawVolume
@@ -10,10 +10,13 @@
 
 # Use this open statement to create an OpenGL view:
 ### This works  ->   
-/vis/open OGL 1000x800-0+0
-#/vis/open OGLI 600x600-0+0
+/control/manual vis
+#/vis/list
+#/vis/open OGL 1000x800-0+0
+/vis/open OGLI 600x600-0+0
 #/vis/open OGLIX 600x600-0+0
-#/vis/open OGLIQt 600x600-0+0  q
+#/vis/open OGLIQt 1000x800-0+0  q
+# 
 #
 #/vis/open OGLS 600x600-0+0
 #/vis/open OGLSX 600x600-0+0
@@ -31,7 +34,7 @@
 # Use this open statement to create a .wrl file suitable for
 # viewing in a VRML viewer:
 #/vis/open VRML2FILE
-#
+
 # Disable auto refresh and quieten vis messages whilst scene and
 # trajectories are established:
 /vis/viewer/set/autoRefresh false

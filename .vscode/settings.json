@@ -3,6 +3,7 @@
     "cmake.debugConfig": {
         "args": [
 //            "jleicvis.mac"
+              "cone_pgun.mac"
         ]
     },
     "restructuredtext.confPath": "${workspaceFolder}/docs"

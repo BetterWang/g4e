@@ -4,5 +4,6 @@
         "args": [
 //            "jleicvis.mac"
         ]
-    }
+    },
+    "restructuredtext.confPath": "${workspaceFolder}/docs"
 }

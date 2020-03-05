@@ -19,6 +19,9 @@ Cone particle gun
 
 ``/generator/coneParticleGun/``
 
+`Example macro for coneParticleGun <example_cone_particle_gun.rst>`
+
+
 
 BeAGLE format
 -------------

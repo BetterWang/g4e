@@ -138,7 +138,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
         auto ionFileName = fmt::format("{}/resources/{}/mdi/ion_ir_{}.txt", fInitContext->Arguments->HomePath, fConfig.BeamlineName, fConfig.IonBeamEnergy);
 
         fmt::print("Init AcceleratorMagnets... I\n");
-        fmt::print(" |- Ion E      {}\n", fConfig.IonBeamEnergy);
+        fmt::print(" |- Ion E      {}   A={}  Z={} \n", fConfig.IonBeamEnergy,fConfig.IonBeamA, fConfig.IonBeamZ);
         fmt::print(" |- Electron E {}\n", fConfig.ElectronBeamEnergy);
         fmt::print(" |- File names:\n");
         fmt::print("    |- Electron {}\n", eFileName);
@@ -556,15 +556,13 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     if(fConfig.BeamlineName == "erhic") {
           fConfig.ffi_ZDC.Angle=-0.0125;
           fConfig.ffi_ZDC.rot_matx.rotateY(-fConfig.ffi_ZDC.Angle * rad);
-          fConfig.ffi_ZDC.Zpos = 3800 * cm;
-          fConfig.ffi_ZDC.Xpos = 98.5 * cm;
+ //         fConfig.ffi_ZDC.Zpos = 3800 * cm;
+ //       fConfig.ffi_ZDC.Xpos = 98.5 * cm;
+        fConfig.ffi_ZDC.Zpos = 3800 * cm;
+        fConfig.ffi_ZDC.Xpos = 90 * cm;
+
     }
 
-        if(fConfig.BeamlineName == "erhic") {
-              fConfig.ffi_ZDC.rot_matx.rotateY(-fConfig.ffi_ZDC.Angle * rad);
-              fConfig.ffi_ZDC.Zpos = 3500 * cm;
-              fConfig.ffi_ZDC.Xpos = 90 * cm;
-        }
 
         ffi_ZDC.Construct(fConfig.ffi_ZDC, World_Material, World_Phys);
         ffi_ZDC.ConstructTowels();
@@ -580,7 +578,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 
           if (USE_FFI_RPOT_D2 ) {  //---- First Roman Pot
                fConfig.ffi_RPOT_D2.Angle = 0.025;
-                fConfig.ffi_RPOT_D2.ROut = 15 * cm;
+                fConfig.ffi_RPOT_D2.ROut = 20 * cm;
               fConfig.ffi_RPOT_D2.rot_matx.rotateY(fConfig.ffi_RPOT_D2.Angle * rad);
               fConfig.ffi_RPOT_D2.PosZ = 2620 * cm;
               fConfig.ffi_RPOT_D2.PosX = 82 * cm;

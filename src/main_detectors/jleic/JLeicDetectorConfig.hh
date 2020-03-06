@@ -48,6 +48,8 @@
 struct JLeicDetectorConfig {
     int ElectronBeamEnergy =10;
     int IonBeamEnergy=200;
+    int IonBeamA=1;
+    int IonBeamZ=1;
     std::string BeamlineName="erhic";
 
     struct World_Config {

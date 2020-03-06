@@ -9,6 +9,9 @@ public:
 
     int32_t fElectronBeamEnergy;
     int32_t fIonBeamEnergy;
+
+
+
     G4Material* fMaterial;
     G4VPhysicalVolume *fMotherPhysVolume;
 

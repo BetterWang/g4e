@@ -10,10 +10,19 @@
 # Options are: particleGun hepmcAscii pythiaAscii beagle
 /generator/select beagle
 
+#===== Set ion beam species ===============
+#
+/detsetup/iBeamA 2
+/detsetup/iBeamZ 2
+# D:
+#==========================================
+
 # Open file and run some MC file
 #/generator/beagle/open beagle_test_data.txt
-/generator/beagle/open BEAGLE.txt
+#/generator/beagle/open BEAGLE.txt
+/generator/beagle/open GCF_boosted_25mrad.txt
 /generator/beagle/verbose 2
 
+/run/initialize
 /run/beamOn 1
 exit

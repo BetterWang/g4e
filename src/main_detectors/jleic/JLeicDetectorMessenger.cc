@@ -60,6 +60,20 @@ JLeicDetectorMessenger::JLeicDetectorMessenger(JLeicDetectorConstruction *JLeicD
     PbeamECmd->SetDefaultValue(10);
     PbeamECmd->AvailableForStates(G4State_PreInit, G4State_Idle);
 
+
+    IbeamACmd = new G4UIcmdWithAnInteger("/detsetup/iBeamA", this);
+    IbeamACmd->SetGuidance("Ion species A ");
+    IbeamACmd->SetParameterName("iBeamA", false, false);
+    IbeamACmd->SetDefaultValue(1);
+    IbeamACmd->AvailableForStates(G4State_PreInit, G4State_Idle);
+
+    IbeamZCmd = new G4UIcmdWithAnInteger("/detsetup/iBeamZ", this);
+    IbeamZCmd->SetGuidance("Ion species Z ");
+    IbeamZCmd->SetParameterName("iBeamZ", false, false);
+    IbeamZCmd->SetDefaultValue(1);
+    IbeamZCmd->AvailableForStates(G4State_PreInit, G4State_Idle);
+
+
     BeamlineNameCmd =  new G4UIcmdWithAString("/detsetup/beamlineName", this);
     BeamlineNameCmd->SetGuidance("Select beamline erhic or jlab");
     BeamlineNameCmd->SetParameterName("beamlineName", true);
@@ -208,6 +222,8 @@ JLeicDetectorMessenger::~JLeicDetectorMessenger()
     delete TRDdetDir;
     delete EbeamECmd;
     delete PbeamECmd;
+    delete IbeamACmd;
+    delete IbeamZCmd;
 
     delete DetDir;
 }
@@ -241,6 +257,13 @@ void JLeicDetectorMessenger::SetNewValue(G4UIcommand *command, G4String newValue
     if (command == PbeamECmd) {
         JLeicDetector->GetConfigRef().IonBeamEnergy = G4UIcmdWithAnInteger::GetNewIntValue(newValue);
     }
+    if (command == IbeamZCmd) {
+        JLeicDetector->GetConfigRef().IonBeamZ = G4UIcmdWithAnInteger::GetNewIntValue(newValue);
+    }
+    if (command == IbeamACmd) {
+        JLeicDetector->GetConfigRef().IonBeamA = G4UIcmdWithAnInteger::GetNewIntValue(newValue);
+    }
+
     if (command == BeamlineNameCmd) {
         JLeicDetector->GetConfigRef().BeamlineName = newValue;
     }

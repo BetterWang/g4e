@@ -64,6 +64,9 @@ class JLeicDetectorMessenger: public G4UImessenger
     G4UIdirectory*             DetDir;
     G4UIcmdWithAnInteger* EbeamECmd;
     G4UIcmdWithAnInteger* PbeamECmd;
+    G4UIcmdWithAnInteger* IbeamZCmd;
+    G4UIcmdWithAnInteger* IbeamACmd;
+
     G4UIcmdWithAString*   BeamlineNameCmd;
     //--------- For TRD----------------
     G4UIdirectory*             TRDdetDir;

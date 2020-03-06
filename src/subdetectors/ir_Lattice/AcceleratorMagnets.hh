@@ -15,7 +15,7 @@ public:
     std::vector<QuadrupoleMagnet *> fMagnets;
     G4VPhysicalVolume *fMotherPhysVolume;
     int32_t fElectronBeamEnergy;
-    int32_t fIonBeamEnergy;
+    int32_t fIonBeamEnergy,fIonBeamA,fIonBeamZ;
 
     BeamLines fBeamLine;
 
@@ -26,15 +26,16 @@ public:
     }
 
     void SetElectronBeamEnergy(int32_t electronBeamEnergy)
-    {
-        AcceleratorMagnets::fElectronBeamEnergy = electronBeamEnergy;
-    }
+    {  AcceleratorMagnets::fElectronBeamEnergy = electronBeamEnergy; }
 
     void SetIonBeamEnergy(int32_t ionBeamEnergy)
-    {
-        AcceleratorMagnets::fIonBeamEnergy = ionBeamEnergy;
-    }
+    {  AcceleratorMagnets::fIonBeamEnergy = ionBeamEnergy; }
 
+    void SetIonBeamA(int32_t ionBeamA)
+    {  AcceleratorMagnets::fIonBeamA = ionBeamA; }
+
+    void SetIonBeamZ(int32_t ionBeamZ)
+    {  AcceleratorMagnets::fIonBeamZ = ionBeamZ;  }
 
     AcceleratorMagnets(std::string fname, G4VPhysicalVolume *physicalVolume, G4Material *material, BeamLines beamLine)
     {
@@ -77,6 +78,7 @@ public:
            >> Xcenter >> Ycenter >> Zcenter >> MagTheta >> MagPhi;
 
         trace("AcceleratorMagnets::parse_line: Rin={}, Rin2={} Rout ={} ", Rin, Rin2, Rout);
+        if(fIonBeamA>1 || fIonBeamZ >1 ){ trace(" =======> Ion Beam Z or A >1 !!!! ");  }
         if (fBeamLine == BeamLines::ERHIC) {
             // TODO WTF * 100?
             Rin = Rin * 100;

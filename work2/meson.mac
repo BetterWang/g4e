@@ -15,9 +15,16 @@
 # Open file and run some MC file
 #------ cone at 50mrad ----
 #---protons ---
-/generator/pythiaAscii/open TDIS_lund.dat
+/generator/pythiaAscii/open TDISpion_lund_p275_e10_80k.dat
+#---neutrons ---
+#/generator/pythiaAscii/open TDISneutron_lund_p275_e10_80k.dat
+#---Kaon ---
+#/generator/pythiaAscii/open TDISkaon_lund_p275_e10_80k.dat
+
+
+#/run/initialize
+#/run/beamOn 1
 
 /run/initialize
-/run/beamOn 10000
-
+/run/beamOn 60000
 exit

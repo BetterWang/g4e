@@ -96,7 +96,8 @@
 /vis/modeling/trajectories/drawByParticleID-0/set pion0 blue
 /vis/modeling/trajectories/drawByParticleID-0/set gamma yellow
 /vis/modeling/trajectories/drawByParticleID-0/set proton blue
-/vis/modeling/trajectories/drawByParticleID-0/set neutron magenta
+/vis/modeling/trajectories/drawByParticleID-0/set neutron gray
+/vis/modeling/trajectories/drawByParticleID-0/set lambda green
 #/vis/modeling/trajectories/drawByParticleID-0/set e- yellow
 #
 # To superimpose all of the events from a given run:

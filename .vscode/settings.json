@@ -1,0 +1,10 @@
+{
+    "C_Cpp.default.configurationProvider": "vector-of-bool.cmake-tools",
+    "cmake.debugConfig": {
+        "args": [
+//            "jleicvis.mac"
+              "cone_pgun.mac"
+        ]
+    },
+    "restructuredtext.confPath": "${workspaceFolder}/docs"
+}

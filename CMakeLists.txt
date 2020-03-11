@@ -111,7 +111,7 @@ print_grand_header("    G E N E R A L   C O N F I G U R A T I O N    ")
 # C++ standard to use (controlled with -DCPP_STANDARD flag)
 if(NOT DEFINED CMAKE_CXX_STANDARD)
     SET(CMAKE_CXX_STANDARD 11)
-    message(STATUS "g4e: Setting default to ${CPP_STANDARD}")
+    message(STATUS "g4e: Setting default to ${CMAKE_CXX_STANDARD}")
 endif()
 message(STATUS "g4e: CMAKE_CXX_STANDARD: ${CMAKE_CXX_STANDARD}")
 

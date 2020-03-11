@@ -1,17 +1,26 @@
 MC Generators
 =============
 
-
 Selected generator is controlled with
 
 `/generator/select`
 
 possible values:
 
-* ``particleGun`` - Particle gun
+* ``coneParticleGun`` - Particle with gaussian smeared cone
+* ``particleGun`` - Standard Geant4 particle gun
 * ``hepmcAscii`` - HepMC 2 reader
 * ``pythiaAscii`` - Lund (Pythia6) reader
 * ``beagle`` - Beagle reader
+
+
+Cone particle gun
+-----------------
+
+``/generator/coneParticleGun/``
+
+`Example macro for coneParticleGun <example_cone_particle_gun.rst>`
+
 
 
 BeAGLE format
@@ -64,6 +73,7 @@ Control commands:
 ``/generator/pythiaAscii/verbose <level>`` - Set verbose level 0 = nothing, 1 = info, 2 = debug
 
 ``/generator/pythiaAscii/open <file name>`` - Opens a Pythia6 event file to read
+
 
 
 

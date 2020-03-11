@@ -53,7 +53,7 @@ class Geant4EicManager(object):
 
     def run_cmake_target(self, target, suffix=''):
         """Builds G4E"""
-        # Generate execution file
+        # Generate execution file        
 
         command = f"cmake --build {self.config['build_prefix']} --target {target} {suffix}"
         
@@ -64,6 +64,7 @@ class Geant4EicManager(object):
         run(command, self.sink, cwd=self.config['build_prefix'])
 
     def build(self, threads='auto'):
+        self.ensure_build_dir_exist()
         if threads == 'auto':
             import multiprocessing
             threads = multiprocessing.cpu_count()
@@ -71,11 +72,20 @@ class Geant4EicManager(object):
                 threads -= 1
                 
         suffix = f' -- -j {threads} -w '
+        
 
         self.run_cmake_target('g4e', suffix)
 
     def clean(self):
         self.run_cmake_target('clean')
+
+    def ensure_build_dir_exist(self):
+        if not os.path.exists(self.config['build_prefix']):
+            err_msg = f"Error! CMake build path {self.config['build_prefix']} does not exist.\n"\
+                      f"You may create it (if you sure it is right) with the command:\n"\
+                      f"  mkdir -p {self.config['build_prefix']}"
+            raise ValueError(err_msg)
+        
 
     def cmake_configure(self, build_type='Debug', silence_warnings=True):
         """
@@ -84,6 +94,7 @@ class Geant4EicManager(object):
         :param silence_warnings:
         :return:
         """
+        self.ensure_build_dir_exist()
 
         flags = ""
         if silence_warnings:

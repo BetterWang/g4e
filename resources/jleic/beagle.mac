@@ -20,7 +20,7 @@
 # Open file and run some MC file
 #/generator/beagle/open beagle_test_data.txt
 #/generator/beagle/open BEAGLE.txt
-/generator/beagle/open GCF_boosted_25mrad.txt
+/generator/beagle/open eC_10x275_GCF_QE_Estargaus.txt
 /generator/beagle/verbose 2
 
 /run/initialize

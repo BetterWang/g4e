@@ -134,8 +134,10 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
             return;
         }
 
-        auto eFileName = fmt::format("{}/resources/{}/mdi/e_ir_{}.txt", fInitContext->Arguments->HomePath, fConfig.BeamlineName, fConfig.ElectronBeamEnergy);
-        auto ionFileName = fmt::format("{}/resources/{}/mdi/ion_ir_{}.txt", fInitContext->Arguments->HomePath, fConfig.BeamlineName, fConfig.IonBeamEnergy);
+        auto eFileName = fmt::format("{}/resources/{}/mdi/e_ir_10.txt", fInitContext->Arguments->HomePath, fConfig.BeamlineName);
+        auto ionFileName = fmt::format("{}/resources/{}/mdi/ion_ir_275.txt", fInitContext->Arguments->HomePath, fConfig.BeamlineName);
+//        auto eFileName = fmt::format("{}/resources/{}/mdi/e_ir_{}.txt", fInitContext->Arguments->HomePath, fConfig.BeamlineName, fConfig.ElectronBeamEnergy);
+//        auto ionFileName = fmt::format("{}/resources/{}/mdi/ion_ir_{}.txt", fInitContext->Arguments->HomePath, fConfig.BeamlineName, fConfig.IonBeamEnergy);
 
         fmt::print("Init AcceleratorMagnets... I\n");
         fmt::print(" |- Ion E      {}   A={}  Z={} \n", fConfig.IonBeamEnergy,fConfig.IonBeamA, fConfig.IonBeamZ);
@@ -145,8 +147,8 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
         fmt::print("    |- Ion      {}\n", ionFileName);
 
         // Create electron and ion beam lines
-        fElectronLineMagnets = new AcceleratorMagnets(eFileName, World_Phys, World_Material, beamLine);
-        fIonLineMagnets = new AcceleratorMagnets(ionFileName, World_Phys, World_Material, beamLine);
+        fElectronLineMagnets = new AcceleratorMagnets(eFileName, World_Phys, World_Material, beamLine, 0,fConfig.ElectronBeamEnergy);
+        fIonLineMagnets = new AcceleratorMagnets(ionFileName, World_Phys, World_Material, beamLine,1,fConfig.IonBeamEnergy);
     }
 
     //=========================================================================

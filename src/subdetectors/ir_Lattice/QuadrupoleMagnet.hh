@@ -18,6 +18,7 @@ public:
     double SextupoleField, SolenoidField, Xcenter, Ycenter, Zcenter, MagTheta, MagPhi;
     G4RotationMatrix mybrm;
     BeamLines beamLine;
+ //   BeamID beamID;
     //---------------- BEAM DIPOLES -------------------------------------------
     G4Tubs *fSolid_BigDi_v, *fSolid_BigDi_ir, *fSolid_BigDi_m;
     //  G4Box *fSolid_BigDi_v[100],*fSolid_BigDi_ir[100],*fSolid_BigDi_m[100];
@@ -27,20 +28,20 @@ public:
 
     QuadrupoleMagnet(std::string _name, std::string _type, double _LengthZ, double _Rin, double _Rin2, double _Rout, double _DipoleFieldBx, double _DipoleFieldBy, double _QuadrupolFieldQnorm,
                      double _QuadrupolFieldQskew, double _SextupoleField, double _SolenoidField, double _Xcenter, double _Ycenter, double _Zcenter, double _MagTheta, double _MagPhi,
-                     G4VPhysicalVolume *fMotherPhysVolume, BeamLines _beamLine)
+                     G4VPhysicalVolume *fMotherPhysVolume, BeamLines _beamLine, double ScaleFactor)
     {
         using namespace spdlog;
         beamLine = _beamLine;
-
+    //    beamID = _beamID;
         Rin = _Rin;
         Rin2 = _Rin2;
         Rout = _Rout;
         LengthZ = _LengthZ;
-        DipoleFieldBx = _DipoleFieldBx;
-        DipoleFieldBy = _DipoleFieldBy;
-        QuadrupolFieldQnorm = _QuadrupolFieldQnorm;
-        QuadrupolFieldQskew = _QuadrupolFieldQskew;
-        SextupoleField = _SextupoleField;
+        DipoleFieldBx = _DipoleFieldBx*ScaleFactor;
+        DipoleFieldBy = _DipoleFieldBy*ScaleFactor;
+        QuadrupolFieldQnorm = _QuadrupolFieldQnorm*ScaleFactor;
+        QuadrupolFieldQskew = _QuadrupolFieldQskew*ScaleFactor;
+        SextupoleField = _SextupoleField*ScaleFactor;
         SolenoidField = _SolenoidField;
         Xcenter = _Xcenter;
         Ycenter = _Ycenter;
@@ -49,7 +50,7 @@ public:
         MagPhi = _MagPhi;
         name = _name;
         type = _type;
-
+        debug("QuadrupoleMagnet:: ScaleFactor= {}",ScaleFactor);
         //  if (type == "SBEND" || type == "RBEND") {
         if (type == "QUADRUPOLE") {
             debug("Qmag:: found  {} name={} ", type.c_str(), name.c_str());

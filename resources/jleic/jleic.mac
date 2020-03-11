@@ -9,7 +9,7 @@
 /geometry/navigator/verbose 0
 
 
-/detsetup/pBeam 275
+/detsetup/pBeam 100
 /detsetup/eBeam 10
 
 #--------Detector construction ------------------

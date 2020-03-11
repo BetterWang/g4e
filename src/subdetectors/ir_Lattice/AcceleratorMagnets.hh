@@ -16,7 +16,7 @@ public:
     G4VPhysicalVolume *fMotherPhysVolume;
     int32_t fElectronBeamEnergy;
     int32_t fIonBeamEnergy,fIonBeamA,fIonBeamZ;
-
+    double ScaleFactor;
     BeamLines fBeamLine;
 
     void SetMotherParams(G4VPhysicalVolume *physicalVolume)
@@ -37,15 +37,19 @@ public:
     void SetIonBeamZ(int32_t ionBeamZ)
     {  AcceleratorMagnets::fIonBeamZ = ionBeamZ;  }
 
-    AcceleratorMagnets(std::string fname, G4VPhysicalVolume *physicalVolume, G4Material *material, BeamLines beamLine)
+    AcceleratorMagnets(std::string fname, G4VPhysicalVolume *physicalVolume, G4Material *material, BeamLines beamLine, int beamID,int BeamEnergy)
     {
         using namespace spdlog;
         fMotherPhysVolume = physicalVolume;
         info("Initializing AcceleratorMagnets:: MotherVolume: '{}'\n", fMotherPhysVolume->GetName());
-
+        ScaleFactor=1.;
         ifstream sourcefile;                    // build a read-Stream
         sourcefile.open(fname, ios_base::in);  // open data
         fBeamLine = beamLine;
+        if(fIonBeamA>1 || fIonBeamZ >1 ){ trace(" =======> Ion Beam Z or A >1 !!!! ");  }
+         if(beamID==1 && BeamEnergy !=275 ){ ScaleFactor= ((double) BeamEnergy)/275. ; debug(" =======> Ion Beam Energy  {} Scaling = {} !!!! ",BeamEnergy, ScaleFactor ); }
+        if(beamID==0 && BeamEnergy !=10 ){ ScaleFactor= ((double) BeamEnergy)/10. ; debug(" =======> Electron Beam Energy  {} Scaling = {} !!!! ",BeamEnergy, ScaleFactor); }
+        fmt::print("=====> {}  {}  Scaling {} \n",beamID,BeamEnergy,ScaleFactor);
 
         if (!sourcefile) {                     // if it does not work
             cerr << "Can't open File with Lattice!\n";
@@ -59,13 +63,13 @@ public:
                     trace(" skip line {}", line.c_str());
                     continue;
                 }
-                parse_line(line); //-- string--
+                parse_line(line,ScaleFactor); //-- string--
             }
         }
     }
 
     //-----------------------------------------------------------
-    void parse_line(std::string line)
+    void parse_line(std::string line, double ScaleFactor)
     {
         using namespace spdlog;
         string name, type;
@@ -78,8 +82,7 @@ public:
            >> Xcenter >> Ycenter >> Zcenter >> MagTheta >> MagPhi;
 
         trace("AcceleratorMagnets::parse_line: Rin={}, Rin2={} Rout ={} ", Rin, Rin2, Rout);
-        if(fIonBeamA>1 || fIonBeamZ >1 ){ trace(" =======> Ion Beam Z or A >1 !!!! ");  }
-        if (fBeamLine == BeamLines::ERHIC) {
+       if (fBeamLine == BeamLines::ERHIC) {
             // TODO WTF * 100?
             Rin = Rin * 100;
             Rin2 = Rin2 * 100;
@@ -87,7 +90,7 @@ public:
         } // different usints for ERHIC and JLEIC designs
         trace("AcceleratorMagnets::parse_line: Rin={}, Rin2={} Rout ={} ", Rin, Rin2, Rout);
         QuadrupoleMagnet *qmag = new QuadrupoleMagnet(name, type, LengthZ, Rin, Rin2, Rout, DipoleFieldBx, DipoleFieldBy, QuadrupolFieldQnorm, QuadrupolFieldQskew, SextupoleField, SolenoidField, Xcenter,
-                                                      Ycenter, Zcenter, MagTheta, MagPhi, fMotherPhysVolume, fBeamLine);
+                                                      Ycenter, Zcenter, MagTheta, MagPhi, fMotherPhysVolume, fBeamLine,ScaleFactor);
 
         fMagnets.push_back(qmag);
     }

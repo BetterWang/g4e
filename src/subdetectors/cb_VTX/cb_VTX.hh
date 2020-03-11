@@ -95,7 +95,7 @@ public:
         }
 
         for (uint lay = 0; lay < Lays.size(); lay++) {
-            spdlog::debug("cb_VTX_ladder:: Layer loop::{}", lay);
+            spdlog::trace("cb_VTX_ladder:: Layer loop::{}", lay);
 
             double cb_VTX_ladder_DZ = Lays[lay].Dz;
             double cb_VTX_ladder_DY = Lays[lay].Dy;
@@ -109,9 +109,9 @@ public:
                 double LN = cb_VTX_ladder_DY * laddersCount;
                 double LN1 = cb_VTX_ladder_DY * (laddersCount + 1 + i);
 
-                spdlog::debug("cb_VTX_ladder:: LN= Orig laddersCount={}", laddersCount);
+                spdlog::trace("cb_VTX_ladder:: LN= Orig laddersCount={}", laddersCount);
                 if (LN/LN1>0.8) laddersCount= laddersCount + 1;
-                spdlog::debug("cb_VTX_ladder:: LN={}, LN1={}  delenie={} NUM={} \n", LN, LN1,LN/LN1, laddersCount);
+                spdlog::trace("cb_VTX_ladder:: LN={}, LN1={}  delenie={} NUM={} \n", LN, LN1,LN/LN1, laddersCount);
             }
 
             double cb_VTX_ladder_deltaphi = 2 * 3.1415926 / laddersCount  ;
@@ -138,8 +138,8 @@ public:
 
             for (int ia = 0; ia < laddersCount; ia++) {
                 //for (int ia=0;ia<1;ia++) {
-                spdlog::debug("cb_VTX_ladder:: lay={}  NUM={}, dR={} cb_VTX_ladder_deltaphi={} {} \n", lay, laddersCount, dR, cb_VTX_ladder_deltaphi, cfg.ladder_deltashi);
-                spdlog::debug("cb_VTX_ladder:: Module  loop:: {}\n", ia);
+                spdlog::trace("cb_VTX_ladder:: lay={}  NUM={}, dR={} cb_VTX_ladder_deltaphi={} {} \n", lay, laddersCount, dR, cb_VTX_ladder_deltaphi, cfg.ladder_deltashi);
+                spdlog::trace("cb_VTX_ladder:: Module  loop:: {}\n", ia);
 
                 phi = (ia * (cb_VTX_ladder_deltaphi));
                 x = - dR * cos(phi) ;
@@ -147,7 +147,7 @@ public:
                 rm[lay][ia].rotateZ(cb_VTX_ladder_deltaphi * ia);
                 rm[lay][ia].rotateZ(cfg.ladder_deltashi);
 
-                spdlog::debug("cb_VTX_ladder::  {} {} x={}  y={}  \n", lay, ia, x, y);
+                spdlog::trace("cb_VTX_ladder::  {} {} x={}  y={}  \n", lay, ia, x, y);
                 auto physName = fmt::format("cb_VTX_ladder_Phys_{}_{}", lay, ia);
                 cb_VTX_ladder_Phys[lay] = new G4PVPlacement(G4Transform3D(rm[lay][ia], G4ThreeVector(x, y, z)),
                                                             physName, cb_VTX_ladder_Logic[lay],
@@ -174,7 +174,7 @@ public:
             G4double PixelDZ = cb_VTX_ladder_Thickness; // 0.450*mm
 
             if (FDIV >= 1) {
-                spdlog::debug("cb_VTX_ladder_pxdSlice_:: construct slices %d \n", lay);
+                spdlog::trace("cb_VTX_ladder_pxdSlice_:: construct slices %d \n", lay);
 
                 auto boxName = fmt::format("cb_VTX_ladder_pxdSlice_{}", lay);
                 pxdBox_slice[lay] = new G4Box(boxName,

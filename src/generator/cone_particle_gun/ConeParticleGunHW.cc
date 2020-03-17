@@ -26,35 +26,35 @@
 //
 //
 
-// ConeParticleGun
-#include "ConeParticleGun.hh"
+// ConeParticleGunHW
+#include "ConeParticleGunHW.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4PrimaryParticle.hh"
-#include "ConeParticleGunMessenger.hh"
+#include "ConeParticleGunMessengerHW.hh"
 #include "G4Event.hh"
 #include "G4ios.hh"
 #include "Randomize.hh"
 
 
-ConeParticleGun::ConeParticleGun()
+ConeParticleGunHW::ConeParticleGunHW()
 {
     SetInitialValues();
 }
 
-ConeParticleGun::ConeParticleGun(G4int numberofparticles)
+ConeParticleGunHW::ConeParticleGunHW(G4int numberofparticles)
 {
     SetInitialValues();
     NumberOfParticlesToBeGenerated = numberofparticles;
 }
 
-ConeParticleGun::ConeParticleGun(G4ParticleDefinition *particleDef, G4int numberofparticles)
+ConeParticleGunHW::ConeParticleGunHW(G4ParticleDefinition *particleDef, G4int numberofparticles)
 {
     SetInitialValues();
     NumberOfParticlesToBeGenerated = numberofparticles;
     SetParticleDefinition(particleDef);
 }
 
-void ConeParticleGun::SetInitialValues()
+void ConeParticleGunHW::SetInitialValues()
 {
     NumberOfParticlesToBeGenerated = 1;
     particle_definition = nullptr;
@@ -66,49 +66,49 @@ void ConeParticleGun::SetInitialValues()
     particle_time = 0.0;
     particle_polarization = zero;
     particle_charge = 0.0;
-    theMessenger = new ConeParticleGunMessenger(this);
+    theMessenger = new ConeParticleGunMessengerHW(this);
 }
 
-ConeParticleGun::~ConeParticleGun()
+ConeParticleGunHW::~ConeParticleGunHW()
 {
     delete theMessenger;
 }
 
-//ConeParticleGun::ConeParticleGun(const ConeParticleGun& /*right*/)
+//ConeParticleGunHW::ConeParticleGunHW(const ConeParticleGunHW& /*right*/)
 //:G4VPrimaryGenerator()
 //{ G4Exception(
-//  "ConeParticleGun::ConeParticleGun","Event0191",FatalException,
-//  "ConeParticleGun : Copy constructor should not be used."); }
+//  "ConeParticleGunHW::ConeParticleGunHW","Event0191",FatalException,
+//  "ConeParticleGunHW : Copy constructor should not be used."); }
 //
-//const ConeParticleGun& ConeParticleGun::operator=(const ConeParticleGun& right)
+//const ConeParticleGunHW& ConeParticleGunHW::operator=(const ConeParticleGunHW& right)
 //{ G4Exception(
-//  "ConeParticleGun::operator=","Event0192",FatalException,
-//  "ConeParticleGun : Equal operator should not be used.");
+//  "ConeParticleGunHW::operator=","Event0192",FatalException,
+//  "ConeParticleGunHW : Equal operator should not be used.");
 //  return right; }
 //
-//G4bool ConeParticleGun::operator==(const ConeParticleGun& /*right*/) const
+//G4bool ConeParticleGunHW::operator==(const ConeParticleGunHW& /*right*/) const
 //{ G4Exception(
-//  "ConeParticleGun::operator==","Event0193",FatalException,
-//  "ConeParticleGun : == operator should not be used.");
+//  "ConeParticleGunHW::operator==","Event0193",FatalException,
+//  "ConeParticleGunHW : == operator should not be used.");
 //  return true; }
 //
-//G4bool ConeParticleGun::operator!=(const ConeParticleGun& /*right*/) const
+//G4bool ConeParticleGunHW::operator!=(const ConeParticleGunHW& /*right*/) const
 //{ G4Exception(
-//  "ConeParticleGun::operator!=","Event0193",FatalException,
-//  "ConeParticleGun : != operator should not be used.");
+//  "ConeParticleGunHW::operator!=","Event0193",FatalException,
+//  "ConeParticleGunHW : != operator should not be used.");
 //  return false; }
 
-void ConeParticleGun::SetParticleDefinition(G4ParticleDefinition *aParticleDefinition)
+void ConeParticleGunHW::SetParticleDefinition(G4ParticleDefinition *aParticleDefinition)
 {
     if (!aParticleDefinition) {
-        G4Exception("ConeParticleGun::SetParticleDefinition()", "Event0101", FatalException, "Null pointer is given.");
+        G4Exception("ConeParticleGunHW::SetParticleDefinition()", "Event0101", FatalException, "Null pointer is given.");
     }
     if (aParticleDefinition->IsShortLived()) {
         if (!(aParticleDefinition->GetDecayTable())) {
             G4ExceptionDescription ED;
-            ED << "ConeParticleGun does not support shooting a short-lived particle without a valid decay table." << G4endl;
-            ED << "ConeParticleGun::SetParticleDefinition for " << aParticleDefinition->GetParticleName() << " is ignored." << G4endl;
-            G4Exception("ConeParticleGun::SetParticleDefinition()", "Event0102", JustWarning, ED);
+            ED << "ConeParticleGunHW does not support shooting a short-lived particle without a valid decay table." << G4endl;
+            ED << "ConeParticleGunHW::SetParticleDefinition for " << aParticleDefinition->GetParticleName() << " is ignored." << G4endl;
+            G4Exception("ConeParticleGunHW::SetParticleDefinition()", "Event0102", JustWarning, ED);
             return;
         }
     }
@@ -120,14 +120,14 @@ void ConeParticleGun::SetParticleDefinition(G4ParticleDefinition *aParticleDefin
     }
 }
 
-void ConeParticleGun::SetParticleEnergy(G4double aKineticEnergy)
+void ConeParticleGunHW::SetParticleEnergy(G4double aKineticEnergy)
 {
     particle_energy = aKineticEnergy;
     if (particle_momentum > 0.0) {
         if (particle_definition) {
-            G4cout << "ConeParticleGun::" << particle_definition->GetParticleName() << G4endl;
+            G4cout << "ConeParticleGunHW::" << particle_definition->GetParticleName() << G4endl;
         } else {
-            G4cout << "ConeParticleGun::" << " " << G4endl;
+            G4cout << "ConeParticleGunHW::" << " " << G4endl;
         }
         G4cout << " was defined in terms of Momentum: " << particle_momentum / GeV << "GeV/c" << G4endl;
         G4cout << " is now defined in terms of KineticEnergy: " << particle_energy / GeV << "GeV" << G4endl;
@@ -135,19 +135,19 @@ void ConeParticleGun::SetParticleEnergy(G4double aKineticEnergy)
     }
 }
 
-void ConeParticleGun::SetParticleMomentum(G4double aMomentum)
+void ConeParticleGunHW::SetParticleMomentum(G4double aMomentum)
 {
     if (particle_energy > 0.0) {
         if (particle_definition) {
-            G4cout << "ConeParticleGun::" << particle_definition->GetParticleName() << G4endl;
+            G4cout << "ConeParticleGunHW::" << particle_definition->GetParticleName() << G4endl;
         } else {
-            G4cout << "ConeParticleGun::" << " " << G4endl;
+            G4cout << "ConeParticleGunHW::" << " " << G4endl;
         }
         G4cout << " was defined in terms of KineticEnergy: " << particle_energy / GeV << "GeV" << G4endl;
         G4cout << " is now defined in terms Momentum: " << aMomentum / GeV << "GeV/c" << G4endl;
     }
     if (!particle_definition) {
-        G4cout << "Particle Definition not defined yet for ConeParticleGun" << G4endl;
+        G4cout << "Particle Definition not defined yet for ConeParticleGunHW" << G4endl;
         G4cout << "Zero Mass is assumed" << G4endl;
         particle_momentum = aMomentum;
         particle_energy = aMomentum;
@@ -158,19 +158,47 @@ void ConeParticleGun::SetParticleMomentum(G4double aMomentum)
     }
 }
 
-void ConeParticleGun::SetParticleMomentum(G4ParticleMomentum aMomentum)
+
+/*Set mimimum momentum.
+ *Very basic, but as long as it's used as intended... */
+void ConeParticleGunHW::SetParticleMinMomentum(G4double aMomentum)
+{
+    particle_minMomentum = aMomentum;
+}
+
+/*Set maximum momentum*/
+void ConeParticleGunHW::SetParticleMaxMomentum(G4double aMomentum)
+{
+    particle_maxMomentum = aMomentum;
+}
+
+
+/*Set mimimum eta*/
+void ConeParticleGunHW::SetParticleMinEta(G4double aPseudorap)
+{
+    particle_minEta = aPseudorap;
+}
+
+/*Set maximum eta*/
+void ConeParticleGunHW::SetParticleMaxEta(G4double aPseudorap)
+{
+    particle_maxEta = aPseudorap;
+}
+
+
+void ConeParticleGunHW::SetParticleMomentum(G4ParticleMomentum aMomentum)
 {
     if (particle_energy > 0.0) {
         if (particle_definition) {
-            G4cout << "ConeParticleGun::" << particle_definition->GetParticleName() << G4endl;
+            G4cout << "ConeParticleGunHW::" << particle_definition->GetParticleName() << G4endl;
         } else {
-            G4cout << "ConeParticleGun::" << " " << G4endl;
+            G4cout << "ConeParticleGunHW::" << " " << G4endl;
         }
         G4cout << " was defined in terms of KineticEnergy: " << particle_energy / GeV << "GeV" << G4endl;
         G4cout << " is now defined in terms Momentum: " << aMomentum.mag() / GeV << "GeV/c" << G4endl;
     }
     if (!particle_definition) {
-        G4cout << "Particle Definition not defined yet for ConeParticleGun" << G4endl;
+        G4cout << "Particle Definition not defined yet for ConeParticleGunHW" << G4endl;
         G4cout << "Zero Mass is assumed" << G4endl;
         particle_momentum_direction = aMomentum.unit();
         particle_momentum = aMomentum.mag();
@@ -183,17 +211,19 @@ void ConeParticleGun::SetParticleMomentum(G4ParticleMomentum aMomentum)
     }
 }
 
-void ConeParticleGun::GeneratePrimaryVertex(G4Event *evt)
+/* THIS IS THE KEY FUNCTION OF PARTICLE GENERATORS */
+void ConeParticleGunHW::GeneratePrimaryVertex(G4Event *evt)
 {
     if (!particle_definition) {
         G4ExceptionDescription ED;
         ED << "Particle definition is not defined." << G4endl;
-        ED << "ConeParticleGun::SetParticleDefinition() has to be invoked beforehand." << G4endl;
-        G4Exception("ConeParticleGun::GeneratePrimaryVertex()", "Event0109", FatalException, ED);
+        ED << "ConeParticleGunHW::SetParticleDefinition() has to be invoked beforehand." << G4endl;
+        G4Exception("ConeParticleGunHW::GeneratePrimaryVertex()", "Event0109", FatalException, ED);
         return;
     }
 
     // create a new vertex
+    // If standard deviation kept at 0: will just place it at the given position.
     G4PrimaryVertex *vertex = new G4PrimaryVertex(
             G4RandGauss::shoot(particle_position.x(), fPositionStdDev.x()),
             G4RandGauss::shoot(particle_position.y(), fPositionStdDev.y()),
@@ -205,27 +235,37 @@ void ConeParticleGun::GeneratePrimaryVertex(G4Event *evt)
     // create new primaries and set them to the vertex
     G4double mass = particle_definition->GetPDGMass();
     for (G4int i = 0; i < NumberOfParticlesToBeGenerated; i++) {
+		
+		double phi = G4UniformRand()*2.0*pi; // --- flat in phi;
+		
+		//Theta will also give the direction, along with phi.
+		//This is just for one particle.
+		//Theta and phi define direction, momentum defines momentum.
+		
+		double eta = G4RandFlat::shoot(particle_minEta, particle_maxEta); //Gives flat distribution between the two values
+		
+		double theta = 2*atan(exp(-eta));
+		
+		//Direction from phi and theta
+		double nx = sin(theta)*cos(phi);
+		double ny = sin(theta)*sin(phi);
+		double nz = cos(theta);
+		//This always gives a unit vector
+		
+		G4ThreeVector randomisedDirection(nx, ny, nz);
 
-        // smear direction
-        double px = particle_momentum_direction.getX();
-        double py = particle_momentum_direction.getY();
-        double pz = particle_momentum_direction.getZ();
-        double ptot = particle_momentum_direction.mag();
-
-
-        double theta = acos(pz / ptot);
-        double phi = atan2(py, px);
-
-        double deltaTheta = G4RandGauss::shoot(0, fConeAngleStdDev / rad);
-        double conePhi = G4UniformRand() * 2. * pi; // --- flat in phi
-        G4ThreeVector smearedDirection(std::sin(deltaTheta) * std::cos(conePhi), std::sin(deltaTheta) * std::sin(conePhi), std::cos(deltaTheta));
-        smearedDirection.rotateY(theta);
-        smearedDirection.rotateZ(phi);
-
+		//std::cout << "ETA: " << eta << " THETA: " << theta*180.0/pi << " DIRECTION: " << randomisedDirection.unit() << std::endl;
+	
+		
+		//Momentum
+		double totalMomentum = G4RandFlat::shoot(particle_minMomentum, particle_maxMomentum);
+		
+		
         G4PrimaryParticle *particle = new G4PrimaryParticle(particle_definition);
-        particle->SetKineticEnergy(G4RandGauss::shoot(particle_energy, fEnergyStdDev));
+        //particle->SetKineticEnergy(G4RandGauss::shoot(particle_energy, fEnergyStdDev));
+        particle->SetMomentum(totalMomentum*nx, totalMomentum*ny, totalMomentum*nz);
         particle->SetMass(mass);
-        particle->SetMomentumDirection(smearedDirection.unit());
+        //particle->SetMomentumDirection(randomisedDirection);
         particle->SetCharge(particle_charge);
         particle->SetPolarization(particle_polarization.x(), particle_polarization.y(), particle_polarization.z());
         vertex->SetPrimary(particle);
@@ -234,20 +274,20 @@ void ConeParticleGun::GeneratePrimaryVertex(G4Event *evt)
     evt->AddPrimaryVertex(vertex);
 }
 
-void ConeParticleGun::SetParticlePositionStdDev(G4ThreeVector vector)
+void ConeParticleGunHW::SetParticlePositionStdDev(G4ThreeVector vector)
 {
     fPositionStdDev = vector;
 
 
 }
 
-void ConeParticleGun::SetParticleEnergyStdDev(G4double d)
+void ConeParticleGunHW::SetParticleEnergyStdDev(G4double d)
 {
     fEnergyStdDev = d;
 
 }
 
-void ConeParticleGun::SetConeAngleStdDev(G4double d)
+void ConeParticleGunHW::SetConeAngleStdDev(G4double d)
 {
     fConeAngleStdDev = d;
 }

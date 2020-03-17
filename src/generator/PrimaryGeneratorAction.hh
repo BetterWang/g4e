@@ -22,11 +22,14 @@
 #include "globals.hh"
 #include "G4VUserPrimaryGeneratorAction.hh"
 
+
 class G4Event;
 class G4VPrimaryGenerator;
 class PrimaryGeneratorMessenger;
 class JLeicRunAction;
 class JLeicDetectorConstruction;
+class ConeParticleGun;
+class ConeParticleGunHW;
 
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction {
 public:
@@ -50,10 +53,11 @@ public:
 
 private:
     G4VPrimaryGenerator *fConeParticleGunGenerator;       // Particle gun
-    G4VPrimaryGenerator *fParticleGunGenerator;       // Particle gun
-    G4VPrimaryGenerator *fHepMcAsciiGenerator;        // Herwig, Pythia 8 and other HepMC ascii
-    G4VPrimaryGenerator *fPythiaAsciiGenerator;       // Pythia 6 lund format
-    G4VPrimaryGenerator *fBeagleGenerator;            // Beagle Shmeagle
+    G4VPrimaryGenerator *fConeParticleGunHWGenerator;     // Particle gun
+    G4VPrimaryGenerator *fParticleGunGenerator;           // Particle gun
+    G4VPrimaryGenerator *fHepMcAsciiGenerator;            // Herwig, Pythia 8 and other HepMC ascii
+    G4VPrimaryGenerator *fPythiaAsciiGenerator;           // Pythia 6 lund format
+    G4VPrimaryGenerator *fBeagleGenerator;                // Beagle Shmeagle
 
     G4VPrimaryGenerator *currentGenerator;
     G4String currentGeneratorName;

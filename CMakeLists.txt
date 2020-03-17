@@ -83,6 +83,7 @@ find_library(VGM_Geant4GM NAMES Geant4GM HINTS ${VGM_DIRECTORY} PATH_SUFFIXES li
 find_library(VGM_BaseVGM  NAMES BaseVGM  HINTS ${VGM_DIRECTORY} PATH_SUFFIXES lib lib64)
 find_library(VGM_RootGM   NAMES RootGM   HINTS ${VGM_DIRECTORY} PATH_SUFFIXES lib lib64)
 find_library(VGM_XmlVGM   NAMES XmlVGM   HINTS ${VGM_DIRECTORY} PATH_SUFFIXES lib lib64)
+find_library(VGM_ClhepVGM NAMES ClhepVGM HINTS ${VGM_DIRECTORY} PATH_SUFFIXES lib lib64)
 
 message(STATUS "g4e: VGM_Geant4GM :${VGM_Geant4GM} ")
 message(STATUS "g4e: VGM_BaseVGM  :${VGM_BaseVGM}  ")
@@ -154,6 +155,7 @@ target_link_libraries(g4e
         ${VGM_BaseVGM}
         ${VGM_RootGM}
         ${VGM_XmlVGM}
+        ${VGM_ClhepVGM}
         ${ROOT_LIBRARIES}
         spdlog
         )

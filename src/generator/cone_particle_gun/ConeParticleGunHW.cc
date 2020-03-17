@@ -27,6 +27,9 @@
 //
 
 // ConeParticleGunHW
+
+#include <cmath>
+
 #include "ConeParticleGunHW.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4PrimaryParticle.hh"
@@ -236,7 +239,7 @@ void ConeParticleGunHW::GeneratePrimaryVertex(G4Event *evt)
     G4double mass = particle_definition->GetPDGMass();
     for (G4int i = 0; i < NumberOfParticlesToBeGenerated; i++) {
 		
-		double phi = G4UniformRand()*2.0*pi; // --- flat in phi;
+		double phi = G4UniformRand()*2.0*M_PI; // --- flat in phi;
 		
 		//Theta will also give the direction, along with phi.
 		//This is just for one particle.

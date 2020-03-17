@@ -27,6 +27,9 @@
 //
 
 // ConeParticleGun
+
+#include <cmath>
+
 #include "ConeParticleGun.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4PrimaryParticle.hh"
@@ -217,7 +220,7 @@ void ConeParticleGun::GeneratePrimaryVertex(G4Event *evt)
         double phi = atan2(py, px);
 
         double deltaTheta = G4RandGauss::shoot(0, fConeAngleStdDev / rad);
-        double conePhi = G4UniformRand() * 2. * pi; // --- flat in phi
+        double conePhi = G4UniformRand() * 2. * M_PI; // --- flat in phi
         G4ThreeVector smearedDirection(std::sin(deltaTheta) * std::cos(conePhi), std::sin(deltaTheta) * std::sin(conePhi), std::cos(deltaTheta));
         smearedDirection.rotateY(theta);
         smearedDirection.rotateZ(phi);

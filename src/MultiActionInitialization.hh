@@ -2,6 +2,7 @@
 #define G4E_INITIALIZATIONACTION_HH
 
 #include <memory>
+#include <functional>
 
 #include <G4VUserActionInitialization.hh>
 #include <G4UserEventAction.hh>

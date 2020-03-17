@@ -175,7 +175,7 @@ target_include_directories(g4e
 # All sources and includes for the project are there:
 add_subdirectory(src)
 
-cotire(g4e)
+#cotire(g4e)
 
 # This is good for in JupyterLab Build
 if(${G4E_SILENCE_WARNINGS})

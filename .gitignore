@@ -1,7 +1,6 @@
 #work/*
 work2/
-work/*.root
-work/g4_*.wrl
+work/
 build/*
 
 # Python virtual environment
@@ -24,37 +23,14 @@ _deps
 
 *.rndm
 
-work/tune*.txt
+work/
+work2/
 
-work/1\.txt
 
-work/BEAGLE\.txt
-
-work/DIRE-1\.500
-
-work/e_ir\.txt\.my
-
-work/i_ir\.txt\.March07
-
-work/i_ir\.txt\.March07a
-
-work/jleic-g4\.C
-
-work/i_ir\.txt\.my
-
-work/JLEICgeant4
 
 src/G4QuadrupoleMagField\.cc\.my
 
 src/G4QuadrupoleMagField\.cc\.my2
-
-work/a\.txt
-
-work/corrector_optimization\.in~
-
-work/pythia8_CCdis\.hepmc
-
-work/tune
 
 
 ### C++ template
@@ -133,6 +109,7 @@ crashlytics.properties
 crashlytics-build.properties
 fabric.properties
 cmake-build-debug/
+cmake-build-relwithdebinfo/
 
 \.idea/encodings\.xml
 

@@ -60,6 +60,9 @@ public:
 
     static UserArguments Process(int argc, char **argv);
 
+    /// Prints help if no macro files are provided
+    static void PrintNoMacroHelp();
+
 private:
 
 
@@ -70,8 +73,7 @@ private:
     static void ProcessMacroPath(UserArguments& result, const char *macroPathCstr);
 
 /// Processes both program arguments and environment variables to build the right ProgramArguments
-
-
+    static std::string mAppDescription;
 };
 
 

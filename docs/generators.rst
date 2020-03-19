@@ -17,9 +17,9 @@ possible values:
 Cone particle gun
 -----------------
 
-``/generator/coneParticleGun/``
+`/generator/coneParticleGun/`
 
-`Example macro for coneParticleGun <example_cone_particle_gun.rst>`
+:doc:`Example macro for coneParticleGun <example_cone_particle_gun>`
 
 
 

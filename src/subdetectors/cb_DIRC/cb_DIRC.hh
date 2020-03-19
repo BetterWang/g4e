@@ -10,14 +10,13 @@
 #include "G4Material.hh"
 #include "G4Color.hh"
 #include "G4VisAttributes.hh"
-
 #include "JLeicDetectorConfig.hh"
+
 struct cb_DIRC_Config {
 
-    G4double RIn;
-    G4double ROut;
-    G4double SizeZ;
-
+    G4double RIn;   // Set outside
+    G4double ROut;  // Set in general construction
+    G4double SizeZ; // Set in general construction
 };
 
 class cb_DIRC_Design {

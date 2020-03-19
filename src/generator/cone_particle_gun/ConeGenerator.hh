@@ -6,9 +6,6 @@
 #include <fstream>
 #include <vector>
 
-
-
-
 class ConeGenerator : public G4VPrimaryGenerator {
 protected:
     G4int fVerbose;
@@ -19,7 +16,6 @@ public:
     }
 
     ~ConeGenerator();
-
 
     void SetVerboseLevel(G4int i);
 

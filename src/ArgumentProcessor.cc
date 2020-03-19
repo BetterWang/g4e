@@ -8,10 +8,12 @@
 #include "ArgumentProcessor.hh"
 
 
+
+
 UserArguments InputProcessor::Process(int argc, char **argv)
 {
     UserArguments result;                                          // This function result
-    CLI::App app{"g4e - Geant 4 Electron Ion Collider"};
+    CLI::App app{mAppDescription};
 
     bool optShowGui = false;
     int optThreads = 1;
@@ -33,6 +35,16 @@ UserArguments InputProcessor::Process(int argc, char **argv)
         throw;
     }
 
+    //
+    // Input files (macros and data files)
+    result.AllFileNames = optAllFiles;
+    ProcessFileNames(result);                               // Separate file names as macro / data files
+    if(result.MacroFileNames.empty()) {
+        // TODO interactive terminal mode
+        InputProcessor::PrintNoMacroHelp();
+        exit(0);
+    }
+
     // verbosity
     result.LogLevel = ProcessVerbosity(optVerbose);
     fmt::print("ARG:LogLevel = {}\n", result.LogLevel.ToString());
@@ -46,11 +58,6 @@ UserArguments InputProcessor::Process(int argc, char **argv)
     // Number of threads
     result.ThreadsCount = optThreads;
     fmt::print("ARG:ThreadsCount = {}\n", result.ThreadsCount);
-
-    //
-    // Input files (macros and data files)
-    result.AllFileNames = optAllFiles;
-    ProcessFileNames(result);                               // Separate file names as macro / data files
 
     // Output file name:
     result.OutputBaseName = optOutputName;
@@ -134,4 +141,16 @@ void InputProcessor::ProcessMacroPath(UserArguments &result, const char *macroPa
     }
     fmt::print("ENV:G4E_MACRO_PATH:  is-set={}, value='{}'",  result.IsSetMacroPath, result.MacroPath );
 
+}
+
+std::string InputProcessor::mAppDescription =
+        "g4e - Geant 4 Electron Ion Collider - is a full simulation part of ESCalate framework.";
+
+void InputProcessor::PrintNoMacroHelp() {
+    fmt::print(mAppDescription + "\n\n"
+        "There is no macro files provided. Please look at "
+        "$G4E_HOME/examples folder macros examples or how to run g4e from python\n"
+        "You can get more help here: \n"
+        "https://g4e.readthedocs.io/\n"
+        "https://geant4.web.cern.ch/");
 }

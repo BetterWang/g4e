@@ -4,14 +4,14 @@
 
 # Include default setup
 # Use jleic.mac for headless mode or jleicvis.mac for GUI visualization
+/control/execute jleic.mac
 #/control/execute jleicvis.mac
-/control/execute jleicvis.mac
 
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 #^^^^^        HepMc v2.x ascii files
 #^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 /generator/select hepmcAscii
-/generator/hepmcAscii/verbose 1
+/generator/hepmcAscii/verbose 0
 
 #---- Herwig Charm------
 #/generator/hepmcAscii/open  /data/yulia/Herwig6/herwig6_P19104_Q10_N5e+06_e-p_5x100.hepmc

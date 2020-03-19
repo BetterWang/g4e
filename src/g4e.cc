@@ -27,16 +27,13 @@
 
 #include "StringHelpers.hh"
 
-
 #include "main_detectors/jleic/JLeicDetectorConstruction.hh"
 #include "ArgumentProcessor.hh"
 #include "EicPhysicsList.hh"
 #include "PrimaryGeneratorAction.hh"
 
-#include "JLeicHistogramManager.hh"
 #include "JLeicRunAction.hh"
 #include "JLeicEventAction.hh"
-#include "JLeicSteppingAction.hh"
 #include "JLeicSteppingVerbose.hh"
 #include "JLeicTrackingAction.hh"
 #include "InitializationContext.hh"
@@ -59,38 +56,10 @@
 #include <TFile.h>
 #include <G4GeometryManager.hh>
 
-struct test {
-    int Xaaa;
-
-    test(std::string name):
-        fMessenger(this, "/mytest/"),
-        fName(name)
-    {
-        fMessenger.DeclareProperty("xaaa", Xaaa);
-    }
-
-    void print() {
-        fmt::print("test: {} : {}\n", fName, Xaaa);
-    }
-
-private:
-    G4GenericMessenger fMessenger;
-    std::string fName;
-};
 
 int main(int argc, char **argv)
 {
     using namespace fmt;
-
-    test test1("test1");
-    test1.Xaaa = 1;
-    test test2("test2");
-    test2.Xaaa = 2;
-
-    if( argc > 1 ) {
-        std::cout << "there are " << argc-1 << " (more) arguments, they are:\n" ;
-        std::copy( argv+1, argv+argc, std::ostream_iterator<const char*>( std::cout, "\n" ) ) ;
-    }
 
     Logging::InitializeSpdLog();
 
@@ -130,7 +99,7 @@ int main(int argc, char **argv)
     // Event, tracking, stepping actions
     actionInit.AddUserActionGenerator([&mainRootOutput](){return new JLeicEventAction(mainRootOutput.GetJLeicRootOutput(), mainRootOutput.GetJLeicHistogramManager());});
     actionInit.AddUserActionGenerator([&mainRootOutput](){return new JLeicRunAction(mainRootOutput.GetJLeicRootOutput(), mainRootOutput.GetJLeicHistogramManager());});
-    actionInit.AddUserActionGenerator([&mainRootOutput](){return new JLeicTrackingAction();});
+    actionInit.AddUserActionGenerator([](){return new JLeicTrackingAction();});
 
 
     // After the run manager, we can combine initialization context
@@ -157,7 +126,7 @@ int main(int argc, char **argv)
     std::string defaultMacro = "jleic.mac";     // No GUI default macro. Default macro is used if no other macros given
 
     // We show GUI if user didn't provided any macros of if he has --gui/-g flag
-    if(appArgs.MacroFileNames.empty() || appArgs.ShowGui) {
+    if(appArgs.ShowGui) {
         appArgs.ShowGui = true;
         defaultMacro = "jleicvis.mac";          // Default macro for GUI
         visManager = new G4VisExecutive;
@@ -195,8 +164,5 @@ int main(int argc, char **argv)
     mainRootOutput.Write();
 
     G4GeometryManager::GetInstance()->OpenGeometry();
-
-    test1.print();
-    test2.print();
     return 0;
 }

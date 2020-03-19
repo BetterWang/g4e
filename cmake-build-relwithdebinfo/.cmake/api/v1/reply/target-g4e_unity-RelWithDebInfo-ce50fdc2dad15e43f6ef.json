@@ -1,0 +1,1004 @@
+{
+	"artifacts" : 
+	[
+		{
+			"path" : "unity/g4e"
+		}
+	],
+	"backtrace" : 4,
+	"backtraceGraph" : 
+	{
+		"commands" : 
+		[
+			"add_executable",
+			"cotire_setup_unity_build_target",
+			"cotire_target",
+			"cotire",
+			"set_target_properties",
+			"cotire_target_link_libraries",
+			"set_property",
+			"cotire_copy_set_properties",
+			"add_definitions",
+			"include"
+		],
+		"files" : 
+		[
+			"cmake/Modules/cotire.cmake",
+			"CMakeLists.txt",
+			"/home/romanov/eic/geant/geant-v10.6.0/lib/Geant4-10.6.0/UseGeant4.cmake"
+		],
+		"nodes" : 
+		[
+			{
+				"file" : 1
+			},
+			{
+				"command" : 3,
+				"file" : 1,
+				"line" : 183,
+				"parent" : 0
+			},
+			{
+				"command" : 2,
+				"file" : 0,
+				"line" : 3589,
+				"parent" : 1
+			},
+			{
+				"command" : 1,
+				"file" : 0,
+				"line" : 3412,
+				"parent" : 2
+			},
+			{
+				"command" : 0,
+				"file" : 0,
+				"line" : 3200,
+				"parent" : 3
+			},
+			{
+				"command" : 5,
+				"file" : 0,
+				"line" : 3596,
+				"parent" : 1
+			},
+			{
+				"command" : 4,
+				"file" : 0,
+				"line" : 3486,
+				"parent" : 5
+			},
+			{
+				"command" : 7,
+				"file" : 0,
+				"line" : 3248,
+				"parent" : 3
+			},
+			{
+				"command" : 6,
+				"file" : 0,
+				"line" : 329,
+				"parent" : 7
+			},
+			{
+				"command" : 6,
+				"file" : 0,
+				"line" : 329,
+				"parent" : 7
+			},
+			{
+				"command" : 9,
+				"file" : 1,
+				"line" : 57,
+				"parent" : 0
+			},
+			{
+				"file" : 2,
+				"parent" : 10
+			},
+			{
+				"command" : 8,
+				"file" : 2,
+				"line" : 39,
+				"parent" : 11
+			}
+		]
+	},
+	"compileGroups" : 
+	[
+		{
+			"compileCommandFragments" : 
+			[
+				{
+					"fragment" : "-W -Wall -pedantic -Wno-non-virtual-dtor -Wno-long-long -Wwrite-strings -Wpointer-arith -Woverloaded-virtual -Wno-variadic-macros -Wshadow -pipe -pthread -ftls-model=initial-exec -std=c++1z   -std=c++1z -pipe -fsigned-char -pthread -O2 -g -O2 -g -DNDEBUG   -fPIC -std=gnu++1z"
+				}
+			],
+			"defines" : 
+			[
+				{
+					"backtrace" : 9,
+					"define" : "FMT_HEADER_ONLY"
+				},
+				{
+					"backtrace" : 12,
+					"define" : "G4INTY_USE_QT"
+				},
+				{
+					"backtrace" : 12,
+					"define" : "G4INTY_USE_XT"
+				},
+				{
+					"backtrace" : 6,
+					"define" : "G4LIB_BUILD_DLL"
+				},
+				{
+					"backtrace" : 12,
+					"define" : "G4UI_USE_QT"
+				},
+				{
+					"backtrace" : 12,
+					"define" : "G4UI_USE_TCSH"
+				},
+				{
+					"backtrace" : 12,
+					"define" : "G4VIS_USE_OPENGL"
+				},
+				{
+					"backtrace" : 12,
+					"define" : "G4VIS_USE_OPENGLQT"
+				},
+				{
+					"backtrace" : 12,
+					"define" : "G4VIS_USE_OPENGLX"
+				},
+				{
+					"backtrace" : 12,
+					"define" : "G4VIS_USE_RAYTRACERX"
+				},
+				{
+					"backtrace" : 6,
+					"define" : "QT_CORE_LIB"
+				},
+				{
+					"backtrace" : 6,
+					"define" : "QT_GUI_LIB"
+				},
+				{
+					"backtrace" : 6,
+					"define" : "QT_NO_DEBUG"
+				},
+				{
+					"backtrace" : 6,
+					"define" : "QT_OPENGL_LIB"
+				},
+				{
+					"backtrace" : 6,
+					"define" : "QT_PRINTSUPPORT_LIB"
+				},
+				{
+					"backtrace" : 6,
+					"define" : "QT_WIDGETS_LIB"
+				},
+				{
+					"backtrace" : 6,
+					"define" : "SPDLOG_COMPILED_LIB"
+				}
+			],
+			"includes" : 
+			[
+				{
+					"backtrace" : 8,
+					"path" : "/home/romanov/eic/root/root-v6-20-00/include"
+				},
+				{
+					"backtrace" : 8,
+					"path" : "/home/romanov/eic/clhep/clhep-master/lib/CLHEP-2.4.1.3/../../include"
+				},
+				{
+					"backtrace" : 8,
+					"path" : "/home/romanov/eic/hepmc/hepmc-HEPMC_02_06_09/include"
+				},
+				{
+					"backtrace" : 8,
+					"path" : "/home/romanov/eic/vgm/vgm-v4-5/include"
+				},
+				{
+					"backtrace" : 8,
+					"path" : "/home/romanov/eic/vgm/vgm-v4-5/test/include"
+				},
+				{
+					"backtrace" : 8,
+					"path" : "/home/romanov/eic/g4e/g4e-dev/src/external/spdlog/include"
+				},
+				{
+					"backtrace" : 8,
+					"path" : "/home/romanov/eic/g4e/g4e-dev/src/external/CLI11"
+				},
+				{
+					"backtrace" : 8,
+					"path" : "/home/romanov/eic/g4e/g4e-dev/src/."
+				},
+				{
+					"backtrace" : 8,
+					"path" : "/home/romanov/eic/g4e/g4e-dev/src/generator"
+				},
+				{
+					"backtrace" : 8,
+					"path" : "/home/romanov/eic/g4e/g4e-dev/src/helpers"
+				},
+				{
+					"backtrace" : 8,
+					"path" : "/home/romanov/eic/g4e/g4e-dev/src/root_output"
+				},
+				{
+					"backtrace" : 8,
+					"path" : "/home/romanov/eic/g4e/g4e-dev/src/main_detectors/jleic/."
+				},
+				{
+					"backtrace" : 8,
+					"path" : "/home/romanov/eic/g4e/g4e-dev/src/subdetectors/."
+				},
+				{
+					"backtrace" : 8,
+					"path" : "/home/romanov/eic/g4e/g4e-dev/src/generator/generic_lund_reader"
+				},
+				{
+					"backtrace" : 8,
+					"path" : "/home/romanov/eic/g4e/g4e-dev/src/generator/beagle_reader"
+				},
+				{
+					"backtrace" : 8,
+					"path" : "/home/romanov/eic/g4e/g4e-dev/src/generator/hepmc2_reader"
+				},
+				{
+					"backtrace" : 8,
+					"path" : "/home/romanov/eic/g4e/g4e-dev/src/generator/pythia_ascii_reader"
+				},
+				{
+					"backtrace" : 8,
+					"path" : "/home/romanov/eic/g4e/g4e-dev/src/generator/cone_particle_gun"
+				},
+				{
+					"backtrace" : 8,
+					"isSystem" : true,
+					"path" : "/home/romanov/eic/geant/geant-v10.6.0/include/Geant4"
+				},
+				{
+					"backtrace" : 6,
+					"isSystem" : true,
+					"path" : "/home/romanov/eic/clhep/clhep-master/include"
+				},
+				{
+					"backtrace" : 6,
+					"isSystem" : true,
+					"path" : "/usr/include/x86_64-linux-gnu/qt5"
+				},
+				{
+					"backtrace" : 6,
+					"isSystem" : true,
+					"path" : "/usr/include/x86_64-linux-gnu/qt5/QtGui"
+				},
+				{
+					"backtrace" : 6,
+					"isSystem" : true,
+					"path" : "/usr/include/x86_64-linux-gnu/qt5/QtCore"
+				},
+				{
+					"backtrace" : 6,
+					"isSystem" : true,
+					"path" : "/usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++"
+				},
+				{
+					"backtrace" : 6,
+					"isSystem" : true,
+					"path" : "/usr/include/x86_64-linux-gnu/qt5/QtWidgets"
+				},
+				{
+					"backtrace" : 6,
+					"isSystem" : true,
+					"path" : "/usr/include/x86_64-linux-gnu/qt5/QtPrintSupport"
+				},
+				{
+					"backtrace" : 6,
+					"isSystem" : true,
+					"path" : "/usr/include/x86_64-linux-gnu/qt5/QtOpenGL"
+				}
+			],
+			"language" : "CXX",
+			"sourceIndexes" : 
+			[
+				48,
+				49,
+				50,
+				51,
+				52,
+				53,
+				54,
+				55,
+				56,
+				57,
+				58,
+				59,
+				60,
+				61,
+				62,
+				63,
+				64,
+				65,
+				66,
+				67,
+				68
+			]
+		}
+	],
+	"dependencies" : 
+	[
+		{
+			"backtrace" : 6,
+			"id" : "spdlog::@c23cf64f70376406ffe5"
+		}
+	],
+	"folder" : 
+	{
+		"name" : "cotire"
+	},
+	"id" : "g4e_unity::@6890427a1f51a3e7e1df",
+	"link" : 
+	{
+		"commandFragments" : 
+		[
+			{
+				"fragment" : "-W -Wall -pedantic -Wno-non-virtual-dtor -Wno-long-long -Wwrite-strings -Wpointer-arith -Woverloaded-virtual -Wno-variadic-macros -Wshadow -pipe -pthread -ftls-model=initial-exec -std=c++1z   -std=c++1z -pipe -fsigned-char -pthread -O2 -g -O2 -g -DNDEBUG",
+				"role" : "flags"
+			},
+			{
+				"fragment" : "-rdynamic",
+				"role" : "flags"
+			},
+			{
+				"fragment" : "-L/home/romanov/eic/root/root-v6-20-00/lib",
+				"role" : "libraryPath"
+			},
+			{
+				"fragment" : "-Wl,-rpath,/home/romanov/eic/root/root-v6-20-00/lib:/home/romanov/eic/geant/geant-v10.6.0/lib:/home/romanov/eic/hepmc/hepmc-HEPMC_02_06_09/lib:/home/romanov/eic/vgm/vgm-v4-5/lib:/home/romanov/eic/clhep/clhep-master/lib /home/romanov/eic/geant/geant-v10.6.0/lib/libG4Tree.so /home/romanov/eic/geant/geant-v10.6.0/lib/libG4GMocren.so /home/romanov/eic/geant/geant-v10.6.0/lib/libG4visHepRep.so /home/romanov/eic/geant/geant-v10.6.0/lib/libG4RayTracer.so /home/romanov/eic/geant/geant-v10.6.0/lib/libG4VRML.so /home/romanov/eic/geant/geant-v10.6.0/lib/libG4OpenGL.so /home/romanov/eic/geant/geant-v10.6.0/lib/libG4gl2ps.so /home/romanov/eic/geant/geant-v10.6.0/lib/libG4interfaces.so /home/romanov/eic/geant/geant-v10.6.0/lib/libG4persistency.so /home/romanov/eic/geant/geant-v10.6.0/lib/libG4error_propagation.so /home/romanov/eic/geant/geant-v10.6.0/lib/libG4readout.so /home/romanov/eic/geant/geant-v10.6.0/lib/libG4physicslists.so /home/romanov/eic/geant/geant-v10.6.0/lib/libG4parmodels.so /home/romanov/eic/hepmc/hepmc-HEPMC_02_06_09/lib/libHepMC.so /home/romanov/eic/vgm/vgm-v4-5/lib/libGeant4GM.so /home/romanov/eic/vgm/vgm-v4-5/lib/libBaseVGM.so /home/romanov/eic/vgm/vgm-v4-5/lib/libRootGM.so /home/romanov/eic/vgm/vgm-v4-5/lib/libXmlVGM.so /home/romanov/eic/vgm/vgm-v4-5/lib/libClhepVGM.so /home/romanov/eic/root/root-v6-20-00/lib/libCore.so /home/romanov/eic/root/root-v6-20-00/lib/libImt.so /home/romanov/eic/root/root-v6-20-00/lib/libRIO.so /home/romanov/eic/root/root-v6-20-00/lib/libNet.so /home/romanov/eic/root/root-v6-20-00/lib/libHist.so /home/romanov/eic/root/root-v6-20-00/lib/libGraf.so /home/romanov/eic/root/root-v6-20-00/lib/libGraf3d.so /home/romanov/eic/root/root-v6-20-00/lib/libGpad.so /home/romanov/eic/root/root-v6-20-00/lib/libROOTDataFrame.so /home/romanov/eic/root/root-v6-20-00/lib/libTree.so /home/romanov/eic/root/root-v6-20-00/lib/libTreePlayer.so /home/romanov/eic/root/root-v6-20-00/lib/libRint.so /home/romanov/eic/root/root-v6-20-00/lib/libPostscript.so /home/romanov/eic/root/root-v6-20-00/lib/libMatrix.so /home/romanov/eic/root/root-v6-20-00/lib/libPhysics.so /home/romanov/eic/root/root-v6-20-00/lib/libMathCore.so /home/romanov/eic/root/root-v6-20-00/lib/libThread.so /home/romanov/eic/root/root-v6-20-00/lib/libMultiProc.so /home/romanov/eic/root/root-v6-20-00/lib/libGeom.so src/external/spdlog/libspdlog.a /home/romanov/eic/geant/geant-v10.6.0/lib/libG4FR.so /home/romanov/eic/geant/geant-v10.6.0/lib/libG4vis_management.so /home/romanov/eic/geant/geant-v10.6.0/lib/libG4modeling.so /usr/lib/x86_64-linux-gnu/libXmu.so /usr/lib/x86_64-linux-gnu/libXext.so /usr/lib/x86_64-linux-gnu/libXt.so /usr/lib/x86_64-linux-gnu/libSM.so /usr/lib/x86_64-linux-gnu/libICE.so /usr/lib/x86_64-linux-gnu/libX11.so /usr/lib/x86_64-linux-gnu/libGLU.so /usr/lib/x86_64-linux-gnu/libGL.so /usr/lib/x86_64-linux-gnu/libQt5OpenGL.so.5.9.5 /usr/lib/x86_64-linux-gnu/libQt5PrintSupport.so.5.9.5 /usr/lib/x86_64-linux-gnu/libQt5Widgets.so.5.9.5 /usr/lib/x86_64-linux-gnu/libQt5Gui.so.5.9.5 /usr/lib/x86_64-linux-gnu/libQt5Core.so.5.9.5 /usr/lib/x86_64-linux-gnu/libxerces-c.so /home/romanov/eic/geant/geant-v10.6.0/lib/libG4run.so /home/romanov/eic/geant/geant-v10.6.0/lib/libG4event.so /home/romanov/eic/geant/geant-v10.6.0/lib/libG4tracking.so /home/romanov/eic/geant/geant-v10.6.0/lib/libG4processes.so /home/romanov/eic/geant/geant-v10.6.0/lib/libG4analysis.so /home/romanov/eic/geant/geant-v10.6.0/lib/libG4zlib.so /usr/lib/x86_64-linux-gnu/libexpat.so /home/romanov/eic/geant/geant-v10.6.0/lib/libG4digits_hits.so /home/romanov/eic/geant/geant-v10.6.0/lib/libG4track.so /home/romanov/eic/geant/geant-v10.6.0/lib/libG4particles.so /home/romanov/eic/geant/geant-v10.6.0/lib/libG4geometry.so /home/romanov/eic/geant/geant-v10.6.0/lib/libG4materials.so /home/romanov/eic/geant/geant-v10.6.0/lib/libG4graphics_reps.so /home/romanov/eic/geant/geant-v10.6.0/lib/libG4intercoms.so /home/romanov/eic/geant/geant-v10.6.0/lib/libG4global.so /home/romanov/eic/clhep/clhep-master/lib/libCLHEP-2.4.1.3.so -lpthread",
+				"role" : "libraries"
+			}
+		],
+		"language" : "CXX"
+	},
+	"name" : "g4e_unity",
+	"nameOnDisk" : "g4e",
+	"paths" : 
+	{
+		"build" : ".",
+		"source" : "."
+	},
+	"sourceGroups" : 
+	[
+		{
+			"name" : "Header Files",
+			"sourceIndexes" : 
+			[
+				0,
+				1,
+				2,
+				3,
+				4,
+				5,
+				6,
+				7,
+				8,
+				9,
+				10,
+				11,
+				12,
+				13,
+				14,
+				15,
+				16,
+				17,
+				18,
+				19,
+				20,
+				21,
+				22,
+				23,
+				24,
+				25,
+				26,
+				27,
+				28,
+				29,
+				30,
+				31,
+				32,
+				33,
+				34,
+				35,
+				36,
+				37,
+				38,
+				39,
+				40,
+				41,
+				42,
+				43,
+				44,
+				45,
+				46,
+				47
+			]
+		},
+		{
+			"name" : "Source Files",
+			"sourceIndexes" : 
+			[
+				48,
+				49,
+				50,
+				51,
+				52,
+				53,
+				54,
+				55,
+				56,
+				57,
+				58,
+				59,
+				60,
+				61,
+				62,
+				63,
+				64,
+				65,
+				66,
+				67,
+				68
+			]
+		},
+		{
+			"name" : "CMake Rules",
+			"sourceIndexes" : 
+			[
+				69,
+				70,
+				71,
+				72,
+				73,
+				74,
+				75,
+				76,
+				77,
+				78,
+				79,
+				80,
+				81,
+				82,
+				83,
+				84,
+				85,
+				86,
+				87,
+				88,
+				89
+			]
+		}
+	],
+	"sources" : 
+	[
+		{
+			"backtrace" : 4,
+			"path" : "src/ArgumentProcessor.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/helpers/StringHelpers.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/root_output/RootOutputManager.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/LoggingMessenger.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/LogLevels.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Logging.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/G4QuadrupoleMagField.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/Materials.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/EicPhysicsList.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/GeometryExport.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/MultiActionInitialization.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/InitializationContext.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/main_detectors/jleic/JLeicCalorHit.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/main_detectors/jleic/JLeicCalorimeterSD.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/main_detectors/jleic/JLeicDetectorConfig.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/main_detectors/jleic/JLeicDetectorConstruction.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/main_detectors/jleic/JLeicDetectorMessenger.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/main_detectors/jleic/JLeicHistogramManager.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/main_detectors/jleic/JLeicEventAction.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/main_detectors/jleic/JLeicRunAction.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/main_detectors/jleic/JLeicSolenoid3D.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/main_detectors/jleic/JLeicSteppingAction.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/main_detectors/jleic/JLeicVertexSD.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/main_detectors/jleic/JLeicVTXHit.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/main_detectors/jleic/JLeicXTRphysics.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/main_detectors/jleic/JLeicXTRphysicsMessenger.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/main_detectors/jleic/JLeicXTRTransparentRegRadModel.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/main_detectors/jleic/TRTDetectorConstruction.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/main_detectors/jleic/TRTMaterials.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/main_detectors/jleic/JLeicHistoMConfig.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/main_detectors/jleic/JLeicStepCut.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/main_detectors/jleic/JLeicSteppingVerbose.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/main_detectors/jleic/JLeicTrackingAction.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/generator/PrimaryGeneratorAction.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/generator/PrimaryGeneratorMessenger.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/generator/generic_lund_reader/TextEventFileReader.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/generator/beagle_reader/BeagleReader.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/generator/beagle_reader/BeagleGeneratorMessenger.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/generator/beagle_reader/BeagleGenerator.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/generator/hepmc2_reader/HepMcAsciiGenerator.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/generator/hepmc2_reader/HepMcAsciiReaderMessenger.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/generator/hepmc2_reader/HepMcGeneratorInterface.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/generator/pythia_ascii_reader/PythiaAsciiReaderMessenger.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/generator/pythia_ascii_reader/PythiaAsciiReader.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/generator/cone_particle_gun/ConeParticleGun.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/generator/cone_particle_gun/ConeParticleGunMessenger.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/generator/cone_particle_gun/ConeParticleGunMessengerHW.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"path" : "src/generator/cone_particle_gun/ConeParticleGunHW.hh",
+			"sourceGroupIndex" : 0
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_0_1.cxx",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_2_3.cxx",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_4_5.cxx",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_6_7.cxx",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_8_9.cxx",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_10_11.cxx",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_12_13.cxx",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_14_15.cxx",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_16_17.cxx",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_18_19.cxx",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_20_21.cxx",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_22_23.cxx",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_24_25.cxx",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_26_27.cxx",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_28_29.cxx",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_30_31.cxx",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_32_33.cxx",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_34_35.cxx",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_36_37.cxx",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_38_39.cxx",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 4,
+			"compileGroupIndex" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_40_40.cxx",
+			"sourceGroupIndex" : 1
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_0_1.cxx.rule",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_2_3.cxx.rule",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_4_5.cxx.rule",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_6_7.cxx.rule",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_8_9.cxx.rule",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_10_11.cxx.rule",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_12_13.cxx.rule",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_14_15.cxx.rule",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_16_17.cxx.rule",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_18_19.cxx.rule",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_20_21.cxx.rule",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_22_23.cxx.rule",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_24_25.cxx.rule",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_26_27.cxx.rule",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_28_29.cxx.rule",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_30_31.cxx.rule",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_32_33.cxx.rule",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_34_35.cxx.rule",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_36_37.cxx.rule",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_38_39.cxx.rule",
+			"sourceGroupIndex" : 2
+		},
+		{
+			"backtrace" : 0,
+			"isGenerated" : true,
+			"path" : "cmake-build-relwithdebinfo/cotire/g4e_CXX_unity_40_40.cxx.rule",
+			"sourceGroupIndex" : 2
+		}
+	],
+	"type" : "EXECUTABLE"
+}

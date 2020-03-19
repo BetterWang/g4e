@@ -1,0 +1,247 @@
+{
+	"configurations" : 
+	[
+		{
+			"directories" : 
+			[
+				{
+					"build" : ".",
+					"childIndexes" : 
+					[
+						1,
+						2,
+						7
+					],
+					"hasInstallRule" : true,
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.9"
+					},
+					"projectIndex" : 0,
+					"source" : ".",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5
+					]
+				},
+				{
+					"build" : "src/external/spdlog",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.2"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 1,
+					"source" : "src/external/spdlog",
+					"targetIndexes" : 
+					[
+						6
+					]
+				},
+				{
+					"build" : "src",
+					"childIndexes" : 
+					[
+						3,
+						5,
+						6
+					],
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.9"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 0,
+					"source" : "src"
+				},
+				{
+					"build" : "src/main_detectors",
+					"childIndexes" : 
+					[
+						4
+					],
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.9"
+					},
+					"parentIndex" : 2,
+					"projectIndex" : 0,
+					"source" : "src/main_detectors"
+				},
+				{
+					"build" : "src/main_detectors/jleic",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.9"
+					},
+					"parentIndex" : 3,
+					"projectIndex" : 0,
+					"source" : "src/main_detectors/jleic"
+				},
+				{
+					"build" : "src/subdetectors",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.9"
+					},
+					"parentIndex" : 2,
+					"projectIndex" : 0,
+					"source" : "src/subdetectors"
+				},
+				{
+					"build" : "src/generator",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.9"
+					},
+					"parentIndex" : 2,
+					"projectIndex" : 0,
+					"source" : "src/generator"
+				},
+				{
+					"build" : "test/unit_tests",
+					"minimumCMakeVersion" : 
+					{
+						"string" : "3.0"
+					},
+					"parentIndex" : 0,
+					"projectIndex" : 2,
+					"source" : "test/unit_tests",
+					"targetIndexes" : 
+					[
+						7
+					]
+				}
+			],
+			"name" : "RelWithDebInfo",
+			"projects" : 
+			[
+				{
+					"childIndexes" : 
+					[
+						1,
+						2
+					],
+					"directoryIndexes" : 
+					[
+						0,
+						2,
+						3,
+						4,
+						5,
+						6
+					],
+					"name" : "g4e",
+					"targetIndexes" : 
+					[
+						0,
+						1,
+						2,
+						3,
+						4,
+						5
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						1
+					],
+					"name" : "spdlog",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						6
+					]
+				},
+				{
+					"directoryIndexes" : 
+					[
+						7
+					],
+					"name" : "event",
+					"parentIndex" : 0,
+					"targetIndexes" : 
+					[
+						7
+					]
+				}
+			],
+			"targets" : 
+			[
+				{
+					"directoryIndex" : 0,
+					"id" : "all_pch::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-all_pch-RelWithDebInfo-1ebf120f14a47f7f1cca.json",
+					"name" : "all_pch",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "all_unity::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-all_unity-RelWithDebInfo-d616d13e43509e0e61ef.json",
+					"name" : "all_unity",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "clean_cotire::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-clean_cotire-RelWithDebInfo-fceb4b0113285515758e.json",
+					"name" : "clean_cotire",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "g4e::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-g4e-RelWithDebInfo-5f9aaa896fb48fe1e21a.json",
+					"name" : "g4e",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "g4e_pch::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-g4e_pch-RelWithDebInfo-f813886dd9ea45463b2c.json",
+					"name" : "g4e_pch",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 0,
+					"id" : "g4e_unity::@6890427a1f51a3e7e1df",
+					"jsonFile" : "target-g4e_unity-RelWithDebInfo-ce50fdc2dad15e43f6ef.json",
+					"name" : "g4e_unity",
+					"projectIndex" : 0
+				},
+				{
+					"directoryIndex" : 1,
+					"id" : "spdlog::@c23cf64f70376406ffe5",
+					"jsonFile" : "target-spdlog-RelWithDebInfo-00bd7f3b1dc132d730f8.json",
+					"name" : "spdlog",
+					"projectIndex" : 1
+				},
+				{
+					"directoryIndex" : 7,
+					"id" : "tests_g4e::@f8d01a5882d5959a738d",
+					"jsonFile" : "target-tests_g4e-RelWithDebInfo-6ac4cc845f7d2728b6c1.json",
+					"name" : "tests_g4e",
+					"projectIndex" : 2
+				}
+			]
+		}
+	],
+	"kind" : "codemodel",
+	"paths" : 
+	{
+		"build" : "/home/romanov/eic/g4e/g4e-dev/cmake-build-relwithdebinfo",
+		"source" : "/home/romanov/eic/g4e/g4e-dev"
+	},
+	"version" : 
+	{
+		"major" : 2,
+		"minor" : 0
+	}
+}

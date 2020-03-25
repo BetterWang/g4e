@@ -9,6 +9,7 @@
 # BEAGLE generator
 /generator/select hepmcAscii
 /generator/hepmcAscii/open /home/romanov/Downloads/herwig6_20k.hepmc
-
-/run/beamOn 10
+/generator/hepmcAscii/verbose 0
+/run/initialize
+/run/beamOn 1000
 exit

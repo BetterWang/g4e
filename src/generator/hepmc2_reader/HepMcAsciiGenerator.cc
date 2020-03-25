@@ -64,6 +64,8 @@ void HepMcAsciiGenerator::Open()
 
 HepMC::GenEvent *HepMcAsciiGenerator::GenerateHepMCEvent()
 {
+    const std::lock_guard<std::mutex> lock(readMutex);
+
     HepMC::GenEvent *evt = asciiInput->read_next_event();
     return evt;
 }

@@ -121,10 +121,11 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
 
 
     JLeicCalorHitsCollection *hitCollectionCalo = nullptr;
-    if (hitCollectionEvnt) {
-        hitCollectionCalo = (JLeicCalorHitsCollection *) (hitCollectionEvnt->GetHC(calorimeterCollID));
-    }
+    G4HCofThisEvent* HCE = evt->GetHCofThisEvent();
+    if(HCE) {
 
+        hitCollectionCalo = (JLeicCalorHitsCollection *) (HCE->GetHC(calorimeterCollID));
+    }
 
     if (hitCollectionCalo) {
         int n_hit = hitCollectionCalo->entries();
@@ -148,19 +149,7 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
                     << G4endl;
         }
 
-
-
-
-
-
-        //mRootEventsOut.FillEvent((uint64_t)evt->GetEventID());
-
         nstep = nstepCharged + nstepNeutral;
-        // fHistos->FillEn(totEAbs);
-        // fHistos->FillNbOfSteps(nstep);
-
-
-
     }
 
     const G4int primeVtxCount = evt->GetNumberOfPrimaryVertex();

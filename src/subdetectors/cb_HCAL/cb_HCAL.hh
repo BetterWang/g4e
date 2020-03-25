@@ -30,7 +30,7 @@ struct cb_HCAL_Config {
 class cb_HCAL_Design {
 public:
     inline void Construct(cb_HCAL_Config cfg, G4Material *worldMaterial, G4VPhysicalVolume *motherVolume) {
-        printf("Begin cb_HCAL volume \n");
+        fmt::print("Initialize cb_HCAL volume \n");
 
         ConstructionConfig = cfg;
 
@@ -59,7 +59,6 @@ public:
 
         printf("Create HCAL  Size Z =%f \n ", cfg.SizeZ);
 
-
         cb_HCAL_det_SizeZ = cfg.SizeZ;
         cb_HCAL_det_Thickness = 2 * cm;
 
@@ -85,11 +84,6 @@ public:
             attr_cb_HCAL_det->SetForceSolid(true);
             cb_HCAL_det_Logic->SetVisAttributes(attr_cb_HCAL_det);
         }
-
-
-
-
-
     }
     G4Tubs *Solid;      //pointer to the solid
     G4LogicalVolume *Logic;    //pointer to the logical

@@ -28,8 +28,11 @@
 #ifndef HEPMC_G4_ASCII_READER_H
 #define HEPMC_G4_ASCII_READER_H
 
+#include <thread>
+
 #include "HepMcGeneratorInterface.hh"
 #include "HepMC/IO_GenEvent.h"
+
 
 class HepMcAsciiReaderMessenger;
 
@@ -55,6 +58,7 @@ private:
 
     G4int verbose;
     HepMcAsciiReaderMessenger *messenger;
+    std::mutex readMutex;
 };
 
 // ====================================================================

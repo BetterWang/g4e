@@ -44,17 +44,13 @@
 #include "JLeicDetectorConstruction.hh"
 #include "RootFlatIO.hh"
 
-//class JLeicDetectorConstruction;
-//class G4HCofThisEvent;
-//class G4Step;
-
 #include "JLeicCalorHit.hh"
 #include "JLeicRunAction.hh"
 #include "G4RunManager.hh"
 
 #include "root_output/RootFlatIO.hh"
 
-#include "rootlib.h"
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 

@@ -40,7 +40,7 @@ class Geant4Eic(object):
             default_build_prefix = os.path.join(os.environ['G4E_HOME'], 'cmake-build-debug')
             self.config['build_prefix'] = self.config.get('executable', default_build_prefix)
 
-            default_path = os.path.join(os.environ['G4E_HOME'], 'cmake-build-debug', 'g4e')
+            default_path = os.path.join(os.environ['G4E_HOME'], 'bin', 'g4e')
             self.config['executable'] = self.config.get('executable', default_path)
 
         # set defaults if they are not set for the user

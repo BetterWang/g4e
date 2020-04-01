@@ -77,7 +77,7 @@ protected:
     void GeneratePrimaryVertex(G4Event *anEvent) override;
 
 private:
-    bool fVerbose;
+    G4int fVerbose;
 };
 
 #endif

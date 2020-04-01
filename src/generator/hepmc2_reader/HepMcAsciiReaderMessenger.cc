@@ -46,6 +46,7 @@ HepMcAsciiReaderMessenger::HepMcAsciiReaderMessenger(HepMcAsciiGenerator *agen)
     verbose->SetGuidance("Set verbose level");
     verbose->SetParameterName("verboseLevel", false, false);
     verbose->SetRange("verboseLevel>=0 && verboseLevel<=2");
+    verbose->SetDefaultValue(0);
 
     open = new G4UIcmdWithAString("/generator/hepmcAscii/open", this);
     open->SetGuidance("(re)open data file (HepMC Ascii format)");

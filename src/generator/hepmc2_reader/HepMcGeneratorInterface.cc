@@ -42,7 +42,9 @@
 
 
 HepMcGeneratorInterface::HepMcGeneratorInterface()
-        : hepmcEvent(0) {
+        : hepmcEvent(nullptr),
+        fVerbose(false)
+{
 }
 
 

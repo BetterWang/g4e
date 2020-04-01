@@ -169,20 +169,22 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
     auto track = aStep->GetTrack();
 
     std::string volumeName = theTouchable->GetVolume()->GetName().c_str();
-    mRootEventsOut->AddHit(mHitsCount,        /* aHitId */
-                           curTrackID,        /* aTrackId */
-                           0,
-                           xstep / mm,     /* aX */
-                           ystep / mm,     /* aY */
-                           zstep / mm,     /* aZ */
-                           edep / GeV,  /* aELoss */
-                           copyIDx_pre,       /* aIRep */
-                           copyIDy_pre,       /* aJRep */
-                           volumeName         /* aVolNam */
-    );
-    mHitsCount++;
+
 
     if(track->IsGoodForTracking()) {
+        mRootEventsOut->AddHit(mHitsCount,        /* aHitId */
+                               curTrackID,        /* aTrackId */
+                               0,
+                               xstep / mm,     /* aX */
+                               ystep / mm,     /* aY */
+                               zstep / mm,     /* aZ */
+                               edep / GeV,  /* aELoss */
+                               copyIDx_pre,       /* aIRep */
+                               copyIDy_pre,       /* aJRep */
+                               volumeName         /* aVolNam */
+        );
+        mHitsCount++;
+
         //-- fill tracks --
         mRootEventsOut->AddTrack(curTrackID,                           /* int aTrackId,*/
                                  parentId,                            /* int aParentId,*/

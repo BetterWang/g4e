@@ -152,5 +152,5 @@ void InputProcessor::PrintNoMacroHelp() {
         "$G4E_HOME/examples folder macros examples or how to run g4e from python\n"
         "You can get more help here: \n"
         "https://g4e.readthedocs.io/\n"
-        "https://geant4.web.cern.ch/");
+        "https://geant4.web.cern.ch/\n\n");
 }

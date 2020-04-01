@@ -223,7 +223,7 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
         }
     }
 
-    G4cout << "Event processed: " << evt->GetEventID()+1 << G4endl;
+    //G4cout << "Event processed: " << evt->GetEventID()+1 << G4endl;
 
     if (fVerbose > 1) {
         G4cout << "JLeicEventAction:: Event END " << evt->GetEventID() << G4endl;

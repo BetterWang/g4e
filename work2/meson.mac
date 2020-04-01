@@ -11,20 +11,25 @@
 # Options are: particleGun hepmcAscii pythiaAscii beagle
 /generator/select pythiaAscii
 
+/detsetup/pBeam 41
+/detsetup/eBeam 5
 
 # Open file and run some MC file
 #------ cone at 50mrad ----
 #---protons ---
-/generator/pythiaAscii/open TDISpion_lund_p275_e10_80k.dat
+#/generator/pythiaAscii/open TDISpion_lund_p275_e10_80k.dat
 #---neutrons ---
 #/generator/pythiaAscii/open TDISneutron_lund_p275_e10_80k.dat
 #---Kaon ---
 #/generator/pythiaAscii/open TDISkaon_lund_p275_e10_80k.dat
-
+#/generator/pythiaAscii/open  pi_n_5on100_lund.dat
+#/generator/pythiaAscii/open  pi_n_10on100_lund.dat
+#/generator/pythiaAscii/open  pi_n_18on275_lund.dat
+/generator/pythiaAscii/open  pi_n_5on41_lund.dat
 
 #/run/initialize
 #/run/beamOn 1
 
 /run/initialize
-/run/beamOn 60000
+/run/beamOn 10000
 exit

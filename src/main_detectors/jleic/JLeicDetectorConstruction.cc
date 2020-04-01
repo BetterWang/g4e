@@ -347,7 +347,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 
             cb_EMCAL.Construct(fConfig.cb_EMCAL, fConfig.cb_Solenoid, World_Material, cb_Solenoid.Phys);
             cb_EMCAL.ConstructBars();
-            cb_EMCAL.Logic->SetSensitiveDetector(fCalorimeterSD);
+             cb_EMCAL.Logic->SetSensitiveDetector(fCalorimeterSD);
         }
     }  // end Barrel
 

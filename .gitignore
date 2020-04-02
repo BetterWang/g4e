@@ -180,3 +180,5 @@ python/examples/lmon/
 test/beagle/beagle_smoke_test.run.mac
 
 test/beagle/beagle_smoke_test.run.json
+
+python/.idea/

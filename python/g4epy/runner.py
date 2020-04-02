@@ -127,6 +127,15 @@ def run(command, sink, cwd=None, shell=False):
 
     # Get return value and finishing time
     retval = process.poll()
+
+    # Have to close streams
+    # https://stackoverflow.com/questions/58649679/resourcewarning-unclosed-file-io-bufferedreader-name-4
+    try:
+        process.stdout.close()
+        process.stderr.close()
+    except Exception as ex:
+        print("Error closing process streams {}".format(ex))
+
     end_time = datetime.now()
     sink.add_line("------------------------------------------")
     sink.add_line(f"RUN DONE. RETVAL: {retval} \n\n")

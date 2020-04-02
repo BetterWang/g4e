@@ -8,7 +8,7 @@ from g4epy.mc import McFileTypes, build_file_open_command
 
 class McFileIdentificationTest(unittest.TestCase):
     def setUp(self):
-        this_script_dir = os.path.dirname(inspect.stack()[0][1])
+        this_script_dir = os.path.dirname(__file__)
 
     def test_identify_files(self):
         command = build_file_open_command(McFileTypes.PYTHIA_LUND, "some_file")

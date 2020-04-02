@@ -20,12 +20,15 @@ struct cb_Solenoid_Config {
     bool UseMagneticField = true;                       // field in helium pipe used?
     bool useFieldmap = false;   // -- true for 3D field map , and false for Uniform
 
-// default version     double FieldStrength = -2.0 * tesla;
-    double FieldStrength = -2.0 * tesla;
+// default version  for JLEIC  
+//   double FieldStrength = -2.0 * tesla;
+// double ROut = 144. * cm;
+// double ShiftZ =40.cm; 
 
+    double FieldStrength = -3.0 * tesla;
     double AlphaB = 0. * degree;
     double SizeZ = 400. * cm;
-    double ROut = 144. * cm;
+    double ROut = 137.0 * cm;
     double RIn = 0.0 * cm;
     double ShiftZ = 0.;
 

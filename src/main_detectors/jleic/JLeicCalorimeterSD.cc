@@ -187,12 +187,12 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
 
         //-- fill tracks --
         mRootEventsOut->AddTrack(curTrackID,                           /* int aTrackId,*/
-                                 parentId,                            /* int aParentId,*/
+                                 parentId,                             /* int aParentId,*/
                                  PDG,                                  /* int aTrackPdg,*/
                                  vertex.x() / mm,              /* double aXVertex,*/
                                  vertex.y() / mm,              /* double aYVertex,*/
                                  vertex.z() / mm,              /* double aZVertex,*/
-                                 vertexMom.x(),                        /* double aXMom,*/
+                                 vertexMom.x(),                        /* double aXMom, */
                                  vertexMom.y(),                        /* double aYMom,*/
                                  vertexMom.z(),                        /* double aZMom,*/
                                  momentum.mag() / GeV            /* double aMom*/

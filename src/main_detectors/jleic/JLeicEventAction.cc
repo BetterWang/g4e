@@ -40,6 +40,7 @@
 #include "G4SDManager.hh"
 #include "G4ios.hh"
 #include "G4UnitsTable.hh"
+#include <G4Trajectory.hh>
 
 
 
@@ -115,15 +116,24 @@ void JLeicEventAction::BeginOfEventAction(const G4Event *evt) {
 
 
 void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
+    static std::atomic<uint64_t> totalEventCounter = 0;
+
+//    for(auto trajectory: *evt->GetTrajectoryContainer()->GetVector()) {
+//        fmt::print("\ntrajectory start:\n");
+//        for(int i=0; i < trajectory->GetPointEntries(); i++) {
+//            auto point = trajectory->GetPoint(i);
+//            auto pos = point->GetPosition();
+//            fmt::print("   {:<10} {:<10} {:<10}\n", pos.x()/mm, pos.y()/mm, pos.z()/mm);
+//        }
+//    }
+
 
 
     G4HCofThisEvent *hitCollectionEvnt = evt->GetHCofThisEvent();
 
-
     JLeicCalorHitsCollection *hitCollectionCalo = nullptr;
     G4HCofThisEvent* HCE = evt->GetHCofThisEvent();
     if(HCE) {
-
         hitCollectionCalo = (JLeicCalorHitsCollection *) (HCE->GetHC(calorimeterCollID));
     }
 
@@ -223,7 +233,8 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
         }
     }
 
-    //G4cout << "Event processed: " << evt->GetEventID()+1 << G4endl;
+    totalEventCounter++;
+    G4cout << "Event processed: " << totalEventCounter << G4endl;
 
     if (fVerbose > 1) {
         G4cout << "JLeicEventAction:: Event END " << evt->GetEventID() << G4endl;

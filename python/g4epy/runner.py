@@ -113,28 +113,20 @@ def run(command, sink, cwd=None, shell=False):
     # stderr is redirected to STDOUT because otherwise it needs special handling
     # we don't need it and we don't care as C++ warnings generate too much stderr
     # which makes it pretty much like stdout
-    process = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=cwd, shell=shell)
-    while True:
-        line = process.stdout.readline().decode('latin-1').replace('\r', '\n')
+    with subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, cwd=cwd, shell=shell) as process:
+        while True:
+            line = process.stdout.readline().decode('latin-1').replace('\r', '\n')
 
-        if process.poll() is not None and line == '':
-            break
-        if line:
-            if line.endswith('\n'):
-                line = line[:-1]
-            sink.add_line(line)
-            lines.append(line)
+            if process.poll() is not None and line == '':
+                break
+            if line:
+                if line.endswith('\n'):
+                    line = line[:-1]
+                sink.add_line(line)
+                lines.append(line)
 
-    # Get return value and finishing time
-    retval = process.poll()
-
-    # Have to close streams
-    # https://stackoverflow.com/questions/58649679/resourcewarning-unclosed-file-io-bufferedreader-name-4
-    try:
-        process.stdout.close()
-        process.stderr.close()
-    except Exception as ex:
-        print("Error closing process streams {}".format(ex))
+        # Get return value and finishing time
+        retval = process.poll()
 
     end_time = datetime.now()
     sink.add_line("------------------------------------------")

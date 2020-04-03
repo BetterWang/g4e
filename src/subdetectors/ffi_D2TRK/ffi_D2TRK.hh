@@ -22,6 +22,7 @@ struct ffi_D2TRK_Config {
     double ROut;
     double SizeZ = 30 * cm;
     double Zpos;
+    double Xpos;
     int Nlayers=7;
 };
 
@@ -40,7 +41,7 @@ public:
         Logic = new G4LogicalVolume(Solid, worldMaterial, "ffi_D2TRK_GVol_Logic");
 
         // ci_GEM_GVol_PosZ= SizeZ/2-abs(World_ShiftVTX)+ci_GEM_GVol_SizeZ-5*cm;   // --- need to find out why this 5 cm are needed
-        Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, cfg.Zpos), "ffi_D2TRK_GVol_Phys", Logic,
+        Phys = new G4PVPlacement(0, G4ThreeVector(cfg.Xpos, 0, cfg.Zpos), "ffi_D2TRK_GVol_Phys", Logic,
                                  motherVolume, false, 0);
 
         //  G4VisAttributes* vgemff= new G4VisAttributes(G4Color(0.8,0.4,0.3,0.8));

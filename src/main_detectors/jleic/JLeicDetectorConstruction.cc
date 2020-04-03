@@ -528,7 +528,28 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 //==                    Far-Forward Area    D2, D3  ZDC. Roman Pots                 ==
 //====================================================================================
     if (USE_FFI_D2TRK) {
+//-------------- for erhic meson tracking placements --------------------------
+       if(fConfig.BeamlineName == "erhic") {
+                 fConfig.ffi_D2TRK.RIn = 10 * cm;
+                fConfig.ffi_D2TRK.ROut = 35*cm;
+                fConfig.ffi_D2TRK.SizeZ = 10. * cm;
+                fConfig.ffi_D2TRK.Zpos = 22.5 * m;
+                fConfig.ffi_D2TRK.Xpos = 75 * cm;
+		fConfig.ffi_D2TRK.Nlayers=1;
+                ffi_D2TRK.Construct(fConfig.ffi_D2TRK, World_Material,World_Phys);
+             
+	
+                ffi_D2TRK.ConstructDetectors();
+                for (int lay = 0; lay < fConfig.ffi_D2TRK.Nlayers; lay++) {
+                  if (ffi_D2TRK.lay_Logic) ffi_D2TRK.lay_Logic->SetSensitiveDetector(fCalorimeterSD);
+                }
+   
 
+       }
+
+      //-------------- for jleic D2 tracking placements --------------------------
+     if(fConfig.BeamlineName == "jleic") {
+  
         for (int i = 0; i < fIonLineMagnets->fMagnets.size(); i++) {
             if ((fConfig.BeamlineName == "jleic" && fIonLineMagnets->fMagnets.at(i)->name == "iBDS2")) {
 
@@ -543,6 +564,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
                 }
             }
         }
+     }
     }
 
     //------------------------------------------------
@@ -606,10 +628,10 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
             }
             //  if (ffi_RPOT_D3.Logic) ffi_RPOT_D3.Logic->SetSensitiveDetector(fCalorimeterSD);
 
-      } // end ffi_RPOT_D3
+	} // end ffi_RPOT_D3
 
 
-  }
+  }// end erhic lattice placement 
       //------------------------------------------------
     //            Roman Pots for JLEIC
     //------------------------------------------------
@@ -638,7 +660,9 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
           if (ffi_RPOT_D3.Logic) ffi_RPOT_D3.Logic->SetSensitiveDetector(fCalorimeterSD);
 
       } // end ffi_RPOT_D3
-  }
+  } // end jleic lattice placement 
+
+
     //************************************************************************************
     //==                         Rear  Detectors                                     ==
     //************************************************************************************

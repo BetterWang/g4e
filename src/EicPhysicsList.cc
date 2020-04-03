@@ -116,7 +116,7 @@ EicPhysicsList::EicPhysicsList(JLeicDetectorConstruction *p) :
       G4IonPhysics
     */
 
-    //RegisterPhysics( new G4HadronPhysicsQGSP_BIC_HP()); //--- hadron physics !!! OFF by default
+    // RegisterPhysics( new G4HadronPhysicsQGSP_BIC_HP()); //--- hadron physics !!! OFF by default
     // all physics processes having to do with protons
     //RegisterPhysics( new G4EmStandardPhysics_option4() );   //--- electrons physics  !!
     // all physics processes having to do with electrons

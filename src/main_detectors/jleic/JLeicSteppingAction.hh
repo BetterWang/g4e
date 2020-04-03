@@ -17,7 +17,7 @@ class JLeicHistogramManager;
 class JLeicSteppingAction : public G4UserSteppingAction
 {
   public:
-    JLeicSteppingAction(JLeicHistogramManager *histo);
+  JLeicSteppingAction(JLeicHistogramManager *histo, g4e::RootFlatIO*);
     ~JLeicSteppingAction() override;
 
     void UserSteppingAction(const G4Step*) override;

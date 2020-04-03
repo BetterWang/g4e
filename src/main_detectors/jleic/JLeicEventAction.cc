@@ -116,7 +116,7 @@ void JLeicEventAction::BeginOfEventAction(const G4Event *evt) {
 
 
 void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
-    static std::atomic<uint64_t> totalEventCounter = 0;
+  //  static std::atomic<uint64_t> totalEventCounter = 0;
 
 //    for(auto trajectory: *evt->GetTrajectoryContainer()->GetVector()) {
 //        fmt::print("\ntrajectory start:\n");
@@ -233,8 +233,8 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
         }
     }
 
-    totalEventCounter++;
-    G4cout << "Event processed: " << totalEventCounter << G4endl;
+    // totalEventCounter++;
+    //  G4cout << "Event processed: " << totalEventCounter << G4endl;
 
     if (fVerbose > 1) {
         G4cout << "JLeicEventAction:: Event END " << evt->GetEventID() << G4endl;

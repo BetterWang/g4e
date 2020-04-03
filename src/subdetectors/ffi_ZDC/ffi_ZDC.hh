@@ -19,7 +19,7 @@
 struct ffi_ZDC_Config {
 // define here Global volume parameters
   double Width=60.*cm;
-  double Thickness =150.*cm;
+  double Thickness =250.*cm;
   double Zpos;
   double Xpos;
   double Angle=-0.0265;
@@ -38,7 +38,7 @@ public:
         // create  a global volume for your detectors
     //    ffi_ZDC_det_Material = G4Material::GetMaterial("Iron");
         Solid = new G4Box("ffi_ZDC_GVol_Solid", cfg.Width*0.5 , cfg.Width *0.5, cfg.Thickness *0.5);
-        Logic = new G4LogicalVolume(Solid, worldMaterial, "ffi_ZDC_GVol_Logic");
+        Logic = new G4LogicalVolume(Solid, worldMaterial, "ffi_ZDC_GVol_Logicc");
         Phys = new G4PVPlacement(G4Transform3D(cfg.rot_matx,G4ThreeVector(cfg.Xpos,0,cfg.Zpos)), "ffi_ZDC_GVol_Phys", Logic, motherVolume, false, 0);
 
         // ffi_ZDC_GVol_Logic->SetVisAttributes(G4VisAttributes::Invisible);
@@ -65,7 +65,8 @@ public:
           ffi_ZDC_HCAL_Width = 5. * cm;
           ffi_ZDC_HCAL_Gap = 0.01 * mm;
 
-          ffi_ZDC_HCAL_Material = fMat->GetMaterial("PbWO4");
+	  //     ffi_ZDC_HCAL_Material = fMat->GetMaterial("PbWO4");
+           ffi_ZDC_HCAL_Material = fMat->GetMaterial("IronAll");
           ffi_ZDC_HCAL_Solid = new G4Box("ffi_ZDC_HCAL_Solid", ffi_ZDC_HCAL_Width * 0.5,
                                             ffi_ZDC_HCAL_Width * 0.5, ffi_ZDC_HCAL_Thickness * 0.5);
           ffi_ZDC_HCAL_Logic = new G4LogicalVolume(ffi_ZDC_HCAL_Solid, ffi_ZDC_HCAL_Material,

@@ -4,7 +4,7 @@
 
 
 
-JLeicSteppingAction::JLeicSteppingAction(JLeicHistogramManager *histo): fHistoManager(histo)
+JLeicSteppingAction::JLeicSteppingAction(JLeicHistogramManager *histo,g4e::RootFlatIO* rootEventOut): fHistoManager(histo),mRootEventsOut(rootEventOut)
 {
 }
 
@@ -16,6 +16,67 @@ JLeicSteppingAction::~JLeicSteppingAction()
 
 void JLeicSteppingAction::UserSteppingAction(const G4Step *aStep)
 {
+
+   //====== Entry position of the \Z\D\C volume=========================================================================
+    if (aStep->GetPostStepPoint()->GetStepStatus() == fGeomBoundary && aStep->GetPostStepPoint()->GetPhysicalVolume()) {
+      if ((aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName() == "ffi_ZDC_GVol_Phys")) {
+ 
+
+    std::string volumeName = theTouchable->GetVolume()->GetName().c_str();
+    // process hit 
+    G4double edep =0.; 
+    
+    G4double xstep = (aStep->GetTrack()->GetStep()->GetPostStepPoint()->GetPosition()).x();
+    G4double ystep = (aStep->GetTrack()->GetStep()->GetPostStepPoint()->GetPosition()).y();
+    G4double zstep = (aStep->GetTrack()->GetStep()->GetPostStepPoint()->GetPosition()).z();
+
+    int mHitsCount=0; 
+   // process    track
+    G4Track *aTrack = aStep->GetTrack();
+    int curTrackID = aStep->GetTrack()->GetTrackID();
+    auto track = aStep->GetTrack();
+ 
+    // particle
+    //G4ParticleDefinition * aParticle = aTrack->GetDefinition();
+    //G4DynamicParticle*     dParticle = aTrack->GetDynamicParticle();
+    G4ThreeVector momentum = aTrack->GetMomentum();
+    G4ThreeVector momentumDir = aTrack->GetMomentumDirection();
+    G4int parentId = aTrack->GetParentID();
+    G4ThreeVector position = aTrack->GetPosition();
+    G4ThreeVector vertex = aTrack->GetVertexPosition();
+    G4ThreeVector vertexMom = aTrack->GetVertexMomentumDirection();
+    G4int PDG = aTrack->GetDefinition()->GetPDGEncoding();
+
+    //  if(track->IsGoodForTracking()) {
+        mRootEventsOut->AddHit(mHitsCount,        /* aHitId */
+                               curTrackID,        /* aTrackId */
+                               0,
+                               xstep / mm,     /* aX */
+                               ystep / mm,     /* aY */
+                               zstep / mm,     /* aZ */
+                               edep / GeV,  /* aELoss */
+                               copyIDx_pre,       /* aIRep */
+                               copyIDy_pre,       /* aJRep */
+                               volumeName         /* aVolNam */
+        );
+       
+
+        //-- fill tracks --
+        mRootEventsOut->AddTrack(curTrackID,                           /* int aTrackId,*/
+                                 parentId,                             /* int aParentId,*/
+                                 PDG,                                  /* int aTrackPdg,*/
+                                 vertex.x() / mm,              /* double aXVertex,*/
+                                 vertex.y() / mm,              /* double aYVertex,*/
+                                 vertex.z() / mm,              /* double aZVertex,*/
+                                 vertexMom.x(),                        /* double aXMom, */
+                                 vertexMom.y(),                        /* double aYMom,*/
+                                 vertexMom.z(),                        /* double aZMom,*/
+                                 momentum.mag() / GeV            /* double aMom*/
+        );
+
+
+	}
+    }
     //auto volume = aStep->GetPreStepPoint()->GetPhysicalVolume();
     /*
     auto aTrack = aStep->GetTrack();

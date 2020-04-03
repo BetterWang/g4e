@@ -171,7 +171,7 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
     std::string volumeName = theTouchable->GetVolume()->GetName().c_str();
 
 
-    if(track->IsGoodForTracking()) {
+    //  if(track->IsGoodForTracking()) {
         mRootEventsOut->AddHit(mHitsCount,        /* aHitId */
                                curTrackID,        /* aTrackId */
                                0,
@@ -197,7 +197,7 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
                                  vertexMom.z(),                        /* double aZMom,*/
                                  momentum.mag() / GeV            /* double aMom*/
         );
-    }
+	//  }
 
 
 

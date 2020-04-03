@@ -10,8 +10,17 @@
 
 class TFile;
 class TTree;
+class G4Step;
+
+
 
 namespace g4e {
+
+    enum class WriteStepPointChoices{
+        PreStepPoint,
+        PostStepPoint
+    };
+
     class RootOutputManager {
     public:
         explicit RootOutputManager(TFile*);
@@ -20,6 +29,11 @@ namespace g4e {
 
         g4e::RootFlatIO* GetJLeicRootOutput() {return jleicRootOutput.get(); }
         JLeicHistogramManager* GetJLeicHistogramManager() { return jleicHistos.get(); }
+
+        ///
+        /// \param usePreStepPoint - true PreStepPoint is used for Volume and Coords, false - PostStepPoint
+        void SaveStep(const G4Step *, WriteStepPointChoices usePoint, G4int copyIDx=0, G4int copyIDy=0);
+
         void Write() {
             jleicRootOutput->Write();
         }

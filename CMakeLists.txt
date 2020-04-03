@@ -180,7 +180,7 @@ add_subdirectory(src)
 if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.16.0")
     set_target_properties(g4e PROPERTIES UNITY_BUILD ON)
 else()
-    cotire(g4e)
+    # cotire(g4e)
 endif()
 
 # This is good for in JupyterLab Build

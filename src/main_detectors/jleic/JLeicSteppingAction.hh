@@ -17,14 +17,14 @@ class JLeicHistogramManager;
 class JLeicSteppingAction : public G4UserSteppingAction
 {
   public:
-  JLeicSteppingAction(JLeicHistogramManager *histo, g4e::RootFlatIO*);
+    JLeicSteppingAction(JLeicHistogramManager *histo, g4e::RootFlatIO*);
     ~JLeicSteppingAction() override;
 
     void UserSteppingAction(const G4Step*) override;
    
   FILE* rc{};
   private:
-
+    g4e::RootFlatIO*           mFlatIo;
     JLeicHistogramManager*     fHistoManager;
 };
 

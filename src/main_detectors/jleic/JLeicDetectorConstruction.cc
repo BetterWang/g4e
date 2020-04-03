@@ -22,7 +22,8 @@
 
 
 JLeicDetectorConstruction::JLeicDetectorConstruction(g4e::InitializationContext *initContext) :
-    fInitContext(initContext)
+    fInitContext(initContext),
+    fVolChangeAction(initContext->RootManager)
 {
     fDetectorMessenger = new JLeicDetectorMessenger(this);
     fMat = new g4e::Materials();
@@ -573,24 +574,25 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     if (USE_FFI_ZDC) {
         if (fConfig.BeamlineName == "jleic") {
             fConfig.ffi_ZDC.Angle=-0.0265;
-        fConfig.ffi_ZDC.rot_matx.rotateY(fConfig.ffi_ZDC.Angle * rad);
-        fConfig.ffi_ZDC.Zpos = 4000 * cm;
-        fConfig.ffi_ZDC.Xpos = -190 * cm;
+            fConfig.ffi_ZDC.rot_matx.rotateY(fConfig.ffi_ZDC.Angle * rad);
+            fConfig.ffi_ZDC.Zpos = 4000 * cm;
+            fConfig.ffi_ZDC.Xpos = -190 * cm;
         }
-    if(fConfig.BeamlineName == "erhic") {
-          fConfig.ffi_ZDC.Angle=-0.0125;
-          fConfig.ffi_ZDC.rot_matx.rotateY(-fConfig.ffi_ZDC.Angle * rad);
+        if(fConfig.BeamlineName == "erhic") {
+            fConfig.ffi_ZDC.Angle=-0.0125;
+            fConfig.ffi_ZDC.rot_matx.rotateY(-fConfig.ffi_ZDC.Angle * rad);
  //         fConfig.ffi_ZDC.Zpos = 3800 * cm;
- //       fConfig.ffi_ZDC.Xpos = 98.5 * cm;
-        fConfig.ffi_ZDC.Zpos = 3800 * cm;
-        fConfig.ffi_ZDC.Xpos = 90 * cm;
-
-    }
+ //         fConfig.ffi_ZDC.Xpos = 98.5 * cm;
+            fConfig.ffi_ZDC.Zpos = 3800 * cm;
+            fConfig.ffi_ZDC.Xpos = 90 * cm;
+        }
 
 
         ffi_ZDC.Construct(fConfig.ffi_ZDC, World_Material, World_Phys);
         ffi_ZDC.ConstructTowels();
-        if (ffi_ZDC.Logic) ffi_ZDC.Logic->SetSensitiveDetector(fCalorimeterSD);
+
+        // Write enter volume like hits
+        fVolChangeAction.OnEnterVolumeWriteHit(ffi_ZDC.Phys);
 
     } // end ffi_ZDC
 

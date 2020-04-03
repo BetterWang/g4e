@@ -30,6 +30,7 @@
 #include "Materials.hh"
 #include "JLeicDetectorMessenger.hh"
 #include "JLeicDetectorConfig.hh"
+#include "VolumeChangeSteppingAction.hh"
 
 //--------------CB---------------
 #include "cb_Solenoid/cb_Solenoid.hh"   // Central Barrel - Solenoid
@@ -316,6 +317,7 @@ private:
     G4VPhysicalVolume *fPhysicsAbsorber;
     AcceleratorMagnets* fElectronLineMagnets;
     AcceleratorMagnets* fIonLineMagnets;
+    g4e::VolumeChangeSteppingAction fVolChangeAction;
 };
 
 inline void JLeicDetectorConstruction::PrintGeometryParameters()

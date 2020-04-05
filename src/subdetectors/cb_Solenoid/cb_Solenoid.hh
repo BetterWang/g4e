@@ -109,8 +109,6 @@ public:
             G4bool forceToAllDaughters = true;
             Logic->SetFieldManager(fieldMgr, forceToAllDaughters);
         }
-
-
     }
 
     G4VisAttributes *VisAttributes;

@@ -176,6 +176,8 @@ public:
 
     G4VPhysicalVolume *Construct() override;
 
+    void ConstructSDandField() override ;
+
     void UpdateGeometry();
 
 public:
@@ -317,7 +319,8 @@ private:
     G4VPhysicalVolume *fPhysicsAbsorber;
     AcceleratorMagnets* fElectronLineMagnets;
     AcceleratorMagnets* fIonLineMagnets;
-    g4e::VolumeChangeSteppingAction fVolChangeAction;
+
+
 };
 
 inline void JLeicDetectorConstruction::PrintGeometryParameters()

@@ -177,8 +177,9 @@ target_include_directories(g4e
 # All sources and includes for the project are there:
 add_subdirectory(src)
 
+
 if(${CMAKE_VERSION} VERSION_GREATER_EQUAL "3.16.0")
-    set_target_properties(g4e PROPERTIES UNITY_BUILD ON)
+#    set_target_properties(g4e PROPERTIES UNITY_BUILD ON)
 else()
     # cotire(g4e)
 endif()

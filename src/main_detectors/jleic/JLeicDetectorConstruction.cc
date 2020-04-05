@@ -19,14 +19,18 @@
 
 // export geometry through VGM
 #include "GeometryExport.hh"
-
+#include "VolumeChangeSteppingAction.hh"
 
 JLeicDetectorConstruction::JLeicDetectorConstruction(g4e::InitializationContext *initContext) :
-    fInitContext(initContext),
-    fVolChangeAction(initContext->RootManager)
+    fInitContext(initContext)
 {
     fDetectorMessenger = new JLeicDetectorMessenger(this);
     fMat = new g4e::Materials();
+
+    initContext->ActionInitialization->AddUserActionGenerator([initContext](){
+        auto action = new g4e::VolumeChangeSteppingAction(initContext->RootManager);
+        return static_cast<G4UserSteppingAction*>(action);
+    });
 }
 
 
@@ -88,7 +92,6 @@ void JLeicDetectorConstruction::Create_ce_Endcap(JLeicDetectorConfig::ce_Endcap_
 void JLeicDetectorConstruction::SetUpJLEIC2019()
 {
     using namespace fmt;
-
 
     //===================================================================================
     //==                    create a world                                            ==
@@ -242,8 +245,8 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 
             //---------------------------- HCAL IRON--------------------------------------
             if (USE_CI_HCAL_D) {
-                if(fConfig.BeamlineName == "jleic") {fConfig.ci_HCAL.det_RIn=80*cm;}
-                if(fConfig.BeamlineName == "erhic") {fConfig.ci_HCAL.det_RIn=60*cm;}
+                if(beamLine == BeamLines::JLEIC) {fConfig.ci_HCAL.det_RIn=80*cm;}
+                if(beamLine == BeamLines::ERHIC) {fConfig.ci_HCAL.det_RIn=60*cm;}
                 ci_HCAL.ConstructDetectors(fConfig.ci_HCAL);
             }
         }
@@ -414,7 +417,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
             fConfig.ci_GEM.PosZ = fConfig.cb_Solenoid.SizeZ / 2 - fConfig.ci_GEM.SizeZ / 2;   // --- need to find out why this 5 cm are needed
 
             // --- different crossing angle direction for JLEIC and eRHIC
-            if(fConfig.BeamlineName == "jleic")  {
+            if(beamLine == BeamLines::JLEIC)  {
                 fConfig.ci_GEM.PosX = -5 * cm;
             } else {
                 fConfig.ci_GEM.PosX = 5 * cm;
@@ -458,12 +461,11 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
         //================================================================================
         if (USE_CI_EMCAL) {
             fConfig.ci_EMCAL.PosZ = -fConfig.ci_Endcap.SizeZ / 2 + fConfig.ci_DRICH.ThicknessZ + fConfig.ci_TRD.ThicknessZ + fConfig.ci_EMCAL.ThicknessZ / 2;
-            if(fConfig.BeamlineName == "jleic")  {
+            if(beamLine == BeamLines::JLEIC)  {
                 fConfig.ci_EMCAL.USE_JLEIC = true;
                 fConfig.ci_EMCAL.det_Rin1 = 20*cm;
                 fConfig.ci_EMCAL.det_Rin2 = 55*cm;
-            }
-            if (fConfig.BeamlineName == "erhic") {
+            } else {
                 fConfig.ci_EMCAL.USE_ERHIC=true;
                 fConfig.ci_EMCAL.det_Rin1=30*cm;
                 fConfig.ci_EMCAL.det_Rin2=30*cm;
@@ -491,10 +493,11 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     if (USE_FI_D1TRK) {
         for (auto magnet: fIonLineMagnets->fMagnets) {
             if ((BeamLines::JLEIC == beamLine && magnet->name == "iBDS1a") || (BeamLines::ERHIC == beamLine && magnet->name == "iB0PF")) {
-                if(fConfig.BeamlineName == "erhic") {
+                if(beamLine == BeamLines::ERHIC) {
                     fConfig.fi_D1TRK.PhiStart=-130.* deg;
                     fConfig.fi_D1TRK.PhiTot=275 * deg;
-                } else if (fConfig.BeamlineName=="jleic") {
+                }
+                else {
                     fConfig.fi_D1TRK.PhiStart=170.;
                     fConfig.fi_D1TRK.PhiTot=330 * deg;
                 };
@@ -530,7 +533,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 //====================================================================================
     if (USE_FFI_D2TRK) {
 //-------------- for erhic meson tracking placements --------------------------
-       if(fConfig.BeamlineName == "erhic") {
+       if(beamLine == BeamLines::ERHIC) {
                  fConfig.ffi_D2TRK.RIn = 10 * cm;
                 fConfig.ffi_D2TRK.ROut = 35*cm;
                 fConfig.ffi_D2TRK.SizeZ = 10. * cm;
@@ -544,15 +547,12 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
                 for (int lay = 0; lay < fConfig.ffi_D2TRK.Nlayers; lay++) {
                   if (ffi_D2TRK.lay_Logic) ffi_D2TRK.lay_Logic->SetSensitiveDetector(fCalorimeterSD);
                 }
-   
-
        }
 
       //-------------- for jleic D2 tracking placements --------------------------
-     if(fConfig.BeamlineName == "jleic") {
-  
+     if(beamLine == BeamLines::JLEIC) {
         for (int i = 0; i < fIonLineMagnets->fMagnets.size(); i++) {
-            if ((fConfig.BeamlineName == "jleic" && fIonLineMagnets->fMagnets.at(i)->name == "iBDS2")) {
+            if (fIonLineMagnets->fMagnets.at(i)->name == "iBDS2") {
 
                 fConfig.ffi_D2TRK.RIn = 0 * cm;
                 fConfig.ffi_D2TRK.ROut = fIonLineMagnets->fMagnets.at(i)->Rin2 * cm - 0.1 * cm;
@@ -572,13 +572,13 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     //             ZDC
     //------------------------------------------------
     if (USE_FFI_ZDC) {
-        if (fConfig.BeamlineName == "jleic") {
+        if (beamLine == BeamLines::JLEIC) {
             fConfig.ffi_ZDC.Angle=-0.0265;
             fConfig.ffi_ZDC.rot_matx.rotateY(fConfig.ffi_ZDC.Angle * rad);
             fConfig.ffi_ZDC.Zpos = 4000 * cm;
             fConfig.ffi_ZDC.Xpos = -190 * cm;
         }
-        if(fConfig.BeamlineName == "erhic") {
+        if(beamLine == BeamLines::ERHIC) {
             fConfig.ffi_ZDC.Angle=-0.0125;
             fConfig.ffi_ZDC.rot_matx.rotateY(-fConfig.ffi_ZDC.Angle * rad);
  //         fConfig.ffi_ZDC.Zpos = 3800 * cm;
@@ -592,7 +592,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
         ffi_ZDC.ConstructTowels();
 
         // Write enter volume like hits
-        fVolChangeAction.OnEnterVolumeWriteHit(ffi_ZDC.Phys);
+
 
     } // end ffi_ZDC
 
@@ -600,7 +600,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     //------------------------------------------------
     //            Roman Pots for eRHIC
     //------------------------------------------------
-  if (fConfig.BeamlineName == "erhic") {
+  if (beamLine == BeamLines::ERHIC) {
 
           if (USE_FFI_RPOT_D2 ) {  //---- First Roman Pot
                fConfig.ffi_RPOT_D2.Angle = 0.025;
@@ -639,7 +639,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     //------------------------------------------------
 
     //------------------------------------------------
-  if(fConfig.BeamlineName == "jleic") {
+  if(beamLine == BeamLines::JLEIC) {
       if (USE_FFI_RPOT_D2 ) {
             fConfig.ffi_RPOT_D2.Angle=-0.05;
              fConfig.ffi_RPOT_D2.ROut = 120 * cm;
@@ -719,7 +719,21 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     PrintGeometryParameters();
 }
 
+
+void JLeicDetectorConstruction::ConstructSDandField()
+{
+    // fVolChangeAction.OnEnterVolumeWriteHit(ffi_ZDC.Phys);
+
+    //fVolChangeAction =
+
+//G4PhysicalVolumeStore::GetInstance()->
+
+    fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_ZDC.Phys);
+}
+
+
 void JLeicDetectorConstruction::UpdateGeometry()
 {
     G4RunManager::GetRunManager()->DefineWorldVolume(World_Phys);
 }
+

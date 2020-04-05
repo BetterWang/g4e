@@ -28,12 +28,6 @@ public:
         ir_LatticeDesign::fIonBeamEnergy = ionBeamEnergy;
     }
 
-
-
-
-
-
-
     G4Material *ffqsMaterial;
     G4VisAttributes *vb1, *vb1a, *vb1b, *vb1as;
     G4Material *ffqsMaterial_G;

@@ -93,7 +93,7 @@ namespace g4e{
         mutable std::unordered_map<std::thread::id, g4e::VolumeChangeSteppingAction*> mVolChangeActionsByThread;
 
         mutable std::mutex mBuildMutex;  // This lock is used for Build funcion for thread workers
-        mutable std::atomic_bool mBuildIsDone = std::atomic_bool(false);  // Flag that indicates, that Build function was called at least once
+        mutable std::atomic_bool mBuildIsDone{false};  // Flag that indicates, that Build function was called at least once
 
         G4VUserPrimaryGeneratorAction *mGeneratorAction{};
     public:

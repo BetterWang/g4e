@@ -66,7 +66,7 @@ namespace g4e
             mHitIo.ZPosVect.push_back(aZ);
             mHitIo.ELossVect.push_back(aELoss);
             mHitIo.TrackIdVect.push_back(aTrackId);
-            mHitIo.GenPartIdVect.push_back(ParentId);
+            mHitIo.GenParentTrackIdVect.push_back(ParentId);
             mHitIo.IRepVect.push_back(aIRep);
             mHitIo.JRepVect.push_back(aJRep);
             mHitIo.VolumeNameVect.push_back(aVolName);

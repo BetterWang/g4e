@@ -25,11 +25,9 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
     auto touchable = point->GetTouchable();
     std::string volumeName = touchable->GetVolume()->GetName();
 
-
     // process hit
-
-
     int mHitsCount=0;
+
     // process    track
     G4Track *aTrack = aStep->GetTrack();
     int curTrackID = aStep->GetTrack()->GetTrackID();
@@ -46,16 +44,17 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
     G4ThreeVector vertexMom = aTrack->GetVertexMomentumDirection();
     G4int PDG = aTrack->GetDefinition()->GetPDGEncoding();
 
-    jleicRootOutput->AddHit(mHitsCount,        /* aHitId */
-                    curTrackID,        /* aTrackId */
-                    0,
-                    point->GetPosition().x() / mm,     /* aX */
-                    point->GetPosition().y() / mm,     /* aY */
-                    point->GetPosition().z() / mm,     /* aZ */
-                    aStep->GetTotalEnergyDeposit() / GeV,  /* aELoss */
-                    copyIDx,       /* aIRep */
-                    copyIDy,       /* aJRep */
-                    volumeName         /* aVolNam */
+    jleicRootOutput->AddHit(
+            /* hit id        */ mHitsCount,
+            /* track id      */ aStep->GetTrack()->GetTrackID(),
+            /* parent Trk Id */ aStep->GetTrack()->GetParentID(),
+            /* hit x         */ point->GetPosition().x() / mm,
+            /* hit y         */ point->GetPosition().y() / mm,
+            /* hit z         */ point->GetPosition().z() / mm,
+            /* aELoss        */ aStep->GetTotalEnergyDeposit() / GeV,
+            /* vol replic x  */  copyIDx,
+            /* vol replic y  */  copyIDy,
+            /* Volume Name   */  volumeName
     );
 
 

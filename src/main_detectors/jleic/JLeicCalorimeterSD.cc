@@ -42,10 +42,10 @@
 #include "Randomize.hh"
 
 
-JLeicCalorimeterSD::JLeicCalorimeterSD(G4String name, g4e::RootFlatIO* rootEventOut, JLeicDetectorConstruction *det) :
+JLeicCalorimeterSD::JLeicCalorimeterSD(G4String name, g4e::RootOutputManager* rootManager, JLeicDetectorConstruction *det) :
     G4VSensitiveDetector(name),
     Detector(det),
-    mRootEventsOut(rootEventOut)
+    mRootEventsOut(rootManager)
 {
     if(mVerbose) {
         printf("JLeicCalorimeterSD()::constructor  enter\n");
@@ -170,36 +170,7 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
 
     std::string volumeName = theTouchable->GetVolume()->GetName().c_str();
 
-
-    //  if(track->IsGoodForTracking()) {
-        mRootEventsOut->AddHit(mHitsCount,        /* aHitId */
-                               curTrackID,        /* aTrackId */
-                               0,
-                               xstep / mm,     /* aX */
-                               ystep / mm,     /* aY */
-                               zstep / mm,     /* aZ */
-                               edep / GeV,  /* aELoss */
-                               copyIDx_pre,       /* aIRep */
-                               copyIDy_pre,       /* aJRep */
-                               volumeName         /* aVolNam */
-        );
-        mHitsCount++;
-
-        //-- fill tracks --
-        mRootEventsOut->AddTrack(curTrackID,                           /* int aTrackId,*/
-                                 parentId,                             /* int aParentId,*/
-                                 PDG,                                  /* int aTrackPdg,*/
-                                 vertex.x() / mm,              /* double aXVertex,*/
-                                 vertex.y() / mm,              /* double aYVertex,*/
-                                 vertex.z() / mm,              /* double aZVertex,*/
-                                 vertexMom.x(),                        /* double aXMom, */
-                                 vertexMom.y(),                        /* double aYMom,*/
-                                 vertexMom.z(),                        /* double aZMom,*/
-                                 momentum.mag() / GeV            /* double aMom*/
-        );
-	//  }
-
-
+    mRootEventsOut->SaveStep(aStep, g4e::WriteStepPointChoices::PreStepPoint, copyIDx_pre, copyIDy_pre);
 
    if (mVerbose > 2) printf("--> JLeicCalorimeterSD::ProcessHits() Exit\n");
 

@@ -58,7 +58,7 @@ class JLeicCalorimeterSD : public G4VSensitiveDetector
 {
 public:
 
-    JLeicCalorimeterSD(G4String, g4e::RootFlatIO*, JLeicDetectorConstruction *);
+    JLeicCalorimeterSD(G4String, g4e::RootOutputManager*, JLeicDetectorConstruction *);
 
     ~JLeicCalorimeterSD() override;
 
@@ -77,7 +77,7 @@ private:
     JLeicCalorHitsCollection *CalCollection;
     JLeicDetectorConstruction *Detector;
     uint_fast64_t mHitsCount = 0;
-    g4e::RootFlatIO* mRootEventsOut = nullptr;
+    g4e::RootOutputManager* mRootEventsOut = nullptr;
 
     static const uint_fast32_t mVerbose = 0;    // verbosity. 0=none, 1=some, 2=many, 3=all
 };

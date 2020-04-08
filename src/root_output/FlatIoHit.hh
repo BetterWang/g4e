@@ -9,7 +9,8 @@ namespace g4e {
             tree->Branch("hit_count", &HitsCount, "hit_count/l");
             tree->Branch("hit_id", &IdVect);
             tree->Branch("hit_trk_id", &TrackIdVect);
-            tree->Branch("hit_ptr_id", &GenPartIdVect);
+            tree->Branch("hit_ptr_id", &GenParentTrackIdVect);
+            tree->Branch("hit_parent_trk_id", &GenParentTrackIdVect);
             tree->Branch("hit_vol_name", &VolumeNameVect);
             tree->Branch("hit_x", &XPosVect);
             tree->Branch("hit_y", &YPosVect);
@@ -28,7 +29,7 @@ namespace g4e {
             ELossVect.clear();
             IdVect.clear();
             TrackIdVect.clear();
-            GenPartIdVect.clear();
+            GenParentTrackIdVect.clear();
             IRepVect.clear();
             JRepVect.clear();
             VolumeNameVect.clear();
@@ -37,7 +38,7 @@ namespace g4e {
         uint64_t HitsCount;
         std::vector<uint64_t> IdVect;
         std::vector<uint64_t> TrackIdVect;
-        std::vector<uint64_t> GenPartIdVect;
+        std::vector<uint64_t> GenParentTrackIdVect;
         std::vector<double> XPosVect;
         std::vector<double> YPosVect;
         std::vector<double> ZPosVect;

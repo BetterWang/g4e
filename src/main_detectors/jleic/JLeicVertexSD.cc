@@ -34,7 +34,7 @@
 
 
 //=====================================================================================================
-static int save_hits_root = 1;
+
 static int use_depfet = 1;
 static int use_fdc = 0;
 
@@ -61,7 +61,7 @@ static int NVAR;
 #include "Randomize.hh"
 
 
-JLeicVertexSD::JLeicVertexSD(G4String name, g4e::RootFlatIO* rootOutput, JLeicDetectorConstruction *det) :
+JLeicVertexSD::JLeicVertexSD(G4String name, g4e::RootOutputManager* rootOutput, JLeicDetectorConstruction *det) :
         G4VSensitiveDetector(name),
         mDetector(det),
         mRootEventsOut(rootOutput)
@@ -326,41 +326,8 @@ G4bool JLeicVertexSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
     //	 ,edep/keV,ADC,stepl/um,copyIDx_pre,copyIDy_pre,xstep,ystep,zstep,xinp/um,yinp/um,zinp/um,xend/um,yend/um,zend/um,xloc/um,yloc/um,zloc/um, aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName().c_str());
 
 
-    //--- save hits ------
-    if (save_hits_root) {
-        trace("New VTX Hit:: IdVect=%d XYZloc (%f,%f,%f) dEdx=%f \n", aStep->GetTrack()->GetTrackID(), xloc, yloc, zloc, edep / keV);
-
-        int curTrackID = aStep->GetTrack()->GetTrackID();
-        std::string volumeName = theTouchable->GetVolume()->GetName().c_str();
-        mRootEventsOut->AddHit(mHitsCount,  /* aHitId */
-                               curTrackID,  /* aTrackId */
-                               0, xstep / mm,  /* aX */
-                               ystep / mm,  /* aY */
-                               zstep / mm,  /* aZ */
-                               edep / GeV,  /* aELoss */
-                               copyIDx_pre,  /* aIRep */
-                               copyIDy_pre,  /* aJRep */
-                               volumeName    /* aVolNam */
-        );
-        mHitsCount++;
-
-        //-- fill tracks --
-        mRootEventsOut->AddTrack(curTrackID,                           /* int aTrackId,*/
-                                 ParrentID,                            /* int aParentId,*/
-                                 PDG,                                  /* int aTrackPdg,*/
-                                 vertex.x() / mm,                      /* double aXVertex,*/
-                                 vertex.y() / mm,                      /* double aYVertex,*/
-                                 vertex.z() / mm,                      /* double aZVertex,*/
-                                 vertexMom.x(),                        /* double aXMom,*/
-                                 vertexMom.y(),                        /* double aYMom,*/
-                                 vertexMom.z(),                        /* double aZMom,*/
-                                 momentum.mag() / GeV                  /* double aMom*/
-        );
-
-    } //  if (save_hits_root)
-
-
-
+    // Save the step to root
+    mRootEventsOut->SaveStep(aStep, g4e::WriteStepPointChoices::PreStepPoint, copyIDx_pre, copyIDy_pre);
 
 
     G4VPhysicalVolume *physVol = theTouchable->GetVolume();

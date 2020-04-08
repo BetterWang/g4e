@@ -172,11 +172,11 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     G4SDManager *SDman = G4SDManager::GetSDMpointer();
 
     if (!fCalorimeterSD) {
-        fCalorimeterSD = new JLeicCalorimeterSD("CalorSD", fInitContext->RootManager->GetJLeicRootOutput(), this);
+        fCalorimeterSD = new JLeicCalorimeterSD("CalorSD", fInitContext->RootManager, this);
         SDman->AddNewDetector(fCalorimeterSD);
     }
     if (!fVertexSD) {
-        fVertexSD = new JLeicVertexSD("VertexSD", fInitContext->RootManager->GetJLeicRootOutput(), this);
+        fVertexSD = new JLeicVertexSD("VertexSD", fInitContext->RootManager, this);
         SDman->AddNewDetector(fVertexSD);
     }
 

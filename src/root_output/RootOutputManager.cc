@@ -44,6 +44,12 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
     G4ThreeVector vertexMom = aTrack->GetVertexMomentumDirection();
     G4int PDG = aTrack->GetDefinition()->GetPDGEncoding();
 
+    // Save only good for tracking tracks
+    // TODO make it an variable
+    if(!aTrack->IsGoodForTracking()) {
+        return;
+    }
+
     jleicRootOutput->AddHit(
             /* hit id        */ mHitsCount,
             /* track id      */ aStep->GetTrack()->GetTrackID(),

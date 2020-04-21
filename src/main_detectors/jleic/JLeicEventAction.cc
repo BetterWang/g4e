@@ -23,7 +23,7 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 
-
+#include <atomic>
 #include "JLeicEventAction.hh"
 
 #include "JLeicRunAction.hh"
@@ -116,7 +116,9 @@ void JLeicEventAction::BeginOfEventAction(const G4Event *evt) {
 
 
 void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
-  //  static std::atomic<uint64_t> totalEventCounter = 0;
+    static std::atomic_uint64_t totalEventCounter = 0;
+    totalEventCounter++;
+    fmt::print("Events processed: {} \n", (uint64_t)totalEventCounter);
 
 //    for(auto trajectory: *evt->GetTrajectoryContainer()->GetVector()) {
 //        fmt::print("\ntrajectory start:\n");

@@ -81,7 +81,6 @@ private:
     JLeicDetectorConstruction *pDet;
     JLeicXTRphysics *XTRphys;
 
-
     G4ProductionCuts *fRadiatorCuts;
     G4ProductionCuts *fDetectorCuts;
     G4double fElectronCut, fGammaCut, fPositronCut;

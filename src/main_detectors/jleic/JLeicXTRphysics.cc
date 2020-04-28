@@ -58,6 +58,8 @@
 #include "G4GammaXTRadiator.hh"
 #include "G4StrawTubeXTRadiator.hh"
 
+#include "G4Decay.hh"
+
 #include "G4XTRGammaRadModel.hh"
 #include "G4XTRRegularRadModel.hh"
 #include "G4XTRTransparentRegRadModel.hh"
@@ -134,6 +136,7 @@ void JLeicXTRphysics::ConstructProcess()
 
     if (processXTR) processXTR->SetVerboseLevel(0);
     if (processXTR) processXTR->SetAngleRadDistr(true);
+ 
 
     auto theParticleIterator = GetParticleIterator();
     theParticleIterator->reset();
@@ -145,6 +148,7 @@ void JLeicXTRphysics::ConstructProcess()
         G4String particleName = particle->GetParticleName();
 
         log::trace("JLeicXTRphysics::ConstructEM():: particle={} \n", particle->GetParticleName().c_str());
+        printf("JLeicXTRphysics::ConstructEM():: particle=%s \n", particle->GetParticleName().c_str());
 
         if (particleName == "gamma") {
             // Construct processes for gamma

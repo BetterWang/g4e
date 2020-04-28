@@ -4,7 +4,7 @@
 
 #/vis/open VRML2FILE
 #/vis/drawVolume
-#q/vis/viewer/flush
+#/vis/viewer/flush
 
 #/persistency/gdml/write jleic.gdml
 
@@ -15,7 +15,7 @@
 #/vis/open OGL 1000x800-0+0
 /vis/open OGLI 600x600-0+0
 #/vis/open OGLIX 600x600-0+0
-#/vis/open OGLIQt 1000x800-0+0  q
+#/vis/open OGLIQt 1000x800-0+0  
 # 
 #
 #/vis/open OGLS 600x600-0+0
@@ -126,7 +126,7 @@
 
 ##/vis/viewer/addCutawayPlane 0  30  0  cm  0. -100 0
 #/vis/viewer/addCutawayPlane 0  1  0  cm  0. -0.1 0
-/vis/viewer/addCutawayPlane 0  1  0  cm  0. -500. 1.
+#/vis/viewer/addCutawayPlane 0  1  0  cm  0. -500. 1.
 #/vis/viewer/addCutawayPlane 0  1  0  cm  0. 100. 1.
 # XY 
 #/vis/viewer/addCutawayPlane  1  0  0  cm   0  0  -0.001
@@ -137,13 +137,13 @@
 #/run/beamOn 1
 #--------------CMS vis
 /vis/viewer/set/viewpointThetaPhi -30. -30.
-#/vis/viewer/zoomTo 25
+/vis/viewer/zoomTo 100
 
 #========= CMS view =========================
-#/vis/viewer/addCutawayPlane 0 0 7 m 0 0 1
-#/vis/viewer/addCutawayPlane 0 0 7 m 1 0 0
-#/vis/viewer/addCutawayPlane 0 0 7 m 0 -1 0
-#/vis/viewer/set/style surface
-#/vis/viewer/colourByDensity 1 g/cm3 .5 3 10
+/vis/viewer/addCutawayPlane 0 0 7 m 0 0 1
+/vis/viewer/addCutawayPlane 0 0 7 m 1 0 0
+/vis/viewer/addCutawayPlane 0 0 7 m 0 -1 0
+/vis/viewer/set/style surface
+/vis/viewer/colourByDensity 1 g/cm3 .5 3 10
 #---------------------------------------------------
 exit

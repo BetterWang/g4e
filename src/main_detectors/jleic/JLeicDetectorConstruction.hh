@@ -148,7 +148,13 @@ public:
     //--------FARFORWARD HADRON------
 
     bool USE_FFI_D2TRK = true;
+    // 
     bool USE_FFI_ZDC = true;
+    bool USE_FFI_ZDC_ALICE = false;
+    bool USE_FFI_ZDC_GLASS = false; 
+    bool USE_FFI_ZDC_CRYSTAL = true; 
+
+    //---
     bool USE_FFI_RPOT_D2 = true;
     bool USE_FFI_RPOT_D3 = true;
     //bool USE_FARFORWARD_GEM

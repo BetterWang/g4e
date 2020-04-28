@@ -125,6 +125,8 @@ EicPhysicsList::EicPhysicsList(JLeicDetectorConstruction *p) :
     decayPhysics->SetVerboseLevel(0);
     RegisterPhysics(decayPhysics);
 
+
+
     // Transition Radiation Physics
     XTRphys = new JLeicXTRphysics(pDet, this, "XTRmodel");
     XTRphys->SetVerboseLevel(0);

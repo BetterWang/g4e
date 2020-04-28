@@ -1,4 +1,5 @@
 #include <vector>
+#include "/data/yuliapc/home/yulia/work/g4e/src/subdetectors/ffi_ZDC/Alice_ZDC_Geometry.cc"
 
 #include "JLeicDetectorConstruction.hh"
 #include "JLeicCalorimeterSD.hh"
@@ -12,16 +13,16 @@
 #include "G4LogicalVolumeStore.hh"
 #include "G4SolidStore.hh"
 #include "G4ProductionCuts.hh"
-#include "G4VisAttributes.hh"
+#include "G4VisAttributes.hh" 
 #include "G4Colour.hh"
-#include "G4ios.hh"
+#include "G4ios.hh" 
 #include "G4SystemOfUnits.hh"
 
 // export geometry through VGM
 #include "GeometryExport.hh"
 #include "VolumeChangeSteppingAction.hh"
 
-JLeicDetectorConstruction::JLeicDetectorConstruction(g4e::InitializationContext *initContext) :
+JLeicDetectorConstruction::JLeicDetectorConstruction(g4e::InitializationContext *initContext) : 
     fInitContext(initContext)
 {
     fDetectorMessenger = new JLeicDetectorMessenger(this);
@@ -49,7 +50,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::Construct()
     G4SolidStore::GetInstance()->Clean();
 
     SetUpJLEIC2019();
-    //checkVolumeOverlap();// --- fsv
+    //checkVolumeOverlap();// --- fsv 
     return World_Phys;
 }
 
@@ -438,6 +439,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
             fConfig.ci_DRICH.RIn = fConfig.ci_Endcap.RIn;
 
             fConfig.ci_DRICH.PosZ = -fConfig.ci_Endcap.SizeZ / 2. + fConfig.ci_DRICH.ThicknessZ / 2.;
+	    //  printf(" DRICH Poz =%f  DRICH.ThicknessZ =%f \n", fConfig.ci_DRICH.PosZ, fConfig.ci_DRICH.ThicknessZ);
             //    double ci_DRICH_GVol_PosZ= 0*cm;
             ci_DRICH.Construct(fConfig.ci_DRICH, World_Material, ci_ENDCAP_GVol_Phys);
             ci_DRICH.ConstructDetectors();
@@ -589,7 +591,9 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 
 
         ffi_ZDC.Construct(fConfig.ffi_ZDC, World_Material, World_Phys);
-        ffi_ZDC.ConstructTowels();
+        if(USE_FFI_ZDC_CRYSTAL) { ffi_ZDC.ConstructTowels(1);}
+	else if(USE_FFI_ZDC_GLASS) { ffi_ZDC.ConstructTowels(0);}
+	else   if(USE_FFI_ZDC_ALICE) {  ffi_ZDC.ConstructALICE();} 
 
         // Write enter volume like hits
 

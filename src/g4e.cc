@@ -101,7 +101,6 @@ int main(int argc, char **argv)
     actionInit.AddUserActionGenerator([&mainRootOutput](){return new JLeicRunAction(mainRootOutput.GetJLeicRootOutput(), mainRootOutput.GetJLeicHistogramManager());});
     actionInit.AddUserActionGenerator([](){return new JLeicTrackingAction();});
 
-
     // After the run manager, we can combine initialization context
     g4e::InitializationContext initContext(&appArgs, &mainRootOutput, &actionInit);
 

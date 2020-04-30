@@ -1,6 +1,7 @@
 #ifndef G4E_ROOTOUTPUTMANAGER_HH
 #define G4E_ROOTOUTPUTMANAGER_HH
 
+#include <G4GenericMessenger.hh>
 #include "RootFlatIO.hh"
 #include "JLeicHistogramManager.hh"
 
@@ -11,7 +12,6 @@
 class TFile;
 class TTree;
 class G4Step;
-
 
 
 namespace g4e {
@@ -45,6 +45,8 @@ namespace g4e {
         // TODO Move JLeic initialization to the appropriate phase
         std::unique_ptr<g4e::RootFlatIO> jleicRootOutput;
         std::unique_ptr<JLeicHistogramManager> jleicHistos;
+        G4GenericMessenger fMessenger;
+        int mOnlyGoodForTracking;
     };
 }
 

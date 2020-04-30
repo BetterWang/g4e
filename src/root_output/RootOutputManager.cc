@@ -9,13 +9,16 @@
 g4e::RootOutputManager::RootOutputManager(TFile *rootFile):
     mRootFile(rootFile),
     jleicRootOutput(new RootFlatIO()),
-    jleicHistos(new JLeicHistogramManager())
+    jleicHistos(new JLeicHistogramManager()),
+    fMessenger(this, "/rootOutput/")
 {
     mFlatEventTree = new TTree("events", "Flattened root tree with event data");
     mFlatEventTree->SetDirectory(mRootFile);
     // We also create JLeic root output here , while g4e is in transition
     // TODO Move JLeic initialization to the appropriate phase
     jleicRootOutput->Initialize(mRootFile, mFlatEventTree);
+    mOnlyGoodForTracking = 1;
+    fMessenger.DeclareProperty("/rootOutput/onlyGoodForTracking", mOnlyGoodForTracking, "If 1 - save only hits marked IsGoodForTracking flag");
 }
 
 void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoices pointChoice, G4int copyIDx, G4int copyIDy)
@@ -37,11 +40,11 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
     //G4ParticleDefinition * aParticle = aTrack->GetDefinition();
     //G4DynamicParticle*     dParticle = aTrack->GetDynamicParticle();
     G4ThreeVector momentum = aTrack->GetMomentum();
-    G4ThreeVector momentumDir = aTrack->GetMomentumDirection();
+    const G4ThreeVector& momentumDir = aTrack->GetMomentumDirection();
     G4int parentId = aTrack->GetParentID();
-    G4ThreeVector position = aTrack->GetPosition();
-    G4ThreeVector vertex = aTrack->GetVertexPosition();
-    G4ThreeVector vertexMom = aTrack->GetVertexMomentumDirection();
+    const G4ThreeVector& position = aTrack->GetPosition();
+    const G4ThreeVector& vertex = aTrack->GetVertexPosition();
+    const G4ThreeVector& vertexMom = aTrack->GetVertexMomentumDirection();
     G4int PDG = aTrack->GetDefinition()->GetPDGEncoding();
 
     // Save only good for tracking tracks
@@ -65,16 +68,16 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
 
 
     //-- fill tracks --
-    jleicRootOutput->AddTrack(curTrackID,                           /* int aTrackId,*/
-                      parentId,                             /* int aParentId,*/
-                      PDG,                                  /* int aTrackPdg,*/
-                      vertex.x() / mm,              /* double aXVertex,*/
-                      vertex.y() / mm,              /* double aYVertex,*/
-                      vertex.z() / mm,              /* double aZVertex,*/
-                      vertexMom.x(),                        /* double aXMom, */
-                      vertexMom.y(),                        /* double aYMom,*/
-                      vertexMom.z(),                        /* double aZMom,*/
-                      momentum.mag() / GeV            /* double aMom*/
+    jleicRootOutput->AddTrack(curTrackID,                   /* int aTrackId */
+                      parentId,                             /* int aParentId */
+                      PDG,                                  /* int aTrackPdg */
+                      vertex.x() / mm,              /* double aXVertex */
+                      vertex.y() / mm,              /* double aYVertex */
+                      vertex.z() / mm,              /* double aZVertex */
+                      vertexMom.x(),                        /* double aXMom    */
+                      vertexMom.y(),                        /* double aYMom  */
+                      vertexMom.z(),                        /* double aZMom */
+                      momentum.mag() / GeV            /* double aMom  */
     );
 
 }

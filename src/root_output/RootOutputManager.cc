@@ -46,9 +46,9 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
 
     // Save only good for tracking tracks
     // TODO make it an variable
-    if(!aTrack->IsGoodForTracking()) {
-        return;
-    }
+    //   if(!aTrack->IsGoodForTracking()) {
+    //    return;
+    // }
 
     jleicRootOutput->AddHit(
             /* hit id        */ mHitsCount,

@@ -536,8 +536,8 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     if (USE_FFI_D2TRK) {
 //-------------- for erhic meson tracking placements --------------------------
        if(beamLine == BeamLines::ERHIC) {
-                 fConfig.ffi_D2TRK.RIn = 10 * cm;
-                fConfig.ffi_D2TRK.ROut = 35*cm;
+	 //                 fConfig.ffi_D2TRK.RIn = 10 * cm;
+         //       fConfig.ffi_D2TRK.ROut = 35*cm;
                 fConfig.ffi_D2TRK.SizeZ = 10. * cm;
                 fConfig.ffi_D2TRK.Zpos = 22.5 * m;
                 fConfig.ffi_D2TRK.Xpos = 75 * cm;
@@ -556,8 +556,11 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
         for (int i = 0; i < fIonLineMagnets->fMagnets.size(); i++) {
             if (fIonLineMagnets->fMagnets.at(i)->name == "iBDS2") {
 
-                fConfig.ffi_D2TRK.RIn = 0 * cm;
-                fConfig.ffi_D2TRK.ROut = fIonLineMagnets->fMagnets.at(i)->Rin2 * cm - 0.1 * cm;
+	      //          fConfig.ffi_D2TRK.RIn = 0 * cm;
+	      //         fConfig.ffi_D2TRK.ROut = fIonLineMagnets->fMagnets.at(i)->Rin2 * cm - 0.1 * cm;
+	        fConfig.ffi_D2TRK.SizeX=fIonLineMagnets->fMagnets.at(i)->Rin2 * cm - 1 * cm;
+	        fConfig.ffi_D2TRK.SizeY=fIonLineMagnets->fMagnets.at(i)->Rin2 * cm - 1 * cm;
+
                 fConfig.ffi_D2TRK.SizeZ = fIonLineMagnets->fMagnets.at(i)->LengthZ * m - 2. * cm;
 
                 ffi_D2TRK.Construct(fConfig.ffi_D2TRK, World_Material, fIonLineMagnets->fMagnets.at(i)->fPhysics_BigDi_m);
@@ -591,11 +594,12 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 
 
         ffi_ZDC.Construct(fConfig.ffi_ZDC, World_Material, World_Phys);
-        if(USE_FFI_ZDC_CRYSTAL) { ffi_ZDC.ConstructTowels(1);}
-	else if(USE_FFI_ZDC_GLASS) { ffi_ZDC.ConstructTowels(0);}
-	else   if(USE_FFI_ZDC_ALICE) {  ffi_ZDC.ConstructALICE();} 
+	//       if(USE_FFI_ZDC_CRYSTAL) { ffi_ZDC.ConstructTowels(1);}
+	//	else if(USE_FFI_ZDC_GLASS) { ffi_ZDC.ConstructTowels(0);}
+	//else   if(USE_FFI_ZDC_ALICE) {  ffi_ZDC.ConstructALICE();} 
 
         // Write enter volume like hits
+	       //           if (ffi_ZDC.ffi_ZDC_HCAL_Logic) ffi_ZDC.ffi_ZDC_HCAL_Logic->SetSensitiveDetector(fCalorimeterSD);
 
 
     } // end ffi_ZDC
@@ -733,6 +737,9 @@ void JLeicDetectorConstruction::ConstructSDandField()
 //G4PhysicalVolumeStore::GetInstance()->
 
     fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_ZDC.Phys);
+    fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D2.lay_Phys[0]);
+    fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D2.Phys);
+    fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_D2TRK.Phys);
 }
 
 

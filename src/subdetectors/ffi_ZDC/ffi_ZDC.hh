@@ -27,6 +27,8 @@ struct ffi_ZDC_Config {
   double Angle=-0.0265;
   double EMCAL_Thickness=30*cm;
   G4RotationMatrix rot_matx;
+  int NtowersX=20;
+  int NtowersY=20;
 
 };
 
@@ -69,18 +71,18 @@ public:
           // Ecal module Crystals
           //-------------------------------------------------------------------
 
-          ffi_ZDC_HCAL_Thickness = cfg.Thickness;
+          ffi_ZDC_HCAL_Thickness = cfg.EMCAL_Thickness;
           ffi_ZDC_HCAL_ROut = 60 * cm;
           ffi_ZDC_HCAL_Width = 5. * cm;
-          ffi_ZDC_HCAL_Gap = 0.01 * mm;
+          ffi_ZDC_HCAL_Gap = 5 * mm;
 
 	  if(Type==0) {    ffi_ZDC_HCAL_Material = fMat->GetMaterial("PbWO4");}
           else { ffi_ZDC_HCAL_Material = fMat->GetMaterial("IronAll");}
 
-          ffi_ZDC_HCAL_Solid = new G4Box("ffi_ZDC_HCAL_Solid", ffi_ZDC_HCAL_Width * 0.5,
+          ffi_ZDC_HCAL_Solid = new G4Box("ffi_ZDC_HCAL_Solid_Tower", ffi_ZDC_HCAL_Width * 0.5,
                                             ffi_ZDC_HCAL_Width * 0.5, ffi_ZDC_HCAL_Thickness * 0.5);
           ffi_ZDC_HCAL_Logic = new G4LogicalVolume(ffi_ZDC_HCAL_Solid, ffi_ZDC_HCAL_Material,
-                                                      "ffi_ZDC_HCAL_Logic");
+                                                      "ffi_ZDC_HCAL_Logic_Tower");
 
           attr_ffi_ZDC_HCAL = new G4VisAttributes(G4Color(0.1, 1.0, 0.9, 1.));
           attr_ffi_ZDC_HCAL->SetLineWidth(1);
@@ -92,52 +94,36 @@ public:
           ffi_ZDC_HCAL_InnerR = 0. * cm; 
           G4double y_C = 0;
           G4double x_C;
-          ffi_ZDC_HCAL_PosZ = cfg.Thickness / 2 - ffi_ZDC_HCAL_Thickness / 2;
+          ffi_ZDC_HCAL_PosZ = -cfg.Thickness / 2 + ffi_ZDC_HCAL_Thickness / 2 +2*mm;
           G4int k = -1;
 
 //============  For sectors =====
-          for (int j = 0; j < 50; j++) {
-              if(j==0) {y_C=ffi_ZDC_HCAL_Gap;}
-                  else { y_C -= ffi_ZDC_HCAL_Width + ffi_ZDC_HCAL_Gap;}
-              x_C = (ffi_ZDC_HCAL_Width + ffi_ZDC_HCAL_Gap) * 0.5;
+          for (int j = 0; j < cfg.NtowersX; j++) {
+              if(j==0) {y_C=cfg.Width/2.-ffi_ZDC_HCAL_Width/2. - ffi_ZDC_HCAL_Gap;}
+	      else { y_C -= (ffi_ZDC_HCAL_Width + ffi_ZDC_HCAL_Gap);}
 
-              for (int i = 0; i < 50; i++) {
-                  double R = sqrt(x_C * x_C + y_C * y_C);
+              if( abs(y_C+ffi_ZDC_HCAL_Width/2.) > cfg.Width/2) continue; 
 
-                  //   printf("EMCALLL::k=%d  j=%d i =%d x=%f, y=%f  R=%f ffi_ZDC_HCAL_InnerR=%f \n ",k, j,i, x_C,y_C, R, ffi_ZDC_HCAL_InnerR);
+              
+              x_C = cfg.Width/2.-(ffi_ZDC_HCAL_Width + ffi_ZDC_HCAL_Gap) * 0.5;
 
+              for (int i = 0; i <  cfg.NtowersY; i++) {
 
-                  if (abs(x_C) < cfg.Width/2. &&  abs(y_C)< cfg.Width/2.)
-                  {
+		if (i > 0)  x_C  -= (ffi_ZDC_HCAL_Width + ffi_ZDC_HCAL_Gap);
+
+                 if (abs(x_C +ffi_ZDC_HCAL_Width/2.  ) >  cfg.Width/2.) continue; 
+
+                       printf("EMCALLL::k=%d  j=%d i =%d x=%f, y=%f   \n ",k, j,i, x_C,y_C );
 
                       k++;
                       sprintf(abname, "ffi_ZDC_HCAL_Phys_%d", k);
                       new G4PVPlacement(0, G4ThreeVector(x_C, y_C, ffi_ZDC_HCAL_PosZ), abname, ffi_ZDC_HCAL_Logic,
                                         Phys, false, k);
-                      k++;
-                      sprintf(abname, "ffi_ZDC_HCAL_Phys_%d", k);
-                      new G4PVPlacement(0, G4ThreeVector(-x_C, y_C, ffi_ZDC_HCAL_PosZ), abname,
-                                        ffi_ZDC_HCAL_Logic,
-                                        Phys, false, k);
+		      //  printf("ffi_ZDC_HCAL::k=%d  j=%d i =%d x=%f, y=%f  R=%f ffi_ZDC_HCAL_InnerR=%f \n ",k, j,i, x_C,y_C, R, ffi_ZDC_HCAL_InnerR);
 
-                      k++;
-                      sprintf(abname, "ffi_ZDC_HCAL_Phys_%d", k);
-                      new G4PVPlacement(0, G4ThreeVector(x_C, -y_C, ffi_ZDC_HCAL_PosZ), abname,
-                                        ffi_ZDC_HCAL_Logic,
-                                        Phys, false, k);
-
-                      k++;
-                      sprintf(abname, "ffi_ZDC_HCAL_Phys_%d", k);
-                      new G4PVPlacement(0, G4ThreeVector(-x_C, -y_C, ffi_ZDC_HCAL_PosZ), abname,
-                                        ffi_ZDC_HCAL_Logic,
-                                        Phys, false, k);
-                      //  printf("ffi_ZDC_HCAL::k=%d  j=%d i =%d x=%f, y=%f  R=%f ffi_ZDC_HCAL_InnerR=%f \n ",k, j,i, x_C,y_C, R, ffi_ZDC_HCAL_InnerR);
-
-                  }
-                  x_C += ffi_ZDC_HCAL_Width + ffi_ZDC_HCAL_Gap;
-
-              }
-          }
+	      }
+    
+	  }
 
       };
 

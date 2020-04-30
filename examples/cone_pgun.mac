@@ -70,6 +70,6 @@
 #         Q:(int) Charge of Ion (in unit of e)
 #         E:(double) Excitation energy (in keV)
 #         flb:(char) Floating level base
-
-/run/beamOn 10000
+/run/initialize
+/run/beamOn 1
 exit

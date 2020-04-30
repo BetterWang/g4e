@@ -72,7 +72,7 @@ JLeicSolenoid3D::JLeicSolenoid3D(const std::string& filename, double zOffset, bo
     // Read table dimensions
     //file >> nx >> ny >> nz; // Note dodgy order
     int tmp;
-    file >> nx >> ny >> nz >> tmp; // Note dodgy order
+    file >> nz >> nx >> ny >> tmp; // Note dodgy order
 
     //std::cout << "  [ Number of values x,y,z: " << nx << " " << ny << " " << nz << " ] " << " tesla=" << tesla << endl;
 

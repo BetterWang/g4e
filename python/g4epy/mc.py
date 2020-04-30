@@ -13,7 +13,7 @@ def detect_mc_type(file_name):
     with open(file_name, 'r') as f:
         line = ""
         try:
-            while not line:                 #Just to fake a lot of readlines and hit the end
+            while not line:                 # Just to fake a lot of readlines and hit the end
                 line = next(f).replace('\n', '')
         except StopIteration:
             return McFileTypes.UNKNOWN

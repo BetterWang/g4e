@@ -116,7 +116,7 @@ void JLeicEventAction::BeginOfEventAction(const G4Event *evt) {
 
 
 void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
-  // static std::atomic_uint64_t totalEventCounter = 0;
+  //  static std::atomic_uint64_t totalEventCounter = 0;
   //  totalEventCounter++;
   //  fmt::print("Events processed: {} \n", (uint64_t)totalEventCounter);
 

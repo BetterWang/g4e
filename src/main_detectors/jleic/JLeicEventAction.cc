@@ -117,7 +117,11 @@ void JLeicEventAction::BeginOfEventAction(const G4Event *evt) {
 
 
 void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
+<<<<<<< HEAD
   static std::atomic<std::uint64_t> totalEventCounter(0);
+=======
+    static std::atomic<std::uint64_t> totalEventCounter(0);
+>>>>>>> yulia
     totalEventCounter++;
     fmt::print("Events processed: {} \n", (uint64_t)totalEventCounter);
 

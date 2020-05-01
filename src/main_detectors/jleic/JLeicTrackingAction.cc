@@ -83,7 +83,7 @@ void JLeicTrackingAction::PreUserTrackingAction(const G4Track *aTrack)
 //        G4cout << "  Track ID:          " << aTrack->GetTrackID() << G4endl;
 //        G4cout << "  Parent ID:         " << aTrack->GetParentID() << G4endl;
 //        G4cout << "  particle:          " << aTrack->GetDynamicParticle()->GetDefinition()->GetParticleName() << " : "<< aTrack->GetDynamicParticle()->GetDefinition()->GetPDGEncoding()<< G4endl;
-//        G4cout << "  level:             " << info->GetLevel() << G4endl;
+//        G4cout << "  level:             " << info->GetAncestryLevel() << G4endl;
 //
 //        G4cout << "  level>3:             " << level3 << G4endl;
 //        G4cout << "  total:             " << total << G4endl;
@@ -130,7 +130,7 @@ void JLeicTrackingAction::PostUserTrackingAction(const G4Track *aTrack)
     auto secTracks = fpTrackingManager->GimmeSecondaries();
     for(auto secTrack: *secTracks) {
         auto secInfo = new JLeicTrackInformation();
-        secInfo->SetLevel(info->GetLevel()+1);
+        secInfo->SetLevel(info->GetAncestryLevel() + 1);
         secTrack->SetUserInformation(secInfo);
     }
 

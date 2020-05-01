@@ -12,7 +12,7 @@ class JLeicTrackInformation : public G4VUserTrackInformation
 {
 public:
 
-    inline G4int GetLevel() const { return fLevel; }
+    inline G4int GetAncestryLevel() const { return fLevel; }
     inline void  SetLevel(G4int level) { fLevel = level; }
 
     void *operator new(size_t);

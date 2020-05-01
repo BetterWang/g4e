@@ -21,7 +21,7 @@ g4e::RootOutputManager::RootOutputManager(TFile *rootFile):
     // TODO Move JLeic initialization to the appropriate phase
     jleicRootOutput->Initialize(mRootFile, mFlatEventTree);
     mSaveSecondaryLevel = 3;
-    fMessenger.DeclareProperty("/rootOutput/saveSecondaryLevel", mSaveSecondaryLevel, "-1 save all, 0 - save only generated particles, 1 - n level of secondaries to save");
+    fMessenger.DeclareProperty("saveSecondaryLevel", mSaveSecondaryLevel, "-1 save all, 0 - save only generated particles, 1 - n level of secondaries to save");
 }
 
 void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoices pointChoice, G4int copyIDx, G4int copyIDy)
@@ -58,12 +58,11 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
         process_int = (int)process->GetProcessType();
     }
 
+    auto info = dynamic_cast<JLeicTrackInformation*>(track->GetUserInformation());
+    int ancestryLevel = info ? info->GetAncestryLevel() : -1;
 
-    if(mSaveSecondaryLevel!=-1) {
-        auto info = (JLeicTrackInformation*) track->GetUserInformation();
-        if(info->GetLevel() > mSaveSecondaryLevel) {
-            return;
-        }
+    if(mSaveSecondaryLevel!=-1 && ancestryLevel > mSaveSecondaryLevel) {
+        return;
     }
 
     jleicRootOutput->AddHit(
@@ -90,6 +89,7 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
                       parentId,                             /* int aParentId */
                       PDG,                                  /* int aTrackPdg */
                       process_int,                           /* creator proc id */
+                      ancestryLevel,                        /* ancestry level */
                       vertex.x() / mm,              /* double aXVertex */
                       vertex.y() / mm,              /* double aYVertex */
                       vertex.z() / mm,              /* double aZVertex */

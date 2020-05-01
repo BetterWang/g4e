@@ -78,6 +78,7 @@ namespace g4e
                 uint64_t aParentId,
                 uint64_t aTrackPdg,
                 int64_t creatorProc,
+                int64_t ancestryLevel,
                 double aXVertex,
                 double aYVertex,
                 double aZVertex,
@@ -96,6 +97,7 @@ namespace g4e
             mTrackIo.ParentId.push_back(aParentId);
             mTrackIo.PdgVect.push_back(aTrackPdg);
             mTrackIo.CreateProc.push_back(creatorProc);
+            mTrackIo.AncestryLevel.push_back(ancestryLevel);
             mTrackIo.XVtxVect.push_back(aXVertex);
             mTrackIo.YVtxVect.push_back(aYVertex);
             mTrackIo.ZVtxVect.push_back(aZVertex);

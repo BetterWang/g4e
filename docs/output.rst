@@ -6,7 +6,7 @@ Output
 Controlling secondaries
 -----------------------
 
-To control how many secondaries (tracks and their hits) to save, there is a configuration:
+To control how many generation of secondaries (tracks and their hits) to save, there is a configuration:
 
 `/rootOutput/saveSecondaryLevel <ancestry-level>`
 
@@ -17,7 +17,8 @@ To control how many secondaries (tracks and their hits) to save, there is a conf
 * -1 -  save everything
 * 0  - save only primary particles
 * 1  - save primaries and their daughters
-* 2  - save primaries, daughters and their daughters
+* 2  - save primaries, daughters and daughters' daughters
+* n  - save n generations of secondaries
 
 (primaries - particles that came from a generator/input file)
 

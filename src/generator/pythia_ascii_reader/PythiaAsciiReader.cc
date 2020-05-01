@@ -84,7 +84,7 @@ void PythiaAsciiReader::Initialize() {
 
 
 PythiaAsciiReader *PythiaAsciiReader::GeneratePythiaEvent() {
-    printf("Read lund\n");
+    //printf("Read lund\n");
     if ((gformat == "LUND" || gformat == "lund") && !gif.eof()) {
         //printf("=====> LUND 0 !!!!  \n");
         lundUserDefined.clear();
@@ -102,7 +102,7 @@ PythiaAsciiReader *PythiaAsciiReader::GeneratePythiaEvent() {
         }
         // 11    0    1        2112        0        0       -1.332584       -0.299053       31.538593       31.582129        0.939570        0.000000        0.000000        0.000000
         //	printf("=====> LUND 1  !!!! npart=%d dCone=%f dmyMom=%f \n", nparticles, dCone, dmyMom);
-        printf("=====> LUND 1  !!!! npart=%d \n", nparticles);
+        //printf("=====> LUND 1  !!!! npart=%d \n", nparticles);
         N = 0;
         pyEvt.clear();
 
@@ -123,13 +123,13 @@ PythiaAsciiReader *PythiaAsciiReader::GeneratePythiaEvent() {
                 // i,icharge,flag,PID,K(I,4),K(I,5) P(I,1),P(I,2),P(I,3),P(I,4),P(I,5)  V(I,1)*0.1,V(I,2)*0.1,VZoffSet*0.1
                 int ip, icharge, itype, iPDG, K4, K5; //, pPDG=0;
                 gif >> ip >> icharge >> itype >> iPDG >> K4 >> K5 >> px >> py >> pz >> etot >> mass >> Vx >> Vy >> Vz;
-                printf("read: i=%3d Charge=%2d  Sts=%d  PDG=%5d  K4=%3d  K5=%3d    P=(%8.3f,%8.3f,%8.3f,%8.3f,%8.3f)    Vtx=(%f,%f,%f) \n",
-                       ip, icharge, itype, iPDG, K4, K5, px, py, pz, etot, mass, Vx, Vy, Vz);
+//                printf("read: i=%3d Charge=%2d  Sts=%d  PDG=%5d  K4=%3d  K5=%3d    P=(%8.3f,%8.3f,%8.3f,%8.3f,%8.3f)    Vtx=(%f,%f,%f) \n",
+//                       ip, icharge, itype, iPDG, K4, K5, px, py, pz, etot, mass, Vx, Vy, Vz);
                 Vt = 0;
                 daughter1 = K4;
                 daughter2 = K5;
 
-                printf("GeV=%f  mm=%f c_light=%f \n", GeV, mm, c_light);
+//                printf("GeV=%f  mm=%f c_light=%f \n", GeV, mm, c_light);
 
                 if (itype == 1) {  // use only final stae particles , c_light=1 !!!
                     /*
@@ -187,7 +187,7 @@ PythiaAsciiReader *PythiaAsciiReader::GeneratePythiaEvent() {
                     double rpx = dir.x();
                     double rpy = dir.y();
 
-                    std::cout << "G4LorentzVector px= " << rpx << " py= " << rpy << " pz= " << rpz << std::endl;
+                    //std::cout << "G4LorentzVector px= " << rpx << " py= " << rpy << " pz= " << rpz << std::endl;
                     /*
                     double rpt = sqrt(px*px + py*py);
                     //double rphi = (0.5-G4UniformRand())*2. * 3.1415 / 2.;
@@ -210,7 +210,7 @@ PythiaAsciiReader *PythiaAsciiReader::GeneratePythiaEvent() {
                     double dVy = G4RandGauss::shoot(0,Vy);
                     double dVz = G4RandGauss::shoot(0,Vz);
                     G4LorentzVector v(dVx * mm, dVy * mm, dVz * mm, Vt * mm / c_light);
-                    std::cout << "G4LorentzVector p= " << p << std::endl;
+                    //std::cout << "G4LorentzVector p= " << p << std::endl;
 
                     ptrk.P = p;
                     ptrk.V = v;
@@ -236,13 +236,13 @@ PythiaAsciiReader *PythiaAsciiReader::GeneratePythiaEvent() {
                 //             printf("read: i=%3d Charge=%2d  Sts=%d  PDG=%5d  K4=%3d  K5=%3d    P=(%8.3f,%8.3f,%8.3f,%8.3f,%8.3f)    Vtx=(%f,%f,%f) \n",
                 //       ip, icharge, itype, iPDG, K4, K5, px, py, pz, etot, mass, Vx, Vy, Vz);
                 gif >> ip >> charge >> itype >> iPDG >> K4 >> K5 >> px >> py >> pz >> etot >> mass >> Vx >> Vy >> Vz;
-                printf("read LUND: i=%3d Charge=%f  Sts=%d  PDG=%5d  K4=%3d  K5=%3d    P=(%8.3f,%8.3f,%8.3f,%8.3f,%8.3f)    Vtx=(%f,%f,%f) \n",
-                       ip, charge, itype, iPDG, K4, K5, px, py, pz, etot, mass, Vx, Vy, Vz);
+//                printf("read LUND: i=%3d Charge=%f  Sts=%d  PDG=%5d  K4=%3d  K5=%3d    P=(%8.3f,%8.3f,%8.3f,%8.3f,%8.3f)    Vtx=(%f,%f,%f) \n",
+//                       ip, charge, itype, iPDG, K4, K5, px, py, pz, etot, mass, Vx, Vy, Vz);
                 Vt = 0;
                 daughter1 = K4;
                 daughter2 = K5;
 
-                printf("GeV=%f  mm=%f c_light=%f \n", GeV, mm, c_light);
+                //printf("GeV=%f  mm=%f c_light=%f \n", GeV, mm, c_light);
 
                 if (itype == 1) {  // use only final stae particles , c_light=1 !!!
                     /*
@@ -261,7 +261,7 @@ PythiaAsciiReader *PythiaAsciiReader::GeneratePythiaEvent() {
                     ptrk.K[5] = daughter2;
                     G4LorentzVector p(px * GeV, py * GeV, pz * GeV, etot * GeV);
                     G4LorentzVector v(Vx * mm, Vy * mm, Vz * mm, Vt * mm / c_light);
-                    std::cout << "G4LorentzVector p= " << p;
+                    //std::cout << "G4LorentzVector p= " << p;
                     ptrk.P = p;
                     ptrk.V = v;
                     pyEvt.push_back(ptrk);
@@ -294,7 +294,7 @@ G4bool PythiaAsciiReader::CheckVertexInsideWorld(const G4ThreeVector& pos) const
 void PythiaAsciiReader::PyMC2G4(const PythiaAsciiReader* py,
                               G4Event* g4event)
 {
-    printf("=======> ENTER PyMC2G4 N part=%d vec=%ld<===============\n",py->N,py->pyEvt.size());
+    //printf("=======> ENTER PyMC2G4 N part=%d vec=%ld<===============\n",py->N,py->pyEvt.size());
 
     G4PrimaryVertex* g4vtx;
     int Np = py->pyEvt.size(); // =py->N;
@@ -318,7 +318,7 @@ void PythiaAsciiReader::PyMC2G4(const PythiaAsciiReader* py,
         G4LorentzVector p(py->pyEvt.at(ip).P);
         G4PrimaryParticle* g4prim =  new G4PrimaryParticle(pdgcode, p.x(), p.y(), p.z());
 
-        printf("PyMC2G4:: PDG= %d vtx=(%f,%f,%f) mom=(%f,%f,%f) \n",pdgcode, xvtx.x()/mm, xvtx.y()/mm, xvtx.z()/mm, p.x()/GeV, p.y()/GeV, p.z()/GeV);
+        //printf("PyMC2G4:: PDG= %d vtx=(%f,%f,%f) mom=(%f,%f,%f) \n",pdgcode, xvtx.x()/mm, xvtx.y()/mm, xvtx.z()/mm, p.x()/GeV, p.y()/GeV, p.z()/GeV);
 
         g4vtx-> SetPrimary(g4prim);
         g4event-> AddPrimaryVertex(g4vtx);
@@ -334,7 +334,7 @@ void PythiaAsciiReader::GeneratePrimaryVertex(G4Event* anEvent) {
     // generate next event
     PythiaAsciiReader *pyEvent = GeneratePythiaEvent();
 
-    printf("=======> return from GeneratePythiaEvent <===============\n");
+    //printf("=======> return from GeneratePythiaEvent <===============\n");
 
     if (!pyEvent) {
         G4cout << "PythiaInterface: no generated particles. run terminated..." << G4endl;

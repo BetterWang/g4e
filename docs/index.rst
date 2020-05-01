@@ -7,15 +7,16 @@ Welcome to Geant 4 EIC's documentation!
    :maxdepth: 2
    :caption: Getting Started:
 
-   quick_start
-   install
-   run
+   01_quick_start
+   01_install
+   01_run
 
 .. toctree::
    :maxdepth: 2
    :caption: Design:
 
    generators
+   output
    detector_naming
    detector_import
    multithreading

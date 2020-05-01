@@ -93,6 +93,7 @@ void JLeicEventAction::BeginOfEventAction(const G4Event *evt) {
 
     if (eventId == 0) printf("----> Begin of Event: %d \n", eventId);
 
+
     // Pretty prints generated particles and vertexes
     if (fVerbose > 1) {
         G4cout << "JLeicEventAction:: Event START " << evt->GetEventID() << G4endl;
@@ -116,9 +117,9 @@ void JLeicEventAction::BeginOfEventAction(const G4Event *evt) {
 
 
 void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
-  //  static std::atomic_uint64_t totalEventCounter = 0;
-  //  totalEventCounter++;
-  //  fmt::print("Events processed: {} \n", (uint64_t)totalEventCounter);
+    static std::atomic<std::uint64_t> totalEventCounter = 0;
+    totalEventCounter++;
+    fmt::print("Events processed: {} \n", (uint64_t)totalEventCounter);
 
 //    for(auto trajectory: *evt->GetTrajectoryContainer()->GetVector()) {
 //        fmt::print("\ntrajectory start:\n");
@@ -128,8 +129,6 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
 //            fmt::print("   {:<10} {:<10} {:<10}\n", pos.x()/mm, pos.y()/mm, pos.z()/mm);
 //        }
 //    }
-
-
 
     G4HCofThisEvent *hitCollectionEvnt = evt->GetHCofThisEvent();
 
@@ -166,6 +165,7 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
 
     const G4int primeVtxCount = evt->GetNumberOfPrimaryVertex();
     size_t particleId = 0;  // prime particle ID unique for all prime vertexes
+
 
     // ROOOT OUTPUUUT
     for (G4int primeVtxIndex = 0; primeVtxIndex < primeVtxCount; primeVtxIndex++) {

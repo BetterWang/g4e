@@ -1,5 +1,5 @@
-MC Generators
-=============
+Generators
+==========
 
 Selected generator is controlled with
 
@@ -83,4 +83,7 @@ Sample configuration
 .. include:: example_process_mc.rst
 
 
-See also :doc:`Howto process MC files <howto_process_mc_files>`
+See also
+
+:doc:`Howto process MC files <howto_process_mc_files>`
+

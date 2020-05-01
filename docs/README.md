@@ -1,3 +1,4 @@
+:orphan:
 # Documentation
 
 To Build the documentation:

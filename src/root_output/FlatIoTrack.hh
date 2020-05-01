@@ -4,13 +4,13 @@
 namespace g4e {
     struct TrackIo
     {
-
         void BindToTree(TTree *tree)
         {
             tree->Branch("trk_count", &TrackCount, "trk_count/l");
             tree->Branch("trk_id", &IdVect);
             tree->Branch("trk_pdg", &PdgVect);
             tree->Branch("trk_parent_id", &ParentId);
+            tree->Branch("trk_create_proc", &CreateProc);
             tree->Branch("trk_vtx_x", &XVtxVect);
             tree->Branch("trk_vtx_y", &YVtxVect);
             tree->Branch("trk_vtx_z", &ZVtxVect);
@@ -26,6 +26,7 @@ namespace g4e {
             IdVect.clear();
             ParentId.clear();
             PdgVect.clear();
+            CreateProc.clear();
             XVtxVect.clear();
             YVtxVect.clear();
             ZVtxVect.clear();
@@ -39,6 +40,7 @@ namespace g4e {
         std::vector<uint64_t> IdVect;
         std::vector<uint64_t> ParentId;
         std::vector<uint64_t> PdgVect;
+        std::vector<int64_t> CreateProc;
         std::vector<double> XVtxVect;
         std::vector<double> YVtxVect;
         std::vector<double> ZVtxVect;

@@ -1,5 +1,4 @@
 #include <vector>
-#include "/data/yuliapc/home/yulia/work/g4e/src/subdetectors/ffi_ZDC/Alice_ZDC_Geometry.cc"
 
 #include "JLeicDetectorConstruction.hh"
 #include "JLeicCalorimeterSD.hh"
@@ -160,11 +159,9 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     //                    Beampipe
     //=========================================================================
     if(USE_BEAMPIPE ) {
-
        fConfig.ir_Beampipe.Zpos = fConfig.World.ShiftVTX;
        ir_Beampipe.ConstructCentral(fConfig.ir_Beampipe, World_Material, World_Phys);
        ir_Beampipe.ConstructForwardCone(fConfig.ir_Beampipe, World_Material, World_Phys);
-
     }
     //=========================================================================
     //                    Sensitive detectors

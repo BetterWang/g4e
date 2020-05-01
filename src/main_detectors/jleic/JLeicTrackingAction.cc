@@ -37,31 +37,73 @@
 
 #include "G4UImanager.hh"
 #include "G4SystemOfUnits.hh"
+#include "JLeicTrackInformation.hh"
 
+bool hasWrite = false;
 JLeicTrackingAction::JLeicTrackingAction() : G4UserTrackingAction() {}
 
 void JLeicTrackingAction::PreUserTrackingAction(const G4Track *aTrack)
 {
+    JLeicTrackInformation * info;
+
+    if(aTrack->GetParentID() == 0) {
+        info = new JLeicTrackInformation();
+        info->SetLevel(0);
+        aTrack->SetUserInformation(info);
+    } else {
+        info = (JLeicTrackInformation*) aTrack->GetUserInformation();
+    }
+
+
+//    if(aTrack->GetParentID() == 0) {
+//
+//    }
+//    mTrackLevelsById[aTrack->GetTrackID()] = level;
+//    if(level > 1) {
+//        level3++;
+//    }
+//    total ++;
+//
+//    if(level > 1) {
+//        const_cast<G4Track *>(aTrack)->SetTrackStatus(fKillTrackAndSecondaries);
+//    }
+
+
 
 //    if(aTrack && aTrack->GetTrackID() < 40) {
 //        auto part = aTrack->GetDynamicParticle();
 //        spdlog::info("PreTracking  id: {:<7} parent: {:<7}  P: {:<12} GeV DynPrtP: {:<12}", aTrack->GetTrackID(), aTrack->GetParentID(), aTrack->GetMomentum().mag() / GeV, part->GetTotalMomentum()/GeV);
 //    }
+//
+//if (aTrack->IsGoodForTracking() ) {
 
 
 //
-////    if (aTrack->GetParentID() == 1 && aTrack->GetKineticEnergy() > 100. * GeV) {
 //        G4cout << "[JLeicTrackingAction::PreUserTrackingAction]" << G4endl;
 //        G4cout << "  Track ID:          " << aTrack->GetTrackID() << G4endl;
-//        G4cout << "  particle:          " << aTrack->GetDynamicParticle()->GetDefinition()->GetParticleName() << G4endl;
 //        G4cout << "  Parent ID:         " << aTrack->GetParentID() << G4endl;
+//        G4cout << "  particle:          " << aTrack->GetDynamicParticle()->GetDefinition()->GetParticleName() << " : "<< aTrack->GetDynamicParticle()->GetDefinition()->GetPDGEncoding()<< G4endl;
+//        G4cout << "  level:             " << info->GetLevel() << G4endl;
+//
+//        G4cout << "  level>3:             " << level3 << G4endl;
+//        G4cout << "  total:             " << total << G4endl;
+
+
+//        G4cout << "  Good 4 tracking:   " << aTrack->IsGoodForTracking() << G4endl;
+//
+//        if(aTrack->GetDynamicParticle()->GetPrimaryParticle()) {
+//            G4cout << "  primary:   " << aTrack->GetDynamicParticle()->GetPrimaryParticle()->GetPDGcode() << G4endl;
+//        }
+//
 //        if(aTrack->GetCreatorProcess()) {
 //            G4cout << "  created by:        " << aTrack->GetCreatorProcess()->GetProcessName() << G4endl;
+//            aTrack->GetCreatorProcess()->DumpInfo();
 //        } else {
 //            G4cout << "  created by:        NullPtr" << G4endl;
 //        }
 //
-//        G4cout << "  kin. energy (TeV): " << aTrack->GetKineticEnergy() / TeV << G4endl;
+//        G4cout << "  kin. energy (GeV): " << aTrack->GetKineticEnergy() / GeV << G4endl;
+//        G4cout << "  tot. energy (GeV): " << aTrack->GetTotalEnergy() / GeV << G4endl;
 //
 //        if(aTrack->GetVolume()) {
 //            G4cout << "  volume:            " << aTrack->GetVolume()->GetName() << G4endl;
@@ -76,11 +118,24 @@ void JLeicTrackingAction::PreUserTrackingAction(const G4Track *aTrack)
 ////        G4cout << " Killing event..." << G4endl;
 //        //if (aTrack->GetTrackID() != 1)
 //          //  const_cast<G4Track *>(aTrack)->SetTrackStatus(fKillTrackAndSecondaries);
-////    }
+//    }
 }
 
 void JLeicTrackingAction::PostUserTrackingAction(const G4Track *aTrack)
 {
+    auto info = (JLeicTrackInformation*) aTrack->GetUserInformation();
+
+    // From the tracking manager we can retrieve the secondary track vector,
+    // which is a container class for tracks:
+    auto secTracks = fpTrackingManager->GimmeSecondaries();
+    for(auto secTrack: *secTracks) {
+        auto secInfo = new JLeicTrackInformation();
+        secInfo->SetLevel(info->GetLevel()+1);
+        secTrack->SetUserInformation(secInfo);
+    }
+
+
+
     /*
     if(aTrack && aTrack->GetTrackID() < 20) {
         auto part = aTrack->GetDynamicParticle();
@@ -88,10 +143,11 @@ void JLeicTrackingAction::PostUserTrackingAction(const G4Track *aTrack)
     }*/
 
 ////    if (aTrack->GetParentID() == 1 && aTrack->GetKineticEnergy() > 100. * GeV) {
-//    G4cout << "[JLeicTrackingAction::PostUserTrackingAction]" << G4endl;
+    //G4cout << "[JLeicTrackingAction::PostUserTrackingAction]" << G4endl;
 //    G4cout << "  Track ID:          " << aTrack->GetTrackID() << G4endl;
 //    G4cout << "  particle:          " << aTrack->GetDynamicParticle()->GetDefinition()->GetParticleName() << G4endl;
 //    G4cout << "  Parent ID:         " << aTrack->GetParentID() << G4endl;
+    ///G4cout << "  secTracks:             " << secTracks->size() << G4endl;
 //    if(aTrack->GetCreatorProcess()) {
 //        G4cout << "  created by:        " << aTrack->GetCreatorProcess()->GetProcessName() << G4endl;
 //    } else {

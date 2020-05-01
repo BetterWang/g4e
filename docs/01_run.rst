@@ -11,12 +11,12 @@ Environment variables
 ---------------------
 
 
-.. include:: environment.rst
+.. include:: 01_environment.rst
 
 
 Flags
 -----
 
 
-.. include:: arguments.rst
+.. include:: 01_arguments.rst
 

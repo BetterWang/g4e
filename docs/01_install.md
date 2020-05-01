@@ -94,7 +94,7 @@ make
    Provides export to CERN.ROOT geometry
    - Env. variable: `VGM_DIRECTORY` or `VGM_DIR`
    - CMake flag: `VGM_DIRECTORY`
-- **HEPMC2** (optional)  
+- **HEPMC2**
     Required to open Pythia8 and other HepMC2 compatible MC files   
    - Env. variable: `HEPMC_DIR` or `HEPMC_ROOT_DIR`
    - CMake flag: `HEPMC_DIRECTORY` or `HEPMC_DIR`

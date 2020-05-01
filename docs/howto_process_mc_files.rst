@@ -37,5 +37,5 @@ Run with ``--gui`` flag:
 
 See also :doc:`More about using MC generators <generators>`
 
-:doc:`Flags and environment variables<run>`
+:doc:`Flags and environment variables<01_run>`
 

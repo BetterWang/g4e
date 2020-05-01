@@ -8,7 +8,7 @@ Docker quick start
 
 .. code:: bash
 
-    docker run --rm -it -p 8888:8888 electronioncollider/epic:latest
+    docker run --rm -it -p 8888:8888 electronioncollider/escalate:latest
 
 
 The command will start the jupyter lab server with example files. After running this command,
@@ -40,7 +40,7 @@ You can start the docker without Jupyter Lab running:
 
 .. code:: bash
 
-   docker run --rm -it -p 8888:8888 electronioncollider/epic:latest bash
+   docker run --rm -it -p 8888:8888 electronioncollider/escalate:latest bash
 
 
 Later you can still run jupyter lab by
@@ -63,12 +63,10 @@ Changing and saving the contents
 
 The files that you see in Jupyter Lab are stored in Git repository:
 
-https://gitlab.com/eic/epw
+https://gitlab.com/eic/escalate/workspace
 
 So when you do the change, that is important to save, you could make
 you branch or fork the repo. This
-
-
 
 
 ### Troubleshooting

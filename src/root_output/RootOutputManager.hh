@@ -46,7 +46,7 @@ namespace g4e {
         std::unique_ptr<g4e::RootFlatIO> jleicRootOutput;
         std::unique_ptr<JLeicHistogramManager> jleicHistos;
         G4GenericMessenger fMessenger;
-        int mOnlyGoodForTracking;
+        G4int mSaveSecondaryLevel;
     };
 }
 

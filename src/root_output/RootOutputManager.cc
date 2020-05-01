@@ -5,6 +5,9 @@
 
 #include <G4Step.hh>
 #include <G4TouchableHistory.hh>
+#include <G4PrimaryParticle.hh>
+#include <G4VProcess.hh>
+#include <main_detectors/jleic/JLeicTrackInformation.hh>
 
 g4e::RootOutputManager::RootOutputManager(TFile *rootFile):
     mRootFile(rootFile),
@@ -17,8 +20,8 @@ g4e::RootOutputManager::RootOutputManager(TFile *rootFile):
     // We also create JLeic root output here , while g4e is in transition
     // TODO Move JLeic initialization to the appropriate phase
     jleicRootOutput->Initialize(mRootFile, mFlatEventTree);
-    mOnlyGoodForTracking = 1;
-    fMessenger.DeclareProperty("/rootOutput/onlyGoodForTracking", mOnlyGoodForTracking, "If 1 - save only hits marked IsGoodForTracking flag");
+    mSaveSecondaryLevel = 3;
+    fMessenger.DeclareProperty("/rootOutput/saveSecondaryLevel", mSaveSecondaryLevel, "-1 save all, 0 - save only generated particles, 1 - n level of secondaries to save");
 }
 
 void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoices pointChoice, G4int copyIDx, G4int copyIDy)
@@ -32,26 +35,36 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
     int mHitsCount=0;
 
     // process    track
-    G4Track *aTrack = aStep->GetTrack();
     int curTrackID = aStep->GetTrack()->GetTrackID();
     auto track = aStep->GetTrack();
 
     // particle
     //G4ParticleDefinition * aParticle = aTrack->GetDefinition();
     //G4DynamicParticle*     dParticle = aTrack->GetDynamicParticle();
-    G4ThreeVector momentum = aTrack->GetMomentum();
-    const G4ThreeVector& momentumDir = aTrack->GetMomentumDirection();
-    G4int parentId = aTrack->GetParentID();
-    const G4ThreeVector& position = aTrack->GetPosition();
-    const G4ThreeVector& vertex = aTrack->GetVertexPosition();
-    const G4ThreeVector& vertexMom = aTrack->GetVertexMomentumDirection();
-    G4int PDG = aTrack->GetDefinition()->GetPDGEncoding();
+    G4ThreeVector momentum = track->GetMomentum();
+    const G4ThreeVector& momentumDir = track->GetMomentumDirection();
+    G4int parentId = track->GetParentID();
+    const G4ThreeVector& position = track->GetPosition();
+    const G4ThreeVector& vertex = track->GetVertexPosition();
+    const G4ThreeVector& vertexMom = track->GetVertexMomentumDirection();
+    G4int PDG = track->GetDefinition()->GetPDGEncoding();
 
-    // Save only good for tracking tracks
-    // TODO make it an variable
-    //   if(!aTrack->IsGoodForTracking()) {
-    //    return;
-    // }
+    auto process = track->GetCreatorProcess();
+
+    // For generated particles process will be null, we set process_int == -1
+    int process_int = -1;
+
+    if(process) {
+        process_int = (int)process->GetProcessType();
+    }
+
+
+    if(mSaveSecondaryLevel!=-1) {
+        auto info = (JLeicTrackInformation*) track->GetUserInformation();
+        if(info->GetLevel() > mSaveSecondaryLevel) {
+            return;
+        }
+    }
 
     jleicRootOutput->AddHit(
             /* hit id        */ mHitsCount,
@@ -67,10 +80,16 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
     );
 
 
+//    auto primaryParticle = track->GetDynamicParticle()->GetPrimaryParticle();
+//    if(primaryParticle) {
+//        fmt::print("Primary aTrack.id={:<10} id={}\n", track->GetTrackID(), primaryParticle->GetTrackID());
+//    }
+
     //-- fill tracks --
     jleicRootOutput->AddTrack(curTrackID,                   /* int aTrackId */
                       parentId,                             /* int aParentId */
                       PDG,                                  /* int aTrackPdg */
+                      process_int,                           /* creator proc id */
                       vertex.x() / mm,              /* double aXVertex */
                       vertex.y() / mm,              /* double aYVertex */
                       vertex.z() / mm,              /* double aZVertex */

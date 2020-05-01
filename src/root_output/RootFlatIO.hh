@@ -77,6 +77,7 @@ namespace g4e
                 uint64_t aTrackId,
                 uint64_t aParentId,
                 uint64_t aTrackPdg,
+                int64_t creatorProc,
                 double aXVertex,
                 double aYVertex,
                 double aZVertex,
@@ -94,6 +95,7 @@ namespace g4e
             mTrackIo.IdVect.push_back(aTrackId);
             mTrackIo.ParentId.push_back(aParentId);
             mTrackIo.PdgVect.push_back(aTrackPdg);
+            mTrackIo.CreateProc.push_back(creatorProc);
             mTrackIo.XVtxVect.push_back(aXVertex);
             mTrackIo.YVtxVect.push_back(aYVertex);
             mTrackIo.ZVtxVect.push_back(aZVertex);

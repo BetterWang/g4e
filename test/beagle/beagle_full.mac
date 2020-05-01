@@ -8,8 +8,10 @@
 
 # BEAGLE generator
 /generator/select beagle
-/generator/beagle/open /home/romanov/Downloads/beagle_eD.txt
-/generator/beagle/verbose 2
+/generator/beagle/open /home/romanov/eic/g4e/g4e-dev/test/beagle/beagle_test_data.txt
+/generator/beagle/verbose 0
 
-/run/beamOn 10000
+/run/initialize
+
+/run/beamOn 2
 exit

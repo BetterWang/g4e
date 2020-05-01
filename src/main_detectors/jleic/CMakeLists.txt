@@ -58,6 +58,9 @@ target_sources_local(g4e
 
             JLeicTrackingAction.cc
             JLeicTrackingAction.hh
+
+            JLeicTrackInformation.hh
+            JLeicTrackInformation.cc
         )
 
 target_include_directories(g4e PUBLIC ./)

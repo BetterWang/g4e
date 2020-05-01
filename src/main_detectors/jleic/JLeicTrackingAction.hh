@@ -31,9 +31,12 @@
 #ifndef JLeicTrackingAction_h
 #define JLeicTrackingAction_h
 
+#include <unordered_map>
+
 #include "G4UserTrackingAction.hh"
 
 #include "globals.hh"
+
 
 class JLeicTrackingAction : public G4UserTrackingAction
 {
@@ -45,6 +48,9 @@ public:
 
     void PreUserTrackingAction(const G4Track *) override;
     void PostUserTrackingAction(const G4Track *) override;
+
+private:
+    std::unordered_map<std::uint64_t, std::uint64_t> mTrackLevelsById;
 
 };
 

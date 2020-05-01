@@ -20,7 +20,7 @@ void g4e::VolumeChangeSteppingAction::UserSteppingAction(const G4Step *aStep)
 
         // We need to write a hit for this volume
         if(mEnterHitWriteVolumes.count(volume)){
-            mRootOutputManager->SaveStep(aStep, WriteStepPointChoices::PostStepPoint);
+            mRootOutputManager->SaveStep(aStep, WriteStepPointChoices::PostStepPoint, /*copyIDx*/ 0, /*copyIDy*/0);
         }
     }
 
@@ -33,7 +33,7 @@ void g4e::VolumeChangeSteppingAction::UserSteppingAction(const G4Step *aStep)
 
         // We need to write a hit for this volume
         if(mExitHitWriteVolumes.count(volume)){
-            mRootOutputManager->SaveStep(aStep, WriteStepPointChoices::PreStepPoint);
+            mRootOutputManager->SaveStep(aStep, WriteStepPointChoices::PreStepPoint, /*copyIDx*/ 0, /*copyIDy*/0);
         }
     }
 }

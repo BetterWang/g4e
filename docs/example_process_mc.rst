@@ -1,5 +1,5 @@
 
-.. code:: yaml
+.. code:: python
 
     #------------------------------------------------------------------------
     # Example macro. Process one of
@@ -17,5 +17,6 @@
     /generator/beagle/open beagle_test_data.txt
     /generator/beagle/verbose 2
 
+    /run/initialize
     /run/beamOn 1
     exit

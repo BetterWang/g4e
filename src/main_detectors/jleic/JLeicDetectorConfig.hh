@@ -37,8 +37,8 @@
 #include "ci_EMCAL/ci_EMCAL.hh"
 #include "ci_HCAL/ci_HCAL.hh"
 
-#include "fi_D1TRK/fi_D1TRK.hh"
-#include "fi_D1EMCAL/fi_D1EMCAL.hh"
+#include "fi_B0_TRK/fi_B0_TRK.hh"
+#include "fi_B0_EMCAL/fi_B0_EMCAL.hh"
 
 #include "ffi_D2TRK/ffi_D2TRK.hh"  // Far-forward Ion - Silicon discs in D2 magnet
 #include "ffi_ZDC/ffi_ZDC.hh"         // Far-forward Ion   - HCAL ZDC
@@ -106,8 +106,8 @@ struct JLeicDetectorConfig {
     ci_HCAL_Config  ci_HCAL;
 
     //------------Far-Forward-Ion-----
-    fi_D1TRK_Config  fi_D1TRK;
-    fi_D1EMCAL_Config  fi_D1EMCAL;
+    fi_B0_TRK_Config  fi_B0_TRK;
+    fi_B0_EMCAL_Config  fi_B0_EMCAL;
 
       // --- Tracking in D2 -----
      ffi_D2TRK_Config ffi_D2TRK;

@@ -483,30 +483,30 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 //****************************************************************************************
 
     //====================================================================================
-    //==                          DIPOLE-1 Tracker and EMCAL                            ==
+    //==                         B0(D1a) DIPOLE  Tracker and EMCAL                      ==
     //====================================================================================
 
     //-------------------------------------------------------------------------------
-    //                      Place Si_disks inside D1a ir B0
+    //                     Tracker at B0  ( D1a) 
     //-------------------------------------------------------------------------------
-    if (USE_FI_D1TRK) {
+    if (USE_FI_B0_TRK) {
         for (auto magnet: fIonLineMagnets->fMagnets) {
             if ((BeamLines::JLEIC == beamLine && magnet->name == "iBDS1a") || (BeamLines::ERHIC == beamLine && magnet->name == "iB0PF")) {
                 if(beamLine == BeamLines::ERHIC) {
-                    fConfig.fi_D1TRK.PhiStart=-130.* deg;
-                    fConfig.fi_D1TRK.PhiTot=275 * deg;
+                    fConfig.fi_B0_TRK.PhiStart=-130.* deg;
+                    fConfig.fi_B0_TRK.PhiTot=275 * deg;
                 }
                 else {
-                    fConfig.fi_D1TRK.PhiStart=170.;
-                    fConfig.fi_D1TRK.PhiTot=330 * deg;
+                    fConfig.fi_B0_TRK.PhiStart=170.;
+                    fConfig.fi_B0_TRK.PhiTot=330 * deg;
                 };
 
-                fConfig.fi_D1TRK.ROut = magnet->Rin2 * cm;
-                fConfig.fi_D1TRK.Zpos = (magnet->LengthZ / 2.) * cm - fConfig.fi_D1TRK.SizeZ / 2.;
-                fi_D1TRK.ConstructA(fConfig.fi_D1TRK, World_Material, magnet->fPhysics_BigDi_m);
-                fi_D1TRK.ConstructDetectorsA();
-                for (int lay = 0; lay < fConfig.fi_D1TRK.Nlayers; lay++) {
-                    if (fi_D1TRK.f1_D1_Lay_Logic[lay]) fi_D1TRK.f1_D1_Lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD);
+                fConfig.fi_B0_TRK.ROut = magnet->Rin2 * cm;
+                fConfig.fi_B0_TRK.Zpos = (magnet->LengthZ / 2.) * cm - fConfig.fi_B0_TRK.SizeZ / 2.;
+                fi_B0_TRK.ConstructA(fConfig.fi_B0_TRK, World_Material, magnet->fPhysics_BigDi_m);
+                fi_B0_TRK.ConstructDetectorsA();
+                for (int lay = 0; lay < fConfig.fi_B0_TRK.Nlayers; lay++) {
+                    if (fi_B0_TRK.fi_B0_TRK_lay_Logic[lay]) fi_B0_TRK.fi_B0_TRK_lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD);
                 }
             }
         }
@@ -514,16 +514,16 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 
 
     //-------------------------------------------------------------------------------
-    //                      Central IOn HCAL
+    //                      B0 near beampipe calorimeter  
     //-------------------------------------------------------------------------------
     if (USE_CI_HCAL) {
 
-        if (USE_FI_D1EMCAL) {
+        if (USE_FI_B0_EMCAL) {
             // Ecal module  AFTER !!!   Dipole1
-            fConfig.fi_D1EMCAL.Zpos = -fConfig.ci_HCAL.SizeZ / 2 + fConfig.fi_D1EMCAL.SizeZ / 2;
+            fConfig.fi_B0_EMCAL.Zpos = -fConfig.ci_HCAL.SizeZ / 2 + fConfig.fi_B0_EMCAL.SizeZ / 2;
 
-            fConfig.fi_D1EMCAL.rot_matx.rotateY(fConfig.fi_D1EMCAL.Angle * rad);
-            fi_D1EMCAL.Construct(fConfig.fi_D1EMCAL, World_Material, ci_HCAL.Phys);
+            fConfig.fi_B0_EMCAL.rot_matx.rotateY(fConfig.fi_B0_EMCAL.Angle * rad);
+            fi_B0_EMCAL.Construct(fConfig.fi_B0_EMCAL, World_Material, ci_HCAL.Phys);
         }
     }
 
@@ -734,8 +734,9 @@ void JLeicDetectorConstruction::ConstructSDandField()
 //G4PhysicalVolumeStore::GetInstance()->
 
     fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_ZDC.Phys);
-    fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D2.lay_Phys[0]);
+    //  fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D2.lay_Phys[0]);
     fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D2.Phys);
+    fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D3.Phys);
     fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_D2TRK.Phys);
 }
 

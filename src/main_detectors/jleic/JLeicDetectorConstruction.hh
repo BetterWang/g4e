@@ -60,8 +60,8 @@
 #include "ci_HCAL/ci_HCAL.hh"           // Central Ion Endcap - HCAL
 
 //--------------FFi---------------
-#include "fi_D1TRK/fi_D1TRK.hh"         // Far-forward Ion D1  - Tracking
-#include "fi_D1EMCAL/fi_D1EMCAL.hh"     // Far-forward Ion D1  - EMCAL
+#include "fi_B0_TRK/fi_B0_TRK.hh"         // Far-forward Ion D1  - Tracking
+#include "fi_B0_EMCAL/fi_B0_EMCAL.hh"     // Far-forward Ion D1  - EMCAL
 
 #include "ffi_D2TRK/ffi_D2TRK.hh"       // Far-forward Ion D2 - Tracking ( JLEIC Second  big dipole )
 #include "ffi_ZDC/ffi_ZDC.hh"           // Far-forward Ion   - HCAL ZDC
@@ -143,8 +143,8 @@ public:
     bool USE_CI_HCAL_D = true;
 
     //--------- Forward D1 ------
-    bool USE_FI_D1TRK = true;
-    bool USE_FI_D1EMCAL = false;
+    bool USE_FI_B0_TRK = true;
+    bool USE_FI_B0_EMCAL = false;
     //--------FARFORWARD HADRON------
 
     bool USE_FFI_D2TRK = true;
@@ -283,8 +283,8 @@ private:
     // Far-Forward ION
     //==============================================
 
-    fi_D1TRK_Design     fi_D1TRK;       // Tracking
-    fi_D1EMCAL_Design   fi_D1EMCAL;     // EMCAL
+    fi_B0_TRK_Design     fi_B0_TRK;       // Tracking
+    fi_B0_EMCAL_Design   fi_B0_EMCAL;     // EMCAL
     ffi_D2TRK_Design    ffi_D2TRK;      // D2 Tracking
     ffi_ZDC_Design      ffi_ZDC;
 

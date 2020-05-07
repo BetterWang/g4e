@@ -530,21 +530,21 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 //====================================================================================
 //==                    Far-Forward Area    D2, D3  ZDC. Roman Pots                 ==
 //====================================================================================
-    if (USE_FFI_D2TRK) {
+    if (USE_FFI_OFFM_TRK) {
 //-------------- for erhic meson tracking placements --------------------------
        if(beamLine == BeamLines::ERHIC) {
-	 //                 fConfig.ffi_D2TRK.RIn = 10 * cm;
-         //       fConfig.ffi_D2TRK.ROut = 35*cm;
-                fConfig.ffi_D2TRK.SizeZ = 10. * cm;
-                fConfig.ffi_D2TRK.Zpos = 22.5 * m;
-                fConfig.ffi_D2TRK.Xpos = 75 * cm;
-		fConfig.ffi_D2TRK.Nlayers=1;
-                ffi_D2TRK.Construct(fConfig.ffi_D2TRK, World_Material,World_Phys);
+	 //                 fConfig.ffi_OFFM_TRK.RIn = 10 * cm;
+         //       fConfig.ffi_OFFM_TRK.ROut = 35*cm;
+                fConfig.ffi_OFFM_TRK.SizeZ = 10. * cm;
+                fConfig.ffi_OFFM_TRK.Zpos = 22.5 * m;
+                fConfig.ffi_OFFM_TRK.Xpos = 75 * cm;
+		fConfig.ffi_OFFM_TRK.Nlayers=1;
+                ffi_OFFM_TRK.Construct(fConfig.ffi_OFFM_TRK, World_Material,World_Phys);
              
 	
-                ffi_D2TRK.ConstructDetectors();
-                for (int lay = 0; lay < fConfig.ffi_D2TRK.Nlayers; lay++) {
-                  if (ffi_D2TRK.lay_Logic) ffi_D2TRK.lay_Logic->SetSensitiveDetector(fCalorimeterSD);
+                ffi_OFFM_TRK.ConstructDetectors();
+                for (int lay = 0; lay < fConfig.ffi_OFFM_TRK.Nlayers; lay++) {
+                  if (ffi_OFFM_TRK.lay_Logic) ffi_OFFM_TRK.lay_Logic->SetSensitiveDetector(fCalorimeterSD);
                 }
        }
 
@@ -553,17 +553,17 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
         for (int i = 0; i < fIonLineMagnets->fMagnets.size(); i++) {
             if (fIonLineMagnets->fMagnets.at(i)->name == "iBDS2") {
 
-	      //          fConfig.ffi_D2TRK.RIn = 0 * cm;
-	      //         fConfig.ffi_D2TRK.ROut = fIonLineMagnets->fMagnets.at(i)->Rin2 * cm - 0.1 * cm;
-	        fConfig.ffi_D2TRK.SizeX=fIonLineMagnets->fMagnets.at(i)->Rin2 * cm - 1 * cm;
-	        fConfig.ffi_D2TRK.SizeY=fIonLineMagnets->fMagnets.at(i)->Rin2 * cm - 1 * cm;
+	      //          fConfig.ffi_OFFM_TRK.RIn = 0 * cm;
+	      //         fConfig.ffi_OFFM_TRK.ROut = fIonLineMagnets->fMagnets.at(i)->Rin2 * cm - 0.1 * cm;
+	        fConfig.ffi_OFFM_TRK.SizeX=fIonLineMagnets->fMagnets.at(i)->Rin2 * cm - 1 * cm;
+	        fConfig.ffi_OFFM_TRK.SizeY=fIonLineMagnets->fMagnets.at(i)->Rin2 * cm - 1 * cm;
 
-                fConfig.ffi_D2TRK.SizeZ = fIonLineMagnets->fMagnets.at(i)->LengthZ * m - 2. * cm;
+                fConfig.ffi_OFFM_TRK.SizeZ = fIonLineMagnets->fMagnets.at(i)->LengthZ * m - 2. * cm;
 
-                ffi_D2TRK.Construct(fConfig.ffi_D2TRK, World_Material, fIonLineMagnets->fMagnets.at(i)->fPhysics_BigDi_m);
-                ffi_D2TRK.ConstructDetectors();
-                for (int lay = 0; lay < fConfig.ffi_D2TRK.Nlayers; lay++) {
-                  if (ffi_D2TRK.lay_Logic) ffi_D2TRK.lay_Logic->SetSensitiveDetector(fCalorimeterSD);
+                ffi_OFFM_TRK.Construct(fConfig.ffi_OFFM_TRK, World_Material, fIonLineMagnets->fMagnets.at(i)->fPhysics_BigDi_m);
+                ffi_OFFM_TRK.ConstructDetectors();
+                for (int lay = 0; lay < fConfig.ffi_OFFM_TRK.Nlayers; lay++) {
+                  if (ffi_OFFM_TRK.lay_Logic) ffi_OFFM_TRK.lay_Logic->SetSensitiveDetector(fCalorimeterSD);
                 }
             }
         }
@@ -737,7 +737,8 @@ void JLeicDetectorConstruction::ConstructSDandField()
     //  fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D2.lay_Phys[0]);
     fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D2.Phys);
     fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D3.Phys);
-    fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_D2TRK.Phys);
+    fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_OFFM_TRK.Phys);
+    fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->fi_B0_TRK.Phys);
 }
 
 

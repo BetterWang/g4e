@@ -21,11 +21,12 @@ struct ffi_OFFM_TRK_Config {
     double Rin = 0 * cm;
     double ROut;
     double SizeX=170 *cm;
-    double SizeY=20*cm; 
+    double SizeY=100*cm; 
     double SizeZ = 30 * cm;
     double Zpos;
     double Xpos;
-    int Nlayers=7;
+    int Nlayers=1;
+    double lay_Zshift=1.*cm;
 };
 
 
@@ -69,7 +70,6 @@ public:
 	//    ffi_OFFM_TRK_lay_RIn = 10 * cm;
 	//    ffi_OFFM_TRK_lay_ROut = cfg.ROut - 5 * cm;
         ffi_OFFM_TRK_lay_SizeZ = 1 * cm;
-
         //   ffi_OFFM_TRK_lay_Material = fMat->GetMaterial("Ar10CO2");  //----   !!!!! ----
         ffi_OFFM_TRK_lay_Material =G4Material::GetMaterial("G4_Galactic");
 	//       lay_Solid = new G4Tubs("ffi_OFFM_TRK_lay_Solid", ffi_OFFM_TRK_lay_RIn, ffi_OFFM_TRK_lay_ROut,
@@ -82,7 +82,7 @@ public:
 
         int ffsi_counter = 0;
         for (int fflay = 0; fflay < cfg.Nlayers; fflay++) {
-            double Z = -cfg.SizeZ / 2 + (fflay + 1) * ffi_OFFM_TRK_lay_SizeZ / 2 + (fflay + 1) * lay_Zshift * cm;
+            double Z = -cfg.SizeZ / 2 + (fflay + 1) * ffi_OFFM_TRK_lay_SizeZ / 2 + (fflay + 1) * cfg.lay_Zshift;
             lay_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, Z),
                                                 "ffi_OFFM_TRK_lay_Phys", lay_Logic,
                                                 Phys, false, ffsi_counter);
@@ -106,7 +106,7 @@ public:
     G4Box *lay_Solid;    //pointer to the solid  FARFORWD
     G4LogicalVolume *lay_Logic;    //pointer to the logical FARFORWD
     G4VPhysicalVolume *lay_Phys;    //pointer to the physical FARFORWD
-     double lay_Zshift=100.;
+
      G4double ffi_OFFM_TRK_lay_RIn;
     G4double ffi_OFFM_TRK_lay_ROut;
     G4double ffi_OFFM_TRK_lay_SizeZ;

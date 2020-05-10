@@ -18,7 +18,7 @@
 struct ffi_RPOT_D3_Config {
 // define here Global volume parameters
     double RIn = 0 * cm;
-    double ROut = 30 * cm;
+    double ROut = 130 * cm;
     double SizeZ = 30 * cm;
     double ShiftZ = 0 * cm;
     double PosZ = 0 * cm;
@@ -26,7 +26,7 @@ struct ffi_RPOT_D3_Config {
     double Angle=0.0;
     G4RotationMatrix rot_matx;
 
-    int Nlayers=4;
+    int Nlayers=1;
 };
 
 
@@ -68,8 +68,8 @@ public:
 
          printf("Begin ffi_RPOT_D3_lay_\n");
        //  RPMaterial = G4Material::GetMaterial("Ar10CO2");  //----   !!!!! ----
-        RPMaterial = G4Material::GetMaterial("Si");  //----   !!!!! ----
-
+	 //  RPMaterial = G4Material::GetMaterial("Si");  //----   !!!!! ----
+         RPMaterial =G4Material::GetMaterial("G4_Galactic");
         for (int lay = 0; lay < cfg.Nlayers; lay++) {
 
             ffi_RPOT_D3_lay_RIn[lay] = cfg.RIn +0.5*cm ;

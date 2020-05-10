@@ -76,7 +76,7 @@ namespace g4e
         void AddTrack(
                 uint64_t aTrackId,
                 uint64_t aParentId,
-                uint64_t aTrackPdg,
+                int64_t aTrackPdg,
                 int64_t creatorProc,
                 int64_t ancestryLevel,
                 double aXVertex,

@@ -41,7 +41,7 @@ namespace g4e {
         uint64_t TrackCount;
         std::vector<uint64_t> IdVect;
         std::vector<uint64_t> ParentId;
-        std::vector<uint64_t> PdgVect;
+        std::vector<int64_t> PdgVect;
         std::vector<int64_t> CreateProc;
         std::vector<int64_t> AncestryLevel;
         std::vector<double> XVtxVect;

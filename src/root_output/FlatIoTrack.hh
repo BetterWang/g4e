@@ -41,16 +41,16 @@ namespace g4e {
         uint64_t TrackCount;
         std::vector<uint64_t> IdVect;
         std::vector<uint64_t> ParentId;
-        std::vector<int64_t> PdgVect;
-        std::vector<int64_t> CreateProc;
-        std::vector<int64_t> AncestryLevel;
-        std::vector<double> XVtxVect;
-        std::vector<double> YVtxVect;
-        std::vector<double> ZVtxVect;
-        std::vector<double> XDirVtxVect;
-        std::vector<double> YDirVtxVect;
-        std::vector<double> ZDirVtxVect;
-        std::vector<double> MomentumVect;
+        std::vector<int64_t>  PdgVect;
+        std::vector<int64_t>  CreateProc;
+        std::vector<uint64_t> AncestryLevel;
+        std::vector<double>   XVtxVect;
+        std::vector<double>   YVtxVect;
+        std::vector<double>   ZVtxVect;
+        std::vector<double>   XDirVtxVect;
+        std::vector<double>   YDirVtxVect;
+        std::vector<double>   ZDirVtxVect;
+        std::vector<double>   MomentumVect;
     };
 }
 #endif //G4E_FLATIOTRACK_HH

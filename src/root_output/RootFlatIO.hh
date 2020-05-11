@@ -76,16 +76,16 @@ namespace g4e
         void AddTrack(
                 uint64_t aTrackId,
                 uint64_t aParentId,
-                int64_t aTrackPdg,
-                int64_t creatorProc,
-                int64_t ancestryLevel,
-                double aXVertex,
-                double aYVertex,
-                double aZVertex,
-                double aXMom,
-                double aYMom,
-                double aZMom,
-                double aMom
+                int64_t  aTrackPdg,
+                int64_t  creatorProc,
+                uint64_t ancestryLevel,
+                double   aXVertex,
+                double   aYVertex,
+                double   aZVertex,
+                double   aXMom,
+                double   aYMom,
+                double   aZMom,
+                double   aMom
         )
         {
             std::lock_guard<std::recursive_mutex> lk(io_mutex);

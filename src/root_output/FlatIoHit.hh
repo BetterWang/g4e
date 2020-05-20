@@ -15,6 +15,9 @@ namespace g4e {
             tree->Branch("hit_x", &XPosVect);
             tree->Branch("hit_y", &YPosVect);
             tree->Branch("hit_z", &ZPosVect);
+            tree->Branch("hit_ox", &OXPosVect);
+            tree->Branch("hit_oy", &OYPosVect);
+            tree->Branch("hit_oz", &OZPosVect);
             tree->Branch("hit_i_rep", &IRepVect);
             tree->Branch("hit_j_rep", &JRepVect);
             tree->Branch("hit_e_loss", &ELossVect);
@@ -26,6 +29,9 @@ namespace g4e {
             XPosVect.clear();
             YPosVect.clear();
             ZPosVect.clear();
+            OXPosVect.clear();
+            OYPosVect.clear();
+            OZPosVect.clear();
             ELossVect.clear();
             IdVect.clear();
             TrackIdVect.clear();
@@ -42,10 +48,50 @@ namespace g4e {
         std::vector<double> XPosVect;
         std::vector<double> YPosVect;
         std::vector<double> ZPosVect;
+        std::vector<double> OXPosVect;
+        std::vector<double> OYPosVect;
+        std::vector<double> OZPosVect;
         std::vector<double> ELossVect;
         std::vector<uint64_t> IRepVect;
         std::vector<uint64_t> JRepVect;
         std::vector<std::string> VolumeNameVect;
     };
+//
+//    struct ZDCHitIo
+//    {
+//        void BindToTree(TTree *tree)
+//        {
+//            tree->Branch("ZDChit_count",  &HitsCount, "hit_count/l");
+//            tree->Branch("ZDChit_id",     &IdVect);
+//            tree->Branch("ZDChit_x",      &XPosVect);
+//            tree->Branch("ZDChit_y",      &YPosVect);
+//            tree->Branch("ZDChit_z",      &ZPosVect);
+//            tree->Branch("ZDChit_e_loss", &ELossVect);
+//            tree->Branch("ZDChit_charge", &Charge);
+//            tree->Branch("ZDChit_copy",   &CopyNum);
+//        }
+//
+//        void Clear()
+//        {
+//            HitsCount = 0;
+//            IdVect.clear();
+//            XPosVect.clear();
+//            YPosVect.clear();
+//            ZPosVect.clear();
+//            ELossVect.clear();
+//            Charge.clear();
+//            CopyNum.clear();
+//        }
+//
+//        uint64_t    HitsCount;
+//        std:vector<uint64_t> IdVect;
+//        std::vector<double> XPosVect;
+//        std::vector<double> YPosVect;
+//        std::vector<double> ZPosVect;
+//        std::vector<double> ELossVect;
+//        std::vector<int> Charge;
+//        std::vector<int> CopyNum;
+//    }
+//
 }
 #endif //G4E_FLATIOHIT_HH

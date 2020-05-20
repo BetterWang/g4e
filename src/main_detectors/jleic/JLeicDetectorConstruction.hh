@@ -95,13 +95,13 @@ public:
 
     bool USE_BEAMPIPE = false;
 
-    //------- subdetector-volumes  barrel ----- 
+    //------- subdetector-volumes  barrel -----
 
     bool USE_CB_VTX = true;
     bool USE_CB_VTX_LADDERS = true;
     bool USE_CB_VTX_ENDCAPS = false;  // for vxt endcaps ladders
     bool  USE_CB_SiDISCS  = true;  // for vxt discs along beampipe
-    //bool USE_VTX_E 1   // for vxt endcaps 
+    //bool USE_VTX_E 1   // for vxt endcaps
 
     bool USE_CB_CTD = true;
     // use one of the following options for CTD:
@@ -119,7 +119,7 @@ public:
     // ==============================================
     bool USE_E_ENDCAP = true;
 
-    //------- subdetector-volumes E-encap ----- 
+    //------- subdetector-volumes E-encap -----
     bool USE_CE_GEM = true;
     bool USE_CE_EMCAL = true;
     bool USE_CE_MRICH = true;
@@ -148,11 +148,12 @@ public:
     //--------FARFORWARD HADRON------
 
     bool USE_FFI_D2TRK = true;
-    // 
+    //
     bool USE_FFI_ZDC = true;
-    bool USE_FFI_ZDC_ALICE = false;
-    bool USE_FFI_ZDC_GLASS = false; 
-    bool USE_FFI_ZDC_CRYSTAL = true; 
+    bool USE_FFI_ZDC_ALICE = true;
+//    bool USE_FFI_ZDC_ALICE = false;
+    bool USE_FFI_ZDC_GLASS = false;
+    bool USE_FFI_ZDC_CRYSTAL = true;
 
     //---
     bool USE_FFI_RPOT_D2 = true;

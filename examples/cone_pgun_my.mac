@@ -1,0 +1,81 @@
+#------------------------------------------------------------------------
+# Example macro. Process one of
+#------------------------------------------------------------------------
+
+# Include default setup
+# Use jleic.mac for headless mode or jleicvis.mac for GUI visualization
+/control/execute jleic.mac
+#/control/execute jleicvis.mac
+#/control/execute pan2ZDC.mac
+#/run/initialize
+# /control/execute jleicvis.mac
+
+# Select cone particle gun generator
+# Other options are: particleGun hepmcAscii pythiaAscii beagle
+/generator/select coneParticleGun
+
+# List available particles. Invoke G4ParticleTable
+#/generator/coneParticleGun/List
+
+# Set particle to be generated.
+# (geantino is default)
+# (ion can be specified for shooting ions)
+# Common names: proton, e- e+ pi+ pi-
+#/generator/coneParticleGun/particle gamma
+
+# Set momentum direction
+# Direction needs not to be a unit vector
+/generator/coneParticleGun/direction 90 0 3800
+
+# Set kinetic energy [GeV]
+#/generator/coneParticleGun/energy 200 MeV
+
+# Energy spread [GeV],
+# energy is smeared as gauss (mean=<particle E>, stddev=energyStdDev)
+/generator/coneParticleGun/energyStdDev 1 GeV
+
+# Cone angle standard deviation.
+# Basically is the resulding cone angle
+/generator/coneParticleGun/coneAngleStdDev 0.1 deg
+
+# Set momentum. This command is equivalent to two commands: /.../direction and /.../momentumAmp
+# /generator/coneParticleGun/momentum 0 0 10
+
+# Set absolute value of momentum [GeV]
+# Direction should be set by /gun/direction command."
+# This command should be used alternatively with /gun/energy."
+# /generator/coneParticleGun/momentumAmp 20
+
+# Set starting position of the particle [cm]
+/generator/coneParticleGun/position 0 0 0
+
+# Set starting position smearing of the particle [cm]
+# works together as gaus(mean=position, stddev=positionStdDev)
+# DefaultUnit - cm
+/generator/coneParticleGun/positionStdDev 0 0 0
+
+# Set initial time of the particle
+# DefaultUnit - ns
+/generator/coneParticleGun/time 0
+
+# Set polarization
+# /generator/coneParticleGun/polarization Px Py Pz
+
+# Set number of particles to be generated
+/generator/coneParticleGun/number
+
+# /generator/coneParticleGun/ion Z A [Q E flb]
+# Set properties of ion to be generated.
+# [usage] /gun/ion Z A [Q E flb]
+#         Z:(int) AtomicNumber
+#         A:(int) AtomicMass
+#         Q:(int) Charge of Ion (in unit of e)
+#         E:(double) Excitation energy (in keV)
+#         flb:(char) Floating level base
+/run/initialize
+/generator/coneParticleGun/coneAngleStdDev 0.5 deg
+/generator/coneParticleGun/particle gamma
+/generator/coneParticleGun/energy 200 MeV
+/run/beamOn 100000
+#/vis/ogl/export
+exit

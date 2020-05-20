@@ -48,6 +48,7 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
     const G4ThreeVector& vertex = track->GetVertexPosition();
     const G4ThreeVector& vertexMom = track->GetVertexMomentumDirection();
     G4int PDG = track->GetDefinition()->GetPDGEncoding();
+    const double charge = track->GetDefinition()->GetPDGCharge();
 
     auto process = track->GetCreatorProcess();
 
@@ -65,6 +66,23 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
         return;
     }
 
+    const G4TouchableHandle touchablepre = aStep->GetPreStepPoint()->GetTouchableHandle();
+    G4ThreeVector worldPosition = aStep->GetPreStepPoint()->GetPosition();
+    G4ThreeVector localPosition = touchablepre->GetHistory()->GetTopTransform().TransformPoint(worldPosition);
+    G4double xinp = localPosition.x();
+    G4double yinp = localPosition.y();
+    G4double zinp = localPosition.z();
+
+    G4ThreeVector worldPosition2 = aStep->GetPostStepPoint()->GetPosition();
+    G4ThreeVector localPosition2 = touchablepre->GetHistory()->GetTopTransform().TransformPoint(worldPosition2);
+    G4double xend = localPosition2.x();
+    G4double yend = localPosition2.y();
+    G4double zend = localPosition2.z();
+
+    G4double xloc = (xinp + xend) / 2;
+    G4double yloc = (yinp + yend) / 2;
+    G4double zloc = (zinp + zend) / 2;
+
     jleicRootOutput->AddHit(
             /* hit id        */ mHitsCount,
             /* track id      */ aStep->GetTrack()->GetTrackID(),
@@ -72,6 +90,9 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
             /* hit x         */ point->GetPosition().x() / mm,
             /* hit y         */ point->GetPosition().y() / mm,
             /* hit z         */ point->GetPosition().z() / mm,
+            /* hit ox        */ (xinp + xend) / 2.,
+            /* hit oy        */ (yinp + yend) / 2.,
+            /* hit oz        */ (zinp + zend) / 2.,
             /* aELoss        */ aStep->GetTotalEnergyDeposit() / GeV,
             /* vol replic x  */  copyIDx,
             /* vol replic y  */  copyIDy,
@@ -89,6 +110,7 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
                       parentId,                             /* int aParentId */
                       PDG,                                  /* int aTrackPdg */
                       process_int,                           /* creator proc id */
+                      charge,                                /* pdg charge */
                       ancestryLevel,                        /* ancestry level */
                       vertex.x() / mm,              /* double aXVertex */
                       vertex.y() / mm,              /* double aYVertex */

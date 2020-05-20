@@ -24,16 +24,13 @@
 // ********************************************************************
 //
 //
-// $Id: JLeicCalorimeterSD.hh,v 1.3 2006-06-29 16:37:43 gunter Exp $
-// GEANT4 tag $Name: geant4-09-04-patch-01 $
-//
 //
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-#ifndef JLeicCalorimeterSD_h
-#define JLeicCalorimeterSD_h 1
+#ifndef JLeicZDCSD_h
+#define JLeicZDCSD_h 1
 
 #include "G4VSensitiveDetector.hh"
 #include "globals.hh"
@@ -41,11 +38,11 @@
 #include "G4HCofThisEvent.hh"
 #include "G4Step.hh"
 
-#include "JLeicDetectorConstruction.hh"
+//#include "JLeicDetectorConstruction.hh"
 #include "RootFlatIO.hh"
 
-#include "JLeicCalorHit.hh"
-#include "JLeicRunAction.hh"
+#include "JLeicZDCHit.hh"
+//#include "JLeicRunAction.hh"
 #include "G4RunManager.hh"
 
 #include "root_output/RootFlatIO.hh"
@@ -54,13 +51,13 @@
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-class JLeicCalorimeterSD : public G4VSensitiveDetector
+class JLeicZDCSD : public G4VSensitiveDetector
 {
 public:
 
-    JLeicCalorimeterSD(G4String, g4e::RootOutputManager*, JLeicDetectorConstruction *);
+    JLeicZDCSD(G4String, g4e::RootOutputManager*, JLeicDetectorConstruction *);
 
-    ~JLeicCalorimeterSD() override;
+    ~JLeicZDCSD() override;
 
     void Initialize(G4HCofThisEvent *) override;
 
@@ -74,7 +71,7 @@ public:
 
 private:
 
-    JLeicCalorHitsCollection *CalCollection;
+    JLeicZDCHitsCollection *ZDCCollection;
     JLeicDetectorConstruction *Detector;
     uint_fast64_t mHitsCount = 0;
     g4e::RootOutputManager* mRootEventsOut = nullptr;

@@ -30,6 +30,7 @@ namespace g4e
             mEventTree->Branch("event_id", &mEventId, "event_id/l");
 
             mHitIo.BindToTree(mEventTree);          // Bind/create branches for hits
+//            mZDCHitIo.BindToTree(mEventTree);          // Bind/create branches for hits
             mTrackIo.BindToTree(mEventTree);        // Bind/create branches for tracks
             mParticleIo.BindToTree(mEventTree);     // Bind/create branches for primary particles
             mPrimeVertexIo.BindToTree(mEventTree);  // Bind/create branches for primary vertexes
@@ -39,6 +40,7 @@ namespace g4e
         {
             std::lock_guard<std::recursive_mutex> lk(io_mutex);
             mHitIo.Clear();
+//            mZDCHitIo.Clear();
             mTrackIo.Clear();
             mParticleIo.Clear();
             mPrimeVertexIo.Clear();
@@ -52,6 +54,9 @@ namespace g4e
                 double aX,
                 double aY,
                 double aZ,
+                double oX,
+                double oY,
+                double oZ,
                 double aELoss,
                 uint64_t aIRep,
                 uint64_t aJRep,
@@ -64,6 +69,9 @@ namespace g4e
             mHitIo.XPosVect.push_back(aX);
             mHitIo.YPosVect.push_back(aY);
             mHitIo.ZPosVect.push_back(aZ);
+            mHitIo.OXPosVect.push_back(oX);
+            mHitIo.OYPosVect.push_back(oY);
+            mHitIo.OZPosVect.push_back(oZ);
             mHitIo.ELossVect.push_back(aELoss);
             mHitIo.TrackIdVect.push_back(aTrackId);
             mHitIo.GenParentTrackIdVect.push_back(ParentId);
@@ -78,6 +86,7 @@ namespace g4e
                 uint64_t aParentId,
                 uint64_t aTrackPdg,
                 int64_t creatorProc,
+                double  charge,
                 int64_t ancestryLevel,
                 double aXVertex,
                 double aYVertex,
@@ -97,6 +106,7 @@ namespace g4e
             mTrackIo.ParentId.push_back(aParentId);
             mTrackIo.PdgVect.push_back(aTrackPdg);
             mTrackIo.CreateProc.push_back(creatorProc);
+            mTrackIo.Charge.push_back(charge);
             mTrackIo.AncestryLevel.push_back(ancestryLevel);
             mTrackIo.XVtxVect.push_back(aXVertex);
             mTrackIo.YVtxVect.push_back(aYVertex);
@@ -197,6 +207,7 @@ namespace g4e
         std::map<uint64_t, uint64_t> trk_index_by_id; // Track vector indexes by track id
 
         g4e::HitIo mHitIo;
+//        g4e::ZDCHitIo mZDCHitIo;
         g4e::TrackIo mTrackIo;
         g4e::VertexIo mPrimeVertexIo;
         g4e::ParticleIo mParticleIo;

@@ -26,9 +26,9 @@
 //
 //
 #include <stdio.h>
-#include "G4UserRunAction.hh"
-#include "JLeicCalorimeterSD.hh"
-#include "JLeicCalorHit.hh"
+//#include "G4UserRunAction.hh"
+#include "JLeicZDCSD.hh"
+//#include "JLeicZDCHit.hh"
 
 
 #include "G4VPhysicalVolume.hh"
@@ -42,69 +42,57 @@
 #include "Randomize.hh"
 
 
-JLeicCalorimeterSD::JLeicCalorimeterSD(G4String name, g4e::RootOutputManager* rootManager, JLeicDetectorConstruction *det) :
+JLeicZDCSD::JLeicZDCSD(G4String name, g4e::RootOutputManager* rootManager, JLeicDetectorConstruction *det) :
     G4VSensitiveDetector(name),
     Detector(det),
     mRootEventsOut(rootManager)
 {
     if(mVerbose) {
-        printf("JLeicCalorimeterSD()::constructor  enter\n");
+        printf("JLeicZDCSD()::constructor  enter\n");
     }
 
-    collectionName.insert("CalCollection");
-    printf("--> JLeicCalorimeterSD::Constructor(%s) \n", name.c_str());
+    collectionName.insert("ZDCCollection");
+    printf("--> JLeicZDCSD::Constructor(%s) \n", name.c_str());
 
 }
 
 
-JLeicCalorimeterSD::~JLeicCalorimeterSD()
+JLeicZDCSD::~JLeicZDCSD()
 {
-
-    /*
-      if(mHitsFile)
-      {
-          mHitsFile->cd();
-          mRootEventsOut.Write();
-          mHitsFile->Close();
-      }
-    */
-
-    printf("JLeicCalorimeterSD():: Done ...  \n");
+    printf("JLeicZDCSD():: Done ...  \n");
 }
 
 
-void JLeicCalorimeterSD::Initialize(G4HCofThisEvent *)
+void JLeicZDCSD::Initialize(G4HCofThisEvent *)
 {
     if (mVerbose > 2) {
-        printf("JLeicCalorimeterSD()::Initialize\n");
+        printf("JLeicZDCSD()::Initialize\n");
     }
 
-    CalCollection = new JLeicCalorHitsCollection(SensitiveDetectorName, collectionName[0]);
+    ZDCCollection = new JLeicZDCHitsCollection(SensitiveDetectorName, collectionName[0]);
 
     mHitsCount = 0;
-    spdlog::debug("JLeicCalorimeterSD()::Initialize exit\n");
+    spdlog::debug("JLeicZDCSD()::Initialize exit\n");
 }
 
 
-G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
+G4bool JLeicZDCSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
 {
-    if (mVerbose > 2) printf("--> JLeicCalorimeterSD::ProcessHits() Enter\n");
+    std::cout << " QW!! --> JLeicZDCSD::ProcessHits" << std::endl;
+    if (mVerbose > 2) printf("--> JLeicZDCSD::ProcessHits() Enter\n");
 
     //  const G4TouchableHandle touchablepre[128];
     G4double edep = aStep->GetTotalEnergyDeposit();
 
     G4double stepl = 0.;
-    if (aStep->GetTrack()->GetDefinition()->GetPDGCharge() != 0.) //-- gamma ??
-        stepl = aStep->GetStepLength();
-
+    //if (aStep->GetTrack()->GetDefinition()->GetPDGCharge() != 0.) //-- gamma ??
+    stepl = aStep->GetStepLength();
 
     const G4TouchableHandle touchablepre = aStep->GetPreStepPoint()->GetTouchableHandle();
-    const G4TouchableHandle touchablepost = aStep->GetPostStepPoint()->GetTouchableHandle();
+    //const G4TouchableHandle touchablepost = aStep->GetPostStepPoint()->GetTouchableHandle();
     // depth 1 --> x
     // depth 0 --> y
-    G4int copyIDy_pre = touchablepre->GetCopyNumber();
-    G4int copyIDx_pre = touchablepre->GetCopyNumber(1);
-    G4int copyIDz_pre = 0;
+    int copyID_pre = touchablepre->GetCopyNumber();
 
     //JMF got crash on "run beam on"   here. Needs to be fixed ... commenting this for a moment
     G4double xstep = (aStep->GetTrack()->GetStep()->GetPostStepPoint()->GetPosition()).x();
@@ -127,7 +115,7 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
     G4double yloc = (yinp + yend) / 2;
     G4double zloc = (zinp + zend) / 2;
 
-    if (mVerbose > 2) printf("--> JLeicCalorimeterSD::ProcessHits() xloc=%f yloc=%f zloc=%f  copyIDy_pre=%d edep=%f stepl=%f\n", xloc, yloc, zloc, copyIDy_pre, edep, stepl);
+    if (mVerbose > 2) printf("--> JLeicZDCSD::ProcessHits() xloc=%f yloc=%f zloc=%f  copyIDy_pre=%d \n", xloc, yloc, zloc, copyIDy_pre);
 
     if (aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName() == "gamma") {
         xloc = xend;
@@ -138,7 +126,7 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
       G4TouchableHistory *theTouchable = (G4TouchableHistory *) (aStep->GetPreStepPoint()->GetTouchable());
 
     if (mVerbose > 3)
-        printf("--> JLeicCalorimeterSD::ProcessHits() Vol: 0=%s \n", theTouchable->GetVolume()->GetName().c_str());
+        printf("--> JLeicZDCSD::ProcessHits() Vol: 0=%s \n", theTouchable->GetVolume()->GetName().c_str());
 
     // process    track
     G4Track *aTrack = aStep->GetTrack();
@@ -157,7 +145,7 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
 
     if ((edep == 0.) && (stepl == 0.)) return false;
 
-    if(mVerbose > 3)  printf("--> JLeicCalorimeterSD::ProcessHits() de=%f len=%f  IDxy=(%d,%d) step(x,y,z)=(%f, %f %f) in=(%f, %f %f) um  out=(%f, %f %f) um \n  loc=(%f, %f %f) um part=%s\n"
+    if(mVerbose > 3)  printf("--> JLeicZDCSD::ProcessHits() de=%f len=%f  IDxy=(%d,%d) step(x,y,z)=(%f, %f %f) in=(%f, %f %f) um  out=(%f, %f %f) um \n  loc=(%f, %f %f) um part=%s\n"
     	 ,edep,stepl/um,copyIDx_pre,copyIDy_pre,xstep,ystep,zstep,xinp/um,yinp/um,zinp/um,xend/um,yend/um,zend/um,xloc/um,yloc/um,zloc/um, aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName().c_str());
 
 
@@ -172,33 +160,32 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
 
     mRootEventsOut->SaveStep(aStep, g4e::WriteStepPointChoices::PreStepPoint, copyIDx_pre, copyIDy_pre);
 
-   if (mVerbose > 2) printf("--> JLeicCalorimeterSD::ProcessHits() Exit\n");
+   if (mVerbose > 2) printf("--> JLeicZDCSD::ProcessHits() Exit\n");
 
     return true;
 }
 
 
-void JLeicCalorimeterSD::EndOfEvent(G4HCofThisEvent *HCE)
+void JLeicZDCSD::EndOfEvent(G4HCofThisEvent *HCE)
 {
-   if (mVerbose > 2) printf("--> JLeicCalorimeterSD::EndOfEvent()\n");
 
     static G4int HCID = -1;
     if (HCID < 0) { HCID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]); }
-    HCE->AddHitsCollection(HCID, CalCollection);
-    //printf("--> JLeicCalorimeterSD::EndOfEvent() \n");
+    HCE->AddHitsCollection(HCID, ZDCCollection);
+    //printf("--> JLeicZDCSD::EndOfEvent() \n");
     // Total hits/steps per event. Set it back to 0
     mHitsCount = 0;
 }
 
 
-void JLeicCalorimeterSD::clear()
+void JLeicZDCSD::clear()
 {
-    printf("--> JLeicCalorimeterSD::clear() \n");
+    printf("--> JLeicZDCSD::clear() \n");
 }
 
 
-void JLeicCalorimeterSD::PrintAll()
+void JLeicZDCSD::PrintAll()
 {
-    printf("--> JLeicCalorimeterSD::PrintAll() \n");
+    printf("--> JLeicZDCSD::PrintAll() \n");
 
 }

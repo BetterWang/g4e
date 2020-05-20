@@ -13,6 +13,7 @@
 
 void g4e::MultiActionInitialization::Build() const
 {
+    std::cout << "  QW!! --> g4e::MultiActionInitialization::Build()" << std::endl;
     mBuildIsDone = true;
     // Add Generator action
     SetUserAction(mGeneratorAction);
@@ -63,6 +64,7 @@ void g4e::MultiActionInitialization::Build() const
 
 void g4e::MultiActionInitialization::BuildForMaster() const
 {
+    std::cout << "  QW!! --> g4e::MultiActionInitialization::BuildForMaster()" << std::endl;
     if(!mRunActionGenerators.empty()) {
         auto runActions = new G4MultiRunAction();
 

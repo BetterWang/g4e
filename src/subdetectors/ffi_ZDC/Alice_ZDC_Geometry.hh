@@ -17,7 +17,9 @@ struct ffi_ZDCPrototype_Config {
     double Pad_Glue2_Thickness   = 0.13*mm;
     double Pad_FPC_Thickness     = 0.28*mm;
     double Pad_AirGap            = 1.0*mm;
-    int NLayers = 20;
+    double Absorber_Thickness    = 100.*mm;
+    int    NLayers               = 20;
+    bool   bAbsorber             = false;
 };
 
 
@@ -28,7 +30,7 @@ class Geometry : public G4VUserDetectorConstruction
 //------------------------------------------------------------------------------
 {
     public:
-        Geometry();
+        Geometry(bool bAbsorber=true);
         ~Geometry();
 
         G4VPhysicalVolume*  Construct();
@@ -57,6 +59,7 @@ class Geometry : public G4VUserDetectorConstruction
 
         G4LogicalVolume*  fScoringVol_Leak;
 
+        ffi_ZDCPrototype_Config  cfg;
 //        G4LogicalVolume*  logVol_PAD_W;
 //        G4LogicalVolume*  logVol_PAD_Glue1;
 //        G4LogicalVolume*  logVol_PAD_Silicon;

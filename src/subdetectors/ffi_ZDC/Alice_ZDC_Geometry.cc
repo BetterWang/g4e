@@ -33,7 +33,9 @@
 #include "Alice_ZDC_constants.hh"
 
 //------------------------------------------------------------------------------
-Geometry::Geometry() {}
+Geometry::Geometry(bool bAbsorber) {
+    cfg.bAbsorber = bAbsorber;
+}
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -351,9 +353,6 @@ G4VPhysicalVolume* Geometry::ConstructZDC(G4VPhysicalVolume *physVol_World) {
 }
 
 G4VPhysicalVolume* Geometry::ConstructZDCPrototype(G4VPhysicalVolume *physVol_World) {
-
-    ffi_ZDCPrototype_Config cfg;
-
     G4NistManager* material_Man = G4NistManager::Instance();  //NistManager: start element destruction
     G4Material* material_World = material_Man->FindOrBuildMaterial("G4_AIR");
     G4Material* material_tungsten = material_Man->FindOrBuildMaterial("G4_W");
@@ -378,6 +377,7 @@ G4VPhysicalVolume* Geometry::ConstructZDCPrototype(G4VPhysicalVolume *physVol_Wo
     G4Material* material_Pb = material_Man->FindOrBuildMaterial("G4_Pb");
     G4Material* material_Cu = material_Man->FindOrBuildMaterial("G4_Cu");
     G4Material* material_Fe = material_Man->FindOrBuildMaterial("G4_Fe");
+    G4Material* material_PbWO4 = material_Man->FindOrBuildMaterial("G4_PbWO4");
 
     printf("======> Construct ALICE ZDC Prototype....\n");
     G4VisAttributes *visAttr = new G4VisAttributes(G4Color(0.1, 1., 0.9, 1.0));   visAttr->SetLineWidth(1);   visAttr->SetForceSolid(true);
@@ -428,6 +428,15 @@ G4VPhysicalVolume* Geometry::ConstructZDCPrototype(G4VPhysicalVolume *physVol_Wo
         new G4PVPlacement(trans3D_PAD_Silicon,  "PhysVol_Si",       logVol_PAD_Silicon, physVol_World, false, i);
         new G4PVPlacement(trans3D_PAD_Glue2,    "PhysVol_Glue2",    logVol_PAD_Glue2,   physVol_World, false, i);
         new G4PVPlacement(trans3D_PAD_FPC,      "PhysVol_FPC",      logVol_PAD_FPC,     physVol_World, false, i);
+    }
+
+    if ( cfg.bAbsorber ) {
+        G4Box*           Absorber_PbWO4         = new G4Box("PPAD_W",   cfg.Pad_Width/2.0, cfg.Pad_Width/2.0, cfg.Absorber_Thickness/2.0);
+        G4LogicalVolume* logVol_Absorber_PbWO4  = new G4LogicalVolume( Absorber_PbWO4, material_tungsten, "logVol_Absorber_PbWO4" );
+
+        G4ThreeVector threeVect_Abs(0., 0., -(cfg.Pad_Thickness/2 + cfg.Pad_AirGap + cfg.Absorber_Thickness) );
+        G4Transform3D trans3D_Absorber = G4Transform3D(G4RotationMatrix(), threeVect_Abs);
+        new G4PVPlacement(trans3D_Absorber,  "PhysVol_Absorber", logVol_Absorber_PbWO4,  physVol_World, false, 0);
     }
 
     return physVol_World;

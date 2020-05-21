@@ -73,9 +73,16 @@
 #         E:(double) Excitation energy (in keV)
 #         flb:(char) Floating level base
 /run/initialize
+<<<<<<< HEAD
 /generator/coneParticleGun/coneAngleStdDev 0.5 deg
 /generator/coneParticleGun/particle neutron
 /generator/coneParticleGun/energy 20 GeV
 /run/beamOn 100000
+=======
+/generator/coneParticleGun/coneAngleStdDev 0.0 deg
+/generator/coneParticleGun/particle neutron
+/generator/coneParticleGun/energy 200 GeV
+/run/beamOn 10
+>>>>>>> cf4614a... [+] absorber added
 #/vis/ogl/export
 exit

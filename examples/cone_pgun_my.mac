@@ -74,8 +74,8 @@
 #         flb:(char) Floating level base
 /run/initialize
 /generator/coneParticleGun/coneAngleStdDev 0.5 deg
-/generator/coneParticleGun/particle gamma
-/generator/coneParticleGun/energy 200 MeV
-/run/beamOn 100000
+/generator/coneParticleGun/particle neutron
+/generator/coneParticleGun/energy 20 GeV
+/run/beamOn 1000000
 #/vis/ogl/export
 exit

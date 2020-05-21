@@ -55,6 +55,8 @@
 #include <QGSP_BIC.hh>
 #include <TFile.h>
 #include <G4GeometryManager.hh>
+#include "FTFP_BERT.hh"
+
 
 
 int main(int argc, char **argv)
@@ -108,6 +110,7 @@ int main(int argc, char **argv)
 
     runManager->SetUserInitialization(detector);
     runManager->SetUserInitialization(new EicPhysicsList(detector));
+    runManager->SetUserInitialization(new FTFP_BERT());
 
     // only after we added physics lists one can add generator action
     // According to geant, 4VUserPrimaryGeneratorAction must be constructed AFTER

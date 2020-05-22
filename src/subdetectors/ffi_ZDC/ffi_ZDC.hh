@@ -29,6 +29,7 @@ struct ffi_ZDC_Config {
     G4RotationMatrix rot_matx;
     int NtowersX=20;
     int NtowersY=20;
+    bool bAliceAbsorber = true;
 };
 
 
@@ -81,10 +82,11 @@ class ffi_ZDC_Design {
             Logic->SetVisAttributes(visAttr);
             Phys = new G4PVPlacement(G4Transform3D(cfg.rot_matx,G4ThreeVector(cfg.Xpos,0,cfg.Zpos)), "ffi_ZDC_GVol_Phys", Logic, motherVolume, false, 0);
 
-            Geometry* alice = new Geometry();
+            Geometry* alice = new Geometry(cfg.bAliceAbsorber);
 
             alice->ConstructZDCPrototype(Phys);
-            ffi_ZDC_HCAL_Logic = alice->GetScoringVol_SCI();
+            ffi_ZDC_HCAL_Logic = alice->GetScoringVol_PAD();
+            ffi_ZDC_SCI_Logic  = alice->GetScoringVol_SCI();
         }
 
         inline void ConstructTowels(int Type) {
@@ -161,6 +163,7 @@ class ffi_ZDC_Design {
         /// Parameters that was used in the moment of construction
         ffi_ZDC_Config  ConstructionConfig;
         G4Box *ffi_ZDC_HCAL_Solid;
+        G4LogicalVolume *ffi_ZDC_SCI_Logic;
         G4LogicalVolume *ffi_ZDC_HCAL_Logic;
 
 

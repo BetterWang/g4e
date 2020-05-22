@@ -29,7 +29,7 @@
 //
 // $Id: JLeicDetectorMessenger.hh 66241 2012-12-13 18:34:42Z gunter $
 //
-// 
+//
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
@@ -46,6 +46,7 @@ class G4UIcmdWithAString;
 class G4UIcmdWithAnInteger;
 class G4UIcmdWithADoubleAndUnit;
 class G4UIcmdWithoutParameter;
+class G4UIcmdWithABool;
 
 
 class JLeicDetectorMessenger: public G4UImessenger
@@ -53,13 +54,13 @@ class JLeicDetectorMessenger: public G4UImessenger
   public:
     JLeicDetectorMessenger(JLeicDetectorConstruction* );
    ~JLeicDetectorMessenger();
-    
+
     void SetNewValue(G4UIcommand*, G4String);
     void SetNewValue(G4UIcommand*, G4int);
-    
+
   private:
     JLeicDetectorConstruction*   JLeicDetector;
-    
+
     //  ------- Initial beam energy settings -------
     G4UIdirectory*             DetDir;
     G4UIcmdWithAnInteger* EbeamECmd;

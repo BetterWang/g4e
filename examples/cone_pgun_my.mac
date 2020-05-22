@@ -4,10 +4,9 @@
 
 # Include default setup
 # Use jleic.mac for headless mode or jleicvis.mac for GUI visualization
-/control/execute jleic.mac
-#/control/execute jleicvis.mac
-#/control/execute pan2ZDC.mac
-#/run/initialize
+#/control/execute jleic.mac
+/control/execute jleicvis.mac
+/control/execute pan2ZDC.mac
 # /control/execute jleicvis.mac
 
 # Select cone particle gun generator
@@ -73,16 +72,9 @@
 #         E:(double) Excitation energy (in keV)
 #         flb:(char) Floating level base
 /run/initialize
-<<<<<<< HEAD
 /generator/coneParticleGun/coneAngleStdDev 0.5 deg
 /generator/coneParticleGun/particle neutron
 /generator/coneParticleGun/energy 20 GeV
-/run/beamOn 100000
-=======
-/generator/coneParticleGun/coneAngleStdDev 0.0 deg
-/generator/coneParticleGun/particle neutron
-/generator/coneParticleGun/energy 200 GeV
-/run/beamOn 10
->>>>>>> cf4614a... [+] absorber added
+/run/beamOn 1
 #/vis/ogl/export
 exit

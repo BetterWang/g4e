@@ -151,7 +151,7 @@ public:
     //
     bool USE_FFI_ZDC = true;
     bool USE_FFI_ZDC_ALICE = true;
-//    bool USE_FFI_ZDC_ALICE = false;
+    bool USE_FFI_ZDC_ALICE_ABSORBER = true;
     bool USE_FFI_ZDC_GLASS = false;
     bool USE_FFI_ZDC_CRYSTAL = true;
 

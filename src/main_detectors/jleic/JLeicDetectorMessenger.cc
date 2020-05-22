@@ -29,7 +29,7 @@
 //
 // $Id: JLeicDetectorMessenger.cc 67268 2013-02-13 11:38:40Z ihrivnac $
 //
-// 
+//
 
 #include "JLeicDetectorMessenger.hh"
 
@@ -40,6 +40,7 @@
 #include "G4UIcmdWithAnInteger.hh"
 #include "G4UIcmdWithADoubleAndUnit.hh"
 #include "G4UIcmdWithoutParameter.hh"
+#include "G4UIcmdWithABool.hh"
 
 //////////////////////////////////////////////////////////////////////////////
 

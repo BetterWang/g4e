@@ -437,6 +437,8 @@ G4VPhysicalVolume* Geometry::ConstructZDCPrototype(G4VPhysicalVolume *physVol_Wo
         G4ThreeVector threeVect_Abs(0., 0., -(cfg.Pad_Thickness/2 + cfg.Pad_AirGap + cfg.Absorber_Thickness) );
         G4Transform3D trans3D_Absorber = G4Transform3D(G4RotationMatrix(), threeVect_Abs);
         new G4PVPlacement(trans3D_Absorber,  "PhysVol_Absorber", logVol_Absorber_PbWO4,  physVol_World, false, 0);
+
+        fScoringVol_PAD = logVol_Absorber_PbWO4;
     }
 
     return physVol_World;

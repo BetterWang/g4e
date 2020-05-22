@@ -595,9 +595,15 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
         std::cout << " --> USE_FFI_ZDC_ALICE = " << USE_FFI_ZDC_ALICE << std::endl;
         if ( USE_FFI_ZDC_ALICE ) {
             std::cout << " QW!! --> Using ALICE ZDC" << std::endl;
-//            ffi_ZDC.ConstructALICE(fConfig.ffi_ZDC, World_Material, World_Phys);
+            if ( USE_FFI_ZDC_ALICE_ABSORBER ) {
+                fConfig.ffi_ZDC.bAliceAbsorber = true;
+            } else {
+                fConfig.ffi_ZDC.bAliceAbsorber = false;
+            }
             ffi_ZDC.ConstructALICEPrototype(fConfig.ffi_ZDC, World_Material, World_Phys);
-            ffi_ZDC.ffi_ZDC_HCAL_Logic->SetSensitiveDetector(fCalorimeterSD);
+
+            if ( fConfig.ffi_ZDC.bAliceAbsorber ) ffi_ZDC.ffi_ZDC_HCAL_Logic->SetSensitiveDetector(fCalorimeterSD);
+            ffi_ZDC.ffi_ZDC_SCI_Logic->SetSensitiveDetector(fCalorimeterSD);
         } else {
             std::cout << " --> Using default ZDC" << std::endl;
             ffi_ZDC.Construct(fConfig.ffi_ZDC, World_Material, World_Phys);
@@ -743,7 +749,6 @@ void JLeicDetectorConstruction::ConstructSDandField()
 //    fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D2.Phys);
 //    fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_D2TRK.Phys);
 }
-
 
 void JLeicDetectorConstruction::UpdateGeometry()
 {

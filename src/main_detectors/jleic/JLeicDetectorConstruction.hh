@@ -64,6 +64,7 @@
 #include "fi_B0_EMCAL/fi_B0_EMCAL.hh"     // Far-forward Ion D1  - EMCAL
 
 #include "ffi_OFFM_TRK/ffi_OFFM_TRK.hh"  // Far-forward off-momentum - Tracking after B1( JLEIC Second  big dipole )
+#include "ffi_NEG_TRK/ffi_NEG_TRK.hh"  // Far-forward for negative particles from decays -Lambda
 #include "ffi_ZDC/ffi_ZDC.hh"           // Far-forward Ion   - HCAL ZDC
 #include "ffi_RPOT_D2/ffi_RPOT_D2.hh"   // Far-forward Ion   - RomanPots system
 #include "ffi_RPOT_D3/ffi_RPOT_D3.hh"   // Far-forward Ion   - RomanPots system
@@ -148,6 +149,7 @@ public:
     //--------FARFORWARD HADRON------
 
     bool USE_FFI_OFFM_TRK = true;
+    bool USE_FFI_NEG_TRK = true;
     // 
     bool USE_FFI_ZDC = true;
     bool USE_FFI_ZDC_ALICE = false;
@@ -156,7 +158,7 @@ public:
 
     //---
     bool USE_FFI_RPOT_D2 = true;
-    bool USE_FFI_RPOT_D3 = true;
+    bool USE_FFI_RPOT_D3 = false;
     //bool USE_FARFORWARD_GEM
     //bool USE_FARFORWARD_VP
 
@@ -285,7 +287,8 @@ private:
 
     fi_B0_TRK_Design     fi_B0_TRK;       // Tracking
     fi_B0_EMCAL_Design   fi_B0_EMCAL;     // EMCAL
-    ffi_OFFM_TRK_Design    ffi_OFFM_TRK;      // after B1 (in D2) Off-momentum Tracking
+    ffi_OFFM_TRK_Design   ffi_OFFM_TRK;      // after B1 (in D2) Off-momentum Tracking
+    ffi_NEG_TRK_Design    ffi_NEG_TRK;      //  tracker for negarive particles lambda
     ffi_ZDC_Design      ffi_ZDC;
 
     // Roman Pot system

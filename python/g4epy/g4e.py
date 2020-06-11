@@ -169,8 +169,9 @@ class Geant4Eic(object):
         """Runs the configuration"""
 
         # Check source file:
-        if not self.config['source_file']:
-            raise ValueError("No source file configured. Provide a source with source(...) function")
+        if 'source_file' not in self.config:
+            print("WARNING not source file is given")
+                    #raise ValueError("No source file configured. Provide a source with source(...) function")
 
         self.generate_run_mac()
         self.save_run_context()

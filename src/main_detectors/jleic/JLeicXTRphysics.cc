@@ -148,7 +148,7 @@ void JLeicXTRphysics::ConstructProcess()
         G4String particleName = particle->GetParticleName();
 
         log::trace("JLeicXTRphysics::ConstructEM():: particle={} \n", particle->GetParticleName().c_str());
-        printf("JLeicXTRphysics::ConstructEM():: particle=%s \n", particle->GetParticleName().c_str());
+        //printf("JLeicXTRphysics::ConstructEM():: particle=%s \n", particle->GetParticleName().c_str());
 
         if (particleName == "gamma") {
             // Construct processes for gamma

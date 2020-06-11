@@ -10,16 +10,17 @@
 
 # Use this open statement to create an OpenGL view:
 ### This works  ->   
-/control/manual vis
-#/vis/list
+#/control/manual vis
+/vis/list
 #/vis/open OGL 1000x800-0+0
-/vis/open OGLI 600x600-0+0
+#/vis/open OGLI 600x600-0+0
 #/vis/open OGLIX 600x600-0+0
-#/vis/open OGLIQt 1000x800-0+0  
+#/vis/open OGLIQt 1000x800-0+0
 # 
 #
 #/vis/open OGLS 600x600-0+0
 #/vis/open OGLSX 600x600-0+0
+/vis/open OGLIQt 1000x800-0+0
 #/vis/open OGLIQt_FALLBACK 600x600-0+0
 #/vis/open OGLSQt_FALLBACK 600x600-0+0
 #
@@ -137,7 +138,7 @@
 #/run/beamOn 1
 #--------------CMS vis
 /vis/viewer/set/viewpointThetaPhi -30. -30.
-/vis/viewer/zoomTo 100
+#/vis/viewer/zoomTo 100
 
 #========= CMS view =========================
 /vis/viewer/addCutawayPlane 0 0 7 m 0 0 1

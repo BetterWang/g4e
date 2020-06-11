@@ -530,8 +530,12 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 //====================================================================================
 //==                    Far-Forward Area    D2, D3  ZDC. Roman Pots                 ==
 //====================================================================================
+
+    //------------------------------------------------
+    //             OFF MOMENTUM TRK  
+    //------------------------------------------------
+
     if (USE_FFI_OFFM_TRK) {
-//-------------- for erhic meson tracking placements --------------------------
        if(beamLine == BeamLines::ERHIC) {
 	 //                 fConfig.ffi_OFFM_TRK.RIn = 10 * cm;
          //       fConfig.ffi_OFFM_TRK.ROut = 35*cm;
@@ -570,6 +574,32 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
      }
     }
 
+
+
+
+    //------------------------------------------------
+    //             NEG TRK for Lambda decays 
+    //------------------------------------------------
+
+    if (USE_FFI_NEG_TRK) {
+       if(beamLine == BeamLines::ERHIC) {
+
+                fConfig.ffi_NEG_TRK.SizeZ = 10. * cm;
+                fConfig.ffi_NEG_TRK.Zpos = 25 * m;
+                fConfig.ffi_NEG_TRK.Xpos = 45 * cm;
+                fConfig.ffi_NEG_TRK.rot_matx.rotateY(fConfig.ffi_NEG_TRK.Angle);
+		fConfig.ffi_NEG_TRK.Nlayers=1;
+                ffi_NEG_TRK.Construct(fConfig.ffi_NEG_TRK, World_Material,World_Phys);
+             
+	
+                ffi_NEG_TRK.ConstructDetectors();
+                for (int lay = 0; lay < fConfig.ffi_NEG_TRK.Nlayers; lay++) {
+                  if (ffi_NEG_TRK.lay_Logic) ffi_NEG_TRK.lay_Logic->SetSensitiveDetector(fCalorimeterSD);
+                }
+       }
+
+    }
+
     //------------------------------------------------
     //             ZDC
     //------------------------------------------------
@@ -601,7 +631,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 
     } // end ffi_ZDC
 
-    //------------------------------------------------
+  
     //------------------------------------------------
     //            Roman Pots for eRHIC
     //------------------------------------------------
@@ -733,12 +763,13 @@ void JLeicDetectorConstruction::ConstructSDandField()
 
 //G4PhysicalVolumeStore::GetInstance()->
 
-    fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_ZDC.Phys);
+    if( USE_FFI_ZDC){ fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_ZDC.Phys);}
     //  fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D2.lay_Phys[0]);
-    fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D2.Phys);
-    fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D3.Phys);
-    fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_OFFM_TRK.Phys);
-    fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->fi_B0_TRK.Phys);
+    if( USE_FFI_RPOT_D3){ fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D2.Phys);}
+    if ( USE_FFI_RPOT_D3) { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D3.Phys); }
+    if( USE_FFI_OFFM_TRK){   fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_OFFM_TRK.Phys);} 
+    if( USE_FFI_NEG_TRK){   fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_NEG_TRK.Phys);} 
+    if( USE_FI_B0_TRK){ fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->fi_B0_TRK.Phys);}
 }
 
 

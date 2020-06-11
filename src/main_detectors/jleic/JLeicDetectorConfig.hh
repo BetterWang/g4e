@@ -41,6 +41,7 @@
 #include "fi_B0_EMCAL/fi_B0_EMCAL.hh"
 
 #include "ffi_OFFM_TRK/ffi_OFFM_TRK.hh"  // Far-forward Ion - Silicon discs after  B1 (inside D2) magnet
+#include "ffi_NEG_TRK/ffi_NEG_TRK.hh"  //  NEG Tracker  for lambda decay particles  B1  magnet
 #include "ffi_ZDC/ffi_ZDC.hh"         // Far-forward Ion   - HCAL ZDC
 #include "ffi_RPOT_D2/ffi_RPOT_D2.hh"         // Far-forward Ion   -Roman Pots before D3
 #include "ffi_RPOT_D3/ffi_RPOT_D3.hh"         // Far-forward Ion   -Roman Pots after D3
@@ -107,12 +108,15 @@ struct JLeicDetectorConfig {
 
     //------------Far-Forward-Ion -----
 
-       // --- Tracking in B0(D1) -----
+
+
+    // --- Tracking in B0(D1) -----
     fi_B0_TRK_Config  fi_B0_TRK;
     fi_B0_EMCAL_Config  fi_B0_EMCAL;
 
       // --- Tracking after B1 (in D2) -----
      ffi_OFFM_TRK_Config ffi_OFFM_TRK;
+     ffi_NEG_TRK_Config ffi_NEG_TRK;
     //---------------HCAL -ZDC  and Roman Pots-------------------------
     ffi_ZDC_Config  ffi_ZDC;
     ffi_RPOT_D2_Config  ffi_RPOT_D2;

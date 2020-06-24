@@ -29,6 +29,8 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
     G4StepPoint * point = pointChoice == WriteStepPointChoices::PreStepPoint ? aStep->GetPreStepPoint(): aStep->GetPostStepPoint();
 
     auto touchable = point->GetTouchable();
+    if(!touchable || !touchable->GetVolume()) return;
+
     std::string volumeName = touchable->GetVolume()->GetName();
 
     // process hit

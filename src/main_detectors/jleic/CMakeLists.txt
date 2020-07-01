@@ -1,7 +1,7 @@
 target_sources_local(g4e
         PRIVATE
-            JLeicCalorHit.cc
-            JLeicCalorHit.hh
+        JLeicCalorimeterHit.cc
+        JLeicCalorimeterHit.hh
 
             JLeicCalorimeterSD.cc
             JLeicCalorimeterSD.hh

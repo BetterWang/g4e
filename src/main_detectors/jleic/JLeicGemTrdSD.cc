@@ -58,7 +58,7 @@ static int jDebug = 7;
 
 #include "JLeicCalorimeterSD.hh"
 
-#include "JLeicCalorHit.hh"
+#include "JLeicCalorimeterHit.hh"
 //#include "JLeicDetectorConstruction.hh"
 //#include "G4Step.hh"
 

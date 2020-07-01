@@ -56,6 +56,9 @@
 #include <TFile.h>
 #include <G4GeometryManager.hh>
 
+#include <JANA/JApplication.h>
+#include <JANA/CLI/JVersion.h>
+
 
 int main(int argc, char **argv)
 {
@@ -80,6 +83,10 @@ int main(int argc, char **argv)
     std::string rootFileName(appArgs.OutputBaseName + ".root");
     std::unique_ptr<TFile> rootOutputFile(new TFile(rootFileName.c_str(), "RECREATE"));
     g4e::RootOutputManager mainRootOutput(rootOutputFile.get());
+
+    // JANA
+
+
 
     // Construct the default run manager
     G4RunManager * runManager;

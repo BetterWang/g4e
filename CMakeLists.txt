@@ -94,6 +94,7 @@ message(STATUS "g4e: VGM_XmlVGM   :${VGM_XmlVGM}   ")
 # ----------
 
 find_package(HepMC REQUIRED)    # easy one =)
+find_package(JANA REQUIRED)
 
 message(STATUS "g4e: HEPMC_INCLUDE_DIR :${HEPMC_INCLUDE_DIR}")
 message(STATUS "g4e: HEPMC_LIBRARY_DIR  :${HEPMC_LIBRARY_DIR}")
@@ -157,6 +158,7 @@ target_link_libraries(g4e
         ${VGM_XmlVGM}
         ${VGM_ClhepVGM}
         ${ROOT_LIBRARIES}
+        ${JANA_LIBRARY}
         spdlog
         )
 
@@ -170,6 +172,7 @@ target_include_directories(g4e
             ${HEPMC_INCLUDE_DIR}
             ${VGM_DIRECTORY}/include
             ${VGM_DIRECTORY}/test/include
+            ${JANA_INCLUDE_DIRS}
             src/external/spdlog/include     # Header only library for str formatting and fast logging
             src/external/CLI11              # Header only library for argument parsing
         )

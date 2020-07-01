@@ -1,11 +1,11 @@
-#include "JLeicCalorHit.hh"
+#include "JLeicCalorimeterHit.hh"
 
 // Using G4ThreadLocal external JLeicCalorHitAllocator as was suggested in
 //
-G4ThreadLocal G4Allocator<JLeicCalorHit>* JLeicCalorHitAllocator = nullptr;
+G4ThreadLocal G4Allocator<JLeicCalorimeterHit>* JLeicCalorHitAllocator = nullptr;
 
 
-JLeicCalorHit::JLeicCalorHit()
+JLeicCalorimeterHit::JLeicCalorimeterHit()
 {
     fEdepAbs = 0.;
     fTrackLengthAbs = 0.;
@@ -13,7 +13,7 @@ JLeicCalorHit::JLeicCalorHit()
     fTrackLengthGap = 0.;
 }
 
-JLeicCalorHit::~JLeicCalorHit() = default;
+JLeicCalorimeterHit::~JLeicCalorimeterHit() = default;
 
 
 /*
@@ -25,7 +25,7 @@ JLeicCalorHit::JLeicCalorHit(const JLeicCalorHit& right)
 */
 
 
-const JLeicCalorHit& JLeicCalorHit::operator=(const JLeicCalorHit& right)
+const JLeicCalorimeterHit& JLeicCalorimeterHit::operator=(const JLeicCalorimeterHit& right)
 {
     fEdepAbs = right.fEdepAbs;
     fTrackLengthAbs = right.fTrackLengthAbs;
@@ -37,7 +37,7 @@ const JLeicCalorHit& JLeicCalorHit::operator=(const JLeicCalorHit& right)
 
 
 
-void JLeicCalorHit::Print()
+void JLeicCalorimeterHit::Print()
 {;}
 
 

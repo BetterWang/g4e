@@ -44,7 +44,7 @@
 #include "JLeicDetectorConstruction.hh"
 #include "RootFlatIO.hh"
 
-#include "JLeicCalorHit.hh"
+#include "JLeicCalorimeterHit.hh"
 #include "JLeicRunAction.hh"
 #include "G4RunManager.hh"
 
@@ -65,6 +65,8 @@ public:
     void Initialize(G4HCofThisEvent *) override;
 
     G4bool ProcessHits(G4Step *, G4TouchableHistory *) override;
+
+    void DigitizeHits(G4Step *, G4TouchableHistory *);
 
     void EndOfEvent(G4HCofThisEvent *) override;
 

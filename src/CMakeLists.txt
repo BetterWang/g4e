@@ -48,6 +48,8 @@ target_sources_local(g4e
         VolumeChangeSteppingAction.hh
 
         InitializationContext.hh
+
+        PluginContext.hh
         )
 
 add_subdirectory(main_detectors)

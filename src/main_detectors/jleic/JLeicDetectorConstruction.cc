@@ -68,7 +68,6 @@ void JLeicDetectorConstruction::Create_ci_Endcap(JLeicDetectorConfig::ci_Endcap_
     ci_ENDCAP_GVol_VisAttr->SetLineWidth(1);
     ci_ENDCAP_GVol_VisAttr->SetForceSolid(false);
     ci_ENDCAP_GVol_Logic->SetVisAttributes(ci_ENDCAP_GVol_VisAttr);
-
 }
 
 
@@ -765,11 +764,11 @@ void JLeicDetectorConstruction::ConstructSDandField()
 
     if( USE_FFI_ZDC){ fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_ZDC.Phys);}
     //  fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D2.lay_Phys[0]);
-    if( USE_FFI_RPOT_D3){ fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D2.Phys);}
-    if ( USE_FFI_RPOT_D3) { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D3.Phys); }
-    if( USE_FFI_OFFM_TRK){   fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_OFFM_TRK.Phys);} 
-    if( USE_FFI_NEG_TRK){   fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_NEG_TRK.Phys);} 
-    if( USE_FI_B0_TRK){ fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->fi_B0_TRK.Phys);}
+    if( USE_FFI_RPOT_D3)  { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D2.Phys); }
+    if( USE_FFI_RPOT_D3) { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D3.Phys); }
+    if( USE_FFI_OFFM_TRK) { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_OFFM_TRK.Phys); }
+    if( USE_FFI_NEG_TRK)  { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_NEG_TRK.Phys); }
+    if( USE_FI_B0_TRK)    { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->fi_B0_TRK.Phys); }
 }
 
 

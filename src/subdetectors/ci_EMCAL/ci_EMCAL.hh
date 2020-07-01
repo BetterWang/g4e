@@ -24,8 +24,8 @@ struct ci_EMCAL_Config {
    double det_Length = 40. * cm;
    double det_Width = 4. * cm;
    double det_Gap = 0.01 * mm;
-   double  det_Rin1 = 20. * cm;
-   double  det_Rin2 = 55. * cm;
+   double det_Rin1 = 20. * cm;
+   double det_Rin2 = 55. * cm;
    bool USE_JLEIC =false;
    bool USE_ERHIC =false;
 
@@ -49,10 +49,7 @@ public:
         attr_ci_EMCAL_GVol->SetForceSolid(false);
         Logic->SetVisAttributes(attr_ci_EMCAL_GVol);
 
-        Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, cfg.PosZ), "ci_EMCAL_GVol_Phys", Logic,
-                                              motherVolume, false, 0);
-
-
+        Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, cfg.PosZ), "ci_EMCAL_GVol_Phys", Logic, motherVolume, false, 0);
     };
 
     inline void ConstructDetectors() {

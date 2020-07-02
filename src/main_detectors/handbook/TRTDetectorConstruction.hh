@@ -23,66 +23,37 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+/// \file electromagnetic/VertexEIC/include/TRTDetectorConstruction.hh
+/// \brief Definition of the TRTDetectorConstruction class
 //
-// $Id: JLeicEventAction.hh,v 1.3 2006-06-29 16:37:51 gunter Exp $
-// GEANT4 tag $Name: geant4-09-04-patch-01 $
+//
+// $Id: TRTDetectorConstruction.hh 66241 2012-12-13 18:34:42Z gunter $
 //
 // 
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+#ifndef TRTDetectorConstruction_h
+#define TRTDetectorConstruction_h 1
 
-#ifndef JLeicEventAction_h
-#define JLeicEventAction_h 1
+#include "G4VUserDetectorConstruction.hh"
+#include "Randomize.hh"
 
-#include "G4UserEventAction.hh"
-#include "globals.hh"
-#include "RootFlatIO.hh"
-#include <G4GenericMessenger.hh>
+class TRTTrackerSD;
+class SCTTrackerSD;
+class HepJamesRandom;
 
-
-class JLeicHistogramManager;
-
-
-class JLeicEventAction : public G4UserEventAction
+class TRTDetectorConstruction : public G4VUserDetectorConstruction
 {
-public:
-    JLeicEventAction(g4e::RootFlatIO *, JLeicHistogramManager*);
+  public:
+    TRTDetectorConstruction();
+    ~TRTDetectorConstruction();
 
-    ~JLeicEventAction() = default;
+  public:
+     G4VPhysicalVolume* Construct();
 
-public:
-    void BeginOfEventAction(const G4Event *) override;
-
-    void EndOfEventAction(const G4Event *) override;
-
-    void SetVerbose(G4int level) { fVerbose = level; }    /// 0 = nothing, 1 = some, 2 = debug
-    G4int GetVerbose() { return fVerbose; }                /// 0 = nothing, 1 = some, 2 = debug
-
-
-    void SetPrintModulo(G4int val) { fPrintModulo = val; }
-    G4int GetPrintModulo() { return fPrintModulo; }
-
-    //----- EVENT STRUCTURE -----
-    g4e::RootFlatIO *mRootEventsOut = nullptr;
-
-private:
-    G4int calorimeterCollID;
-    G4int vertexCollID;
-    JLeicHistogramManager* fHistos;
-
-
-    G4int fVerbose;
-    G4double nstep, nstepCharged, nstepNeutral;
-    G4double Nch, Nne, GamDE;
-    G4double NE, NP;
-    G4double Transmitted, Reflected;
-
-    G4String drawFlag;
-    G4int fPrintModulo;
-    G4GenericMessenger fMessenger;
+  private:
+    TRTTrackerSD *TRTStrawSD;
+    SCTTrackerSD *SCTStripSD;
+    HepJamesRandom theJamesEngine;    
 };
 
 #endif
-
-    

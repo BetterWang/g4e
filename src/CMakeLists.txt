@@ -47,6 +47,9 @@ target_sources_local(g4e
         VolumeChangeSteppingAction.cc
         VolumeChangeSteppingAction.hh
 
+        UserEventInformation.cc
+        UserEventInformation.hh
+
         InitializationContext.hh
 
         PluginContext.hh

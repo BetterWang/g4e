@@ -23,66 +23,55 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+/// \file electromagnetic/VertexEIC/src/JLeicVTXHit.cc
+/// \brief Implementation of the JLeicVTXHit class
 //
-// $Id: JLeicEventAction.hh,v 1.3 2006-06-29 16:37:51 gunter Exp $
-// GEANT4 tag $Name: geant4-09-04-patch-01 $
+//
+// $Id: JLeicVTXHit.cc 66241 2012-12-13 18:34:42Z gunter $
 //
 // 
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-#ifndef JLeicEventAction_h
-#define JLeicEventAction_h 1
+#include "JLeicVTXHit.hh"
 
-#include "G4UserEventAction.hh"
-#include "globals.hh"
-#include "RootFlatIO.hh"
-#include <G4GenericMessenger.hh>
+G4Allocator<JLeicVTXHit> JLeicVTXHitAllocator;
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-class JLeicHistogramManager;
-
-
-class JLeicEventAction : public G4UserEventAction
+JLeicVTXHit::JLeicVTXHit()
 {
-public:
-    JLeicEventAction(g4e::RootFlatIO *, JLeicHistogramManager*);
+   EdepAbs = 0.; TrackLengthAbs = 0.;
+   EdepGap = 0.; TrackLengthGap = 0.;
+}
 
-    ~JLeicEventAction() = default;
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-public:
-    void BeginOfEventAction(const G4Event *) override;
+JLeicVTXHit::~JLeicVTXHit()
+{;}
 
-    void EndOfEventAction(const G4Event *) override;
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+/*
+JLeicVTXHit::JLeicVTXHit(const JLeicVTXHit& right)
+{
+  EdepAbs = right.EdepAbs; TrackLengthAbs = right.TrackLengthAbs;
+  EdepGap = right.EdepGap; TrackLengthGap = right.TrackLengthGap;
+}
+*/
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-    void SetVerbose(G4int level) { fVerbose = level; }    /// 0 = nothing, 1 = some, 2 = debug
-    G4int GetVerbose() { return fVerbose; }                /// 0 = nothing, 1 = some, 2 = debug
+const JLeicVTXHit& JLeicVTXHit::operator=(const JLeicVTXHit& right)
+{
+  EdepAbs = right.EdepAbs; TrackLengthAbs = right.TrackLengthAbs;
+  EdepGap = right.EdepGap; TrackLengthGap = right.TrackLengthGap;
+  return *this;
+}
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-    void SetPrintModulo(G4int val) { fPrintModulo = val; }
-    G4int GetPrintModulo() { return fPrintModulo; }
+void JLeicVTXHit::Print()
+{;}
 
-    //----- EVENT STRUCTURE -----
-    g4e::RootFlatIO *mRootEventsOut = nullptr;
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-private:
-    G4int calorimeterCollID;
-    G4int vertexCollID;
-    JLeicHistogramManager* fHistos;
-
-
-    G4int fVerbose;
-    G4double nstep, nstepCharged, nstepNeutral;
-    G4double Nch, Nne, GamDE;
-    G4double NE, NP;
-    G4double Transmitted, Reflected;
-
-    G4String drawFlag;
-    G4int fPrintModulo;
-    G4GenericMessenger fMessenger;
-};
-
-#endif
-
-    

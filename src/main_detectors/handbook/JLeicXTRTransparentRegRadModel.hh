@@ -23,66 +23,49 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+// $Id: JLeicXTRTransparentRegRadModel.hh 66587 2012-12-21 11:06:44Z ihrivnac $
 //
-// $Id: JLeicEventAction.hh,v 1.3 2006-06-29 16:37:51 gunter Exp $
-// GEANT4 tag $Name: geant4-09-04-patch-01 $
+/// \file electromagnetic/VertexEIC/include/JLeicXTRTransparentRegRadModel.hh
+/// \brief Definition of the JLeicXTRTransparentRegRadModel class
 //
 // 
+///////////////////////////////////////////////////////////////////////////
+// 
+// Process describing a radiator of X-ray transition radiation.  
+// Thicknesses of plates and gas gaps are fixed.
+// We suppose that:
+// formation zone ~ mean thickness << absorption length
+// for each material and in the range 1-100 keV. This allows us to simplify
+// interference effects in radiator stack (GetStackFactor method).
+// 
+// 
+// History:
+//
+// 05.04.05 V. Grichine, first version 
+//
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-#ifndef JLeicEventAction_h
-#define JLeicEventAction_h 1
+#ifndef JLeicXTRTransparentRegRadModel_h
+#define JLeicXTRTransparentRegRadModel_h 1
 
-#include "G4UserEventAction.hh"
-#include "globals.hh"
-#include "RootFlatIO.hh"
-#include <G4GenericMessenger.hh>
+#include "G4VXTRenergyLoss.hh"
 
-
-class JLeicHistogramManager;
-
-
-class JLeicEventAction : public G4UserEventAction
+class JLeicXTRTransparentRegRadModel : public G4VXTRenergyLoss
 {
 public:
-    JLeicEventAction(g4e::RootFlatIO *, JLeicHistogramManager*);
 
-    ~JLeicEventAction() = default;
+  JLeicXTRTransparentRegRadModel (G4LogicalVolume *anEnvelope,G4Material*,G4Material*,
+                        G4double,G4double,G4int,
+                        const G4String & processName = "XTRTransparentRegRadModel");
+  ~JLeicXTRTransparentRegRadModel ();
 
-public:
-    void BeginOfEventAction(const G4Event *) override;
+  // reimplementation of base class function in analytical way
 
-    void EndOfEventAction(const G4Event *) override;
+  G4double SpectralXTRdEdx(G4double energy);
 
-    void SetVerbose(G4int level) { fVerbose = level; }    /// 0 = nothing, 1 = some, 2 = debug
-    G4int GetVerbose() { return fVerbose; }                /// 0 = nothing, 1 = some, 2 = debug
+  // Pure virtual function from base class
 
-
-    void SetPrintModulo(G4int val) { fPrintModulo = val; }
-    G4int GetPrintModulo() { return fPrintModulo; }
-
-    //----- EVENT STRUCTURE -----
-    g4e::RootFlatIO *mRootEventsOut = nullptr;
-
-private:
-    G4int calorimeterCollID;
-    G4int vertexCollID;
-    JLeicHistogramManager* fHistos;
-
-
-    G4int fVerbose;
-    G4double nstep, nstepCharged, nstepNeutral;
-    G4double Nch, Nne, GamDE;
-    G4double NE, NP;
-    G4double Transmitted, Reflected;
-
-    G4String drawFlag;
-    G4int fPrintModulo;
-    G4GenericMessenger fMessenger;
+  G4double GetStackFactor( G4double energy, G4double gamma, G4double varAngle);
 };
 
 #endif
-
-    

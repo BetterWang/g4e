@@ -43,9 +43,10 @@
 
 
 #include <spdlog/spdlog.h>
+#include <UserEventInformation.hh>
 
 
-    g4e::BeagleGenerator::BeagleGenerator()
+g4e::BeagleGenerator::BeagleGenerator()
     {
         fReader = new BeagleReader();
         fMessenger = new BeagleGeneratorMessenger(this);
@@ -87,6 +88,20 @@
             G4RunManager::GetRunManager()->AbortRun();
             return;
         }
+
+        auto userInfo = new g4e::UserEventInformation();
+        auto &eventData = userInfo->GetEventData();
+        eventData.HasTrueDISInfo = true;
+        eventData.TrueDISInfo.Q2 = beagleEvent->trueQ2;
+        eventData.TrueDISInfo.x = beagleEvent->truex;
+        eventData.TrueDISInfo.y = beagleEvent->truey;
+        eventData.TrueDISInfo.w2 = beagleEvent->trueW2;
+        eventData.TrueDISInfo.nu = beagleEvent->trueNu;
+        eventData.TrueDISInfo.tHat = beagleEvent->t_hat;
+        eventData.StartLine = beagleEvent->text_event->started_at_line;
+        eventData.Weight = 0;
+
+        event->SetUserInformation(userInfo);
 
         // TODO at this point we set primary vertex
         auto zeroVertex = new G4PrimaryVertex(0,0,0,0);

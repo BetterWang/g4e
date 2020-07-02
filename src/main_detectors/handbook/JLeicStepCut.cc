@@ -23,66 +23,36 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+/// \file electromagnetic/VertexEIC/src/JLeicStepCut.cc
+/// \brief Implementation of the JLeicStepCut class
 //
-// $Id: JLeicEventAction.hh,v 1.3 2006-06-29 16:37:51 gunter Exp $
-// GEANT4 tag $Name: geant4-09-04-patch-01 $
 //
-// 
+// $Id: JLeicStepCut.cc 66241 2012-12-13 18:34:42Z gunter $
+//
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+#include "JLeicStepCut.hh"
 
-#ifndef JLeicEventAction_h
-#define JLeicEventAction_h 1
+#include "G4Step.hh"
+#include "G4UserLimits.hh"
+#include "G4VParticleChange.hh"
+#include "G4EnergyLossTables.hh"
 
-#include "G4UserEventAction.hh"
-#include "globals.hh"
-#include "RootFlatIO.hh"
-#include <G4GenericMessenger.hh>
-
-
-class JLeicHistogramManager;
-
-
-class JLeicEventAction : public G4UserEventAction
+JLeicStepCut::JLeicStepCut(const G4String &aName) : G4VDiscreteProcess(aName), MaxChargedStep(DBL_MAX)
 {
-public:
-    JLeicEventAction(g4e::RootFlatIO *, JLeicHistogramManager*);
+    if (verboseLevel > 0) {
+        G4cout << GetProcessName() << " is created " << G4endl;
+    }
+}
 
-    ~JLeicEventAction() = default;
+JLeicStepCut::~JLeicStepCut()
+{
+}
 
-public:
-    void BeginOfEventAction(const G4Event *) override;
+JLeicStepCut::JLeicStepCut(JLeicStepCut &right) : G4VDiscreteProcess(right) {}
 
-    void EndOfEventAction(const G4Event *) override;
-
-    void SetVerbose(G4int level) { fVerbose = level; }    /// 0 = nothing, 1 = some, 2 = debug
-    G4int GetVerbose() { return fVerbose; }                /// 0 = nothing, 1 = some, 2 = debug
-
-
-    void SetPrintModulo(G4int val) { fPrintModulo = val; }
-    G4int GetPrintModulo() { return fPrintModulo; }
-
-    //----- EVENT STRUCTURE -----
-    g4e::RootFlatIO *mRootEventsOut = nullptr;
-
-private:
-    G4int calorimeterCollID;
-    G4int vertexCollID;
-    JLeicHistogramManager* fHistos;
+void JLeicStepCut::SetMaxStep(G4double step)
+{
+    MaxChargedStep = step;
+}
 
 
-    G4int fVerbose;
-    G4double nstep, nstepCharged, nstepNeutral;
-    G4double Nch, Nne, GamDE;
-    G4double NE, NP;
-    G4double Transmitted, Reflected;
-
-    G4String drawFlag;
-    G4int fPrintModulo;
-    G4GenericMessenger fMessenger;
-};
-
-#endif
-
-    

@@ -9,12 +9,16 @@
 #include <TFile.h>
 #include <TTree.h>
 
+#include <G4Event.hh>
+
 #include <spdlog/spdlog.h>
+#include <UserEventInformation.hh>
 
 #include "FlatIoHit.hh"
 #include "FlatIoParticle.hh"
 #include "FlatIoTrack.hh"
 #include "FlatIoVertex.hh"
+
 
 namespace g4e
 {
@@ -28,6 +32,14 @@ namespace g4e
             mEventTree = eventTree;
 
             mEventTree->Branch("event_id", &mEventId, "event_id/l");
+            mEventTree->Branch("evt_true_q2",      &mEventInfo.TrueDISInfo.Q2,      "evt_true_q2/D");
+            mEventTree->Branch("evt_true_x",       &mEventInfo.TrueDISInfo.x ,      "evt_true_x/D");
+            mEventTree->Branch("evt_true_y",       &mEventInfo.TrueDISInfo.y ,      "evt_true_y/D");
+            mEventTree->Branch("evt_true_w2",      &mEventInfo.TrueDISInfo.w2,      "evt_true_w2/D");
+            mEventTree->Branch("evt_true_nu",      &mEventInfo.TrueDISInfo.nu,      "evt_true_nu/D");
+            mEventTree->Branch("evt_has_dis_info", &mEventInfo.HasTrueDISInfo, "evt_has_dis_info/B");
+            mEventTree->Branch("evt_weight",       &mEventInfo.Weight,       "evt_weight/D");
+
 
             mHitIo.BindToTree(mEventTree);          // Bind/create branches for hits
             mTrackIo.BindToTree(mEventTree);        // Bind/create branches for tracks
@@ -164,10 +176,16 @@ namespace g4e
             mParticleIo.ParticleCount = mParticleIo.IdVect.size();
         }
 
-        void FillEvent(uint64_t eventId)
+        void FillEvent(const G4Event *evt)
         {
             std::lock_guard<std::recursive_mutex> lk(io_mutex);
-            mEventId = eventId;
+            mEventId = (uint64_t)evt->GetEventID();
+            auto userEventData = dynamic_cast<g4e::UserEventInformation*>(evt->GetUserInformation());
+
+            // Copy event data values
+            if(userEventData) {
+                mEventInfo = userEventData->GetEventData();
+            }
 
             fmt::print("RooIO: {:<4} hits:{:<7} tracks:{:<7} genpart:{:<4} \n", mEventId+1, mHitIo.HitsCount, mTrackIo.TrackCount, mParticleIo.ParticleCount);
             mEventTree->Fill();
@@ -200,6 +218,7 @@ namespace g4e
         g4e::TrackIo mTrackIo;
         g4e::VertexIo mPrimeVertexIo;
         g4e::ParticleIo mParticleIo;
+        g4e::EventData mEventInfo;
     };
 }
 

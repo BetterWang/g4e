@@ -21,7 +21,6 @@ struct cb_EMCAL_Config
     double ROutshift = 5 * cm;
     double Thickness = 40 * cm;
     double SizeZ;
-
 };
 
 

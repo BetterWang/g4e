@@ -124,8 +124,8 @@ public:
         }
     };
 
-    G4Tubs *Solid;      //pointer to the solid
-    G4LogicalVolume *Logic;    //pointer to the logical
+    G4Tubs *Solid;            //pointer to the solid
+    G4LogicalVolume *Logic;   //pointer to the logical
     G4VPhysicalVolume *Phys;  //pointer to the physical
 
     /// Parameters that was used in the moment of construction

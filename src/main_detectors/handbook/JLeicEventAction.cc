@@ -47,9 +47,9 @@
 JLeicEventAction::JLeicEventAction(g4e::RootFlatIO *rootOutput, JLeicHistogramManager *histos)
         : calorimeterCollID(-1),
           vertexCollID(-1),
-          fHistos(histos),
           fVerbose(0),
           fPrintModulo(10),
+          fHistos(histos),
           fMessenger(this, "/jleic/eventAction/")
 {
     mRootEventsOut=rootOutput;
@@ -204,7 +204,7 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
         }
     }
 
-    mRootEventsOut->FillEvent(evt);
+    mRootEventsOut->FillEvent((uint64_t)evt->GetEventID());
 
 
     // VERTEX HITS

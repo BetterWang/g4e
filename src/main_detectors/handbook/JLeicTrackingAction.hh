@@ -23,66 +23,36 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+// $Id: JLeicTrackingAction.hh 66587 2012-12-21 11:06:44Z ihrivnac $
 //
-// $Id: JLeicEventAction.hh,v 1.3 2006-06-29 16:37:51 gunter Exp $
-// GEANT4 tag $Name: geant4-09-04-patch-01 $
+/// \file electromagnetic/VertexEIC/include/JLeicTrackingAction.hh
+/// \brief Definition of the JLeicTrackingAction class
 //
-// 
+#ifndef JLeicTrackingAction_h
+#define JLeicTrackingAction_h
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
+#include <unordered_map>
 
-#ifndef JLeicEventAction_h
-#define JLeicEventAction_h 1
+#include "G4UserTrackingAction.hh"
 
-#include "G4UserEventAction.hh"
 #include "globals.hh"
-#include "RootFlatIO.hh"
-#include <G4GenericMessenger.hh>
 
 
-class JLeicHistogramManager;
-
-
-class JLeicEventAction : public G4UserEventAction
+class JLeicTrackingAction : public G4UserTrackingAction
 {
-public:
-    JLeicEventAction(g4e::RootFlatIO *, JLeicHistogramManager*);
-
-    ~JLeicEventAction() = default;
 
 public:
-    void BeginOfEventAction(const G4Event *) override;
+    JLeicTrackingAction();
 
-    void EndOfEventAction(const G4Event *) override;
+    ~JLeicTrackingAction() override = default;
 
-    void SetVerbose(G4int level) { fVerbose = level; }    /// 0 = nothing, 1 = some, 2 = debug
-    G4int GetVerbose() { return fVerbose; }                /// 0 = nothing, 1 = some, 2 = debug
-
-
-    void SetPrintModulo(G4int val) { fPrintModulo = val; }
-    G4int GetPrintModulo() { return fPrintModulo; }
-
-    //----- EVENT STRUCTURE -----
-    g4e::RootFlatIO *mRootEventsOut = nullptr;
+    void PreUserTrackingAction(const G4Track *) override;
+    void PostUserTrackingAction(const G4Track *) override;
 
 private:
-    G4int calorimeterCollID;
-    G4int vertexCollID;
-    JLeicHistogramManager* fHistos;
+    std::unordered_map<std::uint64_t, std::uint64_t> mTrackLevelsById;
 
-
-    G4int fVerbose;
-    G4double nstep, nstepCharged, nstepNeutral;
-    G4double Nch, Nne, GamDE;
-    G4double NE, NP;
-    G4double Transmitted, Reflected;
-
-    G4String drawFlag;
-    G4int fPrintModulo;
-    G4GenericMessenger fMessenger;
 };
 
 #endif
 
-    

@@ -23,66 +23,51 @@
 // * acceptance of all terms of the Geant4 Software license.          *
 // ********************************************************************
 //
+// Code developed by:
+//  S.Larsson and J. Generowicz.
 //
-// $Id: JLeicEventAction.hh,v 1.3 2006-06-29 16:37:51 gunter Exp $
-// GEANT4 tag $Name: geant4-09-04-patch-01 $
+//    *************************************
+//    *                                   *
+//    *    JLeicSolenoid3D.hh     *
+//    *                                   *
+//    *************************************
 //
-// 
+//
+#ifndef JLEIC_SOLENOID_3D_H
+#define JLEIC_SOLENOID_3D_H
 
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
-//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-#ifndef JLeicEventAction_h
-#define JLeicEventAction_h 1
-
-#include "G4UserEventAction.hh"
 #include "globals.hh"
-#include "RootFlatIO.hh"
-#include <G4GenericMessenger.hh>
+#include "G4MagneticField.hh"
+#include "G4ios.hh"
 
+#include <fstream>
+#include <vector>
+#include <cmath>
 
-class JLeicHistogramManager;
+using namespace std;
 
-
-class JLeicEventAction : public G4UserEventAction
+class JLeicSolenoid3D: public G4MagneticField
 {
 public:
-    JLeicEventAction(g4e::RootFlatIO *, JLeicHistogramManager*);
-
-    ~JLeicEventAction() = default;
-
-public:
-    void BeginOfEventAction(const G4Event *) override;
-
-    void EndOfEventAction(const G4Event *) override;
-
-    void SetVerbose(G4int level) { fVerbose = level; }    /// 0 = nothing, 1 = some, 2 = debug
-    G4int GetVerbose() { return fVerbose; }                /// 0 = nothing, 1 = some, 2 = debug
-
-
-    void SetPrintModulo(G4int val) { fPrintModulo = val; }
-    G4int GetPrintModulo() { return fPrintModulo; }
-
-    //----- EVENT STRUCTURE -----
-    g4e::RootFlatIO *mRootEventsOut = nullptr;
+  JLeicSolenoid3D(const std::string& filename, double zOffset, bool InvertZ);
+  void  GetFieldValue( const  double Point[4], double *Bfield) const;
 
 private:
-    G4int calorimeterCollID;
-    G4int vertexCollID;
-    JLeicHistogramManager* fHistos;
+    // Storage space for the table
+    std::vector< std::vector< std::vector< double > > > xField;
+    std::vector< std::vector< std::vector< double > > > yField;
+    std::vector< std::vector< std::vector< double > > > zField;
 
-
-    G4int fVerbose;
-    G4double nstep, nstepCharged, nstepNeutral;
-    G4double Nch, Nne, GamDE;
-    G4double NE, NP;
-    G4double Transmitted, Reflected;
-
-    G4String drawFlag;
-    G4int fPrintModulo;
-    G4GenericMessenger fMessenger;
+    // The dimensions of the table
+    int nx,ny,nz;
+    // The physical limits of the defined region
+    double minx, maxx, miny, maxy, minz, maxz;
+    // The physical extent of the defined region
+    double dx, dy, dz;
+    double fZoffset;
+    bool fZinvert;
+    bool invertX, invertY, invertZ;
 };
 
-#endif
-
-    
+#endif //JLEIC_SOLENOID_3D_H

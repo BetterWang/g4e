@@ -58,7 +58,6 @@ JLeicCalorimeterSD::JLeicCalorimeterSD(G4String name, g4e::RootOutputManager* ro
 
 void JLeicCalorimeterSD::DigitizeHits(G4Step *step, G4TouchableHistory *)
 {
-    /*
     //  const G4TouchableHandle touchablepre[128];
     G4double edep = step->GetTotalEnergyDeposit();
 
@@ -173,10 +172,20 @@ void JLeicCalorimeterSD::DigitizeHits(G4Step *step, G4TouchableHistory *)
     G4ThreeVector vertexMom = aTrack->GetVertexMomentumDirection();
     G4int PDG = aTrack->GetDefinition()->GetPDGEncoding();
 
-
+    //vertex (,where this track was created) information
+    /*
+      const G4ThreeVector& GetVertexPosition() const;
+      void  SetVertexPosition(const G4ThreeVector& aValue);
+      const G4ThreeVector& GetVertexMomentumDirection() const;
+      G4int GetCurrentStepNumber() const;
+      void  IncrementCurrentStepNumber();
+    */
 
 
     if ((edep == 0.) && (stepLength == 0.)) return false;
+
+    //  printf("--> JLeicCalorimeterSD::ProcessHits() de=%f ADC=%d  len=%f  IDxy=(%d,%d) step(x,y,z)=(%f, %f %f) in=(%f, %f %f) um  out=(%f, %f %f) um \n  loc=(%f, %f %f) um part=%s\n"
+    //	 ,edep/keV,ADC,stepl/um,copyIDx_pre,copyIDy_pre,xstep,ystep,zstep,xinp/um,yinp/um,zinp/um,xend/um,yend/um,zend/um,xloc/um,yloc/um,zloc/um, aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName().c_str());
 
 
 
@@ -204,7 +213,6 @@ void JLeicCalorimeterSD::DigitizeHits(G4Step *step, G4TouchableHistory *)
     }
 
     if (jDebug > 2) printf("--> JLeicCalorimeterSD::ProcessHits() Exit\n");
-     */
 }
 
 

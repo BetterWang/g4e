@@ -41,6 +41,7 @@
 #include <G4GenericMessenger.hh>
 
 
+class JLeicEventActionMessenger;
 class JLeicHistogramManager;
 
 
@@ -69,6 +70,7 @@ public:
 private:
     G4int calorimeterCollID;
     G4int vertexCollID;
+    JLeicEventActionMessenger *eventMessenger;
     JLeicHistogramManager* fHistos;
 
 

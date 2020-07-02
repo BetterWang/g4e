@@ -1,5 +1,5 @@
-#ifndef ModularDetector_HH
-#define ModularDetector_HH
+#ifndef JLeicDetectorConstruction_HH
+#define JLeicDetectorConstruction_HH
 
 #include <InitializationContext.hh>
 #include "globals.hh"
@@ -32,11 +32,53 @@
 #include "JLeicDetectorConfig.hh"
 #include "VolumeChangeSteppingAction.hh"
 
+//--------------CB---------------
+#include "cb_Solenoid/cb_Solenoid.hh"   // Central Barrel - Solenoid
+#include "cb_VTX/cb_VTX.hh"             // Central Barrel - Vertex
+#include "cb_SiDISCS/cb_SiDISCS.hh"     // Central Barrel -Si Discs along the beamline
+#include "cb_CTD/cb_CTD.hh"             // Central Barrel - Tracker
+#include "cb_DIRC/cb_DIRC.hh"           // Central Barrel - DIRC
+#include "cb_EMCAL/cb_EMCAL.hh"         // Central Barrel - EMCAL
+#include "cb_HCAL/cb_HCAL.hh"           // Central Barrel - HCAL
 
+//--------------CE---------------
+#include "ce_GEM/ce_GEM.hh"             // Central Ion Endcap - TRD
+#include "ce_MRICH/ce_MRICH.hh"         // Central Electron Endcap - MRICH
 #include "ce_EMCAL/ce_EMCAL.hh"         // Central Electron Endcap - EMCAL
 
-#include "ci_EMCAL/ci_EMCAL.hh"         // Central Ion Endcap - EMCAL
+//--------------FFe---------------
+#include "ffe_CPOL/ffe_CPOL.hh"         // Far-forward  electron direction ePolarimeter
+#include "ffe_LUMI/ffe_LUMI.hh"         // Far -forward  electron   LUMI
+#include "ffe_LOWQ2/ffe_LOWQ2.hh"       // Far -forward  electron   LOW-Q2
 
+
+//--------------CI---------------
+#include "ci_GEM/ci_GEM.hh"             // Central Ion Endcap - TRD
+#include "ci_DRICH/ci_DRICH.hh"         // Central Ion Endcap - DRICH
+#include "ci_TRD/ci_TRD.hh"             // Central Ion Endcap - TRD
+#include "ci_EMCAL/ci_EMCAL.hh"         // Central Ion Endcap - EMCAL
+#include "ci_HCAL/ci_HCAL.hh"           // Central Ion Endcap - HCAL
+
+//--------------FFi---------------
+#include "fi_B0_TRK/fi_B0_TRK.hh"       // Far-forward Ion D1  - Tracking
+#include "fi_B0_EMCAL/fi_B0_EMCAL.hh"   // Far-forward Ion D1  - EMCAL
+
+#include "ffi_OFFM_TRK/ffi_OFFM_TRK.hh"   // Far-forward off-momentum - Tracking after B1( JLEIC Second  big dipole )
+#include "ffi_NEG_TRK/ffi_NEG_TRK.hh"     // Far-forward for negative particles from decays -Lambda
+#include "ffi_ZDC/ffi_ZDC.hh"             // Far-forward Ion   - HCAL ZDC
+#include "ffi_RPOT_D2/ffi_RPOT_D2.hh"     // Far-forward Ion   - RomanPots system
+#include "ffi_RPOT_D3/ffi_RPOT_D3.hh"     // Far-forward Ion   - RomanPots system
+
+//---------Beam lattice ----------
+//#include "ir_Lattice/ir_Lattice.hh"         // IR Lattice import from file
+#include "ir_Lattice/QuadrupoleMagnet.hh"     // New IR Lattice import from file
+#include "ir_Lattice/AcceleratorMagnets.hh"   // New IR Lattice import from file
+#include "ir_Beampipe/ir_Beampipe.hh"         // IR Lattice import from file
+
+
+class JLeicCalorimeterSD;
+
+class JLeicVertexSD;
 
 
 class JLeicDetectorConstruction : public G4VUserDetectorConstruction
@@ -59,7 +101,7 @@ public:
     bool USE_CB_VTX = true;
     bool USE_CB_VTX_LADDERS = true;
     bool USE_CB_VTX_ENDCAPS = false;  // for vxt endcaps ladders
-    bool USE_CB_SiDISCS  = true;  // for vxt discs along beampipe
+    bool  USE_CB_SiDISCS  = true;  // for vxt discs along beampipe
     //bool USE_VTX_E 1   // for vxt endcaps 
 
     bool USE_CB_CTD = true;

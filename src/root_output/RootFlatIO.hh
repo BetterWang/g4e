@@ -32,13 +32,14 @@ namespace g4e
             mEventTree = eventTree;
 
             mEventTree->Branch("event_id", &mEventId, "event_id/l");
-            mEventTree->Branch("evt_true_q2",      &mEventInfo.TrueDISInfo.Q2,      "evt_true_q2/D");
-            mEventTree->Branch("evt_true_x",       &mEventInfo.TrueDISInfo.x ,      "evt_true_x/D");
-            mEventTree->Branch("evt_true_y",       &mEventInfo.TrueDISInfo.y ,      "evt_true_y/D");
-            mEventTree->Branch("evt_true_w2",      &mEventInfo.TrueDISInfo.w2,      "evt_true_w2/D");
-            mEventTree->Branch("evt_true_nu",      &mEventInfo.TrueDISInfo.nu,      "evt_true_nu/D");
-            mEventTree->Branch("evt_has_dis_info", &mEventInfo.HasTrueDISInfo, "evt_has_dis_info/B");
-            mEventTree->Branch("evt_weight",       &mEventInfo.Weight,       "evt_weight/D");
+            mEventTree->Branch("evt_true_q2",      &mEventInfo.TrueDISInfo.Q2,   "evt_true_q2/D");
+            mEventTree->Branch("evt_true_x",       &mEventInfo.TrueDISInfo.x ,   "evt_true_x/D");
+            mEventTree->Branch("evt_true_y",       &mEventInfo.TrueDISInfo.y ,   "evt_true_y/D");
+            mEventTree->Branch("evt_true_w2",      &mEventInfo.TrueDISInfo.w2,   "evt_true_w2/D");
+            mEventTree->Branch("evt_true_nu",      &mEventInfo.TrueDISInfo.nu,   "evt_true_nu/D");
+            mEventTree->Branch("evt_true_t_hat",   &mEventInfo.TrueDISInfo.tHat, "evt_true_t_hat/D");
+            mEventTree->Branch("evt_has_dis_info", &mEventInfo.HasTrueDISInfo,   "evt_has_dis_info/B");
+            mEventTree->Branch("evt_weight",       &mEventInfo.Weight,           "evt_weight/D");
 
 
             mHitIo.BindToTree(mEventTree);          // Bind/create branches for hits

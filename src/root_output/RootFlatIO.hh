@@ -18,6 +18,7 @@
 #include "FlatIoParticle.hh"
 #include "FlatIoTrack.hh"
 #include "FlatIoVertex.hh"
+#include "FlatIoCe_EMCAL.hh"
 
 
 namespace g4e
@@ -46,6 +47,7 @@ namespace g4e
             mTrackIo.BindToTree(mEventTree);        // Bind/create branches for tracks
             mParticleIo.BindToTree(mEventTree);     // Bind/create branches for primary particles
             mPrimeVertexIo.BindToTree(mEventTree);  // Bind/create branches for primary vertexes
+            mCe_EMCALIo.BindToTree(mEventTree);      // Bind/create branches for Ce_EMCAL
         }
 
         void ClearForNewEvent()
@@ -56,6 +58,7 @@ namespace g4e
             mParticleIo.Clear();
             mPrimeVertexIo.Clear();
             trk_index_by_id.clear();
+            mCe_EMCALIo.Clear();
         }
 
         void AddHit(
@@ -177,6 +180,31 @@ namespace g4e
             mParticleIo.ParticleCount = mParticleIo.IdVect.size();
         }
 
+        void AddCe_EMCAL(
+                     std::string aName,
+                     double aEtot_dep,
+  				   int aNpe,
+                     double aADC,
+                     double aTDC,
+                  //   std::vector<double> awaveform,
+                   //  std::vector<double> awaveform_time,
+  				   double axcrs,
+  				   double aycrs,
+  				   double azcrs){
+
+            mCe_EMCALIo.Name.push_back(aName);
+            mCe_EMCALIo.Etot_dep.push_back(aEtot_dep);
+            mCe_EMCALIo.Npe.push_back(aNpe);
+            mCe_EMCALIo.ADC.push_back(aADC);
+            mCe_EMCALIo.TDC.push_back(aTDC);
+       //    mCe_EMCALIo.waveform.push_back(awaveform);
+         //  mCe_EMCALIo.waveform_time.push_back(awaveform_time);
+           mCe_EMCALIo.xcrs.push_back(axcrs);
+           mCe_EMCALIo.ycrs.push_back(aycrs);
+           mCe_EMCALIo.zcrs.push_back(azcrs);
+
+                     }
+
         void FillEvent(const G4Event *evt)
         {
             std::lock_guard<std::recursive_mutex> lk(io_mutex);
@@ -220,6 +248,7 @@ namespace g4e
         g4e::VertexIo mPrimeVertexIo;
         g4e::ParticleIo mParticleIo;
         g4e::EventData mEventInfo;
+        g4e::Ce_EMCALIo mCe_EMCALIo;
     };
 }
 

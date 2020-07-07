@@ -77,6 +77,7 @@
 
 
 class JLeicCalorimeterSD;
+class JLeicCe_emcalSD;
 
 class JLeicVertexSD;
 
@@ -325,6 +326,7 @@ private:
     JLeicDetectorMessenger *fDetectorMessenger;
     JLeicCalorimeterSD *fCalorimeterSD;
     JLeicVertexSD *fVertexSD;
+    JLeicCe_emcalSD *fCe_emcalSD;
     G4VPhysicalVolume *fPhysicsAbsorber;
     AcceleratorMagnets* fElectronLineMagnets;
     AcceleratorMagnets* fIonLineMagnets;

@@ -3,6 +3,7 @@
 #include "JLeicDetectorConstruction.hh"
 #include "JLeicCalorimeterSD.hh"
 #include "JLeicVertexSD.hh"
+#include "JLeicCe_emcalSD.hh"
 
 #include "G4SDManager.hh"
 #include "G4GeometryManager.hh"
@@ -175,6 +176,11 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     if (!fVertexSD) {
         fVertexSD = new JLeicVertexSD("VertexSD", fInitContext->RootManager, this);
         SDman->AddNewDetector(fVertexSD);
+    }
+
+    if (!fCe_emcalSD) {
+        fCe_emcalSD = new JLeicCe_emcalSD("Ce_emcalSD", fInitContext->RootManager, this);
+        SDman->AddNewDetector(fCe_emcalSD);
     }
 
     //=========================================================================
@@ -394,9 +400,9 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 
             ce_EMCAL.Construct(fConfig.ce_EMCAL, World_Material, ce_ENDCAP_GVol_Phys);
             ce_EMCAL.ConstructCrystals(); // --- inner detector with Crystals
-            ce_EMCAL.ce_EMCAL_detPWO_Logic->SetSensitiveDetector(fCalorimeterSD);
+            ce_EMCAL.ce_EMCAL_detPWO_Logic->SetSensitiveDetector(fCe_emcalSD);
             ce_EMCAL.ConstructGlass();    // --- outer part with Glass
-            ce_EMCAL.ce_EMCAL_detGLASS_Logic->SetSensitiveDetector(fCalorimeterSD);
+            ce_EMCAL.ce_EMCAL_detGLASS_Logic->SetSensitiveDetector(fCe_emcalSD);
         }
 
     } //------------------end USE_E_ENDCAP -----------------------------------------------

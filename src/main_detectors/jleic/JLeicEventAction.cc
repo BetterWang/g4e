@@ -30,6 +30,10 @@
 
 #include "main_detectors/jleic/JLeicCalorimeterHit.hh"
 #include "main_detectors/jleic/JLeicVTXHit.hh"
+
+#include "JLeicCe_emcalDigiHit.hh"
+#include "JLeicCe_emcalHit.hh"
+
 #include "JLeicHistogramManager.hh"
 
 #include "G4Event.hh"
@@ -47,6 +51,7 @@
 JLeicEventAction::JLeicEventAction(g4e::RootFlatIO *rootOutput, JLeicHistogramManager *histos)
         : calorimeterCollID(-1),
           vertexCollID(-1),
+		  Ce_emcalCollID(-1),
           fHistos(histos),
           fVerbose(0),
           fPrintModulo(10),
@@ -78,6 +83,11 @@ void JLeicEventAction::BeginOfEventAction(const G4Event *evt) {
     if (vertexCollID == -1) {
         G4SDManager *SDman = G4SDManager::GetSDMpointer();
         vertexCollID = SDman->GetCollectionID("VTXCollection");
+    }
+
+    if (Ce_emcalCollID == -1) {
+        G4SDManager *SDman = G4SDManager::GetSDMpointer();
+        Ce_emcalCollID = SDman->GetCollectionID("Ce_emcalCollection");
     }
 
     nstep = 0.;
@@ -133,10 +143,53 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
     G4HCofThisEvent *hitCollectionEvnt = evt->GetHCofThisEvent();
 
     JLeicCalorHitsCollection *hitCollectionCalo = nullptr;
+    JLeicCe_emcalHitsCollection *hitCollectionCe_emcal = nullptr;
+
     G4HCofThisEvent* HCE = evt->GetHCofThisEvent();
     if(HCE) {
         hitCollectionCalo = (JLeicCalorHitsCollection *) (HCE->GetHC(calorimeterCollID));
+        hitCollectionCe_emcal = (JLeicCe_emcalHitsCollection*)(HCE->GetHC(Ce_emcalCollID));
     }
+
+
+    if (hitCollectionCe_emcal) {
+
+
+
+   JLeicCe_emcalHit *aHit ;
+   JLeicCe_emcalDigiHit *dHit ;
+   int nhitC = hitCollectionCe_emcal->GetSize();
+
+   if(!nhitC) return;
+
+       for (int i=0; i<nhitC; i++){
+
+       aHit = (*hitCollectionCe_emcal)[i];
+           JLeicCe_emcalDigiHit *dHit2=dHit->JLeicCe_emcalDigi(aHit);
+
+
+       string name_det = dHit2->GetDetName();
+       double Etot_crs = dHit2->GetEdep() ;
+       int Npe = dHit2->GetNpe() ;
+       double ADC_crs = dHit2->GetADC() ;
+       double TDCL_crs = dHit2->GetTDC();
+
+
+       double Xxcrs = aHit->GetX_crs();
+       double Yycrs = aHit->GetY_crs();
+       double Zzcrs = aHit->GetZ_crs();
+
+
+     if(Etot_crs>0) mRootEventsOut->AddCe_EMCAL(name_det,Etot_crs,Npe,ADC_crs,TDCL_crs,Xxcrs,Yycrs, Zzcrs);
+
+       }
+
+
+
+    }
+
+
+
 
     if (hitCollectionCalo) {
         int n_hit = hitCollectionCalo->entries();

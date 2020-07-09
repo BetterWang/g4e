@@ -24,7 +24,7 @@
 // ********************************************************************
 //
 //
-// $Id: JLeicEventAction.hh,v 1.3 2006-06-29 16:37:51 gunter Exp $
+// $Id: JLeicCalorimeterSD.hh,v 1.3 2006-06-29 16:37:43 gunter Exp $
 // GEANT4 tag $Name: geant4-09-04-patch-01 $
 //
 // 
@@ -32,58 +32,59 @@
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-#ifndef JLeicEventAction_h
-#define JLeicEventAction_h 1
+#ifndef JLeicCe_emcalSD_h
+#define JLeicCe_emcalSD_h 1
 
-#include "G4UserEventAction.hh"
+#include "G4VSensitiveDetector.hh"
 #include "globals.hh"
+
+#include "G4HCofThisEvent.hh"
+#include "G4Step.hh"
+
+#include "JLeicDetectorConstruction.hh"
 #include "RootFlatIO.hh"
-#include <G4GenericMessenger.hh>
+
+#include "JLeicCe_emcalHit.hh"
+#include "JLeicRunAction.hh"
+#include "G4RunManager.hh"
+
+#include "root_output/RootFlatIO.hh"
 
 
-class JLeicHistogramManager;
 
+//....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo....
 
-class JLeicEventAction : public G4UserEventAction
+class JLeicCe_emcalSD : public G4VSensitiveDetector
 {
 public:
-    JLeicEventAction(g4e::RootFlatIO *, JLeicHistogramManager*);
 
-    ~JLeicEventAction() = default;
+    JLeicCe_emcalSD(G4String, g4e::RootOutputManager*, JLeicDetectorConstruction *);
 
-public:
-    void BeginOfEventAction(const G4Event *) override;
+    ~JLeicCe_emcalSD() override;
 
-    void EndOfEventAction(const G4Event *) override;
+    void Initialize(G4HCofThisEvent *) override;
 
-    void SetVerbose(G4int level) { fVerbose = level; }    /// 0 = nothing, 1 = some, 2 = debug
-    G4int GetVerbose() { return fVerbose; }                /// 0 = nothing, 1 = some, 2 = debug
+    G4bool ProcessHits(G4Step *, G4TouchableHistory *) override;
 
+    void EndOfEvent(G4HCofThisEvent *) override;
 
-    void SetPrintModulo(G4int val) { fPrintModulo = val; }
-    G4int GetPrintModulo() { return fPrintModulo; }
+    void clear() override;
 
-    //----- EVENT STRUCTURE -----
-    g4e::RootFlatIO *mRootEventsOut = nullptr;
+    void PrintAll() override;
+
+    JLeicCe_emcalHit *find_existing_hit(string);
+   //  g4e::RootFlatIO *mRootEventsOut2 = nullptr;
 
 private:
-    G4int calorimeterCollID;
-    G4int vertexCollID;
-    G4int Ce_emcalCollID;
-    JLeicHistogramManager* fHistos;
+ //  int             HCID;                   ///< HCID increases every new hit collection.
+    JLeicCe_emcalHitsCollection *Ce_emcalCollection;
+    JLeicDetectorConstruction *Detector;
+    uint_fast64_t mHitsCount = 0;
+    g4e::RootOutputManager* mRootEventsOut = nullptr;
 
 
-    G4int fVerbose;
-    G4double nstep, nstepCharged, nstepNeutral;
-    G4double Nch, Nne, GamDE;
-    G4double NE, NP;
-    G4double Transmitted, Reflected;
 
-    G4String drawFlag;
-    G4int fPrintModulo;
-    G4GenericMessenger fMessenger;
+    static const uint_fast32_t mVerbose = 0;    // verbosity. 0=none, 1=some, 2=many, 3=all
 };
 
 #endif
-
-    

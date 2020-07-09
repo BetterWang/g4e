@@ -5,6 +5,15 @@ target_sources_local(g4e
 
             JLeicCalorimeterSD.cc
             JLeicCalorimeterSD.hh
+            
+            JLeicCe_emcalSD.cc
+            JLeicCe_emcalSD.hh
+            
+            JLeicCe_emcalHit.cc
+            JLeicCe_emcalHit.hh
+            
+            JLeicCe_emcalDigiHit.hh
+            JLeicCe_emcalDigiHit.cc
 
             JLeicDetectorConfig.hh
 

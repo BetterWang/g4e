@@ -181,11 +181,11 @@ namespace g4e
         }
 
         void AddCe_EMCAL(
-                     std::string aName,
-                     double aEtot_dep,
+                   const std::string& aName,
+                   double aEtot_dep,
   				   int aNpe,
-                     double aADC,
-                     double aTDC,
+                   double aADC,
+                   double aTDC,
                   //   std::vector<double> awaveform,
                    //  std::vector<double> awaveform_time,
   				   double axcrs,

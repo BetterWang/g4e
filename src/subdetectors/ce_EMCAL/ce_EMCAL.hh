@@ -11,7 +11,7 @@
 #include "G4Material.hh"
 #include "G4Color.hh"
 #include "G4VisAttributes.hh"
-
+#include <spdlog/spdlog.h>
 #include "JLeicDetectorConfig.hh"
 
 struct ce_EMCAL_Config
@@ -22,6 +22,22 @@ struct ce_EMCAL_Config
     double Thickness = 40 * cm;
     //double SizeZ;
     double PosZ;
+
+    //............... EMCAL Crystals modules ......................
+    double PWO_Thickness = 20. * cm;
+    double PWO_Width = 2. * cm;
+    double PWO_Gap = 0.01 * mm;
+    double PWO_InnerR = 15. * cm;
+    double PWO_OuterR = 82 * cm;
+    double PWO_PosZ;
+
+    //............... EMCAL Glass modules ......................
+    double Glass_Thickness = 40. * cm;
+    double Glass_Width = 4. * cm;
+    double Glass_Gap = 0.01 * mm;
+    double Glass_InnerR;
+    double Glass_OuterR;
+    double Glass_PosZ;
 };
 
 
@@ -49,22 +65,16 @@ public:
 
     }
 
+    /// CE EMCAL module Crystals
     inline void ConstructCrystals()
     {
         static char abname[256];
         auto cfg = ConstructionConfig;
 
-        //------------------------------------------------------------------
-        // Ecal module Crystals
-        //-------------------------------------------------------------------
-
-        ce_EMCAL_detPWO_Thickness = 30. * cm;
-        ce_EMCAL_detPWO_ROut = 82 * cm;
-        ce_EMCAL_detPWO_Width = 2. * cm;
-        ce_EMCAL_detPWO_Gap = 0.01 * mm;
+        cfg.PWO_PosZ = cfg.Thickness / 2 - cfg.PWO_Thickness / 2;
 
         ce_EMCAL_detPWO_Material = fMat->GetMaterial("PbWO4");
-        ce_EMCAL_detPWO_Solid = new G4Box("ce_EMCAL_detPWO_Solid", ce_EMCAL_detPWO_Width * 0.5, ce_EMCAL_detPWO_Width * 0.5, ce_EMCAL_detPWO_Thickness * 0.5);
+        ce_EMCAL_detPWO_Solid = new G4Box("ce_EMCAL_detPWO_Solid", cfg.PWO_Width * 0.5, cfg.PWO_Width * 0.5, cfg.PWO_Thickness * 0.5);
         ce_EMCAL_detPWO_Logic = new G4LogicalVolume(ce_EMCAL_detPWO_Solid, ce_EMCAL_detPWO_Material, "ce_EMCAL_detPWO_Logic");
 
         attr_ce_EMCAL_detPWO = new G4VisAttributes(G4Color(0.1, 1.0, 0.9, 1.));
@@ -73,49 +83,60 @@ public:
         ce_EMCAL_detPWO_Logic->SetVisAttributes(attr_ce_EMCAL_detPWO);
 
         // Crystals
-        ce_EMCAL_detPWO_InnerR = 15. * cm;
-        G4double y_C = 0;
-        G4double x_C;
-        ce_EMCAL_detPWO_PosZ = cfg.Thickness / 2 - ce_EMCAL_detPWO_Thickness / 2;
+        double y_C = 0;
+        double x_C;
         G4int k = -1;
+
+        fmt::print("\nCE EMCAL PWO START\n");
+        fmt::print("PWO_Thickness = {} cm;\n", cfg.PWO_Thickness / cm);
+        fmt::print("PWO_Width     = {} cm;\n", cfg.PWO_Width / cm);
+        fmt::print("PWO_Gap       = {} cm;\n", cfg.PWO_Gap / cm);
+        fmt::print("PWO_InnerR    = {} cm;\n", cfg.PWO_InnerR / cm);
+        fmt::print("PWO_OuterR    = {} cm;\n", cfg.PWO_OuterR / cm);
+        fmt::print("PWO_PosZ      = {} cm;\n", cfg.PWO_PosZ / cm);
 
         //============  For sectors =====
         for (int j = 0; j < 50; j++) {
-            if (j == 0) { y_C = ce_EMCAL_detPWO_Gap; }
-            else { y_C -= ce_EMCAL_detPWO_Width + ce_EMCAL_detPWO_Gap; };
-
-
-            x_C = (ce_EMCAL_detPWO_Width + ce_EMCAL_detPWO_Gap) * 0.5;
+            y_C = j==0 ? cfg.PWO_Gap : y_C - cfg.PWO_Width + cfg.PWO_Gap;
+            x_C = (cfg.PWO_Width + cfg.PWO_Gap) * 0.5;
 
             for (int i = 0; i < 50; i++) {
                 double R = sqrt(x_C * x_C + y_C * y_C);
 
                 //   printf("EMCALLL::k=%d  j=%d i =%d x=%f, y=%f  R=%f ce_EMCAL_detPWO_InnerR=%f \n ",k, j,i, x_C,y_C, R, ce_EMCAL_detPWO_InnerR);
+                if (R < cfg.PWO_OuterR - cfg.PWO_Width + cfg.PWO_Gap && R > cfg.PWO_InnerR) {
 
-
-                if (R < ce_EMCAL_detPWO_ROut - ce_EMCAL_detPWO_Width + ce_EMCAL_detPWO_Gap && R > ce_EMCAL_detPWO_InnerR) {
+                    double x,y;
+                    k++;
+                    sprintf(abname, "ce_EMCAL_detPWO_Phys_%d", k);
+                    x=x_C; y=y_C;
+                    new G4PVPlacement(nullptr, G4ThreeVector(x, y, cfg.PWO_PosZ), abname, ce_EMCAL_detPWO_Logic, Phys, false, k);
+                    fmt::print("({:<10}, {:<10}, {:<10}, {:<10.4f}, {:<10.4f}, '{}'),\n", k, i, j, x / cm, y / cm, abname);
 
                     k++;
                     sprintf(abname, "ce_EMCAL_detPWO_Phys_%d", k);
-                    new G4PVPlacement(0, G4ThreeVector(x_C, y_C, ce_EMCAL_detPWO_PosZ), abname, ce_EMCAL_detPWO_Logic, Phys, false, k);
-                    k++;
-                    sprintf(abname, "ce_EMCAL_detPWO_Phys_%d", k);
-                    new G4PVPlacement(0, G4ThreeVector(-x_C, y_C, ce_EMCAL_detPWO_PosZ), abname, ce_EMCAL_detPWO_Logic, Phys, false, k);
+                    x=-x_C; y=y_C;
+                    new G4PVPlacement(nullptr, G4ThreeVector(x, y, cfg.PWO_PosZ), abname, ce_EMCAL_detPWO_Logic, Phys, false, k);
+                    fmt::print("({:<10}, {:<10}, {:<10}, {:<10.4f}, {:<10.4f}, '{}'),\n", k, i, j, x / cm, y / cm, abname);
 
                     k++;
                     sprintf(abname, "ce_EMCAL_detPWO_Phys_%d", k);
-                    new G4PVPlacement(0, G4ThreeVector(x_C, -y_C, ce_EMCAL_detPWO_PosZ), abname, ce_EMCAL_detPWO_Logic, Phys, false, k);
+                    x=x_C; y=-y_C;
+                    new G4PVPlacement(nullptr, G4ThreeVector(x, y, cfg.PWO_PosZ), abname, ce_EMCAL_detPWO_Logic, Phys, false, k);
+                    fmt::print("({:<10}, {:<10}, {:<10}, {:<10.4f}, {:<10.4f}, '{}'),\n", k, i, j, x / cm, y / cm, abname);
 
                     k++;
                     sprintf(abname, "ce_EMCAL_detPWO_Phys_%d", k);
-                    new G4PVPlacement(0, G4ThreeVector(-x_C, -y_C, ce_EMCAL_detPWO_PosZ), abname, ce_EMCAL_detPWO_Logic, Phys, false, k);
+                    x=-x_C; y=-y_C;
+                    new G4PVPlacement(nullptr, G4ThreeVector(x, y, cfg.PWO_PosZ), abname, ce_EMCAL_detPWO_Logic, Phys, false, k);
+                    fmt::print("({:<10}, {:<10}, {:<10}, {:<10.4f}, {:<10.4f}, '{}'),\n", k, i, j, x / cm, y / cm, abname);
                     //  printf("ce_EMCAL_detPWO::k=%d  j=%d i =%d x=%f, y=%f  R=%f ce_EMCAL_detPWO_InnerR=%f \n ",k, j,i, x_C,y_C, R, ce_EMCAL_detPWO_InnerR);
 
                 }
-                x_C += ce_EMCAL_detPWO_Width + ce_EMCAL_detPWO_Gap;
-
+                x_C += cfg.PWO_Width + cfg.PWO_Gap;
             }
         }
+        fmt::print("CE EMCAL PWO END\n\n");
     }
 
 
@@ -127,17 +148,13 @@ public:
         //------------------------------------------------------------------
         // Ecal module GLASS
         //-------------------------------------------------------------------
-
-        ce_EMCAL_detGLASS_Thickness = 40. * cm;
-        ce_EMCAL_detGLASS_OuterR = cfg.ROut;
-
-        ce_EMCAL_detGLASS_Width = 4. * cm;
-        ce_EMCAL_detGLASS_Gap = 0.01 * mm;
-
+        cfg.Glass_OuterR = cfg.ROut - 1 * cm ;
+        cfg.Glass_InnerR = cfg.PWO_OuterR + 3 * cm;
+        cfg.Glass_PosZ = cfg.Thickness / 2. - cfg.Glass_Thickness / 2.;
 
         ce_EMCAL_detGLASS_Material = fMat->GetMaterial("DSBCe");
         //   ce_EMCAL_det_Material = fMat->GetMaterial("PbWO4");
-        ce_EMCAL_detGLASS_Solid = new G4Box("ce_EMCAL_detGLASS_Solid", ce_EMCAL_detGLASS_Width * 0.5, ce_EMCAL_detGLASS_Width * 0.5, ce_EMCAL_detGLASS_Thickness * 0.5);
+        ce_EMCAL_detGLASS_Solid = new G4Box("ce_EMCAL_detGLASS_Solid", cfg.Glass_Width * 0.5, cfg.Glass_Width * 0.5, cfg.Glass_Thickness * 0.5);
         ce_EMCAL_detGLASS_Logic = new G4LogicalVolume(ce_EMCAL_detGLASS_Solid, ce_EMCAL_detGLASS_Material, "ce_EMCAL_detGLASS_Logic");
 
         attr_ce_EMCAL_detGLASS = new G4VisAttributes(G4Color(0.3, 0.4, 1., 0.5));
@@ -146,51 +163,61 @@ public:
         ce_EMCAL_detGLASS_Logic->SetVisAttributes(attr_ce_EMCAL_detGLASS);
 
         // GLASS
-
-
-        ce_EMCAL_detGLASS_InnerR = ce_EMCAL_detPWO_ROut + 3 * cm;
         double y_C = 0;
         double x_C = 0.;
-        ce_EMCAL_detGLASS_PosZ = cfg.Thickness / 2. - ce_EMCAL_detGLASS_Thickness / 2.;
         int k = -1;
+
+        fmt::print("\nCE EMCAL GLASS START\n");
+        fmt::print("Glass_Thickness = {} cm;\n", cfg.Glass_Thickness / cm);
+        fmt::print("Glass_Width     = {} cm;\n", cfg.Glass_Width / cm);
+        fmt::print("Glass_Gap       = {} cm;\n", cfg.Glass_Gap / cm);
+        fmt::print("Glass_InnerR    = {} cm;\n", cfg.Glass_InnerR / cm);
+        fmt::print("Glass_OuterR    = {} cm;\n", cfg.Glass_OuterR / cm);
+        fmt::print("Glass_PosZ      = {} cm;\n", cfg.Glass_PosZ / cm);
 
         //============  For sectors =====
         for (int j = 0; j < 50; j++) {
-            if (j == 0) { y_C = ce_EMCAL_detGLASS_Gap; }
-            else { y_C -= ce_EMCAL_detGLASS_Width + ce_EMCAL_detGLASS_Gap; }
-            x_C = (ce_EMCAL_detGLASS_Width + ce_EMCAL_detGLASS_Gap) * 0.5;
+            if (j == 0) { y_C = cfg.Glass_Gap; }
+            else { y_C -= cfg.Glass_Width + cfg.Glass_Gap; }
+            x_C = (cfg.Glass_Width + cfg.Glass_Gap) * 0.5;
 
             for (int i = 0; i < 50; i++) {
                 double R = sqrt(x_C * x_C + y_C * y_C);
 
                 //   printf("EMCALLL::k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ",k, j,i, x_C,y_C, R, R0);
 
-
-                if (R < cfg.ROut - 1 * cm - ce_EMCAL_detGLASS_Width + ce_EMCAL_detGLASS_Gap && R > ce_EMCAL_detGLASS_InnerR) {
-                    // printf("ce_EMCAL_detGLASS::GLASS k=%d  j=%d i =%d x=%f, y=%f  R=%f R0=%f \n ",k, j,i, x_C,y_C, R, ce_EMCAL_detPWO_InnerR);
-
+                if (R < cfg.Glass_OuterR - cfg.Glass_Width + cfg.Glass_Gap && R > cfg.Glass_InnerR) {
+                    double x,y;
+                    k++;
+                    sprintf(abname, "ce_EMCAL_detPWO_Phys_%d", k);
+                    x=x_C; y=y_C;
+                    new G4PVPlacement(nullptr, G4ThreeVector(x, y, cfg.Glass_PosZ), abname, ce_EMCAL_detGLASS_Logic, Phys, false, k);
+                    fmt::print("{:<10} {:<10} {:<10} {:<10.4f} {:<10.4f} {}\n", k, i, j, x / cm, y / cm, abname);
 
                     k++;
-                    sprintf(abname, "ce_EMCAL_detGLASS_Phys_%d", k);
-                    new G4PVPlacement(nullptr, G4ThreeVector(x_C, y_C, ce_EMCAL_detGLASS_PosZ), abname, ce_EMCAL_detGLASS_Logic, Phys, false, k);
-                    k++;
-                    sprintf(abname, "ce_EMCAL_detGLASS_Phys_%d", k);
-                    new G4PVPlacement(nullptr, G4ThreeVector(-x_C, y_C, ce_EMCAL_detGLASS_PosZ), abname, ce_EMCAL_detGLASS_Logic, Phys, false, k);
+                    sprintf(abname, "ce_EMCAL_detPWO_Phys_%d", k);
+                    x=-x_C; y=y_C;
+                    new G4PVPlacement(nullptr, G4ThreeVector(x, y, cfg.Glass_PosZ), abname, ce_EMCAL_detGLASS_Logic, Phys, false, k);
+                    fmt::print("{:<10} {:<10} {:<10} {:<10.4f} {:<10.4f} {}\n", k, i, j, x / cm, y / cm, abname);
 
                     k++;
-                    sprintf(abname, "ce_EMCAL_detGLASS_Phys_%d", k);
-                    new G4PVPlacement(nullptr, G4ThreeVector(x_C, -y_C, ce_EMCAL_detGLASS_PosZ), abname, ce_EMCAL_detGLASS_Logic, Phys, false, k);
+                    sprintf(abname, "ce_EMCAL_detPWO_Phys_%d", k);
+                    x=x_C; y=-y_C;
+                    new G4PVPlacement(nullptr, G4ThreeVector(x, y, cfg.Glass_PosZ), abname, ce_EMCAL_detGLASS_Logic, Phys, false, k);
+                    fmt::print("{:<10} {:<10} {:<10} {:<10.4f} {:<10.4f} {}\n", k, i, j, x / cm, y / cm, abname);
 
                     k++;
-                    sprintf(abname, "ce_EMCAL_detGLASS_Phys_%d", k);
-                    new G4PVPlacement(nullptr, G4ThreeVector(-x_C, -y_C, ce_EMCAL_detGLASS_PosZ), abname, ce_EMCAL_detGLASS_Logic, Phys, false, k);
+                    sprintf(abname, "ce_EMCAL_detPWO_Phys_%d", k);
+                    x=-x_C; y=-y_C;
+                    new G4PVPlacement(nullptr, G4ThreeVector(x, y, cfg.Glass_PosZ), abname, ce_EMCAL_detGLASS_Logic, Phys, false, k);
+                    fmt::print("{:<10} {:<10} {:<10} {:<10.4f} {:<10.4f} {}\n", k, i, j, x / cm, y / cm, abname);
                 }
-                x_C += ce_EMCAL_detGLASS_Width + ce_EMCAL_detGLASS_Gap;
+                x_C += cfg.Glass_Width + cfg.Glass_Gap;
 
             }
         }
 
-
+        fmt::print("CE EMCAL GLASS END\n\n");
     }
 
     G4Tubs *Solid;      //pointer to the solid
@@ -215,35 +242,15 @@ public:
 
 private:
     g4e::Materials *fMat;
-    G4double ce_EMCAL_det_RIn;
-    G4double ce_EMCAL_det_ROut;
-    G4double ce_EMCAL_det_SizeZ;
+    double ce_EMCAL_det_RIn;
+    double ce_EMCAL_det_ROut;
+    double ce_EMCAL_det_SizeZ;
     G4Material *ce_EMCAL_det_Material;
     G4VisAttributes *attr_ce_EMCAL;
     // G4Tubs*            cb_EMCAL_det_Solid;    //pointer to the solid World
     G4Polycone *ce_EMCAL_det_Solid;    //pointer to the solid World
     G4LogicalVolume *ce_EMCAL_det_Logic;    //pointer to the logical World
     G4VPhysicalVolume *ce_EMCAL_det_Phys;    //pointer to the physical World
-
-
-    //............... EMCAL Crystals modules ......................
-    double ce_EMCAL_detPWO_Thickness;
-    double ce_EMCAL_detPWO_Width;
-    double ce_EMCAL_detPWO_ROut;
-    G4double ce_EMCAL_detPWO_Gap;
-    G4double ce_EMCAL_detPWO_InnerR;
-    G4double ce_EMCAL_detPWO_PosZ;
-
-
-    //............... EMCAL Glass modules ......................
-    G4double ce_EMCAL_detGLASS_InnerR;
-    G4double ce_EMCAL_detGLASS_Thickness;
-    G4double ce_EMCAL_detGLASS_OuterR;
-    G4double ce_EMCAL_detGLASS_PosZ;
-    G4double ce_EMCAL_detGLASS_Width;
-    double ce_EMCAL_detGLASS_Gap;
-
-
 };
 
 #endif //G4E_CE_EMCAL_HH

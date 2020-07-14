@@ -47,24 +47,18 @@
 #include <G4Trajectory.hh>
 
 
-
-JLeicEventAction::JLeicEventAction(g4e::RootFlatIO *rootOutput, JLeicHistogramManager *histos)
-        : calorimeterCollID(-1),
-          vertexCollID(-1),
-		  Ce_emcalCollID(-1),
-          fHistos(histos),
-          fVerbose(0),
-          fPrintModulo(10),
-          fMessenger(this, "/jleic/eventAction/")
+JLeicEventAction::JLeicEventAction(g4e::RootFlatIO *rootOutput, JLeicHistogramManager *histos) : calorimeterCollID(-1), vertexCollID(-1), Ce_emcalCollID(-1), fHistos(histos),
+                                                                                                 fVerbose(0), fPrintModulo(10), fMessenger(this, "/jleic/eventAction/")
 {
-    mRootEventsOut=rootOutput;
+    mRootEventsOut = rootOutput;
 
     //messenger for detectors and components
     fMessenger.DeclareProperty("verbose", fVerbose, "Sets verbosity. 0=nothing, 1=some, 2=all");
     fMessenger.DeclareProperty("printModulo", fPrintModulo);
 }
 
-void JLeicEventAction::BeginOfEventAction(const G4Event *evt) {
+void JLeicEventAction::BeginOfEventAction(const G4Event *evt)
+{
     G4int eventId = evt->GetEventID();
 
     mRootEventsOut->ClearForNewEvent();
@@ -109,14 +103,14 @@ void JLeicEventAction::BeginOfEventAction(const G4Event *evt) {
         G4cout << "JLeicEventAction:: Event START " << evt->GetEventID() << G4endl;
         G4cout << "  |  GetNumberOfGrips          " << evt->GetNumberOfGrips() << G4endl;
         G4cout << "  |  GetNumberOfPrimaryVertex  " << evt->GetNumberOfPrimaryVertex() << G4endl;
-        G4cout << "  +-+    " <<  G4endl;
-        for(int vtxIndex=0; vtxIndex < evt->GetNumberOfPrimaryVertex(); vtxIndex++) {
+        G4cout << "  +-+    " << G4endl;
+        for (int vtxIndex = 0; vtxIndex < evt->GetNumberOfPrimaryVertex(); vtxIndex++) {
             auto vtx = evt->GetPrimaryVertex(vtxIndex);
             fmt::print("   | VertexID: {}\n", vtxIndex);
             fmt::print("   | x: {:<10} y: {:<10} z: {:<10}\n", vtx->GetX0(), vtx->GetY0(), vtx->GetZ0());
             fmt::print("   | GetNumberOfParticle {}\n", vtx->GetNumberOfParticle());
             fmt::print("   +-+\n");
-            for(int prtIndex=0; prtIndex < vtx->GetNumberOfParticle(); prtIndex++) {
+            for (int prtIndex = 0; prtIndex < vtx->GetNumberOfParticle(); prtIndex++) {
                 auto particle = vtx->GetPrimary(prtIndex);
                 fmt::print("     | ID{:<10} trkId: {:<10}\n", prtIndex, particle->GetTrackID(), particle->GetTotalMomentum());
             }
@@ -125,11 +119,11 @@ void JLeicEventAction::BeginOfEventAction(const G4Event *evt) {
 }
 
 
-
-void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
-  static std::atomic<std::uint64_t> totalEventCounter(0);
+void JLeicEventAction::EndOfEventAction(const G4Event *evt)
+{
+    static std::atomic<std::uint64_t> totalEventCounter(0);
     totalEventCounter++;
-    fmt::print("Events processed: {} \n", (uint64_t)totalEventCounter);
+    fmt::print("Events processed: {} \n", (uint64_t) totalEventCounter);
 
 //    for(auto trajectory: *evt->GetTrajectoryContainer()->GetVector()) {
 //        fmt::print("\ntrajectory start:\n");
@@ -145,57 +139,48 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
     JLeicCalorHitsCollection *hitCollectionCalo = nullptr;
     JLeicCe_emcalHitsCollection *hitCollectionCe_emcal = nullptr;
 
-    G4HCofThisEvent* HCE = evt->GetHCofThisEvent();
-    if(HCE) {
+    G4HCofThisEvent *HCE = evt->GetHCofThisEvent();
+    if (HCE) {
         hitCollectionCalo = (JLeicCalorHitsCollection *) (HCE->GetHC(calorimeterCollID));
-        hitCollectionCe_emcal = (JLeicCe_emcalHitsCollection*)(HCE->GetHC(Ce_emcalCollID));
+        hitCollectionCe_emcal = (JLeicCe_emcalHitsCollection *) (HCE->GetHC(Ce_emcalCollID));
     }
 
 
     if (hitCollectionCe_emcal) {
+        JLeicCe_emcalHit *aHit;
+        JLeicCe_emcalDigiHit *dHit;
+        int nhitC = hitCollectionCe_emcal->GetSize();
+
+        if (!nhitC) return;
+
+        for (int i = 0; i < nhitC; i++) {
+
+            aHit = (*hitCollectionCe_emcal)[i];
+            JLeicCe_emcalDigiHit *dHit2 = dHit->JLeicCe_emcalDigi(aHit);
 
 
-
-   JLeicCe_emcalHit *aHit ;
-   JLeicCe_emcalDigiHit *dHit ;
-   int nhitC = hitCollectionCe_emcal->GetSize();
-
-   if(!nhitC) return;
-
-       for (int i=0; i<nhitC; i++){
-
-       aHit = (*hitCollectionCe_emcal)[i];
-           JLeicCe_emcalDigiHit *dHit2=dHit->JLeicCe_emcalDigi(aHit);
+            string name_det = dHit2->GetDetName();
+            double Etot_crs = dHit2->GetEdep();
+            int Npe = dHit2->GetNpe();
+            double ADC_crs = dHit2->GetADC();
+            double TDCL_crs = dHit2->GetTDC();
 
 
-       string name_det = dHit2->GetDetName();
-       double Etot_crs = dHit2->GetEdep() ;
-       int Npe = dHit2->GetNpe() ;
-       double ADC_crs = dHit2->GetADC() ;
-       double TDCL_crs = dHit2->GetTDC();
+            double Xxcrs = aHit->GetX_crs();
+            double Yycrs = aHit->GetY_crs();
+            double Zzcrs = aHit->GetZ_crs();
 
 
-       double Xxcrs = aHit->GetX_crs();
-       double Yycrs = aHit->GetY_crs();
-       double Zzcrs = aHit->GetZ_crs();
+            if (Etot_crs > 0) mRootEventsOut->AddCe_EMCAL(name_det, Etot_crs, Npe, ADC_crs, TDCL_crs, Xxcrs, Yycrs, Zzcrs);
 
-
-     if(Etot_crs>0) mRootEventsOut->AddCe_EMCAL(name_det,Etot_crs,Npe,ADC_crs,TDCL_crs,Xxcrs,Yycrs, Zzcrs);
-
-       }
-
-
-
+        }
     }
-
-
 
 
     if (hitCollectionCalo) {
         int n_hit = hitCollectionCalo->entries();
         if (fVerbose >= 1)
-            G4cout << "     " << n_hit
-                   << " hits are stored in JLeicCalorHitsCollection." << G4endl;
+            G4cout << "     " << n_hit << " hits are stored in JLeicCalorHitsCollection." << G4endl;
 
         G4double totEAbs = 0, totLAbs = 0;
         for (int i = 0; i < n_hit; i++) {
@@ -203,14 +188,10 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
             totLAbs += (*hitCollectionCalo)[i]->GetTrakAbs();
         }
 
-    
-        if (fVerbose >= 1){
-            G4cout
-                    << " CAL::  Absorber: total energy: " << std::setw(7) <<
-                    G4BestUnit(totEAbs, "Energy")
-                    << "       total track length: " << std::setw(7) <<
-                    G4BestUnit(totLAbs, "Length")
-                    << G4endl;
+
+        if (fVerbose >= 1) {
+            G4cout << " CAL::  Absorber: total energy: " << std::setw(7) << G4BestUnit(totEAbs, "Energy") << "       total track length: " << std::setw(7)
+                   << G4BestUnit(totLAbs, "Length") << G4endl;
         }
 
         nstep = nstepCharged + nstepNeutral;
@@ -269,8 +250,7 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
     if (vertexHitsCollection) {
         int n_hit = vertexHitsCollection->entries();
         if (fVerbose >= 1)
-            G4cout << "     " << n_hit
-                   << " hits are stored in JLeicVTXHitsCollection." << G4endl;
+            G4cout << "     " << n_hit << " hits are stored in JLeicVTXHitsCollection." << G4endl;
 
         G4double totEAbs = 0, totLAbs = 0;
         for (int i = 0; i < n_hit; i++) {
@@ -278,13 +258,10 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
             totLAbs += (*vertexHitsCollection)[i]->GetTrakAbs();
         }
 
-    
+
         if (fVerbose >= 1) {
-            G4cout << "  VTX::  Absorber: total energy: " << std::setw(7) <<
-                    G4BestUnit(totEAbs, "Energy")
-                    << "       total track length: " << std::setw(7) <<
-                    G4BestUnit(totLAbs, "Length")
-                    << G4endl;
+            G4cout << "  VTX::  Absorber: total energy: " << std::setw(7) << G4BestUnit(totEAbs, "Energy") << "       total track length: " << std::setw(7)
+                   << G4BestUnit(totLAbs, "Length") << G4endl;
         }
     }
 
@@ -295,16 +272,16 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
         G4cout << "JLeicEventAction:: Event END " << evt->GetEventID() << G4endl;
         G4cout << "  |  GetNumberOfGrips          " << evt->GetNumberOfGrips() << G4endl;
         G4cout << "  |  GetNumberOfPrimaryVertex  " << evt->GetNumberOfPrimaryVertex() << G4endl;
-        G4cout << "  +-+    " <<  G4endl;
+        G4cout << "  +-+    " << G4endl;
 
-        std::vector<G4PrimaryParticle*> allPrimaries;
-        for(int vtxIndex=0; vtxIndex < evt->GetNumberOfPrimaryVertex(); vtxIndex++) {
+        std::vector<G4PrimaryParticle *> allPrimaries;
+        for (int vtxIndex = 0; vtxIndex < evt->GetNumberOfPrimaryVertex(); vtxIndex++) {
             auto vtx = evt->GetPrimaryVertex(vtxIndex);
             fmt::print("    | VertexID: {}\n", vtxIndex);
             fmt::print("    | x: {:<10} y: {:<10} z: {:<10}\n", vtx->GetX0(), vtx->GetY0(), vtx->GetZ0());
             fmt::print("    | GetNumberOfParticle {}\n", vtx->GetNumberOfParticle());
             fmt::print("    +-+\n");
-            for(int prtIndex=0; prtIndex < vtx->GetNumberOfParticle(); prtIndex++) {
+            for (int prtIndex = 0; prtIndex < vtx->GetNumberOfParticle(); prtIndex++) {
                 auto particle = vtx->GetPrimary(prtIndex);
                 fmt::print("      | ID{:<10} trkId: {:<10}\n", prtIndex, particle->GetTrackID());
                 allPrimaries.push_back(particle);
@@ -313,8 +290,8 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt) {
 
         G4cout << "  |  PrimaryParticlesNumber  " << allPrimaries.size() << G4endl;
 
-        for(auto particle: allPrimaries) {
-            fmt::print("    | PID{:<10} trkId: {:<10} P:{:<10}\n",particle->GetParticleDefinition()->GetPDGEncoding(), particle->GetTrackID(), particle->GetTotalMomentum());
+        for (auto particle: allPrimaries) {
+            fmt::print("    | PID{:<10} trkId: {:<10} P:{:<10}\n", particle->GetParticleDefinition()->GetPDGEncoding(), particle->GetTrackID(), particle->GetTotalMomentum());
         }
     }
 }

@@ -185,7 +185,7 @@ G4bool JLeicCe_emcalSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
 
     std::string volumeName = theTouchable->GetVolume()->GetName().c_str();
 
-  //  mRootEventsOut->SaveStep(aStep, g4e::WriteStepPointChoices::PreStepPoint, copyIDx_pre, copyIDy_pre);
+    mRootEventsOut->SaveStep(aStep, g4e::WriteStepPointChoices::PreStepPoint, copyIDx_pre, copyIDy_pre);
 
    if (mVerbose > 2) printf("--> JLeicCe_emcalSD::ProcessHits() Exit\n");
 

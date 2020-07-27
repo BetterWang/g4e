@@ -200,4 +200,4 @@ add_custom_command(TARGET g4e POST_BUILD
         COMMAND ${CMAKE_COMMAND} -E copy_directory
         ${CMAKE_SOURCE_DIR}/resources/ $<TARGET_FILE_DIR:g4e>)
 
-add_subdirectory(test/unit_tests)
+install(DIRECTORY resources/ DESTINATION resources)

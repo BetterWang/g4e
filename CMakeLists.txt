@@ -201,3 +201,4 @@ add_custom_command(TARGET g4e POST_BUILD
         ${CMAKE_SOURCE_DIR}/resources/ $<TARGET_FILE_DIR:g4e>)
 
 install(DIRECTORY resources/ DESTINATION resources)
+install(DIRECTORY examples/ DESTINATION examples)

@@ -191,34 +191,13 @@ if(${G4E_SILENCE_WARNINGS})
         target_compile_options(g4e PRIVATE "-w")
     endif()
 endif()
-#${HEPMC_FIO_LIBRARIES}
-#----------------------------------------------------------------------------
-# Copy all scripts to the build directory, i.e. the directory in which we
-# build JLEICgeant4. This is so that we can run the executable directly because it
-# relies on these scripts being in the current working directory.
-#
-set(g4e_SCRIPTS
-        resources/jleic/jleic.mac
-        resources/jleic/jleicvis.mac
-  )
-
-foreach(_script ${JLEICgeant4_SCRIPTS})
-  configure_file(
-    ${PROJECT_SOURCE_DIR}/${_script}
-    ${PROJECT_BINARY_DIR}/${_script}
-    COPYONLY
-    )
-endforeach()
 
 # Copy resources to a destination
 # https://stackoverflow.com/questions/13429656/how-to-copy-contents-of-a-directory-into-build-directory-after-make-with-cmake
-#add_custom_command(TARGET g4e PRE_BUILD
-#        COMMAND ${CMAKE_COMMAND} -E copy_directory
-#        ${CMAKE_SOURCE_DIR}/resources/ $<TARGET_FILE_DIR:g4e>)
-
-#----------------------------------------------------------------------------
-# Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
-#
 install(TARGETS g4e DESTINATION bin)
+
+add_custom_command(TARGET g4e POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${CMAKE_SOURCE_DIR}/resources/ $<TARGET_FILE_DIR:g4e>)
 
 add_subdirectory(test/unit_tests)

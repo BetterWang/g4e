@@ -329,7 +329,7 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
 
     std::string volumeName = theTouchable->GetVolume()->GetName().c_str();
 
-    mRootEventsOut->SaveStep(aStep, g4e::WriteStepPointChoices::PreStepPoint, copyIDx_pre, copyIDy_pre);
+    mRootEventsOut->SaveStep(aStep, g4e::WriteStepPointChoices::PostStepPoint, copyIDx_pre, copyIDy_pre);
 
    if (mVerbose > 2) printf("--> JLeicCalorimeterSD::ProcessHits() Exit\n");
 

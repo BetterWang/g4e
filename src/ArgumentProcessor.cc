@@ -112,7 +112,6 @@ void InputProcessor::ProcessFileNames(UserArguments &result) {
             fmt::print("   {}\n", fileName);
         }
     }
-
 }
 
 void InputProcessor::ProcessHomePath(UserArguments &result, const char *homeCstr) {

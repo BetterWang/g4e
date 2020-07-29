@@ -202,3 +202,4 @@ add_custom_command(TARGET g4e POST_BUILD
 
 install(DIRECTORY resources/ DESTINATION resources)
 install(DIRECTORY examples/ DESTINATION examples)
+install(DIRECTORY python/ DESTINATION python)

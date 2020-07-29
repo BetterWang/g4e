@@ -52,7 +52,7 @@ namespace g4e {
         EventData &GetEventData() { return mEventInfo; }
         const EventData &GetEventInfoConst() const { return mEventInfo; }
 
-        void SetEventInfo(const EventData &mEventInfo) { UserEventInformation::mEventInfo = mEventInfo; }
+        void SetEventInfo(const EventData &eventInfo) { UserEventInformation::mEventInfo = eventInfo; }
 
     private:
         EventData mEventInfo;

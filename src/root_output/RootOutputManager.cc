@@ -33,6 +33,14 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
 
     std::string volumeName = touchable->GetVolume()->GetName();
 
+    /* >oO Debug
+    std::string preName = aStep->GetPreStepPoint()->GetPhysicalVolume()->GetName();
+    std::string postName = aStep->GetPostStepPoint()->GetPhysicalVolume()->GetName();
+    if(preName!=postName || volumeName!=preName)
+        fmt::print(">>>> {:<30} {:<30} {:<30} {:<3} {:<3} {:<10}\n", volumeName, preName, postName,
+                   aStep->IsFirstStepInVolume(), aStep->IsLastStepInVolume(), point->GetPosition().z());
+    */
+
     // process hit
     int mHitsCount=0;
 
@@ -44,9 +52,7 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
     //G4ParticleDefinition * aParticle = aTrack->GetDefinition();
     //G4DynamicParticle*     dParticle = aTrack->GetDynamicParticle();
     G4ThreeVector momentum = track->GetMomentum();
-    const G4ThreeVector& momentumDir = track->GetMomentumDirection();
     G4int parentId = track->GetParentID();
-    const G4ThreeVector& position = track->GetPosition();
     const G4ThreeVector& vertex = track->GetVertexPosition();
     const G4ThreeVector& vertexMom = track->GetVertexMomentumDirection();
     G4int PDG = track->GetDefinition()->GetPDGEncoding();

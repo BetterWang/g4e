@@ -3,6 +3,7 @@
 
 #include <G4Material.hh>
 #include <G4FieldManager.hh>
+#include <G4VExternalPhysicalVolume.hh>
 
 class ir_LatticeDesign {
 public:

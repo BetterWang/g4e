@@ -20,12 +20,12 @@ struct ffi_OFFM_TRK_Config {
 // define here Global volume parameters
     double Rin = 0 * cm;
     double ROut;
-    double SizeX=50 *cm;
-    double SizeY=50*cm; 
+    double SizeX=230 *cm;
+    double SizeY=230*cm; 
     double SizeZ = 30 * cm;
     double Zpos;
     double Xpos;
-    int Nlayers=1;
+    int Nlayers=2;
     double lay_Zshift=1.*cm;
 };
 
@@ -61,7 +61,7 @@ public:
     inline void ConstructDetectors() {
         printf("Begin ffi_OFFM_TRK detector volumes \n");
         auto cfg = ConstructionConfig;
-
+        static char abname[256];
         // construct here your detectors
 
         // ---------------------------------------------------------------------------
@@ -70,8 +70,8 @@ public:
 	//    ffi_OFFM_TRK_lay_RIn = 10 * cm;
 	//    ffi_OFFM_TRK_lay_ROut = cfg.ROut - 5 * cm;
         ffi_OFFM_TRK_lay_SizeZ = 1 * cm;
-        //   ffi_OFFM_TRK_lay_Material = fMat->GetMaterial("Ar10CO2");  //----   !!!!! ----
-        ffi_OFFM_TRK_lay_Material =G4Material::GetMaterial("G4_Galactic");
+	ffi_OFFM_TRK_lay_Material = G4Material::GetMaterial("Ar10CO2");  //----   !!!!! ----
+	// ffi_OFFM_TRK_lay_Material =G4Material::GetMaterial("G4_Galactic");
 	//       lay_Solid = new G4Tubs("ffi_OFFM_TRK_lay_Solid", ffi_OFFM_TRK_lay_RIn, ffi_OFFM_TRK_lay_ROut,
         //                              ffi_OFFM_TRK_lay_SizeZ / 2., 0., 360 * deg);
         lay_Solid = new G4Box("ffi_OFFM_TRK_lay_Solid",cfg.SizeX /2.-1*mm, cfg.SizeY/2.-1*mm ,
@@ -83,14 +83,32 @@ public:
         int ffsi_counter = 0;
         for (int fflay = 0; fflay < cfg.Nlayers; fflay++) {
             double Z = -cfg.SizeZ / 2 + (fflay + 1) * ffi_OFFM_TRK_lay_SizeZ / 2 + (fflay + 1) * cfg.lay_Zshift;
+              sprintf(abname, "ffi_OFFM_TRK_lay_Phys_%d", fflay);
             lay_Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, Z),
-                                                "ffi_OFFM_TRK_lay_Phys", lay_Logic,
+                                                abname , lay_Logic,
                                                 Phys, false, ffsi_counter);
             ffsi_counter++;
             attr_fi_OFFM_TRK_lay = new G4VisAttributes(G4Color(0.8, 0.4 + 0.1 * fflay, 0.3, 1.));
             attr_fi_OFFM_TRK_lay->SetLineWidth(1);
             attr_fi_OFFM_TRK_lay->SetForceSolid(true);
             lay_Logic->SetVisAttributes(attr_fi_OFFM_TRK_lay);
+
+	    if (fflay==0) {  //-- make a hole 
+               ffi_OFFM_TRK_BH_Material=G4Material::GetMaterial("G4_Galactic");
+	       Beam_hole_Solid = new G4Tubs("ffi_OFFM_TRK_lay_BH_Solid",0.*cm, 6*cm,  ffi_OFFM_TRK_lay_SizeZ / 2., 0., 360 * deg);
+               Beam_hole_Logic = new G4LogicalVolume( Beam_hole_Solid,	ffi_OFFM_TRK_BH_Material , "ffi_OFFM_TRK_lay_BH_Logic");
+               Beam_hole_Phys = new G4PVPlacement(0,G4ThreeVector(0, 0, 0), "ffi_OFFM_TRK_lay_BH_Phys",Beam_hole_Logic, lay_Phys , false, 0);
+     
+              G4VisAttributes *attr_fi_D1A_GVol = new G4VisAttributes(G4Color(0.3, 0, 3., 0.1));
+               attr_fi_D1A_GVol->SetLineWidth(1);  attr_fi_D1A_GVol->SetForceSolid(true);
+               Beam_hole_Logic->SetVisAttributes(attr_fi_D1A_GVol);
+
+
+	    }
+
+
+						   
+
         }
 
     };
@@ -106,6 +124,11 @@ public:
     G4Box *lay_Solid;    //pointer to the solid  FARFORWD
     G4LogicalVolume *lay_Logic;    //pointer to the logical FARFORWD
     G4VPhysicalVolume *lay_Phys;    //pointer to the physical FARFORWD
+    
+    //------Hole-----
+    G4Tubs *Beam_hole_Solid;
+    G4LogicalVolume *Beam_hole_Logic;
+    G4VPhysicalVolume *Beam_hole_Phys;
 
      G4double ffi_OFFM_TRK_lay_RIn;
     G4double ffi_OFFM_TRK_lay_ROut;
@@ -114,7 +137,7 @@ public:
 private:
 
     // define here local variables and parameter of detectors
-
+  G4Material *ffi_OFFM_TRK_BH_Material;
     G4Material *ffi_OFFM_TRK_lay_Material;
     G4VisAttributes* attr_fi_OFFM_TRK_lay;
 

@@ -409,12 +409,13 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     if (USE_CI_ENDCAP) {
 
         //================================================================================
-        // ==                      Hadron endcap GEM
+        // ==                      Hadron endcap GEM 
         //================================================================================
         if (USE_CI_GEM) {
             fConfig.ci_GEM.PosZ = fConfig.cb_Solenoid.SizeZ / 2 - fConfig.ci_GEM.SizeZ / 2;   // --- need to find out why this 5 cm are needed
 
             // --- different crossing angle direction for JLEIC and eRHIC
+            
             if(beamLine == BeamLines::JLEIC)  {
                 fConfig.ci_GEM.PosX = -5 * cm;
             } else {
@@ -540,9 +541,11 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 	 //                 fConfig.ffi_OFFM_TRK.RIn = 10 * cm;
          //       fConfig.ffi_OFFM_TRK.ROut = 35*cm;
                 fConfig.ffi_OFFM_TRK.SizeZ = 10. * cm;
-                fConfig.ffi_OFFM_TRK.Zpos = 22.5 * m;
-                fConfig.ffi_OFFM_TRK.Xpos = 75 * cm;
-		fConfig.ffi_OFFM_TRK.Nlayers=1;
+	       		          fConfig.ffi_OFFM_TRK.Zpos = 22.5 * m;
+				  //	fConfig.ffi_OFFM_TRK.Zpos = 27.5 * m;
+
+	        fConfig.ffi_OFFM_TRK.Xpos = 75 * cm;
+  		fConfig.ffi_OFFM_TRK.Nlayers=2;
                 ffi_OFFM_TRK.Construct(fConfig.ffi_OFFM_TRK, World_Material,World_Phys);
              
 	
@@ -550,9 +553,25 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
                 for (int lay = 0; lay < fConfig.ffi_OFFM_TRK.Nlayers; lay++) {
                   if (ffi_OFFM_TRK.lay_Logic) ffi_OFFM_TRK.lay_Logic->SetSensitiveDetector(fCalorimeterSD);
                 }
+		//========================virtual plance 2 ==================
+              fConfig.ffi_OFFM_TRK2.SizeZ = 10. * cm;
+		//		          fConfig.ffi_OFFM_TRK.Zpos = 22.5 * m;
+		fConfig.ffi_OFFM_TRK2.Zpos = 27.5 * m;
+
+	        fConfig.ffi_OFFM_TRK2.Xpos = 75 * cm;
+  		fConfig.ffi_OFFM_TRK2.Nlayers=1;
+                ffi_OFFM_TRK2.Construct(fConfig.ffi_OFFM_TRK2, World_Material,World_Phys);
+             
+	
+                ffi_OFFM_TRK2.ConstructDetectors();
+                for (int lay = 0; lay < fConfig.ffi_OFFM_TRK2.Nlayers; lay++) {
+                  if (ffi_OFFM_TRK2.lay_Logic) ffi_OFFM_TRK2.lay_Logic->SetSensitiveDetector(fCalorimeterSD);
+                }
+      
+
        }
 
-      //-------------- for jleic D2 tracking placements --------------------------
+      //-------------- for jleic D2 tracking placements -------------------------
      if(beamLine == BeamLines::JLEIC) {
         for (int i = 0; i < fIonLineMagnets->fMagnets.size(); i++) {
             if (fIonLineMagnets->fMagnets.at(i)->name == "iBDS2") {
@@ -583,10 +602,16 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 
     if (USE_FFI_NEG_TRK) {
        if(beamLine == BeamLines::ERHIC) {
+	 // for angle 0 
+	 //               fConfig.ffi_NEG_TRK.SizeZ = 10. * cm;
+	 //            fConfig.ffi_NEG_TRK.Zpos = 25 * m;  // 22.1 *m
+	 //          fConfig.ffi_NEG_TRK.Xpos = 45 * cm; //25 *cm
+	        fConfig.ffi_NEG_TRK.SizeZ = 10. * cm;
+		//   fConfig.ffi_NEG_TRK.Zpos = 22.0 * m;
+		//   fConfig.ffi_NEG_TRK.Xpos = 45 * cm;
+		             fConfig.ffi_NEG_TRK.Zpos = 7.0 * m;
+		              fConfig.ffi_NEG_TRK.Xpos = 25 * cm;
 
-                fConfig.ffi_NEG_TRK.SizeZ = 10. * cm;
-                fConfig.ffi_NEG_TRK.Zpos = 25 * m;
-                fConfig.ffi_NEG_TRK.Xpos = 45 * cm;
                 fConfig.ffi_NEG_TRK.rot_matx.rotateY(fConfig.ffi_NEG_TRK.Angle);
 		fConfig.ffi_NEG_TRK.Nlayers=1;
                 ffi_NEG_TRK.Construct(fConfig.ffi_NEG_TRK, World_Material,World_Phys);
@@ -765,11 +790,18 @@ void JLeicDetectorConstruction::ConstructSDandField()
 
     if( USE_FFI_ZDC){ fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_ZDC.Phys);}
     //  fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D2.lay_Phys[0]);
-    if( USE_FFI_RPOT_D3){ fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D2.Phys);}
+    if( USE_FFI_RPOT_D2){ fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D2.Phys);}
     if ( USE_FFI_RPOT_D3) { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D3.Phys); }
     if( USE_FFI_OFFM_TRK){   fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_OFFM_TRK.Phys);} 
+    if( USE_FFI_OFFM_TRK2){   fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_OFFM_TRK2.Phys);} 
     if( USE_FFI_NEG_TRK){   fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_NEG_TRK.Phys);} 
     if( USE_FI_B0_TRK){ fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->fi_B0_TRK.Phys);}
+    if( USE_CI_GEM){ fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ci_GEM.Phys);}
+    if( USE_CI_TRD){ fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ci_TRD.Phys);}
+    if( USE_CB_CTD){ fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->cb_CTD.Phys);}
+    if( USE_CE_GEM){ fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ce_GEM.Phys);}
+    if( USE_CI_HCAL){ fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ci_HCAL.Phys);}
+
 }
 
 

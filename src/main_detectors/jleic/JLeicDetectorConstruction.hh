@@ -64,6 +64,7 @@
 #include "fi_B0_EMCAL/fi_B0_EMCAL.hh"     // Far-forward Ion D1  - EMCAL
 
 #include "ffi_OFFM_TRK/ffi_OFFM_TRK.hh"  // Far-forward off-momentum - Tracking after B1( JLEIC Second  big dipole )
+#include "ffi_OFFM_TRK2/ffi_OFFM_TRK2.hh"  //  virtual plane 
 #include "ffi_NEG_TRK/ffi_NEG_TRK.hh"  // Far-forward for negative particles from decays -Lambda
 #include "ffi_ZDC/ffi_ZDC.hh"           // Far-forward Ion   - HCAL ZDC
 #include "ffi_RPOT_D2/ffi_RPOT_D2.hh"   // Far-forward Ion   - RomanPots system
@@ -109,7 +110,7 @@ public:
     bool USE_CB_CTD_Si = true;       // silicon version of CTD
     bool USE_CB_CTD_Straw = false;   // straw version of CTD
 
-    bool USE_CB_DIRC = true;
+    bool USE_CB_DIRC = false;
     bool USE_CB_DIRC_bars = false;   // bars for DIRC
 
     bool USE_CB_EMCAL = true ;
@@ -140,8 +141,8 @@ public:
     bool USE_CI_DRICH = true;
     bool USE_CI_TRD = true;
     bool USE_CI_EMCAL = true;
-    bool USE_CI_HCAL = true;
-    bool USE_CI_HCAL_D = true;
+    bool USE_CI_HCAL = false;
+    bool USE_CI_HCAL_D = false;
 
     //--------- Forward D1 ------
     bool USE_FI_B0_TRK = true;
@@ -149,6 +150,7 @@ public:
     //--------FARFORWARD HADRON------
 
     bool USE_FFI_OFFM_TRK = true;
+    bool USE_FFI_OFFM_TRK2 = true;
     bool USE_FFI_NEG_TRK = true;
     // 
     bool USE_FFI_ZDC = true;
@@ -288,6 +290,7 @@ private:
     fi_B0_TRK_Design     fi_B0_TRK;       // Tracking
     fi_B0_EMCAL_Design   fi_B0_EMCAL;     // EMCAL
     ffi_OFFM_TRK_Design   ffi_OFFM_TRK;      // after B1 (in D2) Off-momentum Tracking
+     ffi_OFFM_TRK2_Design   ffi_OFFM_TRK2;      // virtual plane 
     ffi_NEG_TRK_Design    ffi_NEG_TRK;      //  tracker for negarive particles lambda
     ffi_ZDC_Design      ffi_ZDC;
 

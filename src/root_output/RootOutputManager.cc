@@ -68,7 +68,7 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
     jleicRootOutput->AddHit(
             /* hit id        */ mHitsCount,
             /* track id      */ aStep->GetTrack()->GetTrackID(),
-            /* parent Trk Id */ aStep->GetTrack()->GetParentID(),
+            /* parent Trk Id */ abs(PDG),  //aStep->GetTrack()->GetParentID(),
             /* hit x         */ point->GetPosition().x() / mm,
             /* hit y         */ point->GetPosition().y() / mm,
             /* hit z         */ point->GetPosition().z() / mm,

@@ -196,9 +196,10 @@ endif()
 # https://stackoverflow.com/questions/13429656/how-to-copy-contents-of-a-directory-into-build-directory-after-make-with-cmake
 install(TARGETS g4e DESTINATION bin)
 
-add_custom_command(TARGET g4e POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_SOURCE_DIR}/resources/ $<TARGET_FILE_DIR:g4e>)
+# add_custom_command(TARGET g4e POST_BUILD
+#         COMMAND ${CMAKE_COMMAND} -E copy_directory
+#         ${CMAKE_SOURCE_DIR}/resources/ $<TARGET_FILE_DIR:g4e>)
+# cd 
 
 install(DIRECTORY resources/ DESTINATION resources)
 install(DIRECTORY examples/ DESTINATION examples)

@@ -314,7 +314,8 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
 
     //--- save hits ------
 
-    if (mVerbose > 6) printf("New CAL Hit:: IdVect=%d XYZloc (%f,%f,%f) dEdx=%f \n", aStep->GetTrack()->GetTrackID(), xloc, yloc, zloc, edep / keV);
+        if (mVerbose > 6) 
+printf("New CAL Hit:: IdVect=%d XYZloc (%f,%f,%f) dEdx=%f \n", aStep->GetTrack()->GetTrackID(), xloc, yloc, zloc, edep / keV);
 
     int curTrackID = aStep->GetTrack()->GetTrackID();
     auto track = aStep->GetTrack();

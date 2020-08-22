@@ -147,4 +147,8 @@
 /vis/viewer/set/style surface
 /vis/viewer/colourByDensity 1 g/cm3 .5 3 10
 #---------------------------------------------------
+/vis/viewer/zoom 0.5
+/vis/viewer/set/viewpointThetaPhi -90 -45 deg
+/vis/viewer/zoom 0.5
+
 exit

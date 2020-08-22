@@ -9,17 +9,12 @@
 #include <TFile.h>
 #include <TTree.h>
 
-#include <G4Event.hh>
-
 #include <spdlog/spdlog.h>
-#include <UserEventInformation.hh>
 
 #include "FlatIoHit.hh"
 #include "FlatIoParticle.hh"
 #include "FlatIoTrack.hh"
 #include "FlatIoVertex.hh"
-#include "FlatIoCe_EMCAL.hh"
-
 
 namespace g4e
 {
@@ -33,21 +28,11 @@ namespace g4e
             mEventTree = eventTree;
 
             mEventTree->Branch("event_id", &mEventId, "event_id/l");
-            mEventTree->Branch("evt_true_q2",      &mEventInfo.TrueDISInfo.Q2,   "evt_true_q2/D");
-            mEventTree->Branch("evt_true_x",       &mEventInfo.TrueDISInfo.x ,   "evt_true_x/D");
-            mEventTree->Branch("evt_true_y",       &mEventInfo.TrueDISInfo.y ,   "evt_true_y/D");
-            mEventTree->Branch("evt_true_w2",      &mEventInfo.TrueDISInfo.w2,   "evt_true_w2/D");
-            mEventTree->Branch("evt_true_nu",      &mEventInfo.TrueDISInfo.nu,   "evt_true_nu/D");
-            mEventTree->Branch("evt_true_t_hat",   &mEventInfo.TrueDISInfo.tHat, "evt_true_t_hat/D");
-            mEventTree->Branch("evt_has_dis_info", &mEventInfo.HasTrueDISInfo,   "evt_has_dis_info/B");
-            mEventTree->Branch("evt_weight",       &mEventInfo.Weight,           "evt_weight/D");
-
 
             mHitIo.BindToTree(mEventTree);          // Bind/create branches for hits
             mTrackIo.BindToTree(mEventTree);        // Bind/create branches for tracks
             mParticleIo.BindToTree(mEventTree);     // Bind/create branches for primary particles
             mPrimeVertexIo.BindToTree(mEventTree);  // Bind/create branches for primary vertexes
-            mCe_EMCALIo.BindToTree(mEventTree);      // Bind/create branches for Ce_EMCAL
         }
 
         void ClearForNewEvent()
@@ -58,7 +43,6 @@ namespace g4e
             mParticleIo.Clear();
             mPrimeVertexIo.Clear();
             trk_index_by_id.clear();
-            mCe_EMCALIo.Clear();
         }
 
         void AddHit(
@@ -93,16 +77,16 @@ namespace g4e
         void AddTrack(
                 uint64_t aTrackId,
                 uint64_t aParentId,
-                int64_t  aTrackPdg,
-                int64_t  creatorProc,
-                uint64_t ancestryLevel,
-                double   aXVertex,
-                double   aYVertex,
-                double   aZVertex,
-                double   aXMom,
-                double   aYMom,
-                double   aZMom,
-                double   aMom
+                int64_t aTrackPdg,
+                int64_t creatorProc,
+                int64_t ancestryLevel,
+                double aXVertex,
+                double aYVertex,
+                double aZVertex,
+                double aXMom,
+                double aYMom,
+                double aZMom,
+                double aMom
         )
         {
             std::lock_guard<std::recursive_mutex> lk(io_mutex);
@@ -183,41 +167,10 @@ namespace g4e
             mParticleIo.ParticleCount = mParticleIo.IdVect.size();
         }
 
-        void AddCe_EMCAL(
-                   const std::string& aName,
-                   double aEtot_dep,
-  				   int aNpe,
-                   double aADC,
-                   double aTDC,
-                  //   std::vector<double> awaveform,
-                   //  std::vector<double> awaveform_time,
-  				   double axcrs,
-  				   double aycrs,
-  				   double azcrs){
-
-            mCe_EMCALIo.Name.push_back(aName);
-            mCe_EMCALIo.Etot_dep.push_back(aEtot_dep);
-            mCe_EMCALIo.Npe.push_back(aNpe);
-            mCe_EMCALIo.ADC.push_back(aADC);
-            mCe_EMCALIo.TDC.push_back(aTDC);
-       //    mCe_EMCALIo.waveform.push_back(awaveform);
-         //  mCe_EMCALIo.waveform_time.push_back(awaveform_time);
-           mCe_EMCALIo.xcrs.push_back(axcrs);
-           mCe_EMCALIo.ycrs.push_back(aycrs);
-           mCe_EMCALIo.zcrs.push_back(azcrs);
-
-                     }
-
-        void FillEvent(const G4Event *evt)
+        void FillEvent(uint64_t eventId)
         {
             std::lock_guard<std::recursive_mutex> lk(io_mutex);
-            mEventId = (uint64_t)evt->GetEventID();
-            auto userEventData = dynamic_cast<g4e::UserEventInformation*>(evt->GetUserInformation());
-
-            // Copy event data values
-            if(userEventData) {
-                mEventInfo = userEventData->GetEventData();
-            }
+            mEventId = eventId;
 
             fmt::print("RooIO: {:<4} hits:{:<7} tracks:{:<7} genpart:{:<4} \n", mEventId+1, mHitIo.HitsCount, mTrackIo.TrackCount, mParticleIo.ParticleCount);
             mEventTree->Fill();
@@ -250,8 +203,6 @@ namespace g4e
         g4e::TrackIo mTrackIo;
         g4e::VertexIo mPrimeVertexIo;
         g4e::ParticleIo mParticleIo;
-        g4e::EventData mEventInfo;
-        g4e::Ce_EMCALIo mCe_EMCALIo;
     };
 }
 

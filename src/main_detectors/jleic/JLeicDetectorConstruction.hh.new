@@ -47,9 +47,9 @@
 #include "ce_EMCAL/ce_EMCAL.hh"         // Central Electron Endcap - EMCAL
 
 //--------------FFe---------------
-#include "ffe_CPOL/ffe_CPOL.hh"         // Far-forward  electron direction ePolarimeter
-#include "ffe_LUMI/ffe_LUMI.hh"         // Far -forward  electron   LUMI
-#include "ffe_LOWQ2/ffe_LOWQ2.hh"       // Far -forward  electron   LOW-Q2
+#include "ffe_CPOL/ffe_CPOL.hh"         //  Far-forward  electron direction ePolarimeter
+#include "ffe_LUMI/ffe_LUMI.hh"         //  Far -forward  electron   LUMI
+#include "ffe_LOWQ2/ffe_LOWQ2.hh"         //  Far -forward  electron   LOW-Q2
 
 
 //--------------CI---------------
@@ -60,8 +60,8 @@
 #include "ci_HCAL/ci_HCAL.hh"           // Central Ion Endcap - HCAL
 
 //--------------FFi---------------
-#include "fi_B0_TRK/fi_B0_TRK.hh"       // Far-forward Ion D1  - Tracking
-#include "fi_B0_EMCAL/fi_B0_EMCAL.hh"   // Far-forward Ion D1  - EMCAL
+#include "fi_B0_TRK/fi_B0_TRK.hh"         // Far-forward Ion D1  - Tracking
+#include "fi_B0_EMCAL/fi_B0_EMCAL.hh"     // Far-forward Ion D1  - EMCAL
 
 #include "ffi_OFFM_TRK/ffi_OFFM_TRK.hh"  // Far-forward off-momentum - Tracking after B1( JLEIC Second  big dipole )
 #include "ffi_OFFM_TRK2/ffi_OFFM_TRK2.hh"  //  virtual plane 
@@ -71,14 +71,13 @@
 #include "ffi_RPOT_D3/ffi_RPOT_D3.hh"   // Far-forward Ion   - RomanPots system
 
 //---------Beam lattice ----------
-//#include "ir_Lattice/ir_Lattice.hh"         // IR Lattice import from file
-#include "ir_Lattice/QuadrupoleMagnet.hh"     // New IR Lattice import from file
-#include "ir_Lattice/AcceleratorMagnets.hh"   // New IR Lattice import from file
-#include "ir_Beampipe/ir_Beampipe.hh"         // IR Lattice import from file
+//#include "ir_Lattice/ir_Lattice.hh"   // IR Lattice import from file
+#include "ir_Lattice/QuadrupoleMagnet.hh"         // New IR Lattice import from file
+#include "ir_Lattice/AcceleratorMagnets.hh"      // New IR Lattice import from file
+#include "ir_Beampipe/ir_Beampipe.hh"   // IR Lattice import from file
 
 
 class JLeicCalorimeterSD;
-class JLeicCe_emcalSD;
 
 class JLeicVertexSD;
 
@@ -329,7 +328,6 @@ private:
     JLeicDetectorMessenger *fDetectorMessenger;
     JLeicCalorimeterSD *fCalorimeterSD;
     JLeicVertexSD *fVertexSD;
-    JLeicCe_emcalSD *fCe_emcalSD;
     G4VPhysicalVolume *fPhysicsAbsorber;
     AcceleratorMagnets* fElectronLineMagnets;
     AcceleratorMagnets* fIonLineMagnets;

@@ -1,3 +1,5 @@
+#include <fstream>
+
 #include "PrimaryGeneratorAction.hh"
 #include "PrimaryGeneratorMessenger.hh"
 
@@ -6,6 +8,7 @@
 #include "PythiaAsciiReader.hh"
 #include "HepMcAsciiGenerator.hh"
 #include "BeagleGenerator.hh"
+#include "StringHelpers.hh"
 
 #include "ConeParticleGun.hh"
 #include "ConeParticleGunHW.hh"
@@ -33,6 +36,10 @@ PrimaryGeneratorAction::PrimaryGeneratorAction(): G4VUserPrimaryGeneratorAction(
 }
 
 void PrimaryGeneratorAction::SelectGenerator(const G4String& name) {
+
+    std::string realName;
+
+
     auto pos = gentypeMap.find(name);
 
     // Check we have such generator
@@ -57,4 +64,43 @@ void PrimaryGeneratorAction::GeneratePrimaries(G4Event *anEvent) {
         G4Exception("PrimaryGeneratorAction::GeneratePrimaries",
                     "PrimaryGeneratorAction001", FatalException,
                     "generator is not instantiated.");
+}
+
+std::string  PrimaryGeneratorAction::DetermineGeneratorName(std::string fileName) 
+{
+    std::ifstream file(fileName);
+    if (file.is_open()) {
+        std::string line;
+
+        // We want to read the 1st meaningful line and skip empty lines
+        while (getline(file, line)) {             
+            
+            g4e::Trim(line);
+
+            if(line.empty()) continue; // skip empty or spaces only lines
+
+            if (line.find("BEAGLE EVENT FILE") != std::string::npos) {
+                return "beagle";
+            }
+
+            if (line.find("HepMC") != std::string::npos) {
+                return "hepmcAscii";
+            }
+
+            if (line.find("PYTHIA EVENT FILE") != std::string::npos) {
+                return "pythiaAscii";
+            }
+
+            if ( g4e::Split(line).size() == 10 ) {
+                return "pythiaAscii";
+            }
+
+            break;
+        }
+        file.close();
+    }
+
+    // If we are here, we where not able to determine file type
+    return "unknown";
+    
 }

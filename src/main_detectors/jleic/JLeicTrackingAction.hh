@@ -33,9 +33,8 @@
 
 #include <unordered_map>
 
-#include "G4UserTrackingAction.hh"
-
-#include "globals.hh"
+#include <G4UserTrackingAction.hh>
+#include <G4GenericMessenger.hh>
 
 
 class JLeicTrackingAction : public G4UserTrackingAction
@@ -52,6 +51,8 @@ public:
 private:
     std::unordered_map<std::uint64_t, std::uint64_t> mTrackLevelsById;
 
+    int mTrackKillAncestryLevel = 0;   // -1 - don't kill tracks based on Ancestry Level
+    static G4GenericMessenger *mMessenger;
 };
 
 #endif

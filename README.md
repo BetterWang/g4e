@@ -7,8 +7,4 @@ Geant 4 EIC (g4e)
 
 [The documentation is at g4e.readthedocs.io](https://g4e.readthedocs.org/)
 
-
 ![JLEIC detector](docs/_images/JLEICgeant4-v1a.png)
-
-
-

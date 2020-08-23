@@ -1,10 +1,10 @@
 #ifndef G4E_ROOTOUTPUTMANAGER_HH
 #define G4E_ROOTOUTPUTMANAGER_HH
 
-#include <G4GenericMessenger.hh>
+
 #include "RootFlatIO.hh"
 #include "JLeicHistogramManager.hh"
-
+#include <G4GenericMessenger.hh>
 
 
 /** This class holds the main root file and various helper functions for it */

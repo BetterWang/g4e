@@ -255,8 +255,7 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
     // depth 0 --> y
     G4int copyIDy_pre = touchablepre->GetCopyNumber();
     G4int copyIDx_pre = touchablepre->GetCopyNumber(1);
-    G4int copyIDz_pre = 0;
-
+    
     //JMF got crash on "run beam on"   here. Needs to be fixed ... commenting this for a moment
     G4double xstep = (aStep->GetTrack()->GetStep()->GetPostStepPoint()->GetPosition()).x();
     G4double ystep = (aStep->GetTrack()->GetStep()->GetPostStepPoint()->GetPosition()).y();
@@ -299,26 +298,21 @@ G4bool JLeicCalorimeterSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
     //G4DynamicParticle*     dParticle = aTrack->GetDynamicParticle();
     G4ThreeVector momentum = aTrack->GetMomentum();
     G4ThreeVector momentumDir = aTrack->GetMomentumDirection();
-    G4int parentId = aTrack->GetParentID();
+
     G4ThreeVector position = aTrack->GetPosition();
     G4ThreeVector vertex = aTrack->GetVertexPosition();
     G4ThreeVector vertexMom = aTrack->GetVertexMomentumDirection();
-    G4int PDG = aTrack->GetDefinition()->GetPDGEncoding();
-
 
     if ((edep == 0.) && (stepl == 0.)) return false;
 
     if(mVerbose > 3)  printf("--> JLeicCalorimeterSD::ProcessHits() de=%f len=%f  IDxy=(%d,%d) step(x,y,z)=(%f, %f %f) in=(%f, %f %f) um  out=(%f, %f %f) um \n  loc=(%f, %f %f) um part=%s\n"
     	 ,edep,stepl/um,copyIDx_pre,copyIDy_pre,xstep,ystep,zstep,xinp/um,yinp/um,zinp/um,xend/um,yend/um,zend/um,xloc/um,yloc/um,zloc/um, aStep->GetTrack()->GetDynamicParticle()->GetDefinition()->GetParticleName().c_str());
 
-
     //--- save hits ------
+    if (mVerbose > 6) {
+        printf("New CAL Hit:: IdVect=%d XYZloc (%f,%f,%f) dEdx=%f \n", aStep->GetTrack()->GetTrackID(), xloc, yloc, zloc, edep / keV);
+    }
 
-        if (mVerbose > 6) 
-printf("New CAL Hit:: IdVect=%d XYZloc (%f,%f,%f) dEdx=%f \n", aStep->GetTrack()->GetTrackID(), xloc, yloc, zloc, edep / keV);
-
-    int curTrackID = aStep->GetTrack()->GetTrackID();
-    auto track = aStep->GetTrack();
 
     std::string volumeName = theTouchable->GetVolume()->GetName().c_str();
 

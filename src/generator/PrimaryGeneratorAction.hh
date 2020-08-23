@@ -19,6 +19,7 @@
 
 
 #include <map>
+
 #include "globals.hh"
 #include "G4VUserPrimaryGeneratorAction.hh"
 
@@ -50,6 +51,8 @@ public:
     static G4String GetPrimaryName();
 
     static G4double GetPrimaryEnergy();
+
+    static std::string DetermineGeneratorName(std::string fileName);
 
 private:
     G4VPrimaryGenerator *fConeParticleGunGenerator;       // Particle gun

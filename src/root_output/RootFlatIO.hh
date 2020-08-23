@@ -86,8 +86,7 @@ namespace g4e
             mHitIo.IRepVect.push_back(aIRep);
             mHitIo.JRepVect.push_back(aJRep);
             mHitIo.VolumeNameVect.push_back(aVolName);
-            mHitIo.HitsCount = mHitIo.XPosVect.size();
-	    printf("Add hit:: trk=%ld dE=%f PDG=%ld Vol=%s \n",aTrackId,aELoss,ParentId,aVolName.c_str());
+            mHitIo.HitsCount = mHitIo.XPosVect.size();	    
         }
 
         void AddTrack(
@@ -106,11 +105,9 @@ namespace g4e
         )
         {
             std::lock_guard<std::recursive_mutex> lk(io_mutex);
-            if(trk_index_by_id.count(aTrackId)) {
-	      printf("AddTrack::: Exists=%d\n",aTrackId);
+            if(trk_index_by_id.count(aTrackId)) {	      
                 return;     // We already saved the track with this id. Nothing to do
-            }
-	      printf("AddTrack::: NewAdd=%d\n",aTrackId);
+            }	      
  
             mTrackIo.IdVect.push_back(aTrackId);
             mTrackIo.ParentId.push_back(aParentId);

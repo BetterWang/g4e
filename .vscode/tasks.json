@@ -4,8 +4,8 @@
         {
         "type": "shell",
         "label": "g++ build active file",
-        "command": "/usr/bin/make",
-        "args": [],
+        "command": "spack",
+        "args": ["load", "g4e@local", "&&", "make", "install"],
         "options": {
             "cwd": "${workspaceFolder}/work"
         },

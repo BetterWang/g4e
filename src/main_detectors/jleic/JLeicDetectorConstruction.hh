@@ -333,8 +333,6 @@ private:
     G4VPhysicalVolume *fPhysicsAbsorber;
     AcceleratorMagnets* fElectronLineMagnets;
     AcceleratorMagnets* fIonLineMagnets;
-
-
 };
 
 inline void JLeicDetectorConstruction::PrintGeometryParameters()

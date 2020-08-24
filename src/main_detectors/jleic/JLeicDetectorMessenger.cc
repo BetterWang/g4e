@@ -73,6 +73,10 @@ JLeicDetectorMessenger::JLeicDetectorMessenger(JLeicDetectorConstruction *JLeicD
     IbeamZCmd->SetDefaultValue(1);
     IbeamZCmd->AvailableForStates(G4State_PreInit, G4State_Idle);
 
+    CheckOverlapsCmd = new G4UIcommand("/detsetup/checkOverlaps", this);
+    CheckOverlapsCmd->SetGuidance("Checks volumes overlap. Must be initialized");    
+    // CheckOverlapsCmd->AvailableForStates(G4State_PreInit, G4State_Idle);
+
 
     BeamlineNameCmd =  new G4UIcmdWithAString("/detsetup/beamlineName", this);
     BeamlineNameCmd->SetGuidance("Select beamline erhic or jlab");
@@ -302,6 +306,10 @@ void JLeicDetectorMessenger::SetNewValue(G4UIcommand *command, G4String newValue
     if (command == MagFieldCmd) {
         // TODO Remove it probably? Or make option for uniform magnetic field
         //JLeicDetector->SetMagField(MagFieldCmd->GetNewDoubleValue(newValue));
+    }
+
+    if (command == CheckOverlapsCmd) {
+        JLeicDetector->checkVolumeOverlap();
     }
     /*
     if( command == ElectronCutCmd )

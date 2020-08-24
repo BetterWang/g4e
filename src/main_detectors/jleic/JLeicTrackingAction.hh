@@ -51,7 +51,7 @@ public:
 private:
     std::unordered_map<std::uint64_t, std::uint64_t> mTrackLevelsById;
 
-    int mTrackKillSecondaryLevel = 0;   // -1 - don't kill tracks based on Ancestry Level
+    int mTrackSaveSecondaryLevel = -1;   // -1 - don't kill tracks based on Ancestry Level
     static G4GenericMessenger *mMessenger;
 };
 

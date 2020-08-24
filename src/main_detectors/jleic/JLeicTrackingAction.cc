@@ -40,20 +40,19 @@
 #include "JLeicTrackInformation.hh"
 
 
-
-JLeicTrackingAction::JLeicTrackingAction() : G4UserTrackingAction() 
+JLeicTrackingAction::JLeicTrackingAction(): G4UserTrackingAction() 
 {
     static G4GenericMessenger *gMessenger = nullptr;
-    static int gTrackKillSecondaryLevel = -1;
+    static int gTrackSaveSecondaryLevel = -1;
 
     // Create a global messenger that will be used 
     if(!gMessenger) {
         gMessenger = new G4GenericMessenger(nullptr, "/g4e/tracking/");
-        gMessenger->DeclareProperty("killSecondaryLevel", gTrackKillSecondaryLevel, "Kill tracks by ancestry level. 0=Don't kill, 1-Leave only gen particle, 2- Leave gen and their daughters, etc.. ");
+        gMessenger->DeclareProperty("saveSecondaryLevel", gTrackSaveSecondaryLevel, "Beyond this level track will be killed ");
     }
 
-    mTrackKillSecondaryLevel = gTrackKillSecondaryLevel;
-    G4cout << "/g4e/tracking/killSecondaryLevel = " << mTrackKillSecondaryLevel << G4endl;
+    mTrackSaveSecondaryLevel = gTrackSaveSecondaryLevel;
+    G4cout << "/g4e/tracking/saveSecondaryLevel = " << mTrackSaveSecondaryLevel << G4endl;
 }
 
 void JLeicTrackingAction::PreUserTrackingAction(const G4Track *aTrack)
@@ -66,7 +65,7 @@ void JLeicTrackingAction::PreUserTrackingAction(const G4Track *aTrack)
         aTrack->SetUserInformation(info);
     } else {
         info = (JLeicTrackInformation*) aTrack->GetUserInformation();
-        if(info && mTrackKillSecondaryLevel && info->GetAncestryLevel() >= mTrackKillSecondaryLevel) {
+        if(info && mTrackSaveSecondaryLevel > 0 && info->GetAncestryLevel() > mTrackSaveSecondaryLevel) {
             (const_cast<G4Track*>(aTrack))->SetTrackStatus(fKillTrackAndSecondaries);
         }
     }

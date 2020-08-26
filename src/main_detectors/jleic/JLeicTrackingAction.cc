@@ -39,11 +39,12 @@
 #include "G4SystemOfUnits.hh"
 #include "JLeicTrackInformation.hh"
 
+int JLeicTrackingAction::gTrackSaveSecondaryLevel = -1;
 
 JLeicTrackingAction::JLeicTrackingAction(): G4UserTrackingAction() 
 {
     static G4GenericMessenger *gMessenger = nullptr;
-    static int gTrackSaveSecondaryLevel = -1;
+    
 
     // Create a global messenger that will be used 
     if(!gMessenger) {
@@ -65,7 +66,7 @@ void JLeicTrackingAction::PreUserTrackingAction(const G4Track *aTrack)
         aTrack->SetUserInformation(info);
     } else {
         info = (JLeicTrackInformation*) aTrack->GetUserInformation();
-        if(info && mTrackSaveSecondaryLevel > 0 && info->GetAncestryLevel() > mTrackSaveSecondaryLevel) {
+        if(info && gTrackSaveSecondaryLevel > 0 && info->GetAncestryLevel() > gTrackSaveSecondaryLevel) {
             (const_cast<G4Track*>(aTrack))->SetTrackStatus(fKillTrackAndSecondaries);
         }
     }

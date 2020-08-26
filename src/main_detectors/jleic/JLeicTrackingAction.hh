@@ -53,6 +53,7 @@ private:
 
     int mTrackSaveSecondaryLevel = -1;   // -1 - don't kill tracks based on Ancestry Level
     static G4GenericMessenger *mMessenger;
+    static int gTrackSaveSecondaryLevel;
 };
 
 #endif

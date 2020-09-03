@@ -398,9 +398,9 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
             fConfig.ce_EMCAL.ROut = fConfig.ce_Endcap.ROut -3*cm;
 
             ce_EMCAL.Construct(fConfig.ce_EMCAL, World_Material, ce_ENDCAP_GVol_Phys);
-            ce_EMCAL.ConstructCrystals(); // --- inner detector with Crystals
+            ce_EMCAL.ConstructCrystalsSquare(); // --- inner detector with Crystals
             ce_EMCAL.ce_EMCAL_detPWO_Logic->SetSensitiveDetector(fCe_emcalSD);
-            ce_EMCAL.ConstructGlass();    // --- outer part with Glass
+            ce_EMCAL.ConstructGlassSquare();    // --- outer part with Glass
             ce_EMCAL.ce_EMCAL_detGLASS_Logic->SetSensitiveDetector(fCe_emcalSD);
         }
 
@@ -575,7 +575,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 
         //-------------- for jleic D2 tracking placements -------------------------
         if(beamLine == BeamLines::JLEIC) {
-            for (int i = 0; i < fIonLineMagnets->fMagnets.size(); i++) {
+            for (size_t i = 0; i < fIonLineMagnets->fMagnets.size(); i++) {
                 if (fIonLineMagnets->fMagnets.at(i)->name == "iBDS2") {
                     // fConfig.ffi_OFFM_TRK.RIn = 0 * cm;
                     // fConfig.ffi_OFFM_TRK.ROut = fIonLineMagnets->fMagnets.at(i)->Rin2 * cm - 0.1 * cm;
@@ -746,8 +746,8 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     } // end ffe_LUMI
 
    //===================================================================================
-    //==                        Low-Q2                                                  ==
-    //===================================================================================
+   //==                        Low-Q2                                                 ==
+   //===================================================================================
 
     if (USE_FFE_LOWQ2) {
         fConfig.ffe_LOWQ2.PosX=+0.3*m;

@@ -61,8 +61,6 @@ public:
 
         //   my_z= 0*cm;
         Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, cfg.PosZ), "ce_EMCAL_GVol_Phys", Logic, motherVolume, false, 0);
-
-
     }
 
     /// CE EMCAL module Crystals
@@ -137,6 +135,69 @@ public:
             }
         }
         fmt::print("CE EMCAL PWO END\n\n");
+    }
+
+    /// CE EMCAL module Crystals
+    inline void ConstructCrystalsSquare()
+    {        
+        auto cfg = ConstructionConfig;
+
+        cfg.PWO_PosZ = cfg.Thickness / 2 - cfg.PWO_Thickness / 2;
+
+        ce_EMCAL_detPWO_Material = fMat->GetMaterial("PbWO4");
+        ce_EMCAL_detPWO_Solid = new G4Box("ce_EMCAL_detPWO_Solid", cfg.PWO_Width * 0.5, cfg.PWO_Width * 0.5, cfg.PWO_Thickness * 0.5);
+        ce_EMCAL_detPWO_Logic = new G4LogicalVolume(ce_EMCAL_detPWO_Solid, ce_EMCAL_detPWO_Material, "ce_EMCAL_detPWO_Logic");
+
+        attr_ce_EMCAL_detPWO = new G4VisAttributes(G4Color(0.1, 1.0, 0.9, 1.));
+        attr_ce_EMCAL_detPWO->SetLineWidth(1);
+        attr_ce_EMCAL_detPWO->SetForceSolid(true);
+        ce_EMCAL_detPWO_Logic->SetVisAttributes(attr_ce_EMCAL_detPWO);
+
+        fmt::print("\nCE EMCAL PWO START\n");
+
+        // CRYSTAL
+        double diameter = 2 * cfg.PWO_OuterR;
+
+        // How many towers do we have per row/columnt?
+        // Add a gap + diameter as if we have N towers, we have N-1 gaps;
+        int towersInRow = std::ceil((diameter + cfg.PWO_Gap) /  cfg.PWO_Thickness);
+
+        // Is it odd or even number of towersInRow
+        double leftTowerPos, topTowerPos;
+        if(towersInRow%2) {
+            //             |
+            //      [ ][ ][ ][ ][ ]
+            //       ^     |
+            int towersInHalfRow = std::ceil(towersInRow/2.0);
+            leftTowerPos = towersInHalfRow * (cfg.PWO_Width + cfg.PWO_Thickness);
+        } else {
+            //               |
+            //      [ ][ ][ ][ ][ ][ ]
+            //       ^      |
+            int towersInHalfRow = towersInRow/2;
+            topTowerPos = (towersInHalfRow - 0.5) * (cfg.PWO_Width + cfg.PWO_Thickness);
+        }
+
+        fmt::print("Towers in Row/Col   = {};\n", towersInRow);
+        fmt::print("Top left tower pos  = {:<10} {:<10} cm;\n", -leftTowerPos / cm, topTowerPos / cm);
+
+        int towerIndex = 0;
+
+        for(int rowIndex=0; rowIndex < towersInRow; rowIndex++) {
+            for(int colIndex=0; colIndex < towersInRow; colIndex++) {
+                double x = -leftTowerPos + colIndex * cfg.PWO_Thickness;
+                double y = -topTowerPos + rowIndex * cfg.PWO_Thickness;
+                double r = sqrt(x * x + y * y);
+
+                if (r < cfg.Glass_OuterR - cfg.Glass_Width + cfg.Glass_Gap && y > cfg.Glass_InnerR && x > cfg.Glass_InnerR) {
+                    std::string name = fmt::format("ce_EMCAL_pwo_phys_{}", 1000 * colIndex + rowIndex);
+                    new G4PVPlacement(nullptr, G4ThreeVector(x, y, cfg.Glass_PosZ), name, ce_EMCAL_detGLASS_Logic, Phys, false, towerIndex);\
+                    fmt::print("{:<10} {:<10} {:<10} {:<10.4f} {:<10.4f} {}\n", towerIndex, rowIndex, colIndex, x / cm, y / cm, name);
+                    towerIndex++;
+                }
+            }
+        }
+        fmt::print("\nCE EMCAL PWO END\n");
     }
 
 
@@ -220,6 +281,81 @@ public:
         fmt::print("CE EMCAL GLASS END\n\n");
     }
 
+    inline void ConstructGlassSquare()
+    {
+        using namespace std;
+        auto cfg = ConstructionConfig;
+
+        //------------------------------------------------------------------
+        // Ecal module GLASS
+        //------------------------------------------------------------------
+        cfg.Glass_OuterR = cfg.ROut - 1 * cm ;
+        cfg.Glass_InnerR = cfg.PWO_OuterR + 3 * cm;
+        cfg.Glass_PosZ = cfg.Thickness / 2. - cfg.Glass_Thickness / 2.;
+
+        ce_EMCAL_detGLASS_Material = fMat->GetMaterial("DSBCe");
+        ce_EMCAL_detGLASS_Solid = new G4Box("ce_EMCAL_detGLASS_Solid", cfg.Glass_Width * 0.5, cfg.Glass_Width * 0.5, cfg.Glass_Thickness * 0.5);
+        ce_EMCAL_detGLASS_Logic = new G4LogicalVolume(ce_EMCAL_detGLASS_Solid, ce_EMCAL_detGLASS_Material, "ce_EMCAL_detGLASS_Logic");
+
+        attr_ce_EMCAL_detGLASS = new G4VisAttributes(G4Color(0.3, 0.4, 1., 0.5));
+        attr_ce_EMCAL_detGLASS->SetLineWidth(1);
+        attr_ce_EMCAL_detGLASS->SetForceSolid(true);
+        ce_EMCAL_detGLASS_Logic->SetVisAttributes(attr_ce_EMCAL_detGLASS);
+
+        // GLASS
+        double diameter = 2 * cfg.Glass_OuterR;
+
+        // How many towers do we have per row/columnt?
+        // Add a gap + diameter as if we have N towers, we have N-1 gaps;
+        int towersInRow = std::ceil((diameter + cfg.Glass_Gap) /  cfg.Glass_Thickness);
+
+        // Is it odd or even number of towersInRow
+        double leftTowerPos, topTowerPos;
+        if(towersInRow%2) {
+            //             |
+            //      [ ][ ][ ][ ][ ]
+            //       ^     |
+            int towersInHalfRow = std::ceil(towersInRow/2.0);
+            leftTowerPos = towersInHalfRow * (cfg.Glass_Width + cfg.Glass_Thickness);
+        } else {
+            //               |
+            //      [ ][ ][ ][ ][ ][ ]
+            //       ^      |
+            int towersInHalfRow = towersInRow/2;
+            topTowerPos = (towersInHalfRow - 1) * (cfg.Glass_Width + cfg.Glass_Thickness) + (cfg.Glass_Width + cfg.Glass_Thickness)*0.5;
+        }
+
+        int moduleIndex = 0;
+
+        fmt::print("\nCE EMCAL GLASS SQUARE START\n");
+        fmt::print("Glass_Thickness = {} cm;\n", cfg.Glass_Thickness / cm);
+        fmt::print("Glass_Width     = {} cm;\n", cfg.Glass_Width / cm);
+        fmt::print("Glass_Gap       = {} cm;\n", cfg.Glass_Gap / cm);
+        fmt::print("Glass_InnerR    = {} cm;\n", cfg.Glass_InnerR / cm);
+        fmt::print("Glass_OuterR    = {} cm;\n", cfg.Glass_OuterR / cm);
+        fmt::print("Glass_PosZ      = {} cm;\n", cfg.Glass_PosZ / cm);
+        fmt::print("Towers in Row/Col   = {} cm;\n", cfg.Glass_PosZ / cm);
+        fmt::print("Top left tower pos  = {:<10} {:<10} cm;\n", -leftTowerPos / cm, topTowerPos / cm);
+
+        int towerIndex = 0;
+
+        for(int rowIndex=0; rowIndex < towersInRow; rowIndex++) {
+            for(int colIndex=0; colIndex < towersInRow; colIndex++) {
+                double x = -leftTowerPos + colIndex * cfg.Glass_Thickness;
+                double y = -topTowerPos + rowIndex * cfg.Glass_Thickness;
+                double r = sqrt(x * x + y * y);
+
+                if (r < cfg.Glass_OuterR - cfg.Glass_Width + cfg.Glass_Gap && y > cfg.Glass_InnerR && x > cfg.Glass_InnerR) {
+                    std::string name = fmt::format("ce_EMCAL_glass_phys_{}", 1000 * colIndex + rowIndex);
+                    new G4PVPlacement(nullptr, G4ThreeVector(x, y, cfg.Glass_PosZ), name, ce_EMCAL_detGLASS_Logic, Phys, false, towerIndex);\
+                    fmt::print("{:<10} {:<10} {:<10} {:<10.4f} {:<10.4f} {}\n", towerIndex, rowIndex, colIndex, x / cm, y / cm, name);
+                    towerIndex++;
+                }
+            }
+        }
+        fmt::print("CE EMCAL GLASS END\n\n");
+    }
+
     G4Tubs *Solid;      //pointer to the solid
     G4LogicalVolume *Logic;    //pointer to the logical
     G4VPhysicalVolume *Phys;  //pointer to the physical
@@ -247,10 +383,10 @@ private:
     double ce_EMCAL_det_SizeZ;
     G4Material *ce_EMCAL_det_Material;
     G4VisAttributes *attr_ce_EMCAL;
-    // G4Tubs*            cb_EMCAL_det_Solid;    //pointer to the solid World
-    G4Polycone *ce_EMCAL_det_Solid;    //pointer to the solid World
-    G4LogicalVolume *ce_EMCAL_det_Logic;    //pointer to the logical World
-    G4VPhysicalVolume *ce_EMCAL_det_Phys;    //pointer to the physical World
+    // G4Tubs*            cb_EMCAL_det_Solid;    // pointer to the solid World
+    G4Polycone *ce_EMCAL_det_Solid;              // pointer to the solid World
+    G4LogicalVolume *ce_EMCAL_det_Logic;         // pointer to the logical World
+    G4VPhysicalVolume *ce_EMCAL_det_Phys;        // pointer to the physical World
 };
 
 #endif //G4E_CE_EMCAL_HH

@@ -69,9 +69,7 @@ namespace g4e {
         std::vector<std::vector<std::string>> event_values;
         std::vector<std::vector<std::string>> particle_values;
 
-        ~TextFileEvent(){
-            std::cout<<"here"<<std::endl;
-        }
+        ~TextFileEvent(){}
     };
 
     enum class TextEventLineDecisions {

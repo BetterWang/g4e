@@ -48,8 +48,8 @@
 G4ThreeVector beam_dir;           ///< beam direction
 G4ThreeVector beam_vrt;           ///< beam vertex
 G4ThreeVector beam_pol;           ///< beam polarization vector
-double TWINDOW;                    ///< Time Window
-double TBUNCH;                     ///< Time Between Bunches
+double TWINDOW;                   ///< Time Window
+double TBUNCH;                    ///< Time Between Bunches
 double GEN_VERBOSITY;
 //----------------------
 

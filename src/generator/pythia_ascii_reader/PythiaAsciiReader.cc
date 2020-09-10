@@ -91,14 +91,14 @@ PythiaAsciiReader *PythiaAsciiReader::GeneratePythiaEvent() {
         gif >> nparticles;
         for (unsigned i = 0; i < 9; i++) {
             double tmp;
+            gif >> tmp;
             if (i == 3) {
-                gif >> beamPol;
+                beamPol = tmp;
                 if (beamPol > 1)
                     beamPol = 1;
-            } else {
-                gif >> tmp;
-                lundUserDefined.push_back(tmp);
             }
+
+            lundUserDefined.push_back(tmp);
         }
         // 11    0    1        2112        0        0       -1.332584       -0.299053       31.538593       31.582129        0.939570        0.000000        0.000000        0.000000
         //	printf("=====> LUND 1  !!!! npart=%d dCone=%f dmyMom=%f \n", nparticles, dCone, dmyMom);

@@ -1,7 +1,3 @@
-//
-// Created by yulia on 6/12/19.
-//
-
 #ifndef G4E_CE_EMCAL_HH
 #define G4E_CE_EMCAL_HH
 
@@ -13,6 +9,7 @@
 #include "G4VisAttributes.hh"
 #include <spdlog/spdlog.h>
 #include "JLeicDetectorConfig.hh"
+#include <InitializationContext.hh>
 
 struct ce_EMCAL_Config
 {
@@ -40,27 +37,29 @@ struct ce_EMCAL_Config
     double Glass_PosZ;
 };
 
-
+// Central region, electron end-cap EMCAL
 class ce_EMCAL_Design
 {
 public:
+
+    ce_EMCAL_Design(g4e::InitializationContext *init) {
+
+    }
+
     inline void Construct(ce_EMCAL_Config cfg, G4Material *worldMaterial, G4VPhysicalVolume *motherVolume)
     {
-        printf("Begin cb_CTD volume \n");
+        spdlog::debug("Construct ce_EMCAL");
         ConstructionConfig = cfg;
-
-        //........................EMCAL Barrel detector----------------------------------------------
-        printf("Begin ce_EMCAL  volume \n");
 
         Solid = new G4Tubs("ce_EMCAL_GVol_Solid", cfg.RIn, cfg.ROut, cfg.Thickness / 2., 0., 360 * deg);
         Logic = new G4LogicalVolume(Solid, worldMaterial, "ce_EMCAL_GVol_Logic");
-        G4VisAttributes *attr_ce_EMCAL_GVol = new G4VisAttributes(G4Color(0.3, 0.5, 0.9, 0.9));
-        attr_ce_EMCAL_GVol->SetLineWidth(1);
-        attr_ce_EMCAL_GVol->SetForceSolid(false);
-        Logic->SetVisAttributes(attr_ce_EMCAL_GVol);
+        OuterVolumeVisAttr = new G4VisAttributes(G4Color(0.3, 0.5, 0.9, 0.9));
+        OuterVolumeVisAttr->SetLineWidth(1);
+        OuterVolumeVisAttr->SetForceSolid(false);
+        Logic->SetVisAttributes(OuterVolumeVisAttr);
 
         //   my_z= 0*cm;
-        Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, cfg.PosZ), "ce_EMCAL_GVol_Phys", Logic, motherVolume, false, 0);
+        Phys = new G4PVPlacement(nullptr, G4ThreeVector(0, 0, cfg.PosZ), "ce_EMCAL_GVol_Phys", Logic, motherVolume, false, 0);
     }
 
     /// CE EMCAL module Crystals
@@ -160,7 +159,7 @@ public:
 
         // How many towers do we have per row/columnt?
         // Add a gap + diameter as if we have N towers, we have N-1 gaps;
-        int towersInRow = std::ceil((diameter + cfg.PWO_Gap) /  cfg.PWO_Thickness);
+        int towersInRow = std::ceil((diameter + cfg.PWO_Gap) /  (cfg.PWO_Width + cfg.PWO_Gap));
 
         // Is it odd or even number of towersInRow
         double leftTowerPos, topTowerPos;
@@ -169,34 +168,45 @@ public:
             //      [ ][ ][ ][ ][ ]
             //       ^     |
             int towersInHalfRow = std::ceil(towersInRow/2.0);
-            leftTowerPos = towersInHalfRow * (cfg.PWO_Width + cfg.PWO_Thickness);
+            leftTowerPos = topTowerPos = -towersInHalfRow * (cfg.PWO_Width + cfg.PWO_Gap);
         } else {
             //               |
             //      [ ][ ][ ][ ][ ][ ]
             //       ^      |
             int towersInHalfRow = towersInRow/2;
-            topTowerPos = (towersInHalfRow - 0.5) * (cfg.PWO_Width + cfg.PWO_Thickness);
+            leftTowerPos = topTowerPos = -(towersInHalfRow - 0.5) * (cfg.PWO_Width + cfg.PWO_Gap);
         }
 
+        fmt::print("\nCE EMCAL PWO SQUARE START\n");
+        fmt::print("PWO_Thickness = {} cm;\n", cfg.PWO_Thickness / cm);
+        fmt::print("PWO_Width     = {} cm;\n", cfg.PWO_Width / cm);
+        fmt::print("PWO_Gap       = {} cm;\n", cfg.PWO_Gap / cm);
+        fmt::print("PWO_InnerR    = {} cm;\n", cfg.PWO_InnerR / cm);
+        fmt::print("PWO_OuterR    = {} cm;\n", cfg.PWO_OuterR / cm);
+        fmt::print("PWO_PosZ      = {} cm;\n", cfg.PWO_PosZ / cm);
         fmt::print("Towers in Row/Col   = {};\n", towersInRow);
         fmt::print("Top left tower pos  = {:<10} {:<10} cm;\n", -leftTowerPos / cm, topTowerPos / cm);
 
+        fmt::print("#Towers info:\n");
+        fmt::print("#{:<5} {:<6} {:<3} {:<3} {:>10} {:>10}   {}\n", "idx",  "code", "col", "row", "x", "y", "name");
         int towerIndex = 0;
+        for(int colIndex=0; colIndex < towersInRow; colIndex++) {
+            for(int rowIndex=0; rowIndex < towersInRow; rowIndex++) {
+                double x = leftTowerPos + colIndex * (cfg.PWO_Width + cfg.PWO_Gap);
+                double y = topTowerPos + rowIndex * (cfg.PWO_Width + cfg.PWO_Gap);
 
-        for(int rowIndex=0; rowIndex < towersInRow; rowIndex++) {
-            for(int colIndex=0; colIndex < towersInRow; colIndex++) {
-                double x = -leftTowerPos + colIndex * cfg.PWO_Thickness;
-                double y = -topTowerPos + rowIndex * cfg.PWO_Thickness;
-                double r = sqrt(x * x + y * y);
-
-                if (r < cfg.Glass_OuterR - cfg.Glass_Width + cfg.Glass_Gap && y > cfg.Glass_InnerR && x > cfg.Glass_InnerR) {
-                    std::string name = fmt::format("ce_EMCAL_pwo_phys_{}", 1000 * colIndex + rowIndex);
-                    new G4PVPlacement(nullptr, G4ThreeVector(x, y, cfg.Glass_PosZ), name, ce_EMCAL_detGLASS_Logic, Phys, false, towerIndex);\
-                    fmt::print("{:<10} {:<10} {:<10} {:<10.4f} {:<10.4f} {}\n", towerIndex, rowIndex, colIndex, x / cm, y / cm, name);
+                if ((std::abs(y) < cfg.PWO_OuterR && std::abs(x) < cfg.PWO_OuterR) &&
+                    (std::abs(y) > cfg.PWO_InnerR || std::abs(x) > cfg.PWO_InnerR))
+                {
+                    int code = 1000 * colIndex + rowIndex;
+                    std::string name(fmt::format("ce_EMCAL_pwo_phys_{}", code));
+                    new G4PVPlacement(nullptr, G4ThreeVector(x, y, cfg.PWO_PosZ), name, ce_EMCAL_detPWO_Logic, Phys, false, towerIndex);
+                    fmt::print(" {:<5} {:<6} {:<3} {:<3} {:>10.4f} {:>10.4f}   {}\n", towerIndex, code, colIndex, rowIndex, x / cm, y / cm, name);
                     towerIndex++;
                 }
             }
         }
+        fmt::print("Total PWO modules: {}\n", towerIndex);
         fmt::print("\nCE EMCAL PWO END\n");
     }
 
@@ -307,7 +317,7 @@ public:
 
         // How many towers do we have per row/columnt?
         // Add a gap + diameter as if we have N towers, we have N-1 gaps;
-        int towersInRow = std::ceil((diameter + cfg.Glass_Gap) /  cfg.Glass_Thickness);
+        int towersInRow = std::ceil((diameter + cfg.Glass_Gap) /  (cfg.Glass_Width + cfg.Glass_Gap));
 
         // Is it odd or even number of towersInRow
         double leftTowerPos, topTowerPos;
@@ -316,13 +326,14 @@ public:
             //      [ ][ ][ ][ ][ ]
             //       ^     |
             int towersInHalfRow = std::ceil(towersInRow/2.0);
-            leftTowerPos = towersInHalfRow * (cfg.Glass_Width + cfg.Glass_Thickness);
+            topTowerPos = leftTowerPos = -towersInHalfRow * (cfg.Glass_Width + cfg.Glass_Gap);
+
         } else {
             //               |
             //      [ ][ ][ ][ ][ ][ ]
             //       ^      |
             int towersInHalfRow = towersInRow/2;
-            topTowerPos = (towersInHalfRow - 1) * (cfg.Glass_Width + cfg.Glass_Thickness) + (cfg.Glass_Width + cfg.Glass_Thickness)*0.5;
+            topTowerPos = leftTowerPos = -(towersInHalfRow - 0.5) * (cfg.Glass_Width + cfg.Glass_Gap);
         }
 
         int moduleIndex = 0;
@@ -337,29 +348,34 @@ public:
         fmt::print("Towers in Row/Col   = {} cm;\n", cfg.Glass_PosZ / cm);
         fmt::print("Top left tower pos  = {:<10} {:<10} cm;\n", -leftTowerPos / cm, topTowerPos / cm);
 
+        fmt::print("#Towers info:\n");
+        fmt::print("#{:<5} {:<6} {:<3} {:<3} {:>10} {:>10}   {}\n", "idx",  "code", "col", "row", "x", "y", "name");
         int towerIndex = 0;
-
         for(int rowIndex=0; rowIndex < towersInRow; rowIndex++) {
             for(int colIndex=0; colIndex < towersInRow; colIndex++) {
-                double x = -leftTowerPos + colIndex * cfg.Glass_Thickness;
-                double y = -topTowerPos + rowIndex * cfg.Glass_Thickness;
+                double x = leftTowerPos + colIndex * (cfg.Glass_Width + cfg.Glass_Gap);
+                double y = topTowerPos + rowIndex * (cfg.Glass_Width + cfg.Glass_Gap);
                 double r = sqrt(x * x + y * y);
 
-                if (r < cfg.Glass_OuterR - cfg.Glass_Width + cfg.Glass_Gap && y > cfg.Glass_InnerR && x > cfg.Glass_InnerR) {
-                    std::string name = fmt::format("ce_EMCAL_glass_phys_{}", 1000 * colIndex + rowIndex);
+
+                if (r < cfg.Glass_OuterR && (std::abs(x) > cfg.Glass_InnerR || std::abs(y) > cfg.Glass_InnerR)) {
+                    int code = 1000 * colIndex + rowIndex;
+                    std::string name = fmt::format("ce_EMCAL_glass_phys_{}", code);
                     new G4PVPlacement(nullptr, G4ThreeVector(x, y, cfg.Glass_PosZ), name, ce_EMCAL_detGLASS_Logic, Phys, false, towerIndex);\
-                    fmt::print("{:<10} {:<10} {:<10} {:<10.4f} {:<10.4f} {}\n", towerIndex, rowIndex, colIndex, x / cm, y / cm, name);
+                    fmt::print(" {:<5} {:<6} {:<3} {:<3} {:>10.4f} {:>10.4f}   {}\n", towerIndex, code, colIndex, rowIndex, x / cm, y / cm, name);
                     towerIndex++;
                 }
             }
         }
+        fmt::print("Total Glass modules: {}\n", towerIndex);
         fmt::print("CE EMCAL GLASS END\n\n");
     }
 
-    G4Tubs *Solid;      //pointer to the solid
-    G4LogicalVolume *Logic;    //pointer to the logical
-    G4VPhysicalVolume *Phys;  //pointer to the physical
+    G4Tubs *Solid;              // pointer to the solid
+    G4LogicalVolume *Logic;     // pointer to the logical
+    G4VPhysicalVolume *Phys;    // pointer to the physical
 
+    G4VisAttributes *OuterVolumeVisAttr;
 
     /// Parameters that was used in the moment of construction
     ce_EMCAL_Config ConstructionConfig;
@@ -369,6 +385,7 @@ public:
     G4VisAttributes *attr_ce_EMCAL_detPWO;
     G4Box *ce_EMCAL_detPWO_Solid;
     G4LogicalVolume *ce_EMCAL_detPWO_Logic;
+
     //---glass
     G4Material *ce_EMCAL_detGLASS_Material;
     G4VisAttributes *attr_ce_EMCAL_detGLASS;
@@ -378,15 +395,6 @@ public:
 
 private:
     g4e::Materials *fMat;
-    double ce_EMCAL_det_RIn;
-    double ce_EMCAL_det_ROut;
-    double ce_EMCAL_det_SizeZ;
-    G4Material *ce_EMCAL_det_Material;
-    G4VisAttributes *attr_ce_EMCAL;
-    // G4Tubs*            cb_EMCAL_det_Solid;    // pointer to the solid World
-    G4Polycone *ce_EMCAL_det_Solid;              // pointer to the solid World
-    G4LogicalVolume *ce_EMCAL_det_Logic;         // pointer to the logical World
-    G4VPhysicalVolume *ce_EMCAL_det_Phys;        // pointer to the physical World
 };
 
 #endif //G4E_CE_EMCAL_HH

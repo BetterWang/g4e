@@ -8,8 +8,6 @@
 #include "ArgumentProcessor.hh"
 
 
-
-
 UserArguments InputProcessor::Process(int argc, char **argv)
 {
     UserArguments result;                                          // This function result

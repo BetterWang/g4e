@@ -95,7 +95,7 @@ namespace g4e{
         mutable std::mutex mBuildMutex;  // This lock is used for Build funcion for thread workers
         mutable std::atomic_bool mBuildIsDone{false};  // Flag that indicates, that Build function was called at least once
 
-        G4VUserPrimaryGeneratorAction *mGeneratorAction{};
+        G4VUserPrimaryGeneratorAction *mGeneratorAction;
     public:
         G4VUserPrimaryGeneratorAction *GetGeneratorAction() const;
 

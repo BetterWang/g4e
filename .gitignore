@@ -184,3 +184,5 @@ test/beagle/beagle_smoke_test.run.json
 python/.idea/
 
 build_old/
+
+.idea/

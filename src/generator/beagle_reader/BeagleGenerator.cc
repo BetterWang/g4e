@@ -99,7 +99,8 @@ g4e::BeagleGenerator::BeagleGenerator()
         eventData.TrueDISInfo.nu = beagleEvent->trueNu;
         eventData.TrueDISInfo.tHat = beagleEvent->t_hat;
         eventData.StartLine = beagleEvent->text_event->started_at_line;
-        eventData.Weight = beagleEvent->genevent;
+        eventData.Weight = beagleEvent->RA;
+        
 
         event->SetUserInformation(userInfo);
 

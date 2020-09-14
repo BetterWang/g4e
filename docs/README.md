@@ -30,6 +30,18 @@ and run
 sphinx-serve
 ```
 
+Or even better use sphinx-autobuild
+
+```bash
+pip install sphinx-autobuild
+
+# from project root
+sphinx-autobuild docs docs/_build/html
+
+# from docs root
+sphinx-autobuild . _build/html
+```
+
 
 ## Read the docs
 

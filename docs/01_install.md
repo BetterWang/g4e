@@ -1,6 +1,124 @@
-# Install
+# Build/Install
 
-## Use ejpm
+## Spack install
+Spack is a package management tool designed to support multiple versions and configurations of 
+software on a wide variety of platforms and environments. Spack allows to automatically build
+target packages with all needed dependencies. [Sapck documentation](https://spack.readthedocs.io/en/latest/getting_started.html#installation)
+
+The installation consist of 3 steps then:
+1. Install spack itself
+2. Install EIC [repository](https://github.com/eic/eic-spack) (with EIC packages)
+3. Run spack command to install g4e (or other packages)
+
+
+### Install spack and EIC repository
+
+```bash 
+git clone https://github.com/spack/spack.git
+
+#Source environment
+
+# For bash/zsh users
+$ . spack/share/spack/setup-env.sh
+
+# For tcsh/csh users
+$ source spack/share/spack/setup-env.csh
+```
+
+You should be able now to use spack:
+
+```bash
+spack info root
+```
+
+> (!) By default, all packages will be downloaded, built and installed in this spack directory
+>
+[More documentation on spack installation](https://spack.readthedocs.io/en/latest/getting_started.html#installation)
+
+
+Clone and add [eic-spack repository](https://github.com/eic/eic-spack):
+
+```bash
+# Adding the EIC Spack Repository
+git clone https://github.com/eic/eic-spack.git
+
+# Add this repository to your Spack configuration
+spack repo add eic-spack
+```
+
+
+### Install and use g4e with spack
+
+To install g4e with spack (this will install the latest stable version)
+
+```bash
+spack install g4e
+```
+
+To install concrete version of spack:
+
+```bash
+spack info g4e            # to see the available versions
+spack install g4e@1.3.7   # 
+```
+
+To see what is going to be installed/built
+
+```bash
+spack speck -I g4e
+```
+
+To use G4E with spack:
+
+```bash
+spack load g4e
+
+# or with exact version
+spack load g4e@1.3.7
+```
+
+[More documentation of spack usage](https://spack.readthedocs.io/en/latest/basic_usage.html)
+
+<br>
+
+## CMake build
+
+```bash
+git clone https://gitlab.com/jlab-eic/g4e.git
+mkdir g4e/build
+cd g4e/build
+cmake -DGEANT4_DIR=<geant4 installation> ../
+make
+```
+
+### Dependencies
+
+- **Geant4**
+   - CMake flag: `GEANT4_DIR`   
+- **VGM**  
+   Provides export to CERN.ROOT geometry
+   - Env. variable: `VGM_DIRECTORY` or `VGM_DIR`
+   - CMake flag: `VGM_DIRECTORY`
+- **HEPMC2**
+    Required to open Pythia8 and other HepMC2 compatible MC files   
+   - Env. variable: `HEPMC_DIR` or `HEPMC_ROOT_DIR`
+   - CMake flag: `HEPMC_DIRECTORY` or `HEPMC_DIR`
+- **Cern ROOT**  
+   Required for IO and some histogramming
+   - Environment variable: `ROOTSYS`
+   - CMake flag: `CERN_ROOT_DIRECTORY`
+
+
+### CMake flags
+
+Additional flags:
+`WITH_GEANT4_UIVIS` = ON Build with Geant4 UI and Vis drivers. Default
+`CMAKE_CXX_STANDARD` = 11 - C++ standard used.
+
+## Use ejpm (obsolete)
+
+> EJPM is still available and mantained but further development is 
+> concentrated around Spack packet manager
 
 ejpm is EIC software centric package/build manager. It is the designed
 to be the default tool to build G4E on users machine, as it helps with:
@@ -73,39 +191,3 @@ INSTALLED PACKETS: (*-active):
  g4e:
     * /eic/g4e/g4e-dev (owned)
 ```
-
-
-
-## CMake build
-
-```bash
-git clone https://gitlab.com/jlab-eic/g4e.git
-mkdir g4e/build
-cd g4e/build
-cmake ../
-make
-```
-
-### Dependencies
-
-- **Geant4**
-   - CMake flag: `GEANT4_DIR`   
-- **VGM**  
-   Provides export to CERN.ROOT geometry
-   - Env. variable: `VGM_DIRECTORY` or `VGM_DIR`
-   - CMake flag: `VGM_DIRECTORY`
-- **HEPMC2**
-    Required to open Pythia8 and other HepMC2 compatible MC files   
-   - Env. variable: `HEPMC_DIR` or `HEPMC_ROOT_DIR`
-   - CMake flag: `HEPMC_DIRECTORY` or `HEPMC_DIR`
-- **Cern ROOT**  
-   Required for IO and some histogramming
-   - Environment variable: `ROOTSYS`
-   - CMake flag: `CERN_ROOT_DIRECTORY`
-
-
-### CMake flags
-
-Additional flags:
-`WITH_GEANT4_UIVIS` = ON Build with Geant4 UI and Vis drivers. Default
-`CMAKE_CXX_STANDARD` = 11 - C++ standard used.

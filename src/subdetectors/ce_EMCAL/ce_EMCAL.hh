@@ -42,12 +42,16 @@ struct ce_EMCAL_Config
     ce_EMCAL_Config() {
         // Create a global messenger that will be used
         if(!Messenger) {
+            // Set geant options
             Messenger = new G4GenericMessenger(this, "/g4e/ce_EMCAL/");
             Messenger->DeclareProperty("pwoThickness", PWO_Thickness, "Thikness (z direction dimention) of PWO crystals ");
             Messenger->DeclareProperty("pwoWidth", PWO_Width, "Width (and higth) of each PWO crystal");
             Messenger->DeclareProperty("pwoGap", PWO_Gap, "Gap between PWO crystals ");
             Messenger->DeclareProperty("pwoInnerR", PWO_InnerR, "Inner radius or beam hole for PWO block");
             Messenger->DeclareProperty("pwoOuterR", PWO_OuterR, "Outer radius of PWO block");
+            Messenger->DeclareProperty("glassThickness", Glass_Thickness, "Thikness (z direction dimention) of PWO crystals ");
+            Messenger->DeclareProperty("glassWidth", Glass_Width, "Width (and higth) of each PWO crystal");
+            Messenger->DeclareProperty("glassGap", Glass_Gap, "Gap between PWO crystals ");
         }
     }
 

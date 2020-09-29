@@ -186,3 +186,11 @@ python/.idea/
 build_old/
 
 .idea/
+
+spack-build-env.txt
+
+spack-build-out.txt
+
+env.sh
+
+spack-configure-args.txt

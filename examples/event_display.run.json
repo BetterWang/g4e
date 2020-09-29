@@ -1,0 +1,19 @@
+{
+    "config": {
+        "beamline": "erhic",
+        "build_prefix": "/home/romanov/eic/spack/opt/spack/linux-ubuntu18.04-zen/gcc-7.5.0/g4e-1.3.7-clxqtznsqkqblb4ax3pl25w7jr23gvwi/cmake-build-debug",
+        "detector": "jleic",
+        "executable": "/home/romanov/eic/spack/opt/spack/linux-ubuntu18.04-zen/gcc-7.5.0/g4e-1.3.7-clxqtznsqkqblb4ax3pl25w7jr23gvwi/bin/g4e",
+        "g4e_home": "/home/romanov/eic/spack/opt/spack/linux-ubuntu18.04-zen/gcc-7.5.0/g4e-1.3.7-clxqtznsqkqblb4ax3pl25w7jr23gvwi",
+        "is_batch": false,
+        "output": "event_display",
+        "run_context_file": "event_display.run.json",
+        "run_mac_file": "event_display.run.mac",
+        "thread_count": 1,
+        "work_dir": "/home/romanov/eic/g4e/examples"
+    },
+    "user_commands": [
+        "/run/initialize",
+        "/run/beamOn 0"
+    ]
+}

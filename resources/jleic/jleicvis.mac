@@ -149,6 +149,6 @@
 #---------------------------------------------------
 /vis/viewer/zoom 0.5
 /vis/viewer/set/viewpointThetaPhi -90 -45 deg
-/vis/viewer/zoom 0.5
+/vis/viewer/zoom 100
 
 exit

@@ -55,7 +55,7 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
     G4int parentId = track->GetParentID();
     const G4ThreeVector& vertex = track->GetVertexPosition();
     const G4ThreeVector& vertexMom = track->GetVertexMomentumDirection();
-    G4int PDG = track->GetDefinition()->GetPDGEncoding();
+    G4int pdg = track->GetDefinition()->GetPDGEncoding();
 
     auto process = track->GetCreatorProcess();
 
@@ -76,7 +76,7 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
     jleicRootOutput->AddHit(
             /* hit id        */ mHitsCount,
             /* track id      */ aStep->GetTrack()->GetTrackID(),
-            /* parent Trk Id */ abs(PDG),  //aStep->GetTrack()->GetParentID(),
+            /* parent Trk Id */ abs(pdg),  //aStep->GetTrack()->GetParentID(),
             /* hit x         */ point->GetPosition().x() / mm,
             /* hit y         */ point->GetPosition().y() / mm,
             /* hit z         */ point->GetPosition().z() / mm,
@@ -95,7 +95,7 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
     //-- fill tracks --
     jleicRootOutput->AddTrack(curTrackID,                   /* int aTrackId */
                       parentId,                             /* int aParentId */
-                      PDG,                                  /* int aTrackPdg */
+                      pdg,                                  /* int aTrackPdg */
                       process_int,                           /* creator proc id */
                       ancestryLevel,                        /* ancestry level */
                       vertex.x() / mm,              /* double aXVertex */

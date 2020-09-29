@@ -24,7 +24,7 @@
 
 JLeicDetectorConstruction::JLeicDetectorConstruction(g4e::InitializationContext *initContext) : 
     fInitContext(initContext),
-    ce_EMCAL(initContext)
+    ce_EMCAL(fConfig.ce_EMCAL, initContext)
 {
     fDetectorMessenger = new JLeicDetectorMessenger(this);
     fMat = new g4e::Materials();
@@ -398,7 +398,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
             fConfig.ce_EMCAL.PosZ = -fConfig.ce_Endcap.SizeZ / 2 + fConfig.ce_EMCAL.Thickness / 2.;
             fConfig.ce_EMCAL.ROut = fConfig.ce_Endcap.ROut -3*cm;
 
-            ce_EMCAL.Construct(fConfig.ce_EMCAL, World_Material, ce_ENDCAP_GVol_Phys);
+            ce_EMCAL.Construct(World_Material, ce_ENDCAP_GVol_Phys);
             ce_EMCAL.OuterVolumeVisAttr->SetColor(G4Color(0.3, 0.5, 0.9, 0.1));
 
             ce_EMCAL.ConstructCrystalsSquare(); // --- inner detector with Crystals

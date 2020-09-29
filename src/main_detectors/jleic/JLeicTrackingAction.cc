@@ -60,9 +60,12 @@ void JLeicTrackingAction::PreUserTrackingAction(const G4Track *aTrack)
 {
     JLeicTrackInformation * info;
 
+    
+
     if(aTrack->GetParentID() == 0) {
         info = new JLeicTrackInformation();
         info->SetLevel(0);
+
         aTrack->SetUserInformation(info);
     } else {
         info = (JLeicTrackInformation*) aTrack->GetUserInformation();

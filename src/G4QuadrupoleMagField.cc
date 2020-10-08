@@ -59,7 +59,11 @@ G4QuadrupoleMagField::G4QuadrupoleMagField(G4double pGradient, G4ThreeVector pOr
     // fpMatrix  = &IdentityMatrix;
 
     if (JFdebug > 0) {
-        printf("SetQMagField::GetFieldValue:B_local Gradient=%f \n", fGradient / (CLHEP::tesla / CLHEP::m));
+      double m = CLHEP::m;
+      double tesla = CLHEP::tesla;
+
+        printf("SetQMagField:: origin x=%f y=%f z=%f [m]=%f [tesla]=%f (CLHEP)\n",fOrigin.x()/m,fOrigin.y()/m,fOrigin.z()/m,m,tesla);
+        printf("SetQMagField:: GetFieldValue:B_local Gradient=%f \n", fGradient / (CLHEP::tesla / CLHEP::m));
         printf("SetQMagField:: fpMatrix X: %f %f %f \n", fpMatrix->xx(), fpMatrix->xy(), fpMatrix->xz());
         printf("SetQMagField:: fpMatrix Y: %f %f %f \n", fpMatrix->yx(), fpMatrix->yy(), fpMatrix->yz());
         printf("SetQMagField:: fpMatrix Z: %f %f %f \n", fpMatrix->zx(), fpMatrix->zy(), fpMatrix->zz());

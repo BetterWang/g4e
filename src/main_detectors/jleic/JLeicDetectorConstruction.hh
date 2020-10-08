@@ -120,7 +120,7 @@ public:
 
     // Electron endcap
     // ==============================================
-    bool USE_E_ENDCAP = true;
+    bool USE_E_ENDCAP =true;
 
     //------- subdetector-volumes E-encap ----- 
     bool USE_CE_GEM = true;

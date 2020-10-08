@@ -28,6 +28,7 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
 {
     G4StepPoint * point = pointChoice == WriteStepPointChoices::PreStepPoint ? aStep->GetPreStepPoint(): aStep->GetPostStepPoint();
 
+
     auto touchable = point->GetTouchable();
     if(!touchable || !touchable->GetVolume()) return;
 
@@ -72,6 +73,7 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
     if(mSaveSecondaryLevel!=-1 && ancestryLevel > mSaveSecondaryLevel) {
         return;
     }
+
 
     jleicRootOutput->AddHit(
             /* hit id        */ mHitsCount,

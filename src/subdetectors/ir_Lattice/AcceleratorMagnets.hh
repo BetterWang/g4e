@@ -51,6 +51,9 @@ public:
         if(beamID==0 && BeamEnergy !=10 ){ ScaleFactor= ((double) BeamEnergy)/10. ; debug(" =======> Electron Beam Energy  {} Scaling = {} !!!! ",BeamEnergy, ScaleFactor); }
         fmt::print("=====> {}  {}  Scaling {} \n",beamID,BeamEnergy,ScaleFactor);
 
+
+
+
         if (!sourcefile) {                     // if it does not work
             cerr << "Can't open File with Lattice!\n";
         } else {
@@ -80,7 +83,6 @@ public:
         std::istringstream in(line);
         in >> name >> type >> LengthZ >> Rin >> Rin2 >> Rout >> DipoleFieldBx >> DipoleFieldBy >> QuadrupolFieldQnorm >> QuadrupolFieldQskew >> SextupoleField >> SolenoidField
            >> Xcenter >> Ycenter >> Zcenter >> MagTheta >> MagPhi;
-
         trace("AcceleratorMagnets::parse_line: Rin={}, Rin2={} Rout ={} ", Rin, Rin2, Rout);
        if (fBeamLine == BeamLines::ERHIC) {
             // TODO WTF * 100?

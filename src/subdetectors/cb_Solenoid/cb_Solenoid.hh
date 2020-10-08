@@ -25,7 +25,7 @@ struct cb_Solenoid_Config {
 // double ROut = 144. * cm;
 // double ShiftZ =40.cm; 
 
-    double FieldStrength = -3.0 * tesla;
+    double FieldStrength =  -3.0 * tesla;
     double AlphaB = 0. * degree;
     double SizeZ = 400. * cm;
     double ROut = 137.0 * cm;

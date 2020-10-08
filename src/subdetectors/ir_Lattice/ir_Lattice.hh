@@ -144,7 +144,7 @@ public:
 
             // ----------- create volumes for QUADRUPOLE----------
             if (strcmp(ffqtype, "QUADRUPOLE") == 0) {
-//                printf(" found QUAD %s iq=%d \n", ffqtype, iq);
+                printf("IR_LATTICE:: found QUAD %s iq=%d \n", ffqtype, iq);
                 CreateQuad(iq, ffqnameDi, ffqsSizeZDi, ffqsRinDiG*100, ffqsRinDi*100, ffqsRoutDi*100/2., qFIELDx, qFIELDy, qFIELQn, qFIELQs, qFIELSek, qFIELSol, ffqsX, ffqsY, ffqsZ, ffqsTheta,
                            ffqsPhi);
                 iq++;
@@ -152,11 +152,11 @@ public:
             }
          // ----------- skip multipoles at the moment----------
             if ((strcmp(ffqtype, "MULTIPOLE") == 0)) {
-//                printf(" found  %s  ==> Skip it ! \n", ffqtype);
+//                printf("IR_LATTICE:: found MULTIPOLE  %s  ==> Skip it ! \n", ffqtype);
             }
             // ----------- create volumes for kickers and rbend----------
             if ((strcmp(ffqtype, "KICKER") == 0) || (strcmp(ffqtype, "RBEND") == 0) || (strcmp(ffqtype, "SBEND") == 0)) {
-//                printf(" found  %s \n", ffqtype);
+                printf("IR_LATTICE:: found Dipole  %s \n", ffqtype);
            //    ffqsRinDiG =1;  ffqsRinDi =1; ffqsRinDi=2.;  ffqsRoutDi=4.;
 
                 CreateDipole(ik, ffqnameDi, ffqsSizeZDi, ffqsRinDiG*100, ffqsRinDi*100, ffqsRoutDi*100/2., qFIELDx, qFIELDy, qFIELQn, qFIELQs, qFIELSek, qFIELSol, ffqsX, ffqsY, ffqsZ, ffqsTheta,
@@ -165,7 +165,7 @@ public:
             }
             // ----------- create volumes for solenoid  ----------
             if ((strcmp(ffqtype, "SOLENOID") == 0) && ((strcmp(ffqnameDi, "iASDS") == 0) || (strcmp(ffqnameDi, "iASUS") == 0))) {
-//                printf(" found SOLENOID %s \n", ffqtype);
+//                printf("IR_LATTICE:: found SOLENOID %s \n", ffqtype);
 
                 CreateASolenoid(is, ffqnameDi, ffqsSizeZDi, ffqsRinDiG, ffqsRinDi, ffqsRoutDi, qFIELDx, qFIELDy, qFIELQn, qFIELQs, qFIELSek, qFIELSol, ffqsX, ffqsY, ffqsZ, ffqsTheta,
                                 ffqsPhi);

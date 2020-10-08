@@ -166,7 +166,7 @@ public:
         using namespace spdlog;
         debug("Initialize Quad. MotherVolume:'{}' \n", fMotherPhysVolume->GetName());
         //return;
-        G4VisAttributes *vb1;
+        G4VisAttributes *vb1, *vb2;
         //mybrm = new G4RotationMatrix();
         //---------------- BEAM QUADS -------------------------------------------
         G4Tubs *fSolid_QUADS_hd_v, *fSolid_QUADS_hd_ir, *fSolid_QUADS_hd_m;
@@ -177,6 +177,8 @@ public:
 
         vb1 = new G4VisAttributes(G4Color(0.8, 0.3, 0.1, 0.9));
         vb1->SetForceSolid(true);
+        vb2 = new G4VisAttributes(G4Color(0.1, 0.1, 0.5, 0.2));
+        vb2->SetForceSolid(true);
 
         trace("CreateQuad:: theta =%f rad=%f  deg=%f \n", MagTheta, MagTheta / rad, MagTheta / deg);
         mybrm.rotateY(MagTheta * rad);
@@ -197,7 +199,8 @@ public:
 
         // fLogic_QUADS_hd_v->SetFieldManager(fieldMgr_QUADS_hd, true);
         //printf("create %s ");
-
+	//fLogic_QUADS_hd_v->SetVisAttributes(vb1);
+	
         //--------------------Iron---------
         sprintf(abname, "Solid_QUADS_hd_ir_%s", name.c_str());
         fSolid_QUADS_hd_ir = new G4Tubs(abname, (Rin2 + 0.1) * cm, (Rout) * cm, (LengthZ / 2.) * m, 0., 360 * deg);
@@ -206,8 +209,7 @@ public:
         sprintf(abname, "Physics_QUADS_hd_ir_%s", name.c_str());
         fPhysics_QUADS_hd_ir = new G4PVPlacement(0, G4ThreeVector(), abname, fLogic_QUADS_hd_ir, fPhysics_QUADS_hd_v, false, 0);
         fLogic_QUADS_hd_ir->SetVisAttributes(vb1);
-
-
+	
         //----------------  magnetic field volume---------------
         sprintf(abname, "Solid_QUADS_hd_m_%s", name.c_str());
         fSolid_QUADS_hd_m = new G4Tubs(abname, 0. * cm, Rin2 * cm, (LengthZ / 2.) * m, 0., 360 * deg);
@@ -215,7 +217,8 @@ public:
         fLogic_QUADS_hd_m = new G4LogicalVolume(fSolid_QUADS_hd_m, Material_G, abname);
         sprintf(abname, "Physics_QUADS_hd_m_%s", name.c_str());
         fPhysics_QUADS_hd_m = new G4PVPlacement(0, G4ThreeVector(), abname, fLogic_QUADS_hd_m, fPhysics_QUADS_hd_v, false, 0);
-
+        //fLogic_QUADS_hd_m->SetVisAttributes(vb2);
+	
         //---------------- create  magnetic field ---------------
 
         debug("CreateQuad:: name={}  FIELD = Dx {}  Dy {} --  Qn {} Qs {} -- Sek {}  Sol {} ", name.c_str(), DipoleFieldBx, DipoleFieldBy, QuadrupolFieldQnorm, QuadrupolFieldQskew,
@@ -225,12 +228,11 @@ public:
         //    G4FieldManager* fieldMgr = SetQMagField(qFIELDx[j],qFIELDy[j]);   // gradient tesla/m;
         // fLogic_QUADSm[j]->SetFieldManager(fieldMgr,true);
 
-        fLogic_QUADS_hd_v->SetFieldManager(fieldMgr_QUADS_hd, true);
-
+        fLogic_QUADS_hd_m->SetFieldManager(fieldMgr_QUADS_hd, true);
     }
 
 
-    G4FieldManager *SetQMagField(float field, float skew, float theta, G4ThreeVector fieldorigin)
+    G4FieldManager *SetQMagField(double field, double skew, double theta, G4ThreeVector fieldorigin)
     {
         using namespace spdlog;
         G4RotationMatrix *qrm_f;

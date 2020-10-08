@@ -93,7 +93,7 @@ public:
             attr_fi_OFFM_TRK_lay->SetForceSolid(true);
             lay_Logic->SetVisAttributes(attr_fi_OFFM_TRK_lay);
 
-	    if (fflay==0) {  //-- make a hole 
+	    //if (fflay==0) {  //-- make a hole 
                ffi_OFFM_TRK_BH_Material=G4Material::GetMaterial("G4_Galactic");
 	       Beam_hole_Solid = new G4Tubs("ffi_OFFM_TRK_lay_BH_Solid",0.*cm, 6*cm,  ffi_OFFM_TRK_lay_SizeZ / 2., 0., 360 * deg);
                Beam_hole_Logic = new G4LogicalVolume( Beam_hole_Solid,	ffi_OFFM_TRK_BH_Material , "ffi_OFFM_TRK_lay_BH_Logic");
@@ -104,7 +104,7 @@ public:
                Beam_hole_Logic->SetVisAttributes(attr_fi_D1A_GVol);
 
 
-	    }
+	       //}
 
 
 						   

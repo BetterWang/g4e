@@ -12,7 +12,7 @@
 ### This works  ->   
 #/control/manual vis
 /vis/list
-#/vis/open OGL 1000x800-0+0
+/vis/open OGL 1000x800-0+0
 #/vis/open OGLI 600x600-0+0
 #/vis/open OGLIX 600x600-0+0
 #/vis/open OGLIQt 1000x800-0+0
@@ -20,7 +20,7 @@
 #
 #/vis/open OGLS 600x600-0+0
 #/vis/open OGLSX 600x600-0+0
-/vis/open OGLIQt 1000x800-0+0
+#/vis/open OGLIQt 1000x800-0+0
 #/vis/open OGLIQt_FALLBACK 600x600-0+0
 #/vis/open OGLSQt_FALLBACK 600x600-0+0
 #
@@ -45,11 +45,13 @@
 /vis/drawVolume
 #
 # Specify view angle:
-#/vis/viewer/set/viewpointThetaPhi 90. 0.
+#/vis/viewer/set/viewpointThetaPhi  90. 0.
+#/vis/viewer/set/viewpointThetaPhi -90. 0.
 #/vis/viewer/set/viewpointThetaPhi 0. 0.
 #/vis/viewer/set/viewpointThetaPhi 0. 0.
 #/vis/viewer/set/viewpointThetaPhi 90.0000 89.99999999
-/vis/viewer/set/viewpointThetaPhi -135. -135.
+/vis/viewer/set/viewpointThetaPhi -90.0000 -89.99999999
+#/vis/viewer/set/viewpointThetaPhi -135. -135.
 #
 # Specify zoom value:
 #/vis/viewer/zoom 50.
@@ -59,9 +61,10 @@
 #/vis/viewer/set/style wireframe
 #
 # Draw coordinate axes:
-#/vis/scene/add/axes 0 0 0 1 m
-#/vis/scene/add/magneticField 200
-#/vis/scene/add/magneticField 100 lightArrow
+/vis/scene/add/axes 0 0 0 1 m
+#/vis/geometry/set/visibility World_Logic 0 true
+#/vis/scene/add/magneticField 100
+#/vis/scene/add/magneticField 300 lightArrow
 ###/vis/scene/add/magneticField 100
 #
 #
@@ -120,7 +123,7 @@
 #/control/execute vtx.mac
 /vis/viewer/set/background 1 1 1
 
-/vis/scene/endOfEventAction accumulate 10
+/vis/scene/endOfEventAction accumulate 100
 
 #/vis/viewer/set/cutawayMode intersection
 /vis/viewer/clearCutawayPlanes
@@ -137,7 +140,7 @@
 #/run/initialize
 #/run/beamOn 1
 #--------------CMS vis
-/vis/viewer/set/viewpointThetaPhi -30. -30.
+#/vis/viewer/set/viewpointThetaPhi -30. -30.
 #/vis/viewer/zoomTo 100
 
 #========= CMS view =========================
@@ -148,7 +151,7 @@
 /vis/viewer/colourByDensity 1 g/cm3 .5 3 10
 #---------------------------------------------------
 /vis/viewer/zoom 0.5
-/vis/viewer/set/viewpointThetaPhi -90 -45 deg
-/vis/viewer/zoom 0.5
+#/vis/viewer/set/viewpointThetaPhi -90 -45 deg
+/vis/viewer/zoom 2.
 
 exit

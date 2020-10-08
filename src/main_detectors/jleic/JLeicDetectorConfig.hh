@@ -59,6 +59,9 @@ struct JLeicDetectorConfig {
         double ShiftVTX = 40. * cm;
         double SizeR = 300. * cm;
         double SizeZ = 50000. * cm;
+        //-- test MF 
+        //double SizeR = 100. * cm;
+        //double SizeZ = 10000. * cm;
     } World;
 
     struct ci_Endcap_Config {

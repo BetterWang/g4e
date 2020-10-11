@@ -28,7 +28,6 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
 {
     G4StepPoint * point = pointChoice == WriteStepPointChoices::PreStepPoint ? aStep->GetPreStepPoint(): aStep->GetPostStepPoint();
 
-
     auto touchable = point->GetTouchable();
     if(!touchable || !touchable->GetVolume()) return;
 
@@ -74,20 +73,18 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
         return;
     }
 
-
     jleicRootOutput->AddHit(
-            /* hit id        */ mHitsCount,
-            /* track id      */ aStep->GetTrack()->GetTrackID(),
-            /* parent Trk Id */ abs(pdg),  //aStep->GetTrack()->GetParentID(),
-            /* hit x         */ point->GetPosition().x() / mm,
-            /* hit y         */ point->GetPosition().y() / mm,
-            /* hit z         */ point->GetPosition().z() / mm,
-            /* aELoss        */ aStep->GetTotalEnergyDeposit() / GeV,
-            /* vol replic x  */ copyIDx,
-            /* vol replic y  */ copyIDy,
-            /* Volume Name   */ volumeName
+                        mHitsCount,                                         /* hit id        */
+                        aStep->GetTrack()->GetTrackID(),                    /* track id      */
+                        abs(pdg),  //aStep->GetTrack()->GetParentID(),      /* parent Trk Id */
+                        point->GetPosition().x() / mm,                      /* hit x         */
+                        point->GetPosition().y() / mm,                      /* hit y         */
+                        point->GetPosition().z() / mm,                      /* hit z         */
+                        aStep->GetTotalEnergyDeposit() / GeV,               /* aELoss        */
+                        copyIDx,                                            /* vol replic x  */
+                        copyIDy,                                            /* vol replic y  */
+                        volumeName                                          /* Volume Name   */
     );
-
 
 //    auto primaryParticle = track->GetDynamicParticle()->GetPrimaryParticle();
 //    if(primaryParticle) {
@@ -95,18 +92,19 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
 //    }
 
     //-- fill tracks --
-    jleicRootOutput->AddTrack(curTrackID,                   /* int aTrackId */
-                      parentId,                             /* int aParentId */
-                      pdg,                                  /* int aTrackPdg */
-                      process_int,                           /* creator proc id */
-                      ancestryLevel,                        /* ancestry level */
-                      vertex.x() / mm,              /* double aXVertex */
-                      vertex.y() / mm,              /* double aYVertex */
-                      vertex.z() / mm,              /* double aZVertex */
-                      vertexMom.x(),                        /* double aXMom    */
-                      vertexMom.y(),                        /* double aYMom  */
-                      vertexMom.z(),                        /* double aZMom */
-                      momentum.mag() / GeV            /* double aMom  */
+    jleicRootOutput->AddTrack(
+                        curTrackID,             /* int aTrackId    */
+                        parentId,               /* int aParentId   */
+                        pdg,                    /* int aTrackPdg   */
+                        process_int,            /* creator proc id */
+                        ancestryLevel,          /* ancestry level  */
+                        vertex.x() / mm,        /* double aXVertex */
+                        vertex.y() / mm,        /* double aYVertex */
+                        vertex.z() / mm,        /* double aZVertex */
+                        vertexMom.x(),          /* double aXMom    */
+                        vertexMom.y(),          /* double aYMom    */
+                        vertexMom.z(),          /* double aZMom    */
+                        momentum.mag() / GeV    /* double aMom     */
     );
 
 }

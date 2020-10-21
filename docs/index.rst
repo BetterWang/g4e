@@ -10,6 +10,7 @@ Welcome to Geant 4 EIC's documentation!
    01_quick_start
    01_install
    01_run
+   01_visualization
 
 .. toctree::
    :maxdepth: 2

@@ -81,6 +81,21 @@ spack load g4e@1.3.7
 
 <br>
 
+### Develop with spack
+
+The simplest way to have g4e development version where everything
+is installed with spack is to load g4e installed by Spack and then
+redirect environment variables to your development directory
+```bash
+spack install g4e@master
+spack load g4e@master
+export G4E_HOME=/your/g4e/development/directory
+mkdir build &&cd build
+cmake -DCMAKE_CXX_STANDARD=17 $G4E_HOME
+make
+```
+
+
 ## CMake build
 
 ```bash

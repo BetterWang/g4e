@@ -10,6 +10,7 @@ The installation consist of 3 steps then:
 2. Install EIC [repository](https://github.com/eic/eic-spack) (with EIC packages)
 3. Run spack command to install g4e (or other packages)
 
+Edit by Vineet
 
 ### Install spack and EIC repository
 

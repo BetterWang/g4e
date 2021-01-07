@@ -9,7 +9,10 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "enter program name, for example ${workspaceFolder}/a.out",
-            "args": [],
+            "args": [
+                "--gui",
+                "/home/romanov/eic/soft/g4e/g4e-dev/work/test_run.run.mac"
+            ],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}",
             "environment": [],

@@ -95,8 +95,11 @@ public:
 
 	    //if (fflay==0) {  //-- make a hole 
                ffi_OFFM_TRK_BH_Material=G4Material::GetMaterial("G4_Galactic");
-	       Beam_hole_Solid = new G4Tubs("ffi_OFFM_TRK_lay_BH_Solid",0.*cm, 6*cm,  ffi_OFFM_TRK_lay_SizeZ / 2., 0., 360 * deg);
-               Beam_hole_Logic = new G4LogicalVolume( Beam_hole_Solid,	ffi_OFFM_TRK_BH_Material , "ffi_OFFM_TRK_lay_BH_Logic");
+         //   Beam_hole_Solid = new G4Tubs("ffi_OFFM_TRK_lay_BH_Solid",0.*cm, 6*cm,  ffi_OFFM_TRK_lay_SizeZ / 2., 0., 360 * deg);
+            Beam_hole_Solid = new G4Tubs("ffi_OFFM_TRK_lay_BH_Solid",0.*cm, 0.25*cm,  ffi_OFFM_TRK_lay_SizeZ / 2., 0., 360 * deg);
+
+
+            Beam_hole_Logic = new G4LogicalVolume( Beam_hole_Solid,	ffi_OFFM_TRK_BH_Material , "ffi_OFFM_TRK_lay_BH_Logic");
                Beam_hole_Phys = new G4PVPlacement(0,G4ThreeVector(0, 0, 0), "ffi_OFFM_TRK_lay_BH_Phys",Beam_hole_Logic, lay_Phys , false, 0);
      
               G4VisAttributes *attr_fi_D1A_GVol = new G4VisAttributes(G4Color(0.3, 0, 3., 0.1));

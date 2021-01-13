@@ -94,7 +94,7 @@ public:
     //===========================================
 
     bool USE_BARREL = true;
-    bool USE_BARREL_det = true;
+    bool USE_BARREL_det = false;
 
     bool USE_BEAMPIPE = false;
 
@@ -120,7 +120,7 @@ public:
 
     // Electron endcap
     // ==============================================
-    bool USE_E_ENDCAP =true;
+    bool USE_E_ENDCAP = true;
 
     //------- subdetector-volumes E-encap ----- 
     bool USE_CE_GEM = true;
@@ -161,7 +161,7 @@ public:
 
     //---
     bool USE_FFI_RPOT_D2 = true;
-    bool USE_FFI_RPOT_D3 = false;
+    bool USE_FFI_RPOT_D3 = true;
     //bool USE_FARFORWARD_GEM
     //bool USE_FARFORWARD_VP
 

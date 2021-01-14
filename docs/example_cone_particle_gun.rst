@@ -2,111 +2,162 @@
 
 .. tabs::
 
-   .. code-tab:: c
+   .. tab:: Geant4 macro
 
-         int main(const int argc, const char **argv) {
-           return 0;
-         }
+      .. code:: yaml
 
-   .. code-tab:: c++
+          #------------------------------------------------------------------------
+          # Example macro. Process one of
+          #------------------------------------------------------------------------
 
-         int main(const int argc, const char **argv) {
-           return 0;
-         }
+          # Include default setup
+          # Use jleic.mac for headless mode or jleicvis.mac for GUI visualization
+          /control/execute jleic.mac
 
-   .. code-tab:: py
+          # Select cone particle gun generator
+          # Other options are: particleGun hepmcAscii pythiaAscii beagle
+          /generator/select coneParticleGun
 
-         def main():
-             return
+          # List available particles. Invoke G4ParticleTable
+          # /generator/coneParticleGun/List
 
-   .. code-tab:: java
+          # Set particle to be generated.
+          # (geantino is default)
+          # (ion can be specified for shooting ions)
+          /generator/coneParticleGun/particle proton
 
-         class Main {
-             public static void main(String[] args) {
-             }
-         }
+          # Set momentum direction
+          # Direction needs not to be a unit vector
+          /generator/coneParticleGun/direction 0 0 1
 
-   .. code-tab:: julia
+          # Set kinetic energy [GeV]
+          /generator/coneParticleGun/energy 20 GeV
 
-         function main()
-         end
+          # Energy spread [GeV],
+          # energy is smeared as gauss (mean=<particle E>, stddev=energyStdDev)
+          /generator/coneParticleGun/energyStdDev 1 GeV
 
-   .. code-tab:: fortran
+          # Cone angle standard deviation.
+          # Basically is the resulding cone angle
+          /generator/coneParticleGun/coneAngleStdDev 5 deg
 
-         PROGRAM main
-         END PROGRAM main
+          # Set momentum. This command is equivalent to two commands: /.../direction and /.../momentumAmp
+          # /generator/coneParticleGun/momentum 0 0 10
 
-.. code:: yaml
+          # Set absolute value of momentum [GeV]
+          # Direction should be set by /gun/direction command."
+          # This command should be used alternatively with /gun/energy."
+          # /generator/coneParticleGun/momentumAmp 20
 
-    #------------------------------------------------------------------------
-    # Example macro. Process one of
-    #------------------------------------------------------------------------
+          # Set starting position of the particle [cm]
+          /generator/coneParticleGun/position 0 0 0
 
-    # Include default setup
-    # Use jleic.mac for headless mode or jleicvis.mac for GUI visualization
-    /control/execute jleic.mac
+          # Set starting position smearing of the particle [cm]
+          # works together as gaus(mean=position, stddev=positionStdDev)
+          # DefaultUnit - cm
+          /generator/coneParticleGun/positionStdDev 3 3 3
 
-    # Select cone particle gun generator
-    # Other options are: particleGun hepmcAscii pythiaAscii beagle
-    /generator/select coneParticleGun
+          # Set initial time of the particle
+          # DefaultUnit - ns
+          timeCmd = new G4UIcmdWithADoubleAndUnit("/generator/coneParticleGun/time", this);
 
-    # List available particles. Invoke G4ParticleTable
-    # /generator/coneParticleGun/List
+          # Set polarization
+          # /generator/coneParticleGun/polarization Px Py Pz
 
-    # Set particle to be generated.
-    # (geantino is default)
-    # (ion can be specified for shooting ions)
-    /generator/coneParticleGun/particle proton
+          # Set number of particles to be generated
+          /generator/coneParticleGun/number
 
-    # Set momentum direction
-    # Direction needs not to be a unit vector
-    /generator/coneParticleGun/direction 0 0 1
+          # /generator/coneParticleGun/ion Z A [Q E flb]
+          # Set properties of ion to be generated.
+          # [usage] /gun/ion Z A [Q E flb]
+          #         Z:(int) AtomicNumber
+          #         A:(int) AtomicMass
+          #         Q:(int) Charge of Ion (in unit of e)
+          #         E:(double) Excitation energy (in keV)
+          #         flb:(char) Floating level base
 
-    # Set kinetic energy [GeV]
-    /generator/coneParticleGun/energy 20 GeV
+          /run/beamOn 1
+          exit
 
-    # Energy spread [GeV],
-    # energy is smeared as gauss (mean=<particle E>, stddev=energyStdDev)
-    /generator/coneParticleGun/energyStdDev 1 GeV
+   .. tab:: Python
 
-    # Cone angle standard deviation.
-    # Basically is the resulding cone angle
-    /generator/coneParticleGun/coneAngleStdDev 5 deg
+      .. code:: python
 
-    # Set momentum. This command is equivalent to two commands: /.../direction and /.../momentumAmp
-    # /generator/coneParticleGun/momentum 0 0 10
+          from g4epy import Geant4Eic
 
-    # Set absolute value of momentum [GeV]
-    # Direction should be set by /gun/direction command."
-    # This command should be used alternatively with /gun/energy."
-    # /generator/coneParticleGun/momentumAmp 20
+          g4e = Geant4Eic(beamline='erhic')
 
-    # Set starting position of the particle [cm]
-    /generator/coneParticleGun/position 0 0 0
+          # Select cone particle gun generator
+          g4e.command('/generator/select coneParticleGun')
 
-    # Set starting position smearing of the particle [cm]
-    # works together as gaus(mean=position, stddev=positionStdDev)
-    # DefaultUnit - cm
-    /generator/coneParticleGun/positionStdDev 3 3 3
+          # Set particle to be generated.
+          # (geantino is default)
+          # (ion can be specified for shooting ions)
+          # Common names: proton, e- e+ pi+ pi-
+          g4e.command('/generator/coneParticleGun/particle e-')
 
-    # Set initial time of the particle
-    # DefaultUnit - ns
-    timeCmd = new G4UIcmdWithADoubleAndUnit("/generator/coneParticleGun/time", this);
+          # if particle is ion
+          # Set properties of ion to be generated.
+          # [usage] /gun/ion Z A [Q E flb]
+          #         Z:(int) AtomicNumber
+          #         A:(int) AtomicMass
+          #         Q:(int) Charge of Ion (in unit of e)
+          #         E:(double) Excitation energy (in keV)
+          #         flb:(char) Floating level base
+          # g4e.command('/generator/coneParticleGun/ion Z A [Q E flb]')
 
-    # Set polarization
-    # /generator/coneParticleGun/polarization Px Py Pz
+          # Set momentum direction
+          # Direction needs not to be a unit vector
+          g4e.command('/generator/coneParticleGun/direction 0 0 -1')
 
-    # Set number of particles to be generated
-    /generator/coneParticleGun/number
+          # Set kinetic energy [GeV]
+          g4e.command('/generator/coneParticleGun/energy 6 GeV')
 
-    # /generator/coneParticleGun/ion Z A [Q E flb]
-    # Set properties of ion to be generated.
-    # [usage] /gun/ion Z A [Q E flb]
-    #         Z:(int) AtomicNumber
-    #         A:(int) AtomicMass
-    #         Q:(int) Charge of Ion (in unit of e)
-    #         E:(double) Excitation energy (in keV)
-    #         flb:(char) Floating level base
+          # Energy spread [GeV],
+          # energy is smeared as gauss (mean=<particle E>, stddev=energyStdDev)
+          g4e.command('/generator/coneParticleGun/energyStdDev 1 GeV')
 
-    /run/beamOn 1
-    exit
+          # Cone angle standard deviation.
+          # Basically is the resulting cone angle
+          g4e.command('/generator/coneParticleGun/coneAngleStdDev 0.3 rad')
+
+          # Set number of particles to be generated per event
+          g4e.command('/generator/coneParticleGun/number 1')
+
+          # To control how many generation of secondaries (tracks and their hits) to save,
+          # there is a configuration:
+          #    /rootOutput/saveSecondaryLevel <ancestry-level>
+          #
+          # <ancestry-level> sets 0-n levels of ancestry which are saved in root file.
+          #
+          # Example:
+          #
+          # -1 - save everything
+          # 0 - save only primary particles
+          # 1 - save primaries and their daughters
+          # 2 - save primaries, daughters and daughters’ daughters
+          # n - save n generations of secondaries
+          #
+          # (primaries - particles that came from a generator/input file)
+          #
+          # The default level is 3, which corresponds to:
+          #
+          # /rootOutput/saveSecondaryLevel 3
+          #
+          # We set it to 1. If only vertex particles are of the interest, set it to 0
+          #
+          # This flag doesn't affect physics in g4e (only what is saved)
+          # so EM showers in EMCAL is fully simulated with any value here
+          g4e.command(['/rootOutput/saveSecondaryLevel 0'])
+
+          # Extension is omitted here
+          # g4e creates a bunch of files with this name and different extensions
+          g4e.output('cone_particle_gun')
+
+          # Run g4e run!!!
+          #g4e.beam_on(300).run()
+
+
+          # Run
+          g4e.beam_on(1000).run()
+

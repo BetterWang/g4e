@@ -42,7 +42,6 @@ namespace g4e
             mEventTree->Branch("evt_has_dis_info", &mEventInfo.HasTrueDISInfo,   "evt_has_dis_info/B");
             mEventTree->Branch("evt_weight",       &mEventInfo.Weight,           "evt_weight/D");
 
-
             mHitIo.BindToTree(mEventTree);          // Bind/create branches for hits
             mTrackIo.BindToTree(mEventTree);        // Bind/create branches for tracks
             mParticleIo.BindToTree(mEventTree);     // Bind/create branches for primary particles
@@ -197,8 +196,8 @@ namespace g4e
             mCe_EMCALIo.Npe.push_back(aNpe);
             mCe_EMCALIo.ADC.push_back(aADC);
             mCe_EMCALIo.TDC.push_back(aTDC);
-       //    mCe_EMCALIo.waveform.push_back(awaveform);
-         //  mCe_EMCALIo.waveform_time.push_back(awaveform_time);
+            // mCe_EMCALIo.waveform.push_back(awaveform);
+            // mCe_EMCALIo.waveform_time.push_back(awaveform_time);
            mCe_EMCALIo.xcrs.push_back(axcrs);
            mCe_EMCALIo.ycrs.push_back(aycrs);
            mCe_EMCALIo.zcrs.push_back(azcrs);

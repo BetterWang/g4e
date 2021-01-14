@@ -28,6 +28,11 @@ Welcome to Geant 4 EIC's documentation!
 
    howto_process_mc_files
 
+.. toctree::
+   :maxdepth: 1
+   :caption: Escalate:
+
+   Escalate main docs <https://escalate.readthedocs.io>
 
 .. toctree::
    :maxdepth: 1

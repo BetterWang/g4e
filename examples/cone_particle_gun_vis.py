@@ -53,11 +53,11 @@ g4e.command('/generator/coneParticleGun/number 1')
 #
 # This flag doesn't affect physics in g4e (only what is saved)
 # so EM showers in EMCAL is fully simulated with any value here
-g4e.command(['/rootOutput/saveSecondaryLevel 1'])
+g4e.command(['/rootOutput/saveSecondaryLevel 0'])
 
 # Extension is omitted here
 # g4e creates a bunch of files with this name and different extensions
-g4e.output('work/pgun_6GeV')
+g4e.output('cone_particle_gun')
 
 # Run g4e run!!!
 #g4e.beam_on(300).run()
@@ -72,5 +72,5 @@ g4e.command(['/vis/open OGLSQt 1000x800-0+0',
              '/vis/viewer/set/background 1 1 1'])
 g4e.command(['/vis/viewer/set/viewpointThetaPhi 90 135'])
 
-# Run with event display
-g4e.beam_on(2).vis().run()
+# Run with event display of 10 events
+g4e.beam_on(10).vis().run()

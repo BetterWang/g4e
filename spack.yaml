@@ -2,8 +2,14 @@ spack:
     specs:
       - python
       - geant4@10.6.2 +opengl +qt cxxstd=17 +python ^xerces-c cxxstd=17
-      - root@6.20.04 +vmc +pythia6 +pythia8 +root7 cxxstd=17
-      - vgm@4-8
-      - g4e@master
+      - root cxxstd=17
+      - g4e
+
+    develop:
+      g4e:
+        specs: /home/romanov/eic/soft/g4e/g4e-dev
+        version: master
+
     concretization: together
     view: true
+    target: x86_64

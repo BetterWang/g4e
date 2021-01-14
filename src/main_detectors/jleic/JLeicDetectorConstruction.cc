@@ -112,17 +112,17 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     // -- use JLEIC  lattice
 
     // Checking the beamline
-    if(fConfig.BeamlineName != "erhic" && fConfig.BeamlineName != "eicIP2" && fConfig.BeamlineName != "jleic") {
+    auto beamLineName = g4e::ToLowerCopy(fConfig.BeamlineName);
+
+    if(beamLineName != "erhic" && beamLineName != "eicIP2" && fConfig.BeamlineName != "jleic") {
         G4Exception("JLeicDetectorConstruction::Construct",
                     "InvalidSetup", FatalException,
                     "/detsetup/beamlineName should be 'erhic' or 'jleic' or 'eicIP2");
     }
 
-    // beam line flag, that is going to be used in future
-  // auto beamLine = fConfig.BeamlineName == "erhic" ? BeamLines::ERHIC : BeamLines::JLEIC;
-  auto beamLine = fConfig.BeamlineName == "EICIP2" ? BeamLines::ERHIC : BeamLines::EICIP2;
+    auto beamLine = fConfig.BeamlineName == "eicIP2" ? BeamLines::EICIP2: BeamLines::ERHIC;
 
-    //Different Shifts for 0 IP
+    // Different Shifts for 0 IP
     if(BeamLines::ERHIC == beamLine ) {
         fConfig.World.ShiftVTX=0.;
     } else if(BeamLines::JLEIC == beamLine  ) {
@@ -156,6 +156,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
         // Create electron and ion beam lines
         fElectronLineMagnets = new AcceleratorMagnets(eFileName, World_Phys, World_Material, beamLine, 0,fConfig.ElectronBeamEnergy);
         fIonLineMagnets = new AcceleratorMagnets(ionFileName, World_Phys, World_Material, beamLine,1,fConfig.IonBeamEnergy);
+
     }
 
     //=========================================================================
@@ -885,6 +886,9 @@ void JLeicDetectorConstruction::ConstructSDandField()
     if(USE_CB_CTD)        { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->cb_CTD.Phys);}
     if(USE_CE_GEM)        { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ce_GEM.Phys);}
     if(USE_CI_HCAL)       { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ci_HCAL.Phys);}
+
+    // fIonLineMagnets->CreateMagneticFiles();
+    // fElectronLineMagnets->CreateMagneticFiles();
 }
 
 

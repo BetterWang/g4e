@@ -11,7 +11,7 @@ To Build the documentation:
 
 
 ```
-pip install sphinx sphinx_rtd_theme recommonmark
+pip install sphinx sphinx_rtd_theme recommonmark sphinx-tabs
 ```
 
 ## Building
@@ -40,7 +40,12 @@ sphinx-autobuild docs docs/_build/html
 
 # from docs root
 sphinx-autobuild . _build/html
+
+# with another port
+sphinx-autobuild docs docs/_build/html --port=9000
 ```
+
+For tabs look here https://github.com/executablebooks/sphinx-tabs
 
 
 ## Read the docs

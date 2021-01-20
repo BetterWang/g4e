@@ -31,6 +31,7 @@ namespace g4e
             //--- Vector Branches -----
             mRootFile = file;
             mEventTree = eventTree;
+            eventTree->SetTitle("g4e_api_v3");
 
             mEventTree->Branch("event_id", &mEventId, "event_id/l");
             mEventTree->Branch("evt_true_q2",      &mEventInfo.TrueDISInfo.Q2,   "evt_true_q2/D");

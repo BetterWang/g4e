@@ -73,14 +73,34 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
         return;
     }
 
+    //-- fill tracks --
+    uint64_t trackIndex = jleicRootOutput->AddTrack(
+            curTrackID,                /* int aTrackId    */
+            parentId,                  /* int aParentId   */
+            pdg,                       /* int aTrackPdg   */
+            process_int,               /* creator proc id */
+            ancestryLevel,             /* ancestry level  */
+            vertex.x() / mm,   /* double aXVertex */
+            vertex.y() / mm,   /* double aYVertex */
+            vertex.z() / mm,   /* double aZVertex */
+            vertexMom.x(),             /* double aXMom    */
+            vertexMom.y(),             /* double aYMom    */
+            vertexMom.z(),             /* double aZMom    */
+            momentum.mag() / GeV /* double aMom     */
+    );
+
+
+
     jleicRootOutput->AddHit(
                         mHitsCount,                                         /* hit id        */
+                        trackIndex,                                         /* index of a track in tracks array */
                         aStep->GetTrack()->GetTrackID(),                    /* track id      */
-                        abs(pdg),  //aStep->GetTrack()->GetParentID(),      /* parent Trk Id */
-                        point->GetPosition().x() / mm,                      /* hit x         */
-                        point->GetPosition().y() / mm,                      /* hit y         */
-                        point->GetPosition().z() / mm,                      /* hit z         */
-                        aStep->GetTotalEnergyDeposit() / GeV,               /* aELoss        */
+                        aStep->GetTrack()->GetParentID(),                   /* parent Trk Id */
+                        aStep->GetTrack()->GetParticleDefinition()->GetPDGEncoding(), /* PDG */
+                        point->GetPosition().x() / mm,                   /* hit x         */
+                        point->GetPosition().y() / mm,                   /* hit y         */
+                        point->GetPosition().z() / mm,                   /* hit z         */
+                        aStep->GetTotalEnergyDeposit() / GeV,         /* aELoss        */
                         copyIDx,                                            /* vol replic x  */
                         copyIDy,                                            /* vol replic y  */
                         volumeName                                          /* Volume Name   */
@@ -91,21 +111,6 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
 //        fmt::print("Primary aTrack.id={:<10} id={}\n", track->GetTrackID(), primaryParticle->GetTrackID());
 //    }
 
-    //-- fill tracks --
-    jleicRootOutput->AddTrack(
-                        curTrackID,             /* int aTrackId    */
-                        parentId,               /* int aParentId   */
-                        pdg,                    /* int aTrackPdg   */
-                        process_int,            /* creator proc id */
-                        ancestryLevel,          /* ancestry level  */
-                        vertex.x() / mm,        /* double aXVertex */
-                        vertex.y() / mm,        /* double aYVertex */
-                        vertex.z() / mm,        /* double aZVertex */
-                        vertexMom.x(),          /* double aXMom    */
-                        vertexMom.y(),          /* double aYMom    */
-                        vertexMom.z(),          /* double aZMom    */
-                        momentum.mag() / GeV    /* double aMom     */
-    );
 
 }
 

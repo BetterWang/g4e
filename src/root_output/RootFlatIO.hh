@@ -62,8 +62,10 @@ namespace g4e
 
         void AddHit(
                 uint64_t aHitId,        // Hit unique ID
+                uint64_t trackIndex,    // Index of a parent track inside tracks array
                 uint64_t aTrackId,      // Track unique ID
                 uint64_t ParentId,      // Parent track ID
+                int64_t pdg,            // PDG code of the particle/track
                 double aX,
                 double aY,
                 double aZ,
@@ -81,14 +83,16 @@ namespace g4e
             mHitIo.ZPosVect.push_back(aZ);
             mHitIo.ELossVect.push_back(aELoss);
             mHitIo.TrackIdVect.push_back(aTrackId);
-            mHitIo.GenParentTrackIdVect.push_back(ParentId);
+            mHitIo.TrackIndexVect.push_back(trackIndex);
+            mHitIo.ParentTrackIdVect.push_back(ParentId);
             mHitIo.IRepVect.push_back(aIRep);
             mHitIo.JRepVect.push_back(aJRep);
             mHitIo.VolumeNameVect.push_back(aVolName);
-            mHitIo.HitsCount = mHitIo.XPosVect.size();	    
+            mHitIo.PdgVect.push_back(pdg);
+            mHitIo.HitsCount = mHitIo.XPosVect.size();
         }
 
-        void AddTrack(
+        int64_t AddTrack(
                 uint64_t aTrackId,
                 uint64_t aParentId,
                 int64_t  aTrackPdg,
@@ -105,8 +109,9 @@ namespace g4e
         {
             std::lock_guard<std::recursive_mutex> lk(io_mutex);
             if(trk_index_by_id.count(aTrackId)) {	      
-                return;     // We already saved the track with this id. Nothing to do
-            }	      
+                return trk_index_by_id[aTrackId];     // We already saved the track with this id. Nothing to do
+            }
+            uint64_t thisTrackIndex = mTrackIo.IdVect.size();
  
             mTrackIo.IdVect.push_back(aTrackId);
             mTrackIo.ParentId.push_back(aParentId);
@@ -120,8 +125,9 @@ namespace g4e
             mTrackIo.YDirVtxVect.push_back(aYMom);
             mTrackIo.ZDirVtxVect.push_back(aZMom);
             mTrackIo.MomentumVect.push_back(aMom);
-            trk_index_by_id[aTrackId] = 1;
+            trk_index_by_id[aTrackId] = thisTrackIndex;
             mTrackIo.TrackCount = mTrackIo.IdVect.size();
+            return thisTrackIndex;
         }
 
         void AddPrimaryVertex(
@@ -179,30 +185,12 @@ namespace g4e
             mParticleIo.ParticleCount = mParticleIo.IdVect.size();
         }
 
-        void AddCe_EMCAL(
-                   const std::string& aName,
-                   double aEtot_dep,
-  				   int aNpe,
-                   double aADC,
-                   double aTDC,
-                  //   std::vector<double> awaveform,
-                   //  std::vector<double> awaveform_time,
-  				   double axcrs,
-  				   double aycrs,
-  				   double azcrs){
+        void FillCe_EMCAL(Ce_EMCALIoData data) {
+            std::lock_guard<std::recursive_mutex> lk(io_mutex);
+            mCe_EMCALIo.Fill(data);
+        }
 
-            mCe_EMCALIo.Name.push_back(aName);
-            mCe_EMCALIo.Etot_dep.push_back(aEtot_dep);
-            mCe_EMCALIo.Npe.push_back(aNpe);
-            mCe_EMCALIo.ADC.push_back(aADC);
-            mCe_EMCALIo.TDC.push_back(aTDC);
-            // mCe_EMCALIo.waveform.push_back(awaveform);
-            // mCe_EMCALIo.waveform_time.push_back(awaveform_time);
-           mCe_EMCALIo.xcrs.push_back(axcrs);
-           mCe_EMCALIo.ycrs.push_back(aycrs);
-           mCe_EMCALIo.zcrs.push_back(azcrs);
 
-                     }
 
         void FillEvent(const G4Event *evt)
         {

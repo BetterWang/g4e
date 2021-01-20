@@ -8,8 +8,10 @@ namespace g4e {
         {
             tree->Branch("trk_count", &TrackCount, "trk_count/l");
             tree->Branch("trk_id", &IdVect);
+            tree->Branch("trk_index", &IdVect);
             tree->Branch("trk_pdg", &PdgVect);
             tree->Branch("trk_parent_id", &ParentId);
+            tree->Branch("trk_parent_index", &ParentId);
             tree->Branch("trk_create_proc", &CreateProc);
             tree->Branch("trk_level", &AncestryLevel);
             tree->Branch("trk_vtx_x", &XVtxVect);

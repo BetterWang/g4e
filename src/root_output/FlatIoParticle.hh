@@ -13,8 +13,10 @@ namespace g4e {
             tree->Branch("gen_prt_count", &ParticleCount, "gen_prt_count/l");
             tree->Branch("gen_prt_id", &IdVect);
             tree->Branch("gen_prt_vtx_id", &PrimeVtxIdVect);
+            tree->Branch("gen_prt_vtx_index", &PrimeVtxIdVect);
             tree->Branch("gen_prt_pdg", &PDGCodeVect);
             tree->Branch("gen_prt_trk_id", &TrackIdVect);
+            tree->Branch("gen_prt_trk_index", &TrackIdVect);
             tree->Branch("gen_prt_charge", &ChargeVect);
             tree->Branch("gen_prt_dir_x", &MomDirXVect);
             tree->Branch("gen_prt_dir_y", &MomDirYVect);

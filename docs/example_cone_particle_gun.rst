@@ -6,78 +6,103 @@
 
       .. code:: yaml
 
-          #------------------------------------------------------------------------
-          # Example macro. Process one of
-          #------------------------------------------------------------------------
+         # Include default setup
+         # Use jleic.mac for headless mode or jleicvis.mac for GUI visualization
+         /control/execute jleic.mac
 
-          # Include default setup
-          # Use jleic.mac for headless mode or jleicvis.mac for GUI visualization
-          /control/execute jleic.mac
+         # Select cone particle gun generator
+         # Other options are: particleGun hepmcAscii pythiaAscii beagle
+         /generator/select coneParticleGun
 
-          # Select cone particle gun generator
-          # Other options are: particleGun hepmcAscii pythiaAscii beagle
-          /generator/select coneParticleGun
+         # List available particles. Invoke G4ParticleTable
+         # /generator/coneParticleGun/List
 
-          # List available particles. Invoke G4ParticleTable
-          # /generator/coneParticleGun/List
+         # Set particle to be generated.
+         # (geantino is default)
+         # (ion can be specified for shooting ions)
+         # Common names: proton, e- e+ pi+ pi-
+         /generator/coneParticleGun/particle e-
 
-          # Set particle to be generated.
-          # (geantino is default)
-          # (ion can be specified for shooting ions)
-          /generator/coneParticleGun/particle proton
+         # if particle is ion
+         # Set properties of ion to be generated.
+         # [usage] /gun/ion Z A [Q E flb]
+         #         Z:(int) AtomicNumber
+         #         A:(int) AtomicMass
+         #         Q:(int) Charge of Ion (in unit of e)
+         #         E:(double) Excitation energy (in keV)
+         #         flb:(char) Floating level base
+         # /generator/coneParticleGun/ion Z A [Q E flb]
 
-          # Set momentum direction
-          # Direction needs not to be a unit vector
-          /generator/coneParticleGun/direction 0 0 1
+         # Set momentum direction
+         # Direction needs not to be a unit vector
+         /generator/coneParticleGun/direction 0 0 -1
 
-          # Set kinetic energy [GeV]
-          /generator/coneParticleGun/energy 20 GeV
+         # Set kinetic energy [GeV]
+         /generator/coneParticleGun/energy 6 GeV
 
-          # Energy spread [GeV],
-          # energy is smeared as gauss (mean=<particle E>, stddev=energyStdDev)
-          /generator/coneParticleGun/energyStdDev 1 GeV
+         # Energy spread [GeV],
+         # energy is smeared as gauss (mean=<particle E>, stddev=energyStdDev)
+         /generator/coneParticleGun/energyStdDev 1 GeV
 
-          # Cone angle standard deviation.
-          # Basically is the resulding cone angle
-          /generator/coneParticleGun/coneAngleStdDev 5 deg
+         # Cone angle standard deviation.
+         # Basically is the resulding cone angle
+         /generator/coneParticleGun/coneAngleStdDev 15 deg
 
-          # Set momentum. This command is equivalent to two commands: /.../direction and /.../momentumAmp
-          # /generator/coneParticleGun/momentum 0 0 10
+         # Set momentum. This command is equivalent to two commands: /.../direction and /.../momentumAmp
+         # /generator/coneParticleGun/momentum 0 0 10
 
-          # Set absolute value of momentum [GeV]
-          # Direction should be set by /gun/direction command."
-          # This command should be used alternatively with /gun/energy."
-          # /generator/coneParticleGun/momentumAmp 20
+         # Set absolute value of momentum [GeV]
+         # Direction should be set by /gun/direction command."
+         # This command should be used alternatively with /gun/energy."
+         # /generator/coneParticleGun/momentumAmp 20
 
-          # Set starting position of the particle [cm]
-          /generator/coneParticleGun/position 0 0 0
+         # Set starting position of the particle [cm]
+         /generator/coneParticleGun/position 0 0 0
 
-          # Set starting position smearing of the particle [cm]
-          # works together as gaus(mean=position, stddev=positionStdDev)
-          # DefaultUnit - cm
-          /generator/coneParticleGun/positionStdDev 3 3 3
+         # Set starting position smearing of the particle [cm]
+         # works together as gaus(mean=position, stddev=positionStdDev)
+         # DefaultUnit - cm
+         /generator/coneParticleGun/positionStdDev 3 3 3
 
-          # Set initial time of the particle
-          # DefaultUnit - ns
-          timeCmd = new G4UIcmdWithADoubleAndUnit("/generator/coneParticleGun/time", this);
+         # Set initial time of the particle
+         # DefaultUnit - ns
+         # /generator/coneParticleGun/time
 
-          # Set polarization
-          # /generator/coneParticleGun/polarization Px Py Pz
+         # Set polarization
+         # /generator/coneParticleGun/polarization Px Py Pz
 
-          # Set number of particles to be generated
-          /generator/coneParticleGun/number
+         # Set number of particles to be generated per event
+         /generator/coneParticleGun/number 1
 
-          # /generator/coneParticleGun/ion Z A [Q E flb]
-          # Set properties of ion to be generated.
-          # [usage] /gun/ion Z A [Q E flb]
-          #         Z:(int) AtomicNumber
-          #         A:(int) AtomicMass
-          #         Q:(int) Charge of Ion (in unit of e)
-          #         E:(double) Excitation energy (in keV)
-          #         flb:(char) Floating level base
+         # To control how many generation of secondaries (tracks and their hits) to save,
+         # there is a configuration:
+         #    /rootOutput/saveSecondaryLevel <ancestry-level>
+         #
+         # <ancestry-level> sets 0-n levels of ancestry which are saved in root file.
+         #
+         # Example:
+         #
+         # -1 - save everything
+         # 0 - save only primary particles
+         # 1 - save primaries and their daughters
+         # 2 - save primaries, daughters and daughters’ daughters
+         # n - save n generations of secondaries
+         #
+         # (primaries - particles that came from a generator/input file)
+         #
+         # The default level is 3, which corresponds to:
+         #
+         # /rootOutput/saveSecondaryLevel 3
+         #
+         # We set it to 1. If only vertex particles are of the interest, set it to 0
+         #
+         # This flag doesn't affect physics in g4e (only what is saved)
+         # so EM showers in EMCAL is fully simulated with any value here
+         # /rootOutput/saveSecondaryLevel 0
 
-          /run/beamOn 1
-          exit
+         /run/initialize
+         /run/beamOn 1000
+         exit
 
    .. tab:: Python
 

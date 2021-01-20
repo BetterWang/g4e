@@ -89,16 +89,12 @@ JLeicCe_emcalDigiHit* JLeicCe_emcalDigiHit::JLeicCe_emcalDigi(JLeicCe_emcalHit* 
     double TDCL_crs = 4096;
     double sigmaTR_crs = 0.;
 
-
-
-
     vector<G4ThreeVector> Lpos = aHit->GetLPos();
     vector<G4double> Edep = aHit->GetEdep();
     vector<G4double> Dx = aHit->GetDx();
     vector<G4double> times = aHit->GetTime();
     vector<int> charge = aHit->GetCharges();
     unsigned int nsteps = Edep.size();
-
 
 
     double light_coll_crs = sensor_surface_crs / redout_surface_crs;

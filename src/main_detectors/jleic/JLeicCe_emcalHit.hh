@@ -54,15 +54,16 @@ private:
     G4double fEdepAbs, fTrackLengthAbs;
     G4double fEdepGap, fTrackLengthGap;
 
-    std::vector<G4ThreeVector>   pos;    //< Hit Position (Global)
-    std::vector<G4ThreeVector>  Lpos;    //< Hit Positions (Local to the Volume)
-    std::vector<double>         edep;    //< Energy Deposited
-    std::vector<double>           dx;    //< Length of the step
-    vector<int>                    q;    ///< Charge of the particle in each step
-    vector<int>                  pid;     /// PID
-    std::vector<double>         time;    //< Time from the start of event
-    std::vector<string> materialName;    //< Material name
-    string detector_name;    //< detector name
+    std::vector<G4ThreeVector>   pos;    /// Hit Position (Global)
+    std::vector<G4ThreeVector>  Lpos;    /// Hit Positions (Local to the Volume)
+    std::vector<double>         edep;    /// Energy Deposited
+    std::vector<double>           dx;    /// Length of the step
+    vector<int>                    q;    /// Charge of the particle in each step
+    vector<int>                  pid;    /// PID
+    std::vector<double>         time;    /// Time from the start of event
+    std::vector<string> materialName;    /// Material name
+    string detector_name;                /// detector name (cell name)
+    G4int mCopyNumber;                   /// detector copy number
     double                 XHalfLength_det;  /// XHalfLength of crystal
     double                 YHalfLength_det;  /// YHalfLength of crystal
     double                 ZHalfLength_det;  /// ZHalfLength of crystal
@@ -122,6 +123,10 @@ public:
 
     inline void SetZ_crs(double zcrs)                   { Z_crs=zcrs; }
     inline double GetZ_crs()                    { return Z_crs; }
+
+    void SetCopyNumber(G4int copyNumber) { mCopyNumber = copyNumber; }
+    G4int GetCopyNumber() {return mCopyNumber;}
+
 
 
 };

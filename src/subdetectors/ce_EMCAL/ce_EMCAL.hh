@@ -260,7 +260,7 @@ public:
         // CRYSTAL
         double diameter = 2 * cfg.PWO_OuterR;
 
-        // How many towers do we have per row/columnt?
+        // How many towers do we have per row/column?
         // Add a gap + diameter as if we have N towers, we have N-1 gaps;
         int towersInRow = std::ceil((diameter + cfg.PWO_Gap) /  (cfg.PWO_Width + cfg.PWO_Gap));
 
@@ -301,9 +301,9 @@ public:
                 if ((std::abs(y) < cfg.PWO_OuterR && std::abs(x) < cfg.PWO_OuterR) &&
                     (std::abs(y) > cfg.PWO_InnerR || std::abs(x) > cfg.PWO_InnerR))
                 {
-                    int code = 1000 * colIndex + rowIndex;
+                    int code = 1000 * rowIndex + colIndex;
                     std::string name(fmt::format("ce_EMCAL_pwo_phys_{}", code));
-                    new G4PVPlacement(nullptr, G4ThreeVector(x, y, cfg.PWO_PosZ), name, ce_EMCAL_detPWO_Logic, Phys, false, towerIndex);
+                    new G4PVPlacement(nullptr, G4ThreeVector(x, y, cfg.PWO_PosZ), name, ce_EMCAL_detPWO_Logic, Phys, false, code);
                     // fmt::print(" {:<5} {:<6} {:<3} {:<3} {:>10.4f} {:>10.4f}   {}\n", towerIndex, code, colIndex, rowIndex, x / cm, y / cm, name);
                     towerIndex++;
                 }
@@ -382,9 +382,9 @@ public:
 
 
                 if (r < cfg.Glass_OuterR && (std::abs(x) > cfg.Glass_InnerR || std::abs(y) > cfg.Glass_InnerR)) {
-                    int code = 1000 * colIndex + rowIndex;
+                    int code = 1000 * rowIndex + colIndex;
                     std::string name = fmt::format("ce_EMCAL_glass_phys_{}", code);
-                    new G4PVPlacement(nullptr, G4ThreeVector(x, y, cfg.Glass_PosZ), name, ce_EMCAL_detGLASS_Logic, Phys, false, towerIndex);\
+                    auto placement = new G4PVPlacement(nullptr, G4ThreeVector(x, y, cfg.Glass_PosZ), name, ce_EMCAL_detGLASS_Logic, Phys, false, 1000000 + code);
                     // fmt::print(" {:<5} {:<6} {:<3} {:<3} {:>10.4f} {:>10.4f}   {}\n", towerIndex, code, colIndex, rowIndex, x / cm, y / cm, name);
                     towerIndex++;
                 }

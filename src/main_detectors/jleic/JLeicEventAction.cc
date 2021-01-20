@@ -157,22 +157,16 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt)
 
             aHit = (*hitCollectionCe_emcal)[i];
             JLeicCe_emcalDigiHit *dHit2 = dHit->JLeicCe_emcalDigi(aHit);
-
-
             string name_det = dHit2->GetDetName();
             double Etot_crs = dHit2->GetEdep();
             int Npe = dHit2->GetNpe();
             double ADC_crs = dHit2->GetADC();
             double TDCL_crs = dHit2->GetTDC();
-
-
             double Xxcrs = aHit->GetX_crs();
             double Yycrs = aHit->GetY_crs();
             double Zzcrs = aHit->GetZ_crs();
 
-
-            if (Etot_crs > 0) mRootEventsOut->AddCe_EMCAL(name_det, Etot_crs, Npe, ADC_crs, TDCL_crs, Xxcrs, Yycrs, Zzcrs);
-
+            if (Etot_crs > 0) mRootEventsOut->FillCe_EMCAL({name_det, aHit->GetCopyNumber(), Etot_crs, Npe, ADC_crs, TDCL_crs, Xxcrs, Yycrs, Zzcrs});
         }
     }
 

@@ -32,6 +32,7 @@ void g4e::GeometryExport::Export(const std::string& fileBaseName, G4VPhysicalVol
     auto gdmlFileName = fileBaseName + ".geo.gdml";
 
 
+
     // Export geometry in Root and save it in a file
     // Import Geant4 geometry to VGM
     Geant4GM::Factory g4Factory;
@@ -52,16 +53,18 @@ void g4e::GeometryExport::Export(const std::string& fileBaseName, G4VPhysicalVol
     // Import Geant4 geometry to VGM
     Geant4GM::Factory factory;
     factory.Import(motherVolume);
-    // Export VGM geometry in GDML
-    XmlVGM::GDMLExporter gdmlExporter(&factory);
-    gdmlExporter.SetFileName(gdmlFileName);
-    gdmlExporter.GenerateXMLGeometry();
+
+    // Export VGM geometry in GDML (we now use TGeo GDML export)
+    // XmlVGM::GDMLExporter gdmlExporter(&factory);
+    // gdmlExporter.SetFileName(gdmlFileName);
+    // gdmlExporter.GenerateXMLGeometry();
     //
 
     TGeoNode* topNode = gGeoManager->GetTopNode();
     EnhanceTGeoVisual(topNode);         // Give geometry nice look in TFile
     gGeoManager->CloseGeometry();
     gGeoManager->Export(rootFileName.c_str(), "detector_geo");
+    gGeoManager->Export(gdmlFileName.c_str(), "detector");
 #endif
 
 }

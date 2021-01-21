@@ -3,15 +3,15 @@
 
 namespace g4e {
     struct Ce_EMCALIoData {
-        const std::string& aName;
-        int id;
-        double aEtot_dep;
-        int aNpe;
-        double aADC;
-        double aTDC;
-        double axcrs;
-        double aycrs;
-        double azcrs;
+        std::string ModuleName;
+        int Id;
+        double TotalEnergyDep;
+        int Npe;
+        double Adc;
+        double Tdc;
+        double CrsX;
+        double CrsY;
+        double CrsZ;
     };
 
     struct Ce_EMCALIo
@@ -52,21 +52,21 @@ namespace g4e {
 
         void Fill(Ce_EMCALIoData data)
         {
-            mTowerNames.push_back(data.aName);
+            mTowerNames.push_back(data.ModuleName);
             mDataCount = mTowerNames.size();
-            mIds.push_back(data.id);
-            mTotalDepEnergies.push_back(data.aEtot_dep);
-            mNpe.push_back(data.aNpe);
-            mAdc.push_back(data.aADC);
-            mTdc.push_back(data.aTDC);
-            mCrsX.push_back(data.axcrs);
-            mCrsY.push_back(data.aycrs);
-            mCrsZ.push_back(data.azcrs);
+            mIds.push_back(data.Id);
+            mTotalDepEnergies.push_back(data.TotalEnergyDep);
+            mNpe.push_back(data.Npe);
+            mAdc.push_back(data.Adc);
+            mTdc.push_back(data.Tdc);
+            mCrsX.push_back(data.CrsX);
+            mCrsY.push_back(data.CrsY);
+            mCrsZ.push_back(data.CrsZ);
 
             // decode id section, row and column
-            int section = data.id / 1000000;
-            int idRow = (data.id - section*1000000)/1000;
-            int idCol = data.id - section*1000000 - idRow*1000;
+            int section = data.Id / 1000000;
+            int idRow = (data.Id - section * 1000000) / 1000;
+            int idCol = data.Id - section * 1000000 - idRow * 1000;
             mSectionIds.push_back(section);
             mRowIds.push_back(idRow);
             mColumnIds.push_back(idCol);

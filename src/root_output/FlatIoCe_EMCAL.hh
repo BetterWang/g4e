@@ -18,7 +18,7 @@ namespace g4e {
     {
         void BindToTree(TTree *tree)
         {
-            tree->Branch("ce_emcal_count", &mDataCount);
+            tree->Branch("ce_emcal_count", &mDataCount, "ce_emcal_count/l");
             tree->Branch("ce_emcal_name", &mTowerNames);
             tree->Branch("ce_emcal_id", &mIds);
             tree->Branch("ce_emcal_etot_dep", &mTotalDepEnergies);
@@ -50,7 +50,7 @@ namespace g4e {
             mDataCount = 0;
         }
 
-        void Fill(Ce_EMCALIoData data)
+        void Fill(const Ce_EMCALIoData& data)
         {
             mTowerNames.push_back(data.ModuleName);
             mDataCount = mTowerNames.size();

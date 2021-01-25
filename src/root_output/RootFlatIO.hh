@@ -57,8 +57,11 @@ namespace g4e
             mTrackIo.Clear();
             mParticleIo.Clear();
             mPrimeVertexIo.Clear();
-            trk_index_by_id.clear();
             mCe_EMCALIo.Clear();
+
+            // Index by id maps
+            mTrackIndexById.clear();
+            mVertexIndexById.clear();
         }
 
         void AddHit(
@@ -109,8 +112,8 @@ namespace g4e
         )
         {
             std::lock_guard<std::recursive_mutex> lk(io_mutex);
-            if(trk_index_by_id.count(aTrackId)) {	      
-                return trk_index_by_id[aTrackId];     // We already saved the track with this id. Nothing to do
+            if(mTrackIndexById.count(aTrackId)) {
+                return mTrackIndexById[aTrackId];     // We already saved the track with this id. Nothing to do
             }
             uint64_t thisTrackIndex = mTrackIo.IdVect.size();
  
@@ -126,7 +129,7 @@ namespace g4e
             mTrackIo.YDirVtxVect.push_back(aYMom);
             mTrackIo.ZDirVtxVect.push_back(aZMom);
             mTrackIo.MomentumVect.push_back(aMom);
-            trk_index_by_id[aTrackId] = thisTrackIndex;
+            mTrackIndexById[aTrackId] = thisTrackIndex;
             mTrackIo.TrackCount = mTrackIo.IdVect.size();
             return thisTrackIndex;
         }
@@ -142,6 +145,7 @@ namespace g4e
         )
         {
             std::lock_guard<std::recursive_mutex> lk(io_mutex);
+            mVertexIndexById[aId] = mPrimeVertexIo.IdVect.size();
             mPrimeVertexIo.IdVect.push_back(aId);
             mPrimeVertexIo.ParticleCountVect.push_back(aParticleCount);
             mPrimeVertexIo.XVect.push_back(aX);
@@ -150,6 +154,7 @@ namespace g4e
             mPrimeVertexIo.TimeVect.push_back(aTime);
             mPrimeVertexIo.WeightVect.push_back(aWeight);
             mPrimeVertexIo.VertexCount = mPrimeVertexIo.IdVect.size();
+
         }
 
         void AddPrimaryParticle (
@@ -170,7 +175,7 @@ namespace g4e
         {
             std::lock_guard<std::recursive_mutex> lk(io_mutex);
             mParticleIo.IdVect.push_back(aId);
-            mParticleIo.PrimeVtxIdVect.push_back(aPrimeVtxId);
+            mParticleIo.VertexIdVect.push_back(aPrimeVtxId);
             mParticleIo.PDGCodeVect.push_back(aPDGCode);
             mParticleIo.TrackIdVect.push_back(aTrackId);
             mParticleIo.ChargeVect.push_back(aCharge);
@@ -204,6 +209,21 @@ namespace g4e
                 mEventInfo = userEventData->GetEventData();
             }
 
+            // Set track indexes for parent tracks
+            for(int i=0; i<mTrackIo.TrackCount; i++) {
+                mTrackIo.ParentIndex[i] = mTrackIndexById[mTrackIo.ParentId[i]];
+            }
+
+            // Set track indexes for generated particles
+            for(int i=0; i<mParticleIo.ParticleCount; i++) {
+                mParticleIo.TrackIndexVect[i] = mTrackIndexById[mParticleIo.TrackIdVect[i]];
+            }
+
+            // Set vertex indexes for vertexes
+            for(int i=0; i<mParticleIo.ParticleCount; i++) {
+                mParticleIo.PrimeVtxIndexVect[i] = mVertexIndexById[mParticleIo.VertexIdVect[i]];
+            }
+
             fmt::print("RooIO: {:<4} hits:{:<7} tracks:{:<7} genpart:{:<4} \n", mEventId+1, mHitIo.HitsCount, mTrackIo.TrackCount, mParticleIo.ParticleCount);
             mEventTree->Fill();
         }
@@ -229,7 +249,8 @@ namespace g4e
         TTree *mEventTree;
         uint64_t mEventId;
 
-        std::map<uint64_t, uint64_t> trk_index_by_id; // Track vector indexes by track id
+        std::map<uint64_t, uint64_t> mTrackIndexById; // Track vector indexes by track id
+        std::map<uint64_t, uint64_t> mVertexIndexById; // Track vector indexes by track id
 
         g4e::HitIo mHitIo;
         g4e::TrackIo mTrackIo;

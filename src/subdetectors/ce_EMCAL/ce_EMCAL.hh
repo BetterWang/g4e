@@ -306,6 +306,7 @@ public:
                     new G4PVPlacement(nullptr, G4ThreeVector(x, y, cfg.PWO_PosZ), name, ce_EMCAL_detPWO_Logic, Phys, false, code);
                     // fmt::print(" {:<5} {:<6} {:<3} {:<3} {:>10.4f} {:>10.4f}   {}\n", towerIndex, code, colIndex, rowIndex, x / cm, y / cm, name);
                     towerIndex++;
+
                 }
             }
         }

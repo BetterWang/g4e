@@ -4,10 +4,19 @@ Output
 G4E output data structure
 -------------------------
 
-The g4e output is made out of so called aligned arrays. Arrays are grouped e.g. for tracks (trak_...), hits (hit_...),
-generated particles and so on.
+The g4e output is made out of so called aligned arrays.
 
-The
+Each array holds values of a single entity e.g. **trk_mom** - hold momentums for each track in the event.
+
+Arrays are grouped by name prefixes, e.g  tracks (trk\_...), hits (hit\_...), generator particles (gen_prt\_...), etc.
+
+All arrays with the same name prefix have the same length. e.g. all trk\_... has the same length, the length is
+defined in trk_count variable (while can be retrieved with size() method - trk_mom.size())
+
+Arrays reference each other with id. This is close to relational DBs. In recent G4E versions (API v3) there is also *_index
+which reference directly an index in an array:
+
+
 
 .. image:: _images/io_structure.svg
    :name: G4E output file structure
@@ -67,7 +76,6 @@ There are two different fields **hit_trk_id** and **hit_trk_index**:
           // Get parent track momentum
           double momentum = trk_mom[hit_trk_index[i]];
        }
-
 
 
 Dimentions

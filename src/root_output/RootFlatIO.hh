@@ -211,17 +211,17 @@ namespace g4e
 
             // Set track indexes for parent tracks
             for(int i=0; i<mTrackIo.TrackCount; i++) {
-                mTrackIo.ParentIndex[i] = mTrackIndexById[mTrackIo.ParentId[i]];
+                mTrackIo.ParentIndex.push_back(mTrackIndexById[mTrackIo.ParentId[i]]);
             }
 
             // Set track indexes for generated particles
             for(int i=0; i<mParticleIo.ParticleCount; i++) {
-                mParticleIo.TrackIndexVect[i] = mTrackIndexById[mParticleIo.TrackIdVect[i]];
+                mParticleIo.TrackIndexVect.push_back(mTrackIndexById[mParticleIo.TrackIdVect[i]]);
             }
 
             // Set vertex indexes for vertexes
             for(int i=0; i<mParticleIo.ParticleCount; i++) {
-                mParticleIo.PrimeVtxIndexVect[i] = mVertexIndexById[mParticleIo.VertexIdVect[i]];
+                mParticleIo.PrimeVtxIndexVect.push_back(mVertexIndexById[mParticleIo.VertexIdVect[i]]);
             }
 
             fmt::print("RooIO: {:<4} hits:{:<7} tracks:{:<7} genpart:{:<4} \n", mEventId+1, mHitIo.HitsCount, mTrackIo.TrackCount, mParticleIo.ParticleCount);

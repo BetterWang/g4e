@@ -8,7 +8,6 @@ namespace g4e {
         {
             tree->Branch("gen_vtx_count", &VertexCount, "gen_vtx_count/l");
             tree->Branch("gen_vtx_id", &IdVect);
-            tree->Branch("gen_vtx_index", &IdVect);
             tree->Branch("gen_vtx_part_count", &ParticleCountVect);
             tree->Branch("gen_vtx_x", &XVect);
             tree->Branch("gen_vtx_y", &YVect);

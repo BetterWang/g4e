@@ -196,3 +196,7 @@ env.sh
 spack-configure-args.txt
 
 *.odg#
+
+examples/cone_particle_gun.run.json
+
+examples/cone_particle_gun.run.mac

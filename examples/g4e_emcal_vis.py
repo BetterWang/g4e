@@ -14,6 +14,7 @@ g4e.command(['/detsetup/eBeam 10',
 #g4e.source('work/eC_10x41_GCF_QE_Egaus_small.txt')
 
 # Setup particle gun
+# Please see particle gun example for the full explanation
 g4e.command('/generator/select coneParticleGun')                    # Select cone particle gun generator
 g4e.command('/generator/coneParticleGun/particle e-')               # Fire electrons
 g4e.command('/generator/coneParticleGun/direction 0 0 -1')          # Direction to EMCAL

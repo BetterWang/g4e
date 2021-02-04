@@ -1,41 +1,30 @@
-# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-#         (!) OBSOLETE (!)
-# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-/control/execute jleic.mac
 
 /run/initialize
 
-#/vis/open VRML2FILE
-#/vis/drawVolume
-#/vis/viewer/flush
-
-#/persistency/gdml/write jleic.gdml
-
-# Use this open statement to create an OpenGL view:
-### This works  ->   
-#/control/manual vis
+# List available visualization options
 /vis/list
+
+# Use it as a standard default
 /vis/open OGL 1000x800-0+0
 #/vis/open OGLI 600x600-0+0
 #/vis/open OGLIX 600x600-0+0
 #/vis/open OGLIQt 1000x800-0+0
-# 
 #
 #/vis/open OGLS 600x600-0+0
 #/vis/open OGLSX 600x600-0+0
 #/vis/open OGLIQt 1000x800-0+0
 #/vis/open OGLIQt_FALLBACK 600x600-0+0
 #/vis/open OGLSQt_FALLBACK 600x600-0+0
-#
+
+
 # Use this open statement to create a .prim file suitable for
 # viewing in DAWN:
 #/vis/open DAWNFILE
-#
+
 # Use this open statement to create a .heprep file suitable for
 # viewing in HepRApp:
 #/vis/open HepRepFile
-#
+
 # Use this open statement to create a .wrl file suitable for
 # viewing in a VRML viewer:
 #/vis/open VRML2FILE
@@ -154,8 +143,8 @@
 #/vis/viewer/set/style surface
 #/vis/viewer/colourByDensity 1 g/cm3 .5 3 10
 #---------------------------------------------------
-/vis/viewer/zoom 0.5
+# /vis/viewer/zoom 0.5
 /vis/viewer/set/viewpointThetaPhi -90 -45 deg
-/vis/viewer/zoom 100
+/vis/viewer/zoom 70
 
 exit

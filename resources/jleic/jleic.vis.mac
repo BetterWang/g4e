@@ -1,8 +1,3 @@
-# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-#         (!) OBSOLETE (!)
-# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-/control/execute jleic.mac
 
 /run/initialize
 

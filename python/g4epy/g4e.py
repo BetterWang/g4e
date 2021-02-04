@@ -200,11 +200,12 @@ class Geant4Eic(object):
 
     def _repr_html_(self):
         result_str = f"<strong>g4e</strong> configured<br>"
-        if self.config['source_file']:
+
+        if self.config.get('source_file'):
             result_str += f"<br><strong>sources: </strong><br>{self.config['source_file']}"
-        if self.config['detector']:
+        if self.config.get('detector'):
             result_str += f"<br><strong>detector: </strong><br>{self.config['detector']}"
-        if self.config['beamline']:
+        if self.config.get('beamline'):
             result_str += f"<br><strong>beamline: </strong><br>{self.config['beamline']}"
         return result_str
 

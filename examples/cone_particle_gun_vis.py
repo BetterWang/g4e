@@ -63,14 +63,16 @@ g4e.output('cone_particle_gun')
 #g4e.beam_on(300).run()
 
 # Event display config
-g4e.command(['/vis/open OGLSQt 1000x800-0+0',
-             '/vis/viewer/addCutawayPlane 0 0 7 m 0 0 1',
+g4e.command(['/vis/viewer/addCutawayPlane 0 0 7 m 0 0 1',
              '/vis/viewer/addCutawayPlane 0 0 7 m 1 0 0',
              '/vis/viewer/addCutawayPlane 0 0 7 m 0 -1 0',
              '/vis/viewer/set/style surface',
              '/vis/viewer/colourByDensity 1 g/cm3 .5 3 10',
              '/vis/viewer/set/background 1 1 1'])
 g4e.command(['/vis/viewer/set/viewpointThetaPhi 90 135'])
+
+# There are a lot of particles
+g4e.command('/vis/ogl/set/displayListLimit 150000')
 
 # Run with event display of 10 events
 g4e.beam_on(10).vis().run()

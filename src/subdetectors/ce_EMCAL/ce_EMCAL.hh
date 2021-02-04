@@ -49,7 +49,6 @@ struct ce_EMCAL_Config
             Messenger->DeclareProperty("pwoGap", PWO_Gap, "Gap between PWO crystals ");
             Messenger->DeclareProperty("pwoInnerR", PWO_InnerR, "Inner radius or beam hole for PWO block");
             Messenger->DeclareProperty("pwoOuterR", PWO_OuterR, "Outer radius of PWO block");
-
             Messenger->DeclareProperty("glassThickness", Glass_Thickness, "Thikness (z direction dimention) of Glass modules");
             Messenger->DeclareProperty("glassWidth", Glass_Width, "Width (and higth) of each Glass modules");
             Messenger->DeclareProperty("glassGap", Glass_Gap, "Gap between Glass modules ");

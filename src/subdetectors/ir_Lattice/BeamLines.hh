@@ -3,8 +3,8 @@
 
 enum class BeamLines {
     JLEIC = 0,
-    ERHIC = 0,
-    EICIP2 = 1
+    ERHIC = 1,
+    EICIP2 = 0
 };
 
 

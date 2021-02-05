@@ -4,7 +4,7 @@
 
 # Include default setup
 # Use jleic.mac for headless mode or jleicvis.mac for GUI visualization
-/control/execute jleic.mac
+/control/execute jleicvis.mac
 
   # Select cone particle gun generator
   # Other options are: particleGun hepmcAscii pythiaAscii beagle
@@ -17,7 +17,8 @@
   # (geantino is default)
   # (ion can be specified for shooting ions)
   # Common names: proton, e- e+ pi+ pi-
-/generator/coneParticleGun/particle e-
+#/generator/coneParticleGun/particle e-
+/generator/coneParticleGun/particle proton
 
   # if particle is ion
   # Set properties of ion to be generated.
@@ -31,10 +32,10 @@
 
   # Set momentum direction
   # Direction needs not to be a unit vector
-/generator/coneParticleGun/direction 0 0 -1
+/generator/coneParticleGun/direction 0.0249973959 0 0.996875163
 
   # Set kinetic energy [GeV]
-/generator/coneParticleGun/energy 6 GeV
+/generator/coneParticleGun/energy 275 GeV
 
   # Energy spread [GeV],
   # energy is smeared as gauss (mean=<particle E>, stddev=energyStdDev)
@@ -42,7 +43,7 @@
 
   # Cone angle standard deviation.
   # Basically is the resulding cone angle
-/generator/coneParticleGun/coneAngleStdDev 15 deg
+/generator/coneParticleGun/coneAngleStdDev 10 mrad
 
   # Set momentum. This command is equivalent to two commands: /.../direction and /.../momentumAmp
   # /generator/coneParticleGun/momentum 0 0 10
@@ -58,7 +59,7 @@
   # Set starting position smearing of the particle [cm]
   # works together as gaus(mean=position, stddev=positionStdDev)
   # DefaultUnit - cm
-/generator/coneParticleGun/positionStdDev 3 3 3
+/generator/coneParticleGun/positionStdDev 0 0 0
 
   # Set initial time of the particle
   # DefaultUnit - ns
@@ -97,7 +98,8 @@
   # This flag doesn't affect physics in g4e (only what is saved)
   # so EM showers in EMCAL is fully simulated with any value here
   # /rootOutput/saveSecondaryLevel 0
+/rootOutput/saveSecondaryLevel -1
 
 /run/initialize
-/run/beamOn 1000
+/run/beamOn 1
 exit

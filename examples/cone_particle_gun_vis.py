@@ -9,14 +9,16 @@ g4e.command('/generator/select coneParticleGun')
 # (geantino is default)
 # (ion can be specified for shooting ions)
 # Common names: proton, e- e+ pi+ pi-
-g4e.command('/generator/coneParticleGun/particle e-')
+#g4e.command('/generator/coneParticleGun/particle e-')
+g4e.command('/generator/coneParticleGun/particle proton')
 
 # Set momentum direction
 # Direction needs not to be a unit vector
-g4e.command('/generator/coneParticleGun/direction 0 0 -1')
+#g4e.command('/generator/coneParticleGun/direction 0 0 -1')
+g4e.command('/generator/coneParticleGun/direction 0.249973959 0 0.996875163')
 
 # Set kinetic energy [GeV]
-g4e.command('/generator/coneParticleGun/energy 6 GeV')
+g4e.command('/generator/coneParticleGun/energy 275 GeV')
 
 # Energy spread [GeV],
 # energy is smeared as gauss (mean=<particle E>, stddev=energyStdDev)

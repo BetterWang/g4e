@@ -142,8 +142,8 @@ public:
     bool USE_CI_DRICH = true;
     bool USE_CI_TRD = true;
     bool USE_CI_EMCAL = true;
-    bool USE_CI_HCAL = false;
-    bool USE_CI_HCAL_D = false;
+    bool USE_CI_HCAL = true;
+    bool USE_CI_HCAL_D = true;
 
     //--------- Forward D1 ------
     bool USE_FI_B0_TRK = true;

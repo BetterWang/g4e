@@ -14,7 +14,9 @@ class TTree;
 class G4Step;
 
 
+
 namespace g4e {
+
 
     enum class WriteStepPointChoices{
         PreStepPoint,

@@ -159,7 +159,17 @@ double[]   hit_x
 double[]   hit_y
 double[]   hit_z
 double[]   hit_e_loss
-========  =====================  ==============
+uint[]     hit_type                0-sensitive, 1-vol. enter, 2-vol. leave
+========  =====================  ===============
+
+**hit_type** - indicates entity that saved the hit.
+
+(defined in g4e::HitTypes structure)
+- 0 - hit is saved from one of the sensitive detectors
+- 1 - hit is saved because it is the first step in a volume
+- 2 - hit is saved because it is the last step in a volume
+
+Hits entering or exiting a volume are saved only for volumes marked in detector construction.
 
 
 Tracks

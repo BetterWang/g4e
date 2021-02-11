@@ -885,6 +885,7 @@ void JLeicDetectorConstruction::ConstructSDandField()
     if(USE_CI_TRD)        { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ci_TRD.Phys);}
     if(USE_CB_CTD)        { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->cb_CTD.Phys);}
     if(USE_CE_GEM)        { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ce_GEM.Phys);}
+    if(USE_CE_EMCAL)      { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ce_EMCAL.Phys);}
     if(USE_CI_HCAL)       { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ci_HCAL.Phys);}
 
     // fIonLineMagnets->CreateMagneticFiles();

@@ -17,6 +17,7 @@ namespace g4e {
             tree->Branch("hit_x", &XPosVect);
             tree->Branch("hit_y", &YPosVect);
             tree->Branch("hit_z", &ZPosVect);
+            tree->Branch("hit_type", &TypeVect);
             tree->Branch("hit_i_rep", &IRepVect);
             tree->Branch("hit_j_rep", &JRepVect);
             tree->Branch("hit_e_loss", &ELossVect);
@@ -36,6 +37,7 @@ namespace g4e {
             PdgVect.clear();
             IRepVect.clear();
             JRepVect.clear();
+            TypeVect.clear();
             VolumeNameVect.clear();
 
         }
@@ -53,6 +55,7 @@ namespace g4e {
         std::vector<double> ELossVect;
         std::vector<uint64_t> IRepVect;
         std::vector<uint64_t> JRepVect;
+        std::vector<uint64_t> TypeVect;
         std::vector<std::string> VolumeNameVect;
     };
 }

@@ -8,6 +8,7 @@
 #include <G4PrimaryParticle.hh>
 #include <G4VProcess.hh>
 #include <main_detectors/jleic/JLeicTrackInformation.hh>
+#include <HitTypes.h>
 
 g4e::RootOutputManager::RootOutputManager(TFile *rootFile):
     mRootFile(rootFile),
@@ -41,8 +42,6 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
                    aStep->IsFirstStepInVolume(), aStep->IsLastStepInVolume(), point->GetPosition().z());
     */
 
-    // process hit
-    int mHitsCount=0;
 
     // process    track
     int curTrackID = aStep->GetTrack()->GetTrackID();
@@ -69,9 +68,15 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
     auto info = dynamic_cast<JLeicTrackInformation*>(track->GetUserInformation());
     int ancestryLevel = info ? info->GetAncestryLevel() : -1;
 
-    if(mSaveSecondaryLevel!=-1 && ancestryLevel > mSaveSecondaryLevel) {
+
+
+    if(mSaveSecondaryLevel>=0 && ancestryLevel > mSaveSecondaryLevel) {
         return;
     }
+
+    HitTypes type = HitTypes::Sensitive;
+    if(aStep->IsFirstStepInVolume()) type = HitTypes::VolumeEnter;
+    if(aStep->IsLastStepInVolume()) type = HitTypes::VolumeLeave;
 
     //-- fill tracks --
     uint64_t trackIndex = jleicRootOutput->AddTrack(
@@ -90,9 +95,7 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
     );
 
 
-
     jleicRootOutput->AddHit(
-                        mHitsCount,                                         /* hit id        */
                         trackIndex,                                         /* index of a track in tracks array */
                         aStep->GetTrack()->GetTrackID(),                    /* track id      */
                         aStep->GetTrack()->GetParentID(),                   /* parent Trk Id */
@@ -100,10 +103,11 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
                         point->GetPosition().x() / mm,                   /* hit x         */
                         point->GetPosition().y() / mm,                   /* hit y         */
                         point->GetPosition().z() / mm,                   /* hit z         */
-                        aStep->GetTotalEnergyDeposit() / GeV,         /* aELoss        */
-                        copyIDx,                                            /* vol replic x  */
-                        copyIDy,                                            /* vol replic y  */
-                        volumeName                                          /* Volume Name   */
+                        aStep->GetTotalEnergyDeposit() / GeV,            /* aELoss        */
+                        copyIDx,                                         /* vol replic x  */
+                        copyIDy,                                         /* vol replic y  */
+                        volumeName,                                      /* Volume Name   */
+                        (int)type
     );
 
 //    auto primaryParticle = track->GetDynamicParticle()->GetPrimaryParticle();

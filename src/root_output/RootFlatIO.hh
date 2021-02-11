@@ -65,7 +65,6 @@ namespace g4e
         }
 
         void AddHit(
-                uint64_t aHitId,        // Hit unique ID
                 uint64_t trackIndex,    // Index of a parent track inside tracks array
                 uint64_t aTrackId,      // Track unique ID
                 uint64_t ParentId,      // Parent track ID
@@ -76,12 +75,14 @@ namespace g4e
                 double aELoss,
                 uint64_t aIRep,
                 uint64_t aJRep,
-                const std::string &aVolName
+                const std::string &aVolName,
+                int type                // hit type. See g4e::HitTypes
                 )
         {
             std::lock_guard<std::recursive_mutex> lk(io_mutex);
 
-            mHitIo.IdVect.push_back(aHitId);
+
+            mHitIo.IdVect.push_back(mHitIo.IdVect.size());
             mHitIo.XPosVect.push_back(aX);
             mHitIo.YPosVect.push_back(aY);
             mHitIo.ZPosVect.push_back(aZ);
@@ -94,6 +95,7 @@ namespace g4e
             mHitIo.VolumeNameVect.push_back(aVolName);
             mHitIo.PdgVect.push_back(pdg);
             mHitIo.HitsCount = mHitIo.XPosVect.size();
+            mHitIo.TypeVect.push_back(type);
         }
 
         int64_t AddTrack(

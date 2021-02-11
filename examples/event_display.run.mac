@@ -1,4 +1,0 @@
-/control/execute jleicvis.mac
-/detsetup/beamlineName erhic
-/run/initialize
-/run/beamOn 0

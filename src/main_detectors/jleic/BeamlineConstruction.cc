@@ -1,6 +1,6 @@
 #include <vector>
 
-#include "JLeicDetectorConstruction.hh"
+#include "BeamlineConstruction.hh"
 #include "JLeicCalorimeterSD.hh"
 #include "JLeicVertexSD.hh"
 #include "JLeicCe_emcalSD.hh"
@@ -22,7 +22,7 @@
 #include "GeometryExport.hh"
 #include "VolumeChangeSteppingAction.hh"
 
-JLeicDetectorConstruction::JLeicDetectorConstruction(g4e::InitializationContext *initContext) :
+BeamlineConstruction::BeamlineConstruction(g4e::InitializationContext *initContext) :
     fInitContext(initContext),
     ce_EMCAL(fConfig.ce_EMCAL, initContext)
 {
@@ -36,14 +36,14 @@ JLeicDetectorConstruction::JLeicDetectorConstruction(g4e::InitializationContext 
 }
 
 
-JLeicDetectorConstruction::~JLeicDetectorConstruction()
+BeamlineConstruction::~BeamlineConstruction()
 {
     delete fDetectorMessenger;
     delete fMat;
 }
 
 
-G4VPhysicalVolume *JLeicDetectorConstruction::Construct()
+G4VPhysicalVolume *BeamlineConstruction::Construct()
 {
     G4GeometryManager::GetInstance()->OpenGeometry();
     G4PhysicalVolumeStore::GetInstance()->Clean();
@@ -55,7 +55,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::Construct()
 }
 
 
-void JLeicDetectorConstruction::Create_ci_Endcap(JLeicDetectorConfig::ci_Endcap_Config cfg)
+void BeamlineConstruction::Create_ci_Endcap(JLeicDetectorConfig::ci_Endcap_Config cfg)
 {
     /// This function creates ION-ENDCAP (but doesn't fill its contents)
 
@@ -72,7 +72,7 @@ void JLeicDetectorConstruction::Create_ci_Endcap(JLeicDetectorConfig::ci_Endcap_
 }
 
 
-void JLeicDetectorConstruction::Create_ce_Endcap(JLeicDetectorConfig::ce_Endcap_Config cfg)
+void BeamlineConstruction::Create_ce_Endcap(JLeicDetectorConfig::ce_Endcap_Config cfg)
 {
     /// This function creates ELECTRON-ENDCAP (but doesn't fill its contents)
 
@@ -89,7 +89,7 @@ void JLeicDetectorConstruction::Create_ce_Endcap(JLeicDetectorConfig::ce_Endcap_
 
 
 
-void JLeicDetectorConstruction::SetUpJLEIC2019()
+void BeamlineConstruction::SetUpJLEIC2019()
 {
     using namespace fmt;
 
@@ -115,7 +115,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     auto beamLineName = g4e::ToLowerCopy(fConfig.BeamlineName);
 
     if(beamLineName != "erhic" && beamLineName != "eicIP2" && fConfig.BeamlineName != "jleic") {
-        G4Exception("JLeicDetectorConstruction::Construct",
+        G4Exception("BeamlineConstruction::Construct",
                     "InvalidSetup", FatalException,
                     "/detsetup/beamlineName should be 'erhic' or 'jleic' or 'eicIP2");
     }
@@ -135,7 +135,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     if(USE_FFQs )
     {
         if(!fInitContext->Arguments->IsSetHomePath) {
-            G4Exception("JLeicDetectorConstruction::Construct",
+            G4Exception("BeamlineConstruction::Construct",
                         "InvalidSetup", FatalException,
                         "AcceleratorMagnets file opening err :: please setup env. G4E_HOME");
             return;
@@ -821,12 +821,6 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     //==                         Rear  Detectors                                     ==
     //************************************************************************************
 
-    //================================================================================
-    //==                        Compton Polarimeter
-    //================================================================================
-    if (USE_FFE_CPOL) {
-        ffe_CPOL.Construct(fConfig.ffe_CPOL, World_Material, World_Phys);
-    } // end ffe_CPOL
 
     //================================================================================
     //==                        Lumi
@@ -871,7 +865,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 }
 
 
-void JLeicDetectorConstruction::ConstructSDandField()
+void BeamlineConstruction::ConstructSDandField()
 {
     if(USE_FFI_ZDC) { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_ZDC.Phys);}
     //  fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D2.lay_Phys[0]);
@@ -893,7 +887,7 @@ void JLeicDetectorConstruction::ConstructSDandField()
 }
 
 
-void JLeicDetectorConstruction::UpdateGeometry()
+void BeamlineConstruction::UpdateGeometry()
 {
     G4RunManager::GetRunManager()->DefineWorldVolume(World_Phys);
 }

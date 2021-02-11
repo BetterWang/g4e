@@ -28,6 +28,7 @@
 #include "StringHelpers.hh"
 
 #include "main_detectors/jleic/JLeicDetectorConstruction.hh"
+#include "main_detectors/jleic/BeamlineConstruction.hh"
 #include "ArgumentProcessor.hh"
 #include "EicPhysicsList.hh"
 #include "PrimaryGeneratorAction.hh"
@@ -104,10 +105,11 @@ int main(int argc, char **argv)
     // After the run manager, we can combine initialization context
     g4e::InitializationContext initContext(&appArgs, &mainRootOutput, &actionInit);
 
-    auto detector = new JLeicDetectorConstruction(&initContext);
+    auto detector = new BeamlineConstruction(&initContext);
+    auto jleicDetector = new JLeicDetectorConstruction(&initContext);
 
     runManager->SetUserInitialization(detector);
-    runManager->SetUserInitialization(new EicPhysicsList(detector));
+    runManager->SetUserInitialization(new EicPhysicsList(jleicDetector));
 
     // only after we added physics lists one can add generator action
     // According to geant, 4VUserPrimaryGeneratorAction must be constructed AFTER

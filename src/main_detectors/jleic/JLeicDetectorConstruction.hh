@@ -64,7 +64,7 @@
 #include "fi_B0_EMCAL/fi_B0_EMCAL.hh"   // Far-forward Ion D1  - EMCAL
 
 #include "ffi_OFFM_TRK/ffi_OFFM_TRK.hh"  // Far-forward off-momentum - Tracking after B1( JLEIC Second  big dipole )
-#include "ffi_OFFM_TRK2/ffi_OFFM_TRK2.hh"  //  virtual plane 
+#include "ffi_OFFM_TRK2/ffi_OFFM_TRK2.hh"  //  virtual plane
 #include "ffi_NEG_TRK/ffi_NEG_TRK.hh"  // Far-forward for negative particles from decays -Lambda
 #include "ffi_ZDC/ffi_ZDC.hh"           // Far-forward Ion   - HCAL ZDC
 #include "ffi_RPOT_D2/ffi_RPOT_D2.hh"   // Far-forward Ion   - RomanPots system
@@ -98,13 +98,13 @@ public:
 
     bool USE_BEAMPIPE = false;
 
-    //------- subdetector-volumes  barrel ----- 
+    //------- subdetector-volumes  barrel -----
 
     bool USE_CB_VTX = true;
     bool USE_CB_VTX_LADDERS = true;
     bool USE_CB_VTX_ENDCAPS = false;  // for vxt endcaps ladders
     bool  USE_CB_SiDISCS  = true;  // for vxt discs along beampipe
-    //bool USE_VTX_E 1   // for vxt endcaps 
+    //bool USE_VTX_E 1   // for vxt endcaps
 
     bool USE_CB_CTD = true;
     // use one of the following options for CTD:
@@ -122,7 +122,7 @@ public:
     // ==============================================
     bool USE_E_ENDCAP = true;
 
-    //------- subdetector-volumes E-encap ----- 
+    //------- subdetector-volumes E-encap -----
     bool USE_CE_GEM = true;
     bool USE_CE_EMCAL = true;
     bool USE_CE_MRICH = true;
@@ -153,11 +153,12 @@ public:
     bool USE_FFI_OFFM_TRK = true;
     bool USE_FFI_OFFM_TRK2 = true;
     bool USE_FFI_NEG_TRK = true;
-    // 
+    //
     bool USE_FFI_ZDC = true;
-    bool USE_FFI_ZDC_ALICE = false;
-    bool USE_FFI_ZDC_GLASS = false; 
-    bool USE_FFI_ZDC_CRYSTAL = true; 
+    bool USE_FFI_ZDC_ALICE = true;
+    bool USE_FFI_ZDC_ALICE_ABSORBER = false;
+    bool USE_FFI_ZDC_GLASS = false;
+    bool USE_FFI_ZDC_CRYSTAL = true;
 
     //---
     bool USE_FFI_RPOT_D2 = true;
@@ -291,7 +292,7 @@ private:
     fi_B0_TRK_Design     fi_B0_TRK;       // Tracking
     fi_B0_EMCAL_Design   fi_B0_EMCAL;     // EMCAL
     ffi_OFFM_TRK_Design   ffi_OFFM_TRK;      // after B1 (in D2) Off-momentum Tracking
-     ffi_OFFM_TRK2_Design   ffi_OFFM_TRK2;      // virtual plane 
+     ffi_OFFM_TRK2_Design   ffi_OFFM_TRK2;      // virtual plane
     ffi_NEG_TRK_Design    ffi_NEG_TRK;      //  tracker for negarive particles lambda
     ffi_ZDC_Design      ffi_ZDC;
 

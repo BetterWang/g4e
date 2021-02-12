@@ -13,16 +13,16 @@
 #include "G4LogicalVolumeStore.hh"
 #include "G4SolidStore.hh"
 #include "G4ProductionCuts.hh"
-#include "G4VisAttributes.hh" 
+#include "G4VisAttributes.hh"
 #include "G4Colour.hh"
-#include "G4ios.hh" 
+#include "G4ios.hh"
 #include "G4SystemOfUnits.hh"
 
 // export geometry through VGM
 #include "GeometryExport.hh"
 #include "VolumeChangeSteppingAction.hh"
 
-JLeicDetectorConstruction::JLeicDetectorConstruction(g4e::InitializationContext *initContext) : 
+JLeicDetectorConstruction::JLeicDetectorConstruction(g4e::InitializationContext *initContext) :
     fInitContext(initContext),
     ce_EMCAL(fConfig.ce_EMCAL, initContext)
 {
@@ -50,7 +50,7 @@ G4VPhysicalVolume *JLeicDetectorConstruction::Construct()
     G4LogicalVolumeStore::GetInstance()->Clean();
     G4SolidStore::GetInstance()->Clean();
 
-    SetUpJLEIC2019();    
+    SetUpJLEIC2019();
     return World_Phys;
 }
 
@@ -420,13 +420,13 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     if (USE_CI_ENDCAP) {
 
         //================================================================================
-        // ==                      Hadron endcap GEM 
+        // ==                      Hadron endcap GEM
         //================================================================================
         if (USE_CI_GEM) {
             fConfig.ci_GEM.PosZ = fConfig.cb_Solenoid.SizeZ / 2 - fConfig.ci_GEM.SizeZ / 2;   // --- need to find out why this 5 cm are needed
 
             // --- different crossing angle direction for JLEIC and eRHIC
-            
+
             if(beamLine == BeamLines::JLEIC)  {
                 fConfig.ci_GEM.PosX = -5 * cm;
             } else {
@@ -499,7 +499,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     //====================================================================================
 
     //-------------------------------------------------------------------------------
-    //                     Tracker at B0  ( D1a) 
+    //                     Tracker at B0  ( D1a)
     //-------------------------------------------------------------------------------
     if (USE_FI_B0_TRK) {
         for (auto magnet: fIonLineMagnets->fMagnets) {
@@ -529,7 +529,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 
 
     //-------------------------------------------------------------------------------
-    //                      B0 near beampipe calorimeter  
+    //                      B0 near beampipe calorimeter
     //-------------------------------------------------------------------------------
     if (USE_CI_HCAL) {
 
@@ -547,7 +547,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 //====================================================================================
 
     //------------------------------------------------
-    //             OFF MOMENTUM TRK  
+    //             OFF MOMENTUM TRK
     //------------------------------------------------
 
     if (USE_FFI_OFFM_TRK) {
@@ -580,12 +580,12 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 	        fConfig.ffi_OFFM_TRK.Xpos = 75 * cm;
   		    fConfig.ffi_OFFM_TRK.Nlayers=2;
             ffi_OFFM_TRK.Construct(fConfig.ffi_OFFM_TRK, World_Material,World_Phys);
-             
+
             ffi_OFFM_TRK.ConstructDetectors();
             for (int lay = 0; lay < fConfig.ffi_OFFM_TRK.Nlayers; lay++) {
                 if (ffi_OFFM_TRK.lay_Logic) ffi_OFFM_TRK.lay_Logic->SetSensitiveDetector(fCalorimeterSD);
             }
-		    
+
             //========================virtual plance 2 ==================
             fConfig.ffi_OFFM_TRK2.SizeZ = 10. * cm;
             // fConfig.ffi_OFFM_TRK.Zpos = 22.5 * m;
@@ -594,8 +594,8 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 	        fConfig.ffi_OFFM_TRK2.Xpos = 75 * cm;
   		    fConfig.ffi_OFFM_TRK2.Nlayers=1;
             ffi_OFFM_TRK2.Construct(fConfig.ffi_OFFM_TRK2, World_Material,World_Phys);
-             
-	
+
+
             ffi_OFFM_TRK2.ConstructDetectors();
             for (int lay = 0; lay < fConfig.ffi_OFFM_TRK2.Nlayers; lay++) {
                 if (ffi_OFFM_TRK2.lay_Logic) ffi_OFFM_TRK2.lay_Logic->SetSensitiveDetector(fCalorimeterSD);
@@ -627,11 +627,11 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 
 
     //------------------------------------------------
-    //             NEG TRK for Lambda decays 
+    //             NEG TRK for Lambda decays
     //------------------------------------------------
     if (USE_FFI_NEG_TRK) {
         if(beamLine == BeamLines::ERHIC) {
-	        // for angle 0 
+	        // for angle 0
 	        // fConfig.ffi_NEG_TRK.SizeZ = 10. * cm;
 	        // fConfig.ffi_NEG_TRK.Zpos = 25 * m;  // 22.1 *m
 	        // fConfig.ffi_NEG_TRK.Xpos = 45 * cm; //25 *cm
@@ -644,7 +644,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
             fConfig.ffi_NEG_TRK.rot_matx.rotateY(fConfig.ffi_NEG_TRK.Angle);
 		    fConfig.ffi_NEG_TRK.Nlayers=1;
             ffi_NEG_TRK.Construct(fConfig.ffi_NEG_TRK, World_Material,World_Phys);
-	
+
             ffi_NEG_TRK.ConstructDetectors();
             for (int lay = 0; lay < fConfig.ffi_NEG_TRK.Nlayers; lay++) {
                 if (ffi_NEG_TRK.lay_Logic) ffi_NEG_TRK.lay_Logic->SetSensitiveDetector(fCalorimeterSD);
@@ -701,18 +701,30 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
                 fConfig.ffi_ZDC.Zpos = 4200 * cm;
                 fConfig.ffi_ZDC.Xpos = 120 * cm;
         }
-        ffi_ZDC.Construct(fConfig.ffi_ZDC, World_Material, World_Phys);
 	//       if(USE_FFI_ZDC_CRYSTAL) { ffi_ZDC.ConstructTowels(1);}
 	//	else if(USE_FFI_ZDC_GLASS) { ffi_ZDC.ConstructTowels(0);}
-	//else   if(USE_FFI_ZDC_ALICE) {  ffi_ZDC.ConstructALICE();} 
+	//else   if(USE_FFI_ZDC_ALICE) {  ffi_ZDC.ConstructALICE();}
 
+        if (USE_FFI_ZDC_ALICE) {
+            std::cout << "  --> QW!! Using ALICE ZDC" << std::endl;
+            if (USE_FFI_ZDC_ALICE_ABSORBER) {
+                fConfig.ffi_ZDC.bAliceAbsorber = true;
+            } else {
+                fConfig.ffi_ZDC.bAliceAbsorber = false;
+            }
+            ffi_ZDC.ConstructALICEPrototype(fConfig.ffi_ZDC, World_Material, World_Phys);
+            if ( fConfig.ffi_ZDC.bAliceAbsorber ) ffi_ZDC.ffi_ZDC_HCAL_Logic->SetSensitiveDetector(fCalorimeterSD);
+            ffi_ZDC.ffi_ZDC_SCI_Logic->SetSensitiveDetector(fCalorimeterSD);
+        } else {
+            ffi_ZDC.Construct(fConfig.ffi_ZDC, World_Material, World_Phys);
+        }
         // Write enter volume like hits
 	       //           if (ffi_ZDC.ffi_ZDC_HCAL_Logic) ffi_ZDC.ffi_ZDC_HCAL_Logic->SetSensitiveDetector(fCalorimeterSD);
 
 
     } // end ffi_ZDC
 
-  
+
     //------------------------------------------------
     //            Roman Pots for eRHIC
     //------------------------------------------------
@@ -730,7 +742,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
                 if (ffi_RPOT_D2.lay_Logic[lay]) ffi_RPOT_D2.lay_Logic[lay]->SetSensitiveDetector(fVertexSD);
             }
         }
-        
+
         //------------------------------------------------
         if (USE_FFI_RPOT_D3 ) {
           fConfig.ffi_RPOT_D3.Angle = 0.025;
@@ -745,7 +757,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
             }
           //  if (ffi_RPOT_D3.Logic) ffi_RPOT_D3.Logic->SetSensitiveDetector(fCalorimeterSD);
 	    } // end ffi_RPOT_D3
-    }// end erhic lattice placement 
+    }// end erhic lattice placement
 
     // ---- RPots for IP2
     if(beamLine == BeamLines::EICIP2) {
@@ -814,7 +826,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
             if (ffi_RPOT_D3.Logic) ffi_RPOT_D3.Logic->SetSensitiveDetector(fCalorimeterSD);
 
         } // end ffi_RPOT_D3
-    } // end jleic lattice placement 
+    } // end jleic lattice placement
 
 
     //************************************************************************************

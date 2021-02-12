@@ -1,4 +1,5 @@
 /control/execute jleicvis.mac
+/control/execute pan2ZDC.mac
 /detsetup/beamlineName erhic
 /run/initialize
 /run/beamOn 0

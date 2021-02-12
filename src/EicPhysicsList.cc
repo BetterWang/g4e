@@ -78,6 +78,7 @@
 #include "G4Ions.hh"
 
 #include "G4HadronPhysicsQGSP_BIC_HP.hh"
+#include "G4EmStandardPhysics_option3.hh"
 #include "G4EmStandardPhysics_option4.hh"
 #include "G4DecayPhysics.hh"
 #include "main_detectors/jleic/JLeicXTRphysics.hh"
@@ -116,9 +117,10 @@ EicPhysicsList::EicPhysicsList(JLeicDetectorConstruction *p) :
       G4IonPhysics
     */
 
-    // RegisterPhysics( new G4HadronPhysicsQGSP_BIC_HP()); //--- hadron physics !!! OFF by default
+    RegisterPhysics( new G4HadronPhysicsQGSP_BIC_HP()); //--- hadron physics !!! OFF by default
     // all physics processes having to do with protons
-    //RegisterPhysics( new G4EmStandardPhysics_option4() );   //--- electrons physics  !!
+    // RegisterPhysics( new G4EmStandardPhysics_option4() );   //--- electrons physics  !!
+    RegisterPhysics( new G4EmStandardPhysics_option3() );   //--- electrons physics  !!
     // all physics processes having to do with electrons
 
     auto decayPhysics = new G4DecayPhysics();

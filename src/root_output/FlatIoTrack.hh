@@ -12,6 +12,7 @@ namespace g4e {
             tree->Branch("trk_parent_id", &ParentId);
             tree->Branch("trk_parent_index", &ParentIndex);
             tree->Branch("trk_create_proc", &CreateProc);
+            tree->Branch("trk_charge", &Charge);
             tree->Branch("trk_level", &AncestryLevel);
             tree->Branch("trk_vtx_x", &XVtxVect);
             tree->Branch("trk_vtx_y", &YVtxVect);
@@ -29,6 +30,7 @@ namespace g4e {
             ParentId.clear();
             PdgVect.clear();
             CreateProc.clear();
+            Charge.clear();
             AncestryLevel.clear();
             XVtxVect.clear();
             YVtxVect.clear();
@@ -46,6 +48,7 @@ namespace g4e {
         std::vector<uint64_t> ParentIndex;
         std::vector<int64_t>  PdgVect;
         std::vector<int64_t>  CreateProc;
+        std::vector<double>   Charge;
         std::vector<uint64_t> AncestryLevel;
         std::vector<double>   XVtxVect;
         std::vector<double>   YVtxVect;

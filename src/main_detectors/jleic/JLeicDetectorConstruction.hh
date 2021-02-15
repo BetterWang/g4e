@@ -94,7 +94,7 @@ public:
     //===========================================
 
     bool USE_BARREL = true;
-    bool USE_BARREL_det = false;
+    bool USE_BARREL_det = true;
 
     bool USE_BEAMPIPE = false;
 

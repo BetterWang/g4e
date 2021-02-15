@@ -887,18 +887,18 @@ void JLeicDetectorConstruction::ConstructSDandField()
 {
     if(USE_FFI_ZDC) { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_ZDC.Phys);}
     //  fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D2.lay_Phys[0]);
-    if(USE_FFI_RPOT_D2)   { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D2.Phys);}
-    if(USE_FFI_RPOT_D3)   { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D3.Phys);}
-    if(USE_FFI_OFFM_TRK)  { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_OFFM_TRK.Phys);}
-    if(USE_FFI_OFFM_TRK2) { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_OFFM_TRK2.Phys);}
-    if(USE_FFI_NEG_TRK)   { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_NEG_TRK.Phys);}
-    if(USE_FI_B0_TRK)     { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->fi_B0_TRK.Phys);}
-    if(USE_CI_GEM)        { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ci_GEM.Phys);}
-    if(USE_CI_TRD)        { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ci_TRD.Phys);}
-    if(USE_CB_CTD)        { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->cb_CTD.Phys);}
-    if(USE_CE_GEM)        { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ce_GEM.Phys);}
-    if(USE_CI_HCAL)       { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ci_HCAL.Phys);}
-
+//    if(USE_FFI_RPOT_D2)   { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D2.Phys);}
+//    if(USE_FFI_RPOT_D3)   { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D3.Phys);}
+//    if(USE_FFI_OFFM_TRK)  { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_OFFM_TRK.Phys);}
+//    if(USE_FFI_OFFM_TRK2) { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_OFFM_TRK2.Phys);}
+//    if(USE_FFI_NEG_TRK)   { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_NEG_TRK.Phys);}
+//    if(USE_FI_B0_TRK)     { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->fi_B0_TRK.Phys);}
+//    if(USE_CI_GEM)        { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ci_GEM.Phys);}
+//    if(USE_CI_TRD)        { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ci_TRD.Phys);}
+//    if(USE_CB_CTD)        { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->cb_CTD.Phys);}
+//    if(USE_CE_GEM)        { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ce_GEM.Phys);}
+//    if(USE_CI_HCAL)       { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ci_HCAL.Phys);}
+//
     // fIonLineMagnets->CreateMagneticFiles();
     // fElectronLineMagnets->CreateMagneticFiles();
 }

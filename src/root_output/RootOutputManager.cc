@@ -117,9 +117,9 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
                         point->GetPosition().x() / mm,                   /* hit x         */
                         point->GetPosition().y() / mm,                   /* hit y         */
                         point->GetPosition().z() / mm,                   /* hit z         */
-                        (xinp + xend) / 2. / mm,                         /* hit ox */
-                        (yinp + yend) / 2. / mm,                         /* hit oy */
-                        (zinp + zend) / 2. / mm,                         /* hit oz */
+                        xloc / mm,                         /* hit ox */
+                        yloc / mm,                         /* hit oy */
+                        zloc / mm,                         /* hit oz */
                         aStep->GetTotalEnergyDeposit() / GeV,         /* aELoss        */
                         copyIDx,                                            /* vol replic x  */
                         copyIDy,                                            /* vol replic y  */

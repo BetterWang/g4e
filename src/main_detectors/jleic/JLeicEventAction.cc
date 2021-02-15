@@ -151,7 +151,7 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt)
         JLeicCe_emcalDigiHit *dHit;
         int nhitC = hitCollectionCe_emcal->GetSize();
 
-        if (!nhitC) return;
+        //if (!nhitC) return;
 
         for (int i = 0; i < nhitC; i++) {
 

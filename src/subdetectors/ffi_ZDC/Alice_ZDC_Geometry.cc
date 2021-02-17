@@ -433,8 +433,8 @@ G4VPhysicalVolume* Geometry::ConstructZDCPrototype(G4VPhysicalVolume *physVol_Wo
     }
 
     if ( cfg.bAbsorber ) {
-        G4Box*           Absorber_PbWO4         = new G4Box("PPAD_W",   cfg.Pad_Width/2.0, cfg.Pad_Width/2.0, cfg.Absorber_Thickness/2.0);
-        G4LogicalVolume* logVol_Absorber_PbWO4  = new G4LogicalVolume( Absorber_PbWO4, material_tungsten, "logVol_Absorber_PbWO4" );
+        G4Box*           Absorber_PbWO4         = new G4Box("PPAD_PbWO4",   cfg.Pad_Width/2.0, cfg.Pad_Width/2.0, cfg.Absorber_Thickness/2.0);
+        G4LogicalVolume* logVol_Absorber_PbWO4  = new G4LogicalVolume( Absorber_PbWO4, material_PbWO4, "logVol_Absorber_PbWO4" );
 
         G4ThreeVector threeVect_Abs(0., 0., -(cfg.Pad_Thickness/2 + cfg.Pad_AirGap + cfg.Absorber_Thickness) );
         G4Transform3D trans3D_Absorber = G4Transform3D(G4RotationMatrix(), threeVect_Abs);

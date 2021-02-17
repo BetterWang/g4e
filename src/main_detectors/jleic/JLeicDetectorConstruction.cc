@@ -885,7 +885,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 
 void JLeicDetectorConstruction::ConstructSDandField()
 {
-    if(USE_FFI_ZDC) { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_ZDC.Phys);}
+//    if(USE_FFI_ZDC) { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_ZDC.Phys);}
     //  fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D2.lay_Phys[0]);
 //    if(USE_FFI_RPOT_D2)   { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D2.Phys);}
 //    if(USE_FFI_RPOT_D3)   { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D3.Phys);}

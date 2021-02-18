@@ -39,6 +39,7 @@
 
 #include "globals.hh"
 #include "G4UImessenger.hh"
+#include "JLeicDetectorConstruction.hh"
 
 class JLeicDetectorConstruction;
 class G4UIdirectory;

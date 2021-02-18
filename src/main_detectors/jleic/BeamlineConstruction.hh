@@ -28,7 +28,7 @@
 
 
 #include "Materials.hh"
-#include "JLeicDetectorMessenger.hh"
+#include "BeamlineConstructionMessenger.hh"
 #include "JLeicDetectorConfig.hh"
 #include "VolumeChangeSteppingAction.hh"
 
@@ -325,7 +325,7 @@ private:
 
     g4e::Materials *fMat;
     g4e::InitializationContext *fInitContext;
-    JLeicDetectorMessenger *fDetectorMessenger;
+    BeamlineConstructionMessenger *fDetectorMessenger;
     JLeicCalorimeterSD *fCalorimeterSD;
     JLeicVertexSD *fVertexSD;
     JLeicCe_emcalSD *fCe_emcalSD;

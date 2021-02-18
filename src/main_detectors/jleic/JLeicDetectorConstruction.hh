@@ -79,7 +79,7 @@
 
 class JLeicCalorimeterSD;
 class JLeicCe_emcalSD;
-
+class JLeicDetectorMessenger;
 class JLeicVertexSD;
 
 

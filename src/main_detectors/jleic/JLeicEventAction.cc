@@ -140,7 +140,7 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt)
     JLeicCe_emcalHitsCollection *hitCollectionCe_emcal = nullptr;
 
     G4HCofThisEvent *HCE = evt->GetHCofThisEvent();
-    if (HCE) {
+    if (HCE && calorimeterCollID!=-1) {
         hitCollectionCalo = (JLeicCalorHitsCollection *) (HCE->GetHC(calorimeterCollID));
         hitCollectionCe_emcal = (JLeicCe_emcalHitsCollection *) (HCE->GetHC(Ce_emcalCollID));
     }
@@ -237,7 +237,7 @@ void JLeicEventAction::EndOfEventAction(const G4Event *evt)
 
     // VERTEX HITS
     JLeicVTXHitsCollection *vertexHitsCollection = nullptr;
-    if (hitCollectionEvnt) {
+    if (hitCollectionEvnt && vertexCollID!=-1) {
         vertexHitsCollection = (JLeicVTXHitsCollection *) (hitCollectionEvnt->GetHC(vertexCollID));
     }
 

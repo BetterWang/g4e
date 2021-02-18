@@ -8,6 +8,7 @@
 /run/verbose 0
 /geometry/navigator/verbose 0
 
+/g4e/beamline/name ip6
 
 #/detsetup/pBeam 100
 #/detsetup/eBeam 5

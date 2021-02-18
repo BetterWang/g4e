@@ -3,6 +3,9 @@ target_sources_local(g4e
         JLeicCalorimeterHit.cc
         JLeicCalorimeterHit.hh
 
+        BeamlineConstruction.cc
+        BeamlineConstruction.hh
+
             JLeicCalorimeterSD.cc
             JLeicCalorimeterSD.hh
             
@@ -20,8 +23,11 @@ target_sources_local(g4e
             JLeicDetectorConstruction.cc
             JLeicDetectorConstruction.hh
 
-            JLeicDetectorMessenger.cc
-            JLeicDetectorMessenger.hh
+        BeamlineConstructionMessenger.cc
+        BeamlineConstructionMessenger.hh
+
+        JLeicDetectorMessenger.cc
+        JLeicDetectorMessenger.hh
 
             JLeicHistogramManager.hh
             JLeicHistogramManager.cc

@@ -96,13 +96,13 @@ public:
     bool USE_BARREL = true;
     bool USE_BARREL_det = true;
 
-    bool USE_BEAMPIPE = false;
+    bool USE_BEAMPIPE = true;
 
     //------- subdetector-volumes  barrel ----- 
 
     bool USE_CB_VTX = true;
     bool USE_CB_VTX_LADDERS = true;
-    bool USE_CB_VTX_ENDCAPS = false;  // for vxt endcaps ladders
+    bool USE_CB_VTX_ENDCAPS = true;  // for vxt endcaps ladders
     bool  USE_CB_SiDISCS  = true;  // for vxt discs along beampipe
     //bool USE_VTX_E 1   // for vxt endcaps 
 

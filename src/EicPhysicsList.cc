@@ -25,7 +25,7 @@
 
 #include "G4HadronPhysicsQGSP_BIC_HP.hh"
 #include "G4DecayPhysics.hh"
-#include "subdetectors/ci_TRD/ci_TRDPhysics.hh"
+#include "subdetectors/ci_TRD/ci_TRD_PhysicsConstructor.hh"
 
 
 EicPhysicsList::EicPhysicsList() :

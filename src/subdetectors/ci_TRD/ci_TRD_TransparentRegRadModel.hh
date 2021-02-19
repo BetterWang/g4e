@@ -50,14 +50,14 @@
 
 #include "G4VXTRenergyLoss.hh"
 
-class JLeicXTRTransparentRegRadModel : public G4VXTRenergyLoss
+class ci_TRD_TransparentRegRadModel : public G4VXTRenergyLoss
 {
 public:
 
-  JLeicXTRTransparentRegRadModel (G4LogicalVolume *anEnvelope,G4Material*,G4Material*,
-                        G4double,G4double,G4int,
-                        const G4String & processName = "XTRTransparentRegRadModel");
-  ~JLeicXTRTransparentRegRadModel ();
+  ci_TRD_TransparentRegRadModel (G4LogicalVolume *anEnvelope, G4Material*, G4Material*,
+                                 G4double, G4double, G4int,
+                                 const G4String & processName = "XTRTransparentRegRadModel");
+  ~ci_TRD_TransparentRegRadModel ();
 
   // reimplementation of base class function in analytical way
 

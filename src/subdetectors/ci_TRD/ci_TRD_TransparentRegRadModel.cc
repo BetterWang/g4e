@@ -32,7 +32,7 @@
 
 #include <complex>
 
-#include "JLeicXTRTransparentRegRadModel.hh"
+#include "ci_TRD_TransparentRegRadModel.hh"
 #include "Randomize.hh"
 #include "G4Integrator.hh"
 #include "G4Gamma.hh"
@@ -44,8 +44,8 @@ using namespace std;
 //
 // Constructor, destructor
 
-JLeicXTRTransparentRegRadModel::JLeicXTRTransparentRegRadModel(G4LogicalVolume *anEnvelope, G4Material *foilMat, G4Material *gasMat, G4double a, G4double b, G4int n,
-                                                               const G4String &processName) : G4VXTRenergyLoss(anEnvelope, foilMat, gasMat, a, b, n, processName)
+ci_TRD_TransparentRegRadModel::ci_TRD_TransparentRegRadModel(G4LogicalVolume *anEnvelope, G4Material *foilMat, G4Material *gasMat, G4double a, G4double b, G4int n,
+                                                             const G4String &processName) : G4VXTRenergyLoss(anEnvelope, foilMat, gasMat, a, b, n, processName)
 {
     // Build energy and angular integral spectra of X-ray TR photons from
     // a radiator
@@ -59,7 +59,7 @@ JLeicXTRTransparentRegRadModel::JLeicXTRTransparentRegRadModel(G4LogicalVolume *
 
 ///////////////////////////////////////////////////////////////////////////
 
-JLeicXTRTransparentRegRadModel::~JLeicXTRTransparentRegRadModel()
+ci_TRD_TransparentRegRadModel::~ci_TRD_TransparentRegRadModel()
 {
     ;
 }
@@ -68,7 +68,7 @@ JLeicXTRTransparentRegRadModel::~JLeicXTRTransparentRegRadModel()
 //
 //
 
-G4double JLeicXTRTransparentRegRadModel::SpectralXTRdEdx(G4double energy)
+G4double ci_TRD_TransparentRegRadModel::SpectralXTRdEdx(G4double energy)
 {
     G4double result, sum = 0., tmp, cof1, cof2, cofMin, cofPHC, aMa, bMb, sigma;
     G4int k, kMax, kMin;
@@ -141,7 +141,7 @@ G4double JLeicXTRTransparentRegRadModel::SpectralXTRdEdx(G4double energy)
 // are supposed to be about XTR formation zones but much less than 
 // mean absorption length of XTR photons in coresponding material.
 
-G4double JLeicXTRTransparentRegRadModel::GetStackFactor(G4double energy, G4double gamma, G4double varAngle)
+G4double ci_TRD_TransparentRegRadModel::GetStackFactor(G4double energy, G4double gamma, G4double varAngle)
 {
     /*
     G4double result, Za, Zb, Ma, Mb, sigma;

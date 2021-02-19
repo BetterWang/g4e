@@ -9,8 +9,8 @@
 #include "G4SystemOfUnits.hh"
 
 #include "JLeicDetectorConfig.hh"
-#include "ci_TRDMessenger.hh"
-#include "ci_TRDPhysics.hh"
+#include "ci_TRD_Messenger.hh"
+#include "ci_TRD_PhysicsConstructor.hh"
 
 
 class ci_TRD_Design
@@ -162,11 +162,11 @@ public:
     G4Material *fGasMat;             // pointer to the TR gas radiator material
     G4Region *fRegGasDet;
 
-    ci_TRDPhysics * PhysicsConstructor;
+    ci_TRD_PhysicsConstructor * PhysicsConstructor;
 
 private:
     g4e::Materials *fMat;
-    ci_TRDMessenger *fMessenger;
+    ci_TRD_Messenger *fMessenger;
 
 
     // define here local variables and parameter of detectors

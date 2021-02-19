@@ -1,4 +1,4 @@
-#include "ci_TRDMessenger.hh"
+#include "ci_TRD_Messenger.hh"
 
 #include "ci_TRD_Design.hh"
 #include "G4UIdirectory.hh"
@@ -9,8 +9,8 @@
 
 //////////////////////////////////////////////////////////////////////////////
 
-ci_TRDMessenger::ci_TRDMessenger(ci_TRD_Design *trdDesign) : G4UImessenger(),
-                                                             fTrd(trdDesign)
+ci_TRD_Messenger::ci_TRD_Messenger(ci_TRD_Design *trdDesign) : G4UImessenger(),
+                                                               fTrd(trdDesign)
 {
     TRDdetDir = new G4UIdirectory("/XTRdetector/");
     TRDdetDir->SetGuidance("TRD detector control.");
@@ -131,7 +131,7 @@ ci_TRDMessenger::ci_TRDMessenger(ci_TRD_Design *trdDesign) : G4UImessenger(),
 
 ///////////////////////////////////////////////////////////////////////////////
 
-ci_TRDMessenger::~ci_TRDMessenger()
+ci_TRD_Messenger::~ci_TRD_Messenger()
 {
     delete TRDdetDir;
 
@@ -148,7 +148,7 @@ ci_TRDMessenger::~ci_TRDMessenger()
 }
 
 
-void ci_TRDMessenger::SetNewValue(G4UIcommand *command, G4String newValue)
+void ci_TRD_Messenger::SetNewValue(G4UIcommand *command, G4String newValue)
 {
     if (command == ModelCmd) {
         // JLeicDetector->SetParametrisationModel(ModelCmd->GetNewIntValue(newValue));

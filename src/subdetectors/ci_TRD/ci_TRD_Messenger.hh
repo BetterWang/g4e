@@ -13,11 +13,11 @@ class G4UIcmdWithADoubleAndUnit;
 class G4UIcmdWithoutParameter;
 class ci_TRD_Design;
 
-class ci_TRDMessenger: public G4UImessenger
+class ci_TRD_Messenger: public G4UImessenger
 {
   public:
-    ci_TRDMessenger(ci_TRD_Design* );
-   ~ci_TRDMessenger();
+    ci_TRD_Messenger(ci_TRD_Design* );
+   ~ci_TRD_Messenger();
     
     void SetNewValue(G4UIcommand*, G4String);
     void SetNewValue(G4UIcommand*, G4int);

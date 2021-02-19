@@ -9,13 +9,13 @@ class JLeicStepCut;
 class G4ProductionCuts;
 class ci_TRD_Design;
 
-class ci_TRDPhysics: public G4VPhysicsConstructor
+class ci_TRD_PhysicsConstructor: public G4VPhysicsConstructor
 {
 public:
 
-    ci_TRDPhysics(ci_TRD_Design* design);
+    ci_TRD_PhysicsConstructor(ci_TRD_Design* design);
 
-    ~ci_TRDPhysics() = default;
+    ~ci_TRD_PhysicsConstructor() = default;
 
     virtual void ConstructParticle() { };
 

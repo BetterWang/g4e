@@ -1,4 +1,4 @@
-#include "ci_TRDPhysics.hh"
+#include "ci_TRD_PhysicsConstructor.hh"
 
 #include <spdlog/spdlog.h>
 
@@ -63,14 +63,14 @@
 #include "G4XTRGammaRadModel.hh"
 #include "G4XTRRegularRadModel.hh"
 #include "G4XTRTransparentRegRadModel.hh"
-#include "JLeicXTRTransparentRegRadModel.hh"
+#include "ci_TRD_TransparentRegRadModel.hh"
 #include "JLeicStepCut.hh"
 #include "ci_TRD_Config.hh"
-#include "ci_TRDPhysics.hh"
+#include "ci_TRD_PhysicsConstructor.hh"
 #include "ci_TRD_Design.hh"
 
 
-ci_TRDPhysics::ci_TRDPhysics(ci_TRD_Design *p) :
+ci_TRD_PhysicsConstructor::ci_TRD_PhysicsConstructor(ci_TRD_Design *p) :
     G4VPhysicsConstructor("ci_TRD_Physics")
 {
     fTrd = p;
@@ -81,7 +81,7 @@ ci_TRDPhysics::ci_TRDPhysics(ci_TRD_Design *p) :
 
 
 
-void ci_TRDPhysics::ConstructProcess()
+void ci_TRD_PhysicsConstructor::ConstructProcess()
 {
     namespace log = spdlog;
 
@@ -129,8 +129,8 @@ void ci_TRDPhysics::ConstructProcess()
                                               foilNumber, "RegularXTRadiator");
 
     } else if (fXTRModel == "transpM" && foilNumber > 0) {
-        processXTR = new JLeicXTRTransparentRegRadModel(radiator, foilMaterial, gasMaterial, foilThickness, gasThickness,
-                                                        foilNumber, "RegularXTRadiator");
+        processXTR = new ci_TRD_TransparentRegRadModel(radiator, foilMaterial, gasMaterial, foilThickness, gasThickness,
+                                                       foilNumber, "RegularXTRadiator");
     } else {
         log::warn("Invalid XTR model name {}, or foil number = {} \n", fXTRModel, foilNumber);
     }
@@ -236,7 +236,7 @@ void ci_TRDPhysics::ConstructProcess()
 
 }
 
-void ci_TRDPhysics::SetCuts()
+void ci_TRD_PhysicsConstructor::SetCuts()
 {
     G4Region *region;
     //* uncomment for FDC & depfet !!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -249,22 +249,22 @@ void ci_TRDPhysics::SetCuts()
     if (region) region->SetProductionCuts(fDetectorCuts);
 }
 
-void ci_TRDPhysics::SetGammaCut(G4double val)
+void ci_TRD_PhysicsConstructor::SetGammaCut(G4double val)
 {
     cutForGamma = val;
 }
 
-void ci_TRDPhysics::SetElectronCut(G4double val)
+void ci_TRD_PhysicsConstructor::SetElectronCut(G4double val)
 {
     cutForElectron = val;
 }
 
-void ci_TRDPhysics::SetMaxStep(G4double step)
+void ci_TRD_PhysicsConstructor::SetMaxStep(G4double step)
 {
     MaxChargedStep = step;
 }
 
-void ci_TRDPhysics::SetRadiatorCuts()
+void ci_TRD_PhysicsConstructor::SetRadiatorCuts()
 {
     if (!fRadiatorCuts) fRadiatorCuts = new G4ProductionCuts();
 
@@ -273,7 +273,7 @@ void ci_TRDPhysics::SetRadiatorCuts()
     fRadiatorCuts->SetProductionCut(fPositronCut, idxG4PositronCut);
 }
 
-void ci_TRDPhysics::SetDetectorCuts()
+void ci_TRD_PhysicsConstructor::SetDetectorCuts()
 {
     if (!fDetectorCuts) fDetectorCuts = new G4ProductionCuts();
 

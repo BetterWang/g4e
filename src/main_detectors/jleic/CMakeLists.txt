@@ -50,8 +50,8 @@ target_sources_local(g4e
             JLeicVTXHit.cc
             JLeicVTXHit.hh
 
-            JLeicXTRTransparentRegRadModel.cc
-            JLeicXTRTransparentRegRadModel.hh
+        ../../subdetectors/ci_TRD/ci_TRD_TransparentRegRadModel.cc
+        ../../subdetectors/ci_TRD/ci_TRD_TransparentRegRadModel.hh
 
             TRTDetectorConstruction.hh
             TRTMaterials.hh

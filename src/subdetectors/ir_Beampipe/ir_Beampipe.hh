@@ -1,15 +1,16 @@
-//
-// Created by yulia on 11/19/19.
-//
-
-#ifndef G4E_IR_BEAMPIPE_HH
-#define G4E_IR_BEAMPIPE_HH
+#ifndef ir_Beampipe_Config_HH
+#define ir_Beampipe_Config_HH
 
 #include <G4PVDivision.hh>
-#include "G4RotationMatrix.hh"
-#include "G4Material.hh"
-#include "G4Color.hh"
-#include "G4VisAttributes.hh"
+#include <G4RotationMatrix.hh>
+#include <G4Material.hh>
+#include <G4Color.hh>
+#include <G4VisAttributes.hh>
+#include <G4SystemOfUnits.hh>
+#include <G4Tubs.hh>
+#include <G4LogicalVolume.hh>
+#include <G4PVPlacement.hh>
+#include <G4Polycone.hh>
 
 struct ir_Beampipe_Config
 {

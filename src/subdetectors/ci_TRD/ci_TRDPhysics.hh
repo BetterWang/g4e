@@ -1,27 +1,26 @@
 #ifndef JLeicXTRphysics_HH
 #define JLeicXTRphysics_HH
 
-#include "G4VModularPhysicsList.hh"
+#include "G4VPhysicsConstructor.hh"
 #include "globals.hh"
 
 class G4ForwardXrayTR;
 class JLeicStepCut;
-class JLeicDetectorConstruction;
-class JLeicXTRphysicsMessenger;
 class G4ProductionCuts;
-class EicPhysicsList;
+class ci_TRD_Design;
 
-class JLeicXTRphysics: public G4VPhysicsConstructor
+class ci_TRDPhysics: public G4VPhysicsConstructor
 {
 public:
-  
-  JLeicXTRphysics(JLeicDetectorConstruction* p, EicPhysicsList* pl, const G4String& name);
 
-  ~JLeicXTRphysics() override;
+    ci_TRDPhysics(ci_TRD_Design* design);
 
-  virtual void ConstructParticle() { };
-  // Construct physics
-  virtual void ConstructProcess();
+    ~ci_TRDPhysics() = default;
+
+    virtual void ConstructParticle() { };
+
+    // Construct physics
+    virtual void ConstructProcess();
  
 
 private:
@@ -57,10 +56,7 @@ private:
   JLeicStepCut* theeminusStepCut ;
   JLeicStepCut* theeplusStepCut ;
 
-  JLeicDetectorConstruction* pDet;
-  EicPhysicsList* pList;
-
-  JLeicXTRphysicsMessenger* fJLeicXTRphysicsMessenger;
+  ci_TRD_Design* fTrd;
 
   G4ProductionCuts* fRadiatorCuts;
   G4ProductionCuts* fDetectorCuts;

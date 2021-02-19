@@ -23,6 +23,7 @@
 #include "VolumeChangeSteppingAction.hh"
 #include "JLeicDetectorMessenger.hh"
 
+
 JLeicDetectorConstruction::JLeicDetectorConstruction(g4e::InitializationContext *initContext) :
     fInitContext(initContext),
     ce_EMCAL(fConfig.ce_EMCAL, initContext)
@@ -30,6 +31,10 @@ JLeicDetectorConstruction::JLeicDetectorConstruction(g4e::InitializationContext 
     fDetectorMessenger = new JLeicDetectorMessenger(this);
     fMat = new g4e::Materials();
 
+    // Transition Radiation Physics
+    initContext->PhysicsList->RegisterPhysics(ci_TRD.PhysicsConstructor);
+
+    // Add stepping action that is executed on volume change
     initContext->ActionInitialization->AddUserActionGenerator([initContext](){
         auto action = new g4e::VolumeChangeSteppingAction(initContext->RootManager);
         return static_cast<G4UserSteppingAction*>(action);
@@ -114,13 +119,6 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 
     // Checking the beamline
     auto beamLineName = g4e::ToLowerCopy(fConfig.BeamlineName);
-
-    if(beamLineName != "erhic" && beamLineName != "eicIP2" && fConfig.BeamlineName != "jleic") {
-        G4Exception("JLeicDetectorConstruction::Construct",
-                    "InvalidSetup", FatalException,
-                    "/detsetup/beamlineName should be 'erhic' or 'jleic' or 'eicIP2");
-    }
-
     auto beamLine = fConfig.BeamlineName == "ip6" ? BeamLines::IP6 : BeamLines::IP8;
 
     // Different Shifts for 0 IP

@@ -1,4 +1,4 @@
-#include "JLeicXTRphysics.hh"
+#include "ci_TRDPhysics.hh"
 
 #include <spdlog/spdlog.h>
 
@@ -64,31 +64,24 @@
 #include "G4XTRRegularRadModel.hh"
 #include "G4XTRTransparentRegRadModel.hh"
 #include "JLeicXTRTransparentRegRadModel.hh"
-#include "JLeicDetectorConstruction.hh"
 #include "JLeicStepCut.hh"
-#include "EicPhysicsList.hh"
+#include "ci_TRD_Config.hh"
+#include "ci_TRDPhysics.hh"
+#include "ci_TRD_Design.hh"
 
-#include "JLeicXTRphysicsMessenger.hh"
 
-
-JLeicXTRphysics::JLeicXTRphysics(JLeicDetectorConstruction *p, EicPhysicsList *pl, const G4String &name) :
-    G4VPhysicsConstructor(name)
+ci_TRDPhysics::ci_TRDPhysics(ci_TRD_Design *p) :
+    G4VPhysicsConstructor("ci_TRD_Physics")
 {
-    pDet = p;
-    pList = pl;
+    fTrd = p;
     SetXTRModel("none");
-    fJLeicXTRphysicsMessenger = new JLeicXTRphysicsMessenger(this);
     SetVerboseLevel(0);
 }
 
 
-JLeicXTRphysics::~JLeicXTRphysics()
-{
-    delete fJLeicXTRphysicsMessenger;
-}
 
 
-void JLeicXTRphysics::ConstructProcess()
+void ci_TRDPhysics::ConstructProcess()
 {
     namespace log = spdlog;
 
@@ -97,41 +90,49 @@ void JLeicXTRphysics::ConstructProcess()
     const G4RegionStore *theRegionStore = G4RegionStore::GetInstance();
     G4Region *gas = theRegionStore->GetRegion("XTRdEdxDetector");
 
-    G4VXTRenergyLoss *processXTR = 0;
+    G4VXTRenergyLoss *processXTR = nullptr;
 
-    if (fXTRModel == "gammaR" && pDet->GetFoilNumber() > 0) {
+    auto foilNumber = fTrd->ConstructionConfig.fFoilNumber;
+    auto radiator = fTrd->fLogicRadiator;
+    auto absorberMaterial = fTrd->ConstructionConfig.det_Material;
+    auto foilMaterial = fTrd->fFoilMat;
+    auto gasMaterial = fTrd->fGasMat;
+    auto foilThickness = fTrd->ConstructionConfig.fRadThickness;
+    auto gasThickness = fTrd->ConstructionConfig.fGasGap;
+
+    if (fXTRModel == "gammaR" && foilNumber > 0) {
         // G4GammaXTRadiator*
-        processXTR = new G4GammaXTRadiator(pDet->GetLogicalRadiator(), 100.,   //--  AlphaPlate 100
+        processXTR = new G4GammaXTRadiator(radiator, 100.,   //--  AlphaPlate 100
                                            100.,   //--  AlphaGas   100
-                                           pDet->GetFoilMaterial(), pDet->GetGasMaterial(), pDet->GetFoilThick(), pDet->GetGasThick(), pDet->GetFoilNumber(), "GammaXTRadiator");
-    } else if (fXTRModel == "gammaM" && pDet->GetFoilNumber() > 0) {
+                                           foilMaterial, gasMaterial, foilThickness, gasThickness, foilNumber, "GammaXTRadiator");
+    } else if (fXTRModel == "gammaM" && foilNumber > 0) {
         // G4XTRGammaRadModel*
-        processXTR = new G4XTRGammaRadModel(pDet->GetLogicalRadiator(), 100., 100., pDet->GetFoilMaterial(), pDet->GetGasMaterial(), pDet->GetFoilThick(), pDet->GetGasThick(),
-                                            pDet->GetFoilNumber(), "GammaXTRadiator");
-    } else if (fXTRModel == "strawR" && pDet->GetFoilNumber() > 0) {
+        processXTR = new G4XTRGammaRadModel(radiator, 100., 100., foilMaterial, gasMaterial, foilThickness, gasThickness,
+                                            foilNumber, "GammaXTRadiator");
+    } else if (fXTRModel == "strawR" && foilNumber > 0) {
 
         // G4StrawTubeXTRadiator*
-        processXTR = new G4StrawTubeXTRadiator(pDet->GetLogicalRadiator(), pDet->GetFoilMaterial(), pDet->GetGasMaterial(), 0.53,           // pDet->GetFoilThick(),
-                                               3.14159,           // pDet->GetGasThick(),
-                                               pDet->GetAbsorberMaterial(), true, "strawXTRadiator");
-    } else if (fXTRModel == "regR" && pDet->GetFoilNumber() > 0) {
+        processXTR = new G4StrawTubeXTRadiator(radiator, foilMaterial, gasMaterial, 0.53,           // foilThickness,
+                                               3.14159,           // gasThickness,
+                                               absorberMaterial, true, "strawXTRadiator");
+    } else if (fXTRModel == "regR" && foilNumber > 0) {
         // G4RegularXTRadiator*
-        processXTR = new G4RegularXTRadiator(pDet->GetLogicalRadiator(), pDet->GetFoilMaterial(), pDet->GetGasMaterial(), pDet->GetFoilThick(), pDet->GetGasThick(),
-                                             pDet->GetFoilNumber(), "RegularXTRadiator");
-    } else if (fXTRModel == "transpR" && pDet->GetFoilNumber() > 0) {
+        processXTR = new G4RegularXTRadiator(radiator, foilMaterial, gasMaterial, foilThickness, gasThickness,
+                                             foilNumber, "RegularXTRadiator");
+    } else if (fXTRModel == "transpR" && foilNumber > 0) {
         // G4TransparentRegXTRadiator*
-        processXTR = new G4TransparentRegXTRadiator(pDet->GetLogicalRadiator(), pDet->GetFoilMaterial(), pDet->GetGasMaterial(), pDet->GetFoilThick(), pDet->GetGasThick(),
-                                                    pDet->GetFoilNumber(), "RegularXTRadiator");
-    } else if (fXTRModel == "regM" && pDet->GetFoilNumber() > 0) {
+        processXTR = new G4TransparentRegXTRadiator(radiator, foilMaterial, gasMaterial, foilThickness, gasThickness,
+                                                    foilNumber, "RegularXTRadiator");
+    } else if (fXTRModel == "regM" && foilNumber > 0) {
         // G4XTRRegularRadModel*
-        processXTR = new G4XTRRegularRadModel(pDet->GetLogicalRadiator(), pDet->GetFoilMaterial(), pDet->GetGasMaterial(), pDet->GetFoilThick(), pDet->GetGasThick(),
-                                              pDet->GetFoilNumber(), "RegularXTRadiator");
+        processXTR = new G4XTRRegularRadModel(radiator, foilMaterial, gasMaterial, foilThickness, gasThickness,
+                                              foilNumber, "RegularXTRadiator");
 
-    } else if (fXTRModel == "transpM" && pDet->GetFoilNumber() > 0) {
-        processXTR = new JLeicXTRTransparentRegRadModel(pDet->GetLogicalRadiator(), pDet->GetFoilMaterial(), pDet->GetGasMaterial(), pDet->GetFoilThick(), pDet->GetGasThick(),
-                                                        pDet->GetFoilNumber(), "RegularXTRadiator");
+    } else if (fXTRModel == "transpM" && foilNumber > 0) {
+        processXTR = new JLeicXTRTransparentRegRadModel(radiator, foilMaterial, gasMaterial, foilThickness, gasThickness,
+                                                        foilNumber, "RegularXTRadiator");
     } else {
-        log::warn("Invalid XTR model name {}, or foil number = {} \n", fXTRModel, pDet->GetFoilNumber());
+        log::warn("Invalid XTR model name {}, or foil number = {} \n", fXTRModel, foilNumber);
     }
 
     if (processXTR) processXTR->SetVerboseLevel(0);
@@ -147,8 +148,8 @@ void JLeicXTRphysics::ConstructProcess()
         pmanager->SetVerboseLevel(0);
         G4String particleName = particle->GetParticleName();
 
-        log::trace("JLeicXTRphysics::ConstructEM():: particle={} \n", particle->GetParticleName().c_str());
-        //printf("JLeicXTRphysics::ConstructEM():: particle=%s \n", particle->GetParticleName().c_str());
+        log::trace("ci_TRDPhysics::ConstructEM():: particle={} \n", particle->GetParticleName().c_str());
+        //printf("ci_TRDPhysics::ConstructEM():: particle=%s \n", particle->GetParticleName().c_str());
 
         if (particleName == "gamma") {
             // Construct processes for gamma
@@ -235,7 +236,7 @@ void JLeicXTRphysics::ConstructProcess()
 
 }
 
-void JLeicXTRphysics::SetCuts()
+void ci_TRDPhysics::SetCuts()
 {
     G4Region *region;
     //* uncomment for FDC & depfet !!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -248,22 +249,22 @@ void JLeicXTRphysics::SetCuts()
     if (region) region->SetProductionCuts(fDetectorCuts);
 }
 
-void JLeicXTRphysics::SetGammaCut(G4double val)
+void ci_TRDPhysics::SetGammaCut(G4double val)
 {
     cutForGamma = val;
 }
 
-void JLeicXTRphysics::SetElectronCut(G4double val)
+void ci_TRDPhysics::SetElectronCut(G4double val)
 {
     cutForElectron = val;
 }
 
-void JLeicXTRphysics::SetMaxStep(G4double step)
+void ci_TRDPhysics::SetMaxStep(G4double step)
 {
     MaxChargedStep = step;
 }
 
-void JLeicXTRphysics::SetRadiatorCuts()
+void ci_TRDPhysics::SetRadiatorCuts()
 {
     if (!fRadiatorCuts) fRadiatorCuts = new G4ProductionCuts();
 
@@ -272,7 +273,7 @@ void JLeicXTRphysics::SetRadiatorCuts()
     fRadiatorCuts->SetProductionCut(fPositronCut, idxG4PositronCut);
 }
 
-void JLeicXTRphysics::SetDetectorCuts()
+void ci_TRDPhysics::SetDetectorCuts()
 {
     if (!fDetectorCuts) fDetectorCuts = new G4ProductionCuts();
 

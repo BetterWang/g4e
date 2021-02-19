@@ -55,7 +55,7 @@
 //--------------CI---------------
 #include "ci_GEM/ci_GEM.hh"             // Central Ion Endcap - TRD
 #include "ci_DRICH/ci_DRICH.hh"         // Central Ion Endcap - DRICH
-#include "ci_TRD/ci_TRD.hh"             // Central Ion Endcap - TRD
+#include "ci_TRD/ci_TRD_Config.hh"             // Central Ion Endcap - TRD
 #include "ci_EMCAL/ci_EMCAL.hh"         // Central Ion Endcap - EMCAL
 #include "ci_HCAL/ci_HCAL.hh"           // Central Ion Endcap - HCAL
 
@@ -207,25 +207,6 @@ public:
 
     // TODO: REMOVE from global JLeic DETECOTR CONSTRUCTION (Argh!!!)
 
-    G4Material *GetAbsorberMaterial() { return fConfig.ci_TRD.det_Material; }
-
-    //TRD- related ---- needs to be moved move
-
-    G4LogicalVolume *GetLogicalRadiator() { return ci_TRD.fLogicRadiator; }
-
-    G4Material *GetFoilMaterial() { return ci_TRD.fFoilMat; }
-
-    G4Material *GetGasMaterial() { return ci_TRD.fGasMat; }
-
-    G4double GetFoilThick() { return fConfig.ci_TRD.fRadThickness; }
-
-    G4double GetGasThick() { return fConfig.ci_TRD.fGasGap; }
-
-    G4int GetFoilNumber()
-    {
-        //std::cout << " foil number4 = " << ci_TRD.ConstructionConfig.fFoilNumber << std::endl;
-        return ci_TRD.ConstructionConfig.fFoilNumber;
-    }
 
     G4double fadc_slice;
 
@@ -274,7 +255,6 @@ private:
     //==============================================
     ci_GEM_Design   ci_GEM;     //GEM
     ci_DRICH_Design ci_DRICH;   //DRICH
-    ci_TRD_Design   ci_TRD;     //TRD
     ci_EMCAL_Design ci_EMCAL;   //EMCAL
     ci_HCAL_Design  ci_HCAL;    //HCAL
 
@@ -341,45 +321,6 @@ inline void BeamlineConstruction::PrintGeometryParameters()
     G4cout << "WorldMaterial = " << World_Material->GetName() << G4endl;
     //  G4cout<<"fVTX_END_Z = "<<fVTX_END_Z/mm<<" mm"<<G4endl;
     G4cout << G4endl;
-}
-
-inline void BeamlineConstruction::SetAbsorberMaterial(G4String materialChoice)
-{
-    // get the pointer to the material table
-    const G4MaterialTable *theMaterialTable = G4Material::GetMaterialTable();
-
-    // search the material by its name
-    G4Material *pttoMaterial;
-
-    for (size_t J = 0; J < theMaterialTable->size(); J++) {
-        pttoMaterial = (*theMaterialTable)[J];
-
-        if (pttoMaterial->GetName() == materialChoice) {
-            fAbsorberMaterial = pttoMaterial;
-            // fLogicAbsorber->SetMaterial(pttoMaterial);
-            // PrintCalorParameters();
-        }
-    }
-}
-
-inline void BeamlineConstruction::SetRadiatorMaterial(G4String materialChoice)
-{
-    // get the pointer to the material table
-
-    const G4MaterialTable *theMaterialTable = G4Material::GetMaterialTable();
-
-    // search the material by its name
-
-    G4Material *pttoMaterial;
-    for (size_t J = 0; J < theMaterialTable->size(); J++) {
-        pttoMaterial = (*theMaterialTable)[J];
-
-        if (pttoMaterial->GetName() == materialChoice) {
-            fConfig.ci_TRD.fRadiatorMat = pttoMaterial;
-            //fLogicRadSlice->SetMaterial(pttoMaterial);
-            // PrintCalorParameters();
-        }
-    }
 }
 
 inline void BeamlineConstruction::SetWorldMaterial(G4String materialChoice)

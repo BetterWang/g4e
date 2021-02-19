@@ -1,17 +1,15 @@
 #include "BeamlineConstructionMessenger.hh"
 
 
-#include "BeamlineConstruction.hh"
+#include "JLeicDetectorConfig.hh"
 #include "G4UIdirectory.hh"
 #include "G4UIcmdWithAString.hh"
 
 
-BeamlineConstructionMessenger::BeamlineConstructionMessenger(BeamlineConstruction *beamlineConstruction) :
+BeamlineConstructionMessenger::BeamlineConstructionMessenger(JLeicDetectorConfig &config) :
     G4UImessenger(),
-    mBeamlineConstruction(beamlineConstruction)
+    mBeamlineConstruction(config)
 {
-
-
     mDirectory = new G4UIdirectory("/g4e/beamline/");
     mDirectory->SetGuidance("Detector control.");
 
@@ -25,7 +23,16 @@ BeamlineConstructionMessenger::BeamlineConstructionMessenger(BeamlineConstructio
 void BeamlineConstructionMessenger::SetNewValue(G4UIcommand *command, G4String newValue)
 {
     if (command == mBeamlineNameCmd) {
-        mBeamlineConstruction->GetConfigRef().BeamlineName = newValue;
+        if(newValue == "erhic") newValue = "ip6";
+        if(newValue == "eicIP2") newValue = "ip8";
+        if(newValue == "jleic") newValue = "ip6";
+        if(newValue != "ip6" && newValue != "ip8") {
+            G4Exception("JLeicDetectorConstruction::Construct",
+                        "InvalidSetup", FatalException,
+                        "/g4e/beamline/name should be 'ip6' or 'ip8'");
+        }
+
+        mBeamlineConstruction.BeamlineName = newValue;
     }
 }
 

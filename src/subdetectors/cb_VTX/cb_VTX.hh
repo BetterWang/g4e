@@ -6,11 +6,14 @@
 #define G4E_CB_VTX_HH
 
 #include <G4PVDivision.hh>
-#include "G4RotationMatrix.hh"
-#include "G4Material.hh"
-#include "G4Color.hh"
-#include "G4VisAttributes.hh"
-#include "G4SystemOfUnits.hh"
+#include <G4RotationMatrix.hh>
+#include <G4Material.hh>
+#include <G4Color.hh>
+#include <G4VisAttributes.hh>
+#include <G4SystemOfUnits.hh>
+#include <G4Box.hh>
+#include <G4Trap.hh>
+#include <Materials.hh>
 
 #include "JLeicDetectorConfig.hh"
 

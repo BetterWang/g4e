@@ -55,7 +55,8 @@
 //--------------CI---------------
 #include "ci_GEM/ci_GEM.hh"             // Central Ion Endcap - TRD
 #include "ci_DRICH/ci_DRICH.hh"         // Central Ion Endcap - DRICH
-#include "ci_TRD/ci_TRD.hh"             // Central Ion Endcap - TRD
+#include "ci_TRD/ci_TRD_Config.hh"      // Central Ion Endcap - TRD
+#include "ci_TRD/ci_TRD_Design.hh"
 #include "ci_EMCAL/ci_EMCAL.hh"         // Central Ion Endcap - EMCAL
 #include "ci_HCAL/ci_HCAL.hh"           // Central Ion Endcap - HCAL
 
@@ -171,13 +172,7 @@ public:
     ~JLeicDetectorConstruction() override;
 
 public:
-    void SetAbsorberMaterial(G4String);
 
-    void SetAbsorberThickness(G4double);
-
-    void SetAbsorberZpos(G4double);
-
-    void SetRadiatorMaterial(G4String);
 
     void SetWorldMaterial(G4String);
 
@@ -206,27 +201,6 @@ public:
     const G4VPhysicalVolume *GetAbsorberPhysicalVolume() { return fPhysicsAbsorber; }
 
 
-    // TODO: REMOVE from global JLeic DETECOTR CONSTRUCTION (Argh!!!)
-
-    G4Material *GetAbsorberMaterial() { return fConfig.ci_TRD.det_Material; }
-
-    //TRD- related ---- needs to be moved move
-
-    G4LogicalVolume *GetLogicalRadiator() { return ci_TRD.fLogicRadiator; }
-
-    G4Material *GetFoilMaterial() { return ci_TRD.fFoilMat; }
-
-    G4Material *GetGasMaterial() { return ci_TRD.fGasMat; }
-
-    G4double GetFoilThick() { return fConfig.ci_TRD.fRadThickness; }
-
-    G4double GetGasThick() { return fConfig.ci_TRD.fGasGap; }
-
-    G4int GetFoilNumber()
-    {
-        //std::cout << " foil number4 = " << ci_TRD.ConstructionConfig.fFoilNumber << std::endl;
-        return ci_TRD.ConstructionConfig.fFoilNumber;
-    }
 
     G4double fadc_slice;
 
@@ -344,44 +318,6 @@ inline void JLeicDetectorConstruction::PrintGeometryParameters()
     G4cout << G4endl;
 }
 
-inline void JLeicDetectorConstruction::SetAbsorberMaterial(G4String materialChoice)
-{
-    // get the pointer to the material table
-    const G4MaterialTable *theMaterialTable = G4Material::GetMaterialTable();
-
-    // search the material by its name
-    G4Material *pttoMaterial;
-
-    for (size_t J = 0; J < theMaterialTable->size(); J++) {
-        pttoMaterial = (*theMaterialTable)[J];
-
-        if (pttoMaterial->GetName() == materialChoice) {
-            fAbsorberMaterial = pttoMaterial;
-            // fLogicAbsorber->SetMaterial(pttoMaterial);
-            // PrintCalorParameters();
-        }
-    }
-}
-
-inline void JLeicDetectorConstruction::SetRadiatorMaterial(G4String materialChoice)
-{
-    // get the pointer to the material table
-
-    const G4MaterialTable *theMaterialTable = G4Material::GetMaterialTable();
-
-    // search the material by its name
-
-    G4Material *pttoMaterial;
-    for (size_t J = 0; J < theMaterialTable->size(); J++) {
-        pttoMaterial = (*theMaterialTable)[J];
-
-        if (pttoMaterial->GetName() == materialChoice) {
-            fConfig.ci_TRD.fRadiatorMat = pttoMaterial;
-            //fLogicRadSlice->SetMaterial(pttoMaterial);
-            // PrintCalorParameters();
-        }
-    }
-}
 
 inline void JLeicDetectorConstruction::SetWorldMaterial(G4String materialChoice)
 {
@@ -407,10 +343,6 @@ inline void JLeicDetectorConstruction::SetWorldSizeR(G4double val)
     fConfig.World.SizeR = val;
 }
 
-inline void JLeicDetectorConstruction::SetAbsorberZpos(G4double val)
-{
-    fConfig.ci_TRD.fAbsorberZ = val;
-}
 
 inline void JLeicDetectorConstruction::checkVolumeOverlap()
 {

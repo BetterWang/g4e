@@ -102,14 +102,19 @@ int main(int argc, char **argv)
     actionInit.AddUserActionGenerator([&mainRootOutput](){return new JLeicRunAction(mainRootOutput.GetJLeicRootOutput(), mainRootOutput.GetJLeicHistogramManager());});
     actionInit.AddUserActionGenerator([](){return new JLeicTrackingAction();});
 
+    // Eic physics list
+    EicPhysicsList physicsList;
+
+
     // After the run manager, we can combine initialization context
-    g4e::InitializationContext initContext(&appArgs, &mainRootOutput, &actionInit);
+    g4e::InitializationContext initContext(&appArgs, &mainRootOutput, &actionInit, &physicsList);
 
-    auto detector = new BeamlineConstruction(&initContext);
+//    auto detector = new BeamlineConstruction(&initContext);
     auto jleicDetector = new JLeicDetectorConstruction(&initContext);
+    auto beamlineMessenger = new BeamlineConstructionMessenger(jleicDetector->GetConfigRef());
 
-    runManager->SetUserInitialization(detector);
-    runManager->SetUserInitialization(new EicPhysicsList(jleicDetector));
+    runManager->SetUserInitialization(jleicDetector);
+    runManager->SetUserInitialization(&physicsList);
 
     // only after we added physics lists one can add generator action
     // According to geant, 4VUserPrimaryGeneratorAction must be constructed AFTER

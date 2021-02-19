@@ -3,8 +3,8 @@ target_sources_local(g4e
         JLeicCalorimeterHit.cc
         JLeicCalorimeterHit.hh
 
-        BeamlineConstruction.cc
-        BeamlineConstruction.hh
+#        BeamlineConstruction.cc
+#        BeamlineConstruction.hh
 
             JLeicCalorimeterSD.cc
             JLeicCalorimeterSD.hh
@@ -49,12 +49,6 @@ target_sources_local(g4e
 
             JLeicVTXHit.cc
             JLeicVTXHit.hh
-
-            JLeicXTRphysics.cc
-            JLeicXTRphysics.hh
-
-            JLeicXTRphysicsMessenger.cc
-            JLeicXTRphysicsMessenger.hh
 
             JLeicXTRTransparentRegRadModel.cc
             JLeicXTRTransparentRegRadModel.hh

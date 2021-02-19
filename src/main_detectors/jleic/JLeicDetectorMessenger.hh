@@ -71,32 +71,6 @@ class JLeicDetectorMessenger: public G4UImessenger
     G4UIcmdWithAString*   BeamlineNameCmd;
 
     G4UIcommand* CheckOverlapsCmd;
-
-    //--------- For TRD----------------
-    G4UIdirectory*             TRDdetDir;
-
-    G4UIcmdWithAnInteger*       ModelCmd;
-    G4UIcmdWithAnInteger*       FoilNumCmd;
-    G4UIcmdWithAString*        AbsMaterCmd;
-    G4UIcmdWithADoubleAndUnit* AbsThickCmd;
-    G4UIcmdWithADoubleAndUnit* AbsRadCmd;
-    G4UIcmdWithAString*        RadiatorMaterCmd;
-    G4UIcmdWithADoubleAndUnit* RadiatorThickCmd;
-    G4UIcmdWithADoubleAndUnit* GasGapThickCmd;
-    G4UIcmdWithADoubleAndUnit* AbsZposCmd;
-
-    G4UIcmdWithAString*        WorldMaterCmd;
-    G4UIcmdWithADoubleAndUnit* WorldZCmd;
-    G4UIcmdWithADoubleAndUnit* WorldRCmd;
-
-    G4UIcmdWithADoubleAndUnit* MagFieldCmd;
-    G4UIcmdWithoutParameter*   UpdateCmd;
-
-  // G4UIcmdWithADoubleAndUnit* ElectronCutCmd;
-  // G4UIcmdWithADoubleAndUnit* PositronCutCmd;
-  // G4UIcmdWithADoubleAndUnit* GammaCutCmd;
-
-
 };
 
 #endif

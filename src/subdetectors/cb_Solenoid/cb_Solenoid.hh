@@ -1,20 +1,18 @@
-//
-// Created by romanov on 6/7/19.
-//
-
 #ifndef G4E_CB_SOLENOID_H
 #define G4E_CB_SOLENOID_H
 
 #include <G4Color.hh>
 #include <G4VisAttributes.hh>
-#include "G4Tubs.hh"
-#include "G4LogicalVolume.hh"
-#include "G4PVPlacement.hh"
-#include "G4UImessenger.hh"
-#include "G4SystemOfUnits.hh"
-#include "JLeicSolenoid3D.hh"
+#include <G4FieldManager.hh>
+#include <G4Tubs.hh>
+#include <G4LogicalVolume.hh>
+#include <G4PVPlacement.hh>
+#include <G4UImessenger.hh>
+#include <G4SystemOfUnits.hh>
+#include <G4UniformMagField.hh>
+
 #include "spdlog/spdlog.h"
-#include "G4UniformMagField.hh"
+#include "JLeicSolenoid3D.hh"
 
 struct cb_Solenoid_Config {
     bool UseMagneticField = true;                       // field in helium pipe used?

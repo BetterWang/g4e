@@ -777,7 +777,7 @@ void BeamlineConstruction::SetUpJLEIC2019()
     //------------------------------------------------
     if(beamLine == BeamLines::IP6) {
         if (USE_FFI_RPOT_D2 ) {
-            fConfig.ffi_RPOT_D2.Angle=-0.05;
+            fConfig.ffi_RPOT_D2.Angle = -0.05;
             fConfig.ffi_RPOT_D2.ROut = 120 * cm;
             fConfig.ffi_RPOT_D2.rot_matx.rotateY(fConfig.ffi_RPOT_D2.Angle * rad);
             fConfig.ffi_RPOT_D2.PosZ = 3100 * cm;

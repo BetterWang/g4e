@@ -1,9 +1,5 @@
-//
-// Created by yulia on 6/14/19.
-//
-
-#ifndef G4E_CI_TRD_HH
-#define G4E_CI_TRD_HH
+#ifndef ci_TRD_Design_HH
+#define ci_TRD_Design_HH
 
 #include <G4PVDivision.hh>
 #include "G4RotationMatrix.hh"
@@ -13,45 +9,16 @@
 #include "G4SystemOfUnits.hh"
 
 #include "JLeicDetectorConfig.hh"
-
-
-struct ci_TRD_Config
-{
-// define here Global volume parameters
-    double RIn = 20 * cm;
-    double ROut = 200 * cm;
-    double ThicknessZ = 30 * cm;
-    double PosZ;
-    G4double fRadZ;
-    //----------------------------
-    double fGasGap = 0.600 * mm;    // for ZEUS  300-publication
-    double fRadThick = NAN;
-    int fFoilNumber = 0;
-    //----------------------------
-    double det_RIn = 20 * cm;
-    double det_ROut = 100 * cm;
-    double det_ThicknessZ = 2.5 * cm;
-    double det_PosZ;
-    G4double fDetThickness;
-    G4double fDetLength;
-
-    double fAbsorberThickness = 0.050 * mm;
-    double fAbsorberRadius = 100. * mm;
-    double fAbsorberZ = 136. * cm;
-    double fDetGap = 0.01 * mm;
-    int fModuleNumber = 1;
-    G4Material *fRadiatorMat;        // pointer to the mixed TR radiator material
-    G4Material *det_Material;
-
-    G4double fRadThickness = 0.020 * mm;    // 16 um // ZEUS NIMA 323 (1992) 135-139, D=20um, dens.= 0.1 g/cm3
-
-
-};
+#include "ci_TRDMessenger.hh"
+#include "ci_TRDPhysics.hh"
 
 
 class ci_TRD_Design
 {
 public:
+
+    ci_TRD_Design();
+
     inline void Construct(ci_TRD_Config cfg, G4Material *worldMaterial, G4VPhysicalVolume *motherVolume)
     {
         printf("Initialize ci_TRD volume \n");
@@ -131,7 +98,7 @@ public:
         cfg.fRadiatorMat = radiatorMat;
         fFoilMat = CH2; // Kapton; // Mylar ; // Li ; // CH2 ;
         fGasMat = Air; // CO2; // He; //
-//--------------------------material -------------------------------
+        //--------------------------material -------------------------------
 
 
         cfg.fRadThick = 10. * cm - cfg.fGasGap + cfg.fDetGap;
@@ -156,6 +123,30 @@ public:
         if (fRadRegion == nullptr) fRadRegion = new G4Region("XTRradiator");
         fRadRegion->AddRootLogicalVolume(fLogicRadiator);
     };
+
+
+    inline void SetRadiatorMaterial(G4String materialChoice)
+    {
+        // get the pointer to the material table
+
+        const G4MaterialTable *theMaterialTable = G4Material::GetMaterialTable();
+
+
+        // search the material by its name
+
+        G4Material *pttoMaterial;
+        for (size_t J = 0; J < theMaterialTable->size(); J++) {
+            pttoMaterial = (*theMaterialTable)[J];
+
+            if (pttoMaterial->GetName() == materialChoice) {
+                ConstructionConfig.fRadiatorMat = pttoMaterial;
+                //fLogicRadSlice->SetMaterial(pttoMaterial);
+                // PrintCalorParameters();
+            }
+        }
+    }
+
+
     G4Tubs *Solid;      //pointer to the solid
     G4LogicalVolume *Logic;    //pointer to the logical
     G4VPhysicalVolume *Phys;  //pointer to the physical
@@ -171,9 +162,13 @@ public:
     G4Material *fGasMat;             // pointer to the TR gas radiator material
     G4Region *fRegGasDet;
 
+    ci_TRDPhysics * PhysicsConstructor;
 
 private:
     g4e::Materials *fMat;
+    ci_TRDMessenger *fMessenger;
+
+
     // define here local variables and parameter of detectors
 //-------------rad---------------
 
@@ -191,4 +186,5 @@ private:
 
 };
 
-#endif //G4E_CI_TRD_HH
+
+#endif //G4E_CI_TRD_DESIGN_H

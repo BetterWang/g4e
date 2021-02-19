@@ -31,8 +31,8 @@
 #include "main_detectors/jleic/JLeicCalorimeterHit.hh"
 #include "main_detectors/jleic/JLeicVTXHit.hh"
 
-#include "JLeicCe_emcalDigiHit.hh"
-#include "JLeicCe_emcalHit.hh"
+#include "subdetectors/ce_EMCAL/JLeicCe_emcalDigiHit.hh"
+#include "subdetectors/ce_EMCAL/JLeicCe_emcalHit.hh"
 
 #include "JLeicHistogramManager.hh"
 

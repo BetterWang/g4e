@@ -68,8 +68,6 @@ class JLeicDetectorMessenger: public G4UImessenger
     G4UIcmdWithAnInteger* IbeamZCmd;
     G4UIcmdWithAnInteger* IbeamACmd;
 
-    G4UIcmdWithAString*   BeamlineNameCmd;
-
     G4UIcommand* CheckOverlapsCmd;
 };
 

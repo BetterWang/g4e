@@ -37,13 +37,14 @@ struct ce_EMCAL_Config
     double Glass_PosZ;
 
     // Messenger to control initialization properties from geant config file
-    G4GenericMessenger *Messenger;
 
-    ce_EMCAL_Config() {
+    inline ce_EMCAL_Config() {
+        static G4GenericMessenger *Messenger;
+
         // Create a global messenger that will be used
         if(!Messenger) {
             // Set geant options
-            Messenger = new G4GenericMessenger(this, "/g4e/ce_EMCAL/");
+            Messenger = new G4GenericMessenger(this, "/eic/ce_EMCAL/");
             Messenger->DeclareProperty("pwoThickness", PWO_Thickness, "Thikness (z direction dimention) of PWO crystals ");
             Messenger->DeclareProperty("pwoWidth", PWO_Width, "Width (and higth) of each PWO crystal");
             Messenger->DeclareProperty("pwoGap", PWO_Gap, "Gap between PWO crystals ");

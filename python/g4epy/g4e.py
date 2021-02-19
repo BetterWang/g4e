@@ -44,9 +44,9 @@ class Geant4Eic(object):
 
         # set defaults if they are not set for the user
         self.config['output'] = self.config.get('output', 'test_run')
-        # self.config['source_file'] = self.config.get('source_file', '/home/romanov/Downloads/beagle_eD.txt')
-        self.config['beamline'] = self.config.get('beamline', 'erhic')
-        self.config['detector'] = self.config.get('detector', 'jleic')
+
+        self.config['beamline'] = self.config.get('beamline', 'ip6')
+        self.config['detector'] = self.config.get('detector', 'refdet')
         self.config['is_batch'] = self.config.get('is_batch', True)
         self.config['executable'] = self.config.get('executable', 'g4e')
         self.config['thread_count'] = self.config.get('treads', 1)
@@ -55,7 +55,7 @@ class Geant4Eic(object):
         # construct is with 'detector' and 'beamline'
         base_mac_file = self.config['detector'] + '.mac'
         self.commands.append(f"/control/execute {base_mac_file}")
-        self.commands.append(f"/detsetup/beamlineName {self.config['beamline']}")
+        self.commands.append(f"/eic/beamline/name {self.config['beamline']}")
 
         self.runner = None
 

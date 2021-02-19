@@ -8,15 +8,15 @@ target_sources_local(g4e
 
             JLeicCalorimeterSD.cc
             JLeicCalorimeterSD.hh
-            
-            JLeicCe_emcalSD.cc
-            JLeicCe_emcalSD.hh
-            
-            JLeicCe_emcalHit.cc
-            JLeicCe_emcalHit.hh
-            
-            JLeicCe_emcalDigiHit.hh
-            JLeicCe_emcalDigiHit.cc
+
+        ../../subdetectors/ce_EMCAL/JLeicCe_emcalSD.cc
+        ../../subdetectors/ce_EMCAL/JLeicCe_emcalSD.hh
+
+        ../../subdetectors/ce_EMCAL/JLeicCe_emcalHit.cc
+        ../../subdetectors/ce_EMCAL/JLeicCe_emcalHit.hh
+
+        ../../subdetectors/ce_EMCAL/JLeicCe_emcalDigiHit.hh
+        ../../subdetectors/ce_EMCAL/JLeicCe_emcalDigiHit.cc
 
             JLeicDetectorConfig.hh
 

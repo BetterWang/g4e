@@ -37,10 +37,10 @@ private:
 
 LoggingMessenger::LoggingMessenger()
 {
-    fDirectory = new G4UIdirectory("/g4/");
+    fDirectory = new G4UIdirectory("/eic/");
     fDirectory->SetGuidance("Control commands for general config");
 
-    fLogLevelCmd = new G4UIcmdWithAString("/g4e/logLevel", this);
+    fLogLevelCmd = new G4UIcmdWithAString("/eic/logLevel", this);
     fLogLevelCmd->SetGuidance("Sets general log level");
     fLogLevelCmd->SetParameterName("logLevel", false, false);
     fLogLevelCmd->SetCandidates("off fatal error warn info debug trace");

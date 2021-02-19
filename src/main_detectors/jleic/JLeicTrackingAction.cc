@@ -48,7 +48,7 @@ JLeicTrackingAction::JLeicTrackingAction(): G4UserTrackingAction()
 
     // Create a global messenger that will be used 
     if(!gMessenger) {
-        gMessenger = new G4GenericMessenger(nullptr, "/g4e/tracking/");
+        gMessenger = new G4GenericMessenger(nullptr, "/eic/tracking/");
         gMessenger->DeclareProperty("saveSecondaryLevel", gTrackSaveSecondaryLevel, "Beyond this level track will be killed ");
     }
 

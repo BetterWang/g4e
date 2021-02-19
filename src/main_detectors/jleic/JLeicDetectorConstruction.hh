@@ -194,7 +194,7 @@ public:
 
     G4Material *GetWorldMaterial() { return World_Material; };
 
-    void checkVolumeOverlap();
+    void CheckVolumeOverlap();
 
     const G4VPhysicalVolume *GetWorldPhysicalVolume() { return World_Phys; }
 
@@ -344,7 +344,7 @@ inline void JLeicDetectorConstruction::SetWorldSizeR(G4double val)
 }
 
 
-inline void JLeicDetectorConstruction::checkVolumeOverlap()
+inline void JLeicDetectorConstruction::CheckVolumeOverlap()
 {
     // loop inside all the daughters volumes
     G4cout << " loop inside all the daughters volumes" << G4endl;

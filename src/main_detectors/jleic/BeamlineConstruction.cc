@@ -3,7 +3,7 @@
 #include "BeamlineConstruction.hh"
 #include "JLeicCalorimeterSD.hh"
 #include "JLeicVertexSD.hh"
-#include "JLeicCe_emcalSD.hh"
+#include "subdetectors/ce_EMCAL/JLeicCe_emcalSD.hh"
 
 #include "G4SDManager.hh"
 #include "G4GeometryManager.hh"

@@ -10,10 +10,10 @@ BeamlineConstructionMessenger::BeamlineConstructionMessenger(JLeicDetectorConfig
     G4UImessenger(),
     mBeamlineConstruction(config)
 {
-    mDirectory = new G4UIdirectory("/g4e/beamline/");
+    mDirectory = new G4UIdirectory("/eic/beamline/");
     mDirectory->SetGuidance("Detector control.");
 
-    mBeamlineNameCmd = new G4UIcmdWithAString("/g4e/beamline/name", this);
+    mBeamlineNameCmd = new G4UIcmdWithAString("/eic/beamline/name", this);
     mBeamlineNameCmd->SetGuidance("Select beamline ip6 or ip8");
     mBeamlineNameCmd->SetParameterName("name", false);
     mBeamlineNameCmd->SetDefaultValue("ip6");

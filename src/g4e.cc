@@ -29,6 +29,7 @@
 
 #include "main_detectors/jleic/JLeicDetectorConstruction.hh"
 #include "main_detectors/jleic/BeamlineConstruction.hh"
+#include "main_detectors/jleic/BeamPipeConstruction.hh"
 #include "ArgumentProcessor.hh"
 #include "EicPhysicsList.hh"
 #include "PrimaryGeneratorAction.hh"
@@ -43,6 +44,7 @@
 
 #include "Logging.hh"
 #include "MultiActionInitialization.hh"
+#include "MultiDetectorConstruction.hh"
 
 #include <G4MTRunManager.hh>
 #include <G4RunManager.hh>
@@ -98,8 +100,8 @@ int main(int argc, char **argv)
     g4e::MultiActionInitialization actionInit;
 
     // Event, tracking, stepping actions
-    actionInit.AddUserActionGenerator([&mainRootOutput](){return new JLeicEventAction(mainRootOutput.GetJLeicRootOutput(), mainRootOutput.GetJLeicHistogramManager());});
-    actionInit.AddUserActionGenerator([&mainRootOutput](){return new JLeicRunAction(mainRootOutput.GetJLeicRootOutput(), mainRootOutput.GetJLeicHistogramManager());});
+    actionInit.AddUserActionGenerator([&mainRootOutput](){return new JLeicEventAction(mainRootOutput.GetJLeicRootOutput());});
+    actionInit.AddUserActionGenerator([&mainRootOutput](){return new JLeicRunAction(mainRootOutput.GetJLeicRootOutput());});
     actionInit.AddUserActionGenerator([](){return new JLeicTrackingAction();});
 
     // Eic physics list
@@ -109,11 +111,17 @@ int main(int argc, char **argv)
     // After the run manager, we can combine initialization context
     g4e::InitializationContext initContext(&appArgs, &mainRootOutput, &actionInit, &physicsList);
 
-//    auto detector = new BeamlineConstruction(&initContext);
-    auto jleicDetector = new JLeicDetectorConstruction(&initContext);
-    auto beamlineMessenger = new BeamlineConstructionMessenger(jleicDetector->GetConfigRef());
+    // Detector constructions
+    auto referenceDetector = new JLeicDetectorConstruction(&initContext);
+    auto beamlineMessenger = new BeamlineConstructionMessenger(referenceDetector->GetConfigRef());
 
-    runManager->SetUserInitialization(jleicDetector);
+    MultiDetectorConstruction multiConstruction;
+    multiConstruction.RegisterDetectorConstruction("refdet",referenceDetector);
+    multiConstruction.RegisterDetectorConstruction("beamline", new BeamlineConstruction(&initContext));
+    multiConstruction.RegisterDetectorConstruction("beampipe", new BeamPipeConstruction(&initContext));
+    multiConstruction.SelectDetectorConstruction("refdet");
+
+    runManager->SetUserInitialization(&multiConstruction);
     runManager->SetUserInitialization(&physicsList);
 
     // only after we added physics lists one can add generator action

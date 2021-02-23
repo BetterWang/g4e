@@ -3,7 +3,6 @@
 
 
 #include "RootFlatIO.hh"
-#include "JLeicHistogramManager.hh"
 #include <G4GenericMessenger.hh>
 
 
@@ -30,7 +29,6 @@ namespace g4e {
         TFile *GetMainRootFile() { return mRootFile; }
 
         g4e::RootFlatIO* GetJLeicRootOutput() {return jleicRootOutput.get(); }
-        JLeicHistogramManager* GetJLeicHistogramManager() { return jleicHistos.get(); }
 
         ///
         /// \param usePreStepPoint - true PreStepPoint is used for Volume and Coords, false - PostStepPoint
@@ -46,7 +44,6 @@ namespace g4e {
         // We also create JLeic root output here , while g4e is in transition
         // TODO Move JLeic initialization to the appropriate phase
         std::unique_ptr<g4e::RootFlatIO> jleicRootOutput;
-        std::unique_ptr<JLeicHistogramManager> jleicHistos;
         G4GenericMessenger fMessenger;
         G4int mSaveSecondaryLevel;
     };

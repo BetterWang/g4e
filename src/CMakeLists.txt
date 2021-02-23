@@ -44,6 +44,9 @@ target_sources_local(g4e
         MultiActionInitialization.hh
         MultiActionInitialization.cc
 
+        MultiDetectorConstruction.cc
+        MultiDetectorConstruction.hh
+
         VolumeChangeSteppingAction.cc
         VolumeChangeSteppingAction.hh
 

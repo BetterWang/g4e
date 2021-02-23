@@ -7,7 +7,7 @@
 #define G4E_JLeicDetectorParameters_HH
 
 // -------beampipe---------------
-#include "ir_Beampipe/ir_Beampipe.hh"
+#include "ir_Beampipe/ir_Beampipe_Design.hh"
 
 //------- Barrel ----
 #include "cb_Solenoid/cb_Solenoid.hh"

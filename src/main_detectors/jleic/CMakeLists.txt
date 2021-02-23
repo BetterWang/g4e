@@ -3,34 +3,28 @@ target_sources_local(g4e
         JLeicCalorimeterHit.cc
         JLeicCalorimeterHit.hh
 
-#        BeamlineConstruction.cc
-#        BeamlineConstruction.hh
+        BeamlineConstruction.cc
+        BeamlineConstruction.hh
+
+        BeamPipeConstruction.cc
+        BeamPipeConstruction.hh
 
             JLeicCalorimeterSD.cc
             JLeicCalorimeterSD.hh
 
-        ../../subdetectors/ce_EMCAL/JLeicCe_emcalSD.cc
-        ../../subdetectors/ce_EMCAL/JLeicCe_emcalSD.hh
 
-        ../../subdetectors/ce_EMCAL/JLeicCe_emcalHit.cc
-        ../../subdetectors/ce_EMCAL/JLeicCe_emcalHit.hh
-
-        ../../subdetectors/ce_EMCAL/JLeicCe_emcalDigiHit.hh
-        ../../subdetectors/ce_EMCAL/JLeicCe_emcalDigiHit.cc
 
             JLeicDetectorConfig.hh
 
             JLeicDetectorConstruction.cc
             JLeicDetectorConstruction.hh
 
-        BeamlineConstructionMessenger.cc
-        BeamlineConstructionMessenger.hh
+            BeamlineConstructionMessenger.cc
+            BeamlineConstructionMessenger.hh
 
-        JLeicDetectorMessenger.cc
-        JLeicDetectorMessenger.hh
+            JLeicDetectorMessenger.cc
+            JLeicDetectorMessenger.hh
 
-            JLeicHistogramManager.hh
-            JLeicHistogramManager.cc
 
             JLeicEventAction.hh
             JLeicEventAction.cc
@@ -50,14 +44,8 @@ target_sources_local(g4e
             JLeicVTXHit.cc
             JLeicVTXHit.hh
 
-        ../../subdetectors/ci_TRD/ci_TRD_TransparentRegRadModel.cc
-        ../../subdetectors/ci_TRD/ci_TRD_TransparentRegRadModel.hh
-
             TRTDetectorConstruction.hh
             TRTMaterials.hh
-
-            JLeicHistoMConfig.hh
-            JLeicHistoMConfig.cc
 
             JLeicStepCut.cc
             JLeicStepCut.hh

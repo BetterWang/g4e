@@ -74,7 +74,7 @@
 //#include "ir_Lattice/ir_Lattice.hh"         // IR Lattice import from file
 #include "ir_Lattice/QuadrupoleMagnet.hh"     // New IR Lattice import from file
 #include "ir_Lattice/AcceleratorMagnets.hh"   // New IR Lattice import from file
-#include "ir_Beampipe/ir_Beampipe.hh"         // IR Lattice import from file
+#include "ir_Beampipe/ir_Beampipe_Design.hh"         // IR Lattice import from file
 
 
 class JLeicCalorimeterSD;

@@ -26,7 +26,6 @@ BeamlineConstruction::BeamlineConstruction(g4e::InitializationContext *initConte
     fInitContext(initContext),
     ce_EMCAL(fConfig.ce_EMCAL, initContext)
 {
-    fDetectorMessenger = new BeamlineConstructionMessenger(this);
     fMat = new g4e::Materials();
 
     initContext->ActionInitialization->AddUserActionGenerator([initContext](){
@@ -120,10 +119,10 @@ void BeamlineConstruction::SetUpJLEIC2019()
                     "/g4e/beamline/name should be 'ip6' or 'ip8'");
     }
 
-    auto beamLine = fConfig.BeamlineName == "ip6" ? BeamLines::IP6 : BeamLines::IP8;
+    auto beamLine = fConfig.BeamlineName == "ip6" ? BeamLines::IP8 : BeamLines::IP6;
 
     // Different Shifts for 0 IP
-    if(BeamLines::IP6 == beamLine  ) {
+    if(BeamLines::IP8 == beamLine  ) {
         fConfig.World.ShiftVTX=40*cm;
     } else {
          fConfig.World.ShiftVTX=0.;
@@ -161,9 +160,9 @@ void BeamlineConstruction::SetUpJLEIC2019()
     //                    Beampipe
     //=========================================================================
     if(USE_BEAMPIPE ) {
-       fConfig.ir_Beampipe.Zpos = fConfig.World.ShiftVTX;
-       ir_Beampipe.ConstructCentral(fConfig.ir_Beampipe, World_Material, World_Phys);
-       ir_Beampipe.ConstructForwardCone(fConfig.ir_Beampipe, World_Material, World_Phys);
+       //fConfig.ir_Beampipe.Zpos = fConfig.World.ShiftVTX;
+
+       //ir_Beampipe.ConstructForwardCone(fConfig.ir_Beampipe, World_Material, World_Phys);
     }
     //=========================================================================
     //                    Sensitive detectors
@@ -237,8 +236,8 @@ void BeamlineConstruction::SetUpJLEIC2019()
 
             //---------------------------- HCAL IRON--------------------------------------
             if (USE_CI_HCAL_D) {
-                if(beamLine == BeamLines::IP6) {fConfig.ci_HCAL.det_RIn=80*cm;}
-                if(beamLine == BeamLines::IP8) { fConfig.ci_HCAL.det_RIn= 60 * cm;}
+                if(beamLine == BeamLines::IP8) { fConfig.ci_HCAL.det_RIn= 80 * cm;}
+                if(beamLine == BeamLines::IP6) { fConfig.ci_HCAL.det_RIn= 60 * cm;}
                 ci_HCAL.ConstructDetectors(fConfig.ci_HCAL);
             }
         }
@@ -412,7 +411,7 @@ void BeamlineConstruction::SetUpJLEIC2019()
 
             // --- different crossing angle direction for JLEIC and eRHIC
             
-            if(beamLine == BeamLines::IP6)  {
+            if(beamLine == BeamLines::IP8)  {
                 fConfig.ci_GEM.PosX = -5 * cm;
             } else {
                 fConfig.ci_GEM.PosX = 5 * cm;
@@ -446,10 +445,6 @@ void BeamlineConstruction::SetUpJLEIC2019()
             fConfig.ci_TRD.RIn = fConfig.ci_Endcap.RIn;
             fConfig.ci_TRD.PosZ = -fConfig.ci_Endcap.SizeZ / 2. + fConfig.ci_DRICH.ThicknessZ + fConfig.ci_TRD.ThicknessZ / 2.;
 
-            //    double ci_DRICH_GVol_PosZ= 0*cm;
-            ci_TRD.Construct(fConfig.ci_TRD, World_Material, ci_ENDCAP_GVol_Phys);
-            ci_TRD.ConstructDetectors();
-
         } // end USE_CI_TRD
 
         //================================================================================
@@ -457,7 +452,7 @@ void BeamlineConstruction::SetUpJLEIC2019()
         //================================================================================
         if (USE_CI_EMCAL) {
             fConfig.ci_EMCAL.PosZ = -fConfig.ci_Endcap.SizeZ / 2 + fConfig.ci_DRICH.ThicknessZ + fConfig.ci_TRD.ThicknessZ + fConfig.ci_EMCAL.ThicknessZ / 2;
-            if(beamLine == BeamLines::IP6)  {
+            if(beamLine == BeamLines::IP8)  {
                 fConfig.ci_EMCAL.USE_JLEIC = true;
                 fConfig.ci_EMCAL.det_Rin1 = 20*cm;
                 fConfig.ci_EMCAL.det_Rin2 = 55*cm;
@@ -488,12 +483,12 @@ void BeamlineConstruction::SetUpJLEIC2019()
     //-------------------------------------------------------------------------------
     if (USE_FI_B0_TRK) {
         for (auto magnet: fIonLineMagnets->fMagnets) {
-            if ((BeamLines::IP6 == beamLine && magnet->name == "iBDS1a") || (BeamLines::IP8 == beamLine && magnet->name == "iB0PF" || (BeamLines::IP6 == beamLine && magnet->name == "ionBXSP01"))) {
-                if(beamLine == BeamLines::IP8) {
+            if ((BeamLines::IP8 == beamLine && magnet->name == "iBDS1a") || (BeamLines::IP6 == beamLine && magnet->name == "iB0PF" || (BeamLines::IP8 == beamLine && magnet->name == "ionBXSP01"))) {
+                if(beamLine == BeamLines::IP6) {
                     fConfig.fi_B0_TRK.PhiStart=-130.* deg;
                     fConfig.fi_B0_TRK.PhiTot=275 * deg;
                 }
-                else if(beamLine==BeamLines::IP6) {
+                else if(beamLine==BeamLines::IP8) {
                     fConfig.fi_B0_TRK.PhiStart=170.;
                     fConfig.fi_B0_TRK.PhiTot=330 * deg;
                 } else {
@@ -536,7 +531,7 @@ void BeamlineConstruction::SetUpJLEIC2019()
     //------------------------------------------------
 
     if (USE_FFI_OFFM_TRK) {
-        if(beamLine == BeamLines::IP6) {
+        if(beamLine == BeamLines::IP8) {
 
         // fConfig.ffi_OFFM_TRK.ROut = 35*cm;
             fConfig.ffi_OFFM_TRK.SizeZ = 10. * cm;
@@ -555,7 +550,7 @@ void BeamlineConstruction::SetUpJLEIC2019()
 
 
         }
-       if(beamLine == BeamLines::IP8) {
+       if(beamLine == BeamLines::IP6) {
 	        // fConfig.ffi_OFFM_TRK.RIn = 10 * cm;
             // fConfig.ffi_OFFM_TRK.ROut = 35*cm;
             fConfig.ffi_OFFM_TRK.SizeZ = 10. * cm;
@@ -588,7 +583,7 @@ void BeamlineConstruction::SetUpJLEIC2019()
         }
 
         //-------------- for jleic D2 tracking placements -------------------------
-        if(beamLine == BeamLines::IP6) {
+        if(beamLine == BeamLines::IP8) {
             for (size_t i = 0; i < fIonLineMagnets->fMagnets.size(); i++) {
                 if (fIonLineMagnets->fMagnets.at(i)->name == "iBDS2") {
                     // fConfig.ffi_OFFM_TRK.RIn = 0 * cm;
@@ -615,7 +610,7 @@ void BeamlineConstruction::SetUpJLEIC2019()
     //             NEG TRK for Lambda decays 
     //------------------------------------------------
     if (USE_FFI_NEG_TRK) {
-        if(beamLine == BeamLines::IP8) {
+        if(beamLine == BeamLines::IP6) {
 	        // for angle 0 
 	        // fConfig.ffi_NEG_TRK.SizeZ = 10. * cm;
 	        // fConfig.ffi_NEG_TRK.Zpos = 25 * m;  // 22.1 *m
@@ -636,7 +631,7 @@ void BeamlineConstruction::SetUpJLEIC2019()
             }
         }
     // -- for Second IR
-        if(beamLine == BeamLines::IP6) {
+        if(beamLine == BeamLines::IP8) {
             // for angle 0
             // fConfig.ffi_NEG_TRK.SizeZ = 10. * cm;
             // fConfig.ffi_NEG_TRK.Zpos = 25 * m;  // 22.1 *m
@@ -664,13 +659,13 @@ void BeamlineConstruction::SetUpJLEIC2019()
     //             ZDC
     //------------------------------------------------
     if (USE_FFI_ZDC) {
-        if (beamLine == BeamLines::IP6) {
+        if (beamLine == BeamLines::IP8) {
             fConfig.ffi_ZDC.Angle=-0.0265;
             fConfig.ffi_ZDC.rot_matx.rotateY(fConfig.ffi_ZDC.Angle * rad);
             fConfig.ffi_ZDC.Zpos = 4000 * cm;
             fConfig.ffi_ZDC.Xpos = -190 * cm;
         }
-        if(beamLine == BeamLines::IP8) {
+        if(beamLine == BeamLines::IP6) {
             fConfig.ffi_ZDC.Angle=-0.0125;
             fConfig.ffi_ZDC.rot_matx.rotateY(-fConfig.ffi_ZDC.Angle * rad);
  //         fConfig.ffi_ZDC.Zpos = 3800 * cm;
@@ -678,7 +673,7 @@ void BeamlineConstruction::SetUpJLEIC2019()
             fConfig.ffi_ZDC.Zpos = 3800 * cm;
             fConfig.ffi_ZDC.Xpos = 90 * cm;
         }
-        if(beamLine == BeamLines::IP6){
+        if(beamLine == BeamLines::IP8){
                 fConfig.ffi_ZDC.Angle=-0.0125;
                 fConfig.ffi_ZDC.rot_matx.rotateY(-fConfig.ffi_ZDC.Angle * rad);
                 //         fConfig.ffi_ZDC.Zpos = 3800 * cm;
@@ -701,7 +696,7 @@ void BeamlineConstruction::SetUpJLEIC2019()
     //------------------------------------------------
     //            Roman Pots for eRHIC
     //------------------------------------------------
-    if (beamLine == BeamLines::IP8) {
+    if (beamLine == BeamLines::IP6) {
         if (USE_FFI_RPOT_D2 ) {  //---- First Roman Pot
             fConfig.ffi_RPOT_D2.Angle = 0.025;
             fConfig.ffi_RPOT_D2.ROut = 20 * cm;
@@ -733,7 +728,7 @@ void BeamlineConstruction::SetUpJLEIC2019()
     }// end erhic lattice placement 
 
     // ---- RPots for IP2
-    if(beamLine == BeamLines::IP6) {
+    if(beamLine == BeamLines::IP8) {
 
         if (USE_FFI_RPOT_D2 ) {  //---- First Roman Pot
             fConfig.ffi_RPOT_D2.Angle = 0.025;
@@ -775,7 +770,7 @@ void BeamlineConstruction::SetUpJLEIC2019()
     //------------------------------------------------
 
     //------------------------------------------------
-    if(beamLine == BeamLines::IP6) {
+    if(beamLine == BeamLines::IP8) {
         if (USE_FFI_RPOT_D2 ) {
             fConfig.ffi_RPOT_D2.Angle = -0.05;
             fConfig.ffi_RPOT_D2.ROut = 120 * cm;
@@ -861,7 +856,6 @@ void BeamlineConstruction::ConstructSDandField()
     if(USE_FFI_NEG_TRK)   { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_NEG_TRK.Phys);}
     if(USE_FI_B0_TRK)     { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->fi_B0_TRK.Phys);}
     if(USE_CI_GEM)        { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ci_GEM.Phys);}
-    if(USE_CI_TRD)        { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ci_TRD.Phys);}
     if(USE_CB_CTD)        { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->cb_CTD.Phys);}
     if(USE_CE_GEM)        { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ce_GEM.Phys);}
     if(USE_CE_EMCAL)      { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ce_EMCAL.Phys);}

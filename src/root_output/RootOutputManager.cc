@@ -2,18 +2,17 @@
 
 #include <TFile.h>
 #include <TTree.h>
-
 #include <G4Step.hh>
 #include <G4TouchableHistory.hh>
 #include <G4PrimaryParticle.hh>
 #include <G4VProcess.hh>
-#include <main_detectors/jleic/JLeicTrackInformation.hh>
+#include <G4SystemOfUnits.hh>
 #include <HitTypes.h>
+#include <JLeicTrackInformation.hh>
 
 g4e::RootOutputManager::RootOutputManager(TFile *rootFile):
     mRootFile(rootFile),
     jleicRootOutput(new RootFlatIO()),
-    jleicHistos(new JLeicHistogramManager()),
     fMessenger(this, "/rootOutput/")
 {
     mFlatEventTree = new TTree("events", "Flattened root tree with event data");

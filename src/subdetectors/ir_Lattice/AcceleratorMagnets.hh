@@ -51,9 +51,6 @@ public:
         if(beamID==0 && BeamEnergy !=10 ){ ScaleFactor= ((double) BeamEnergy)/10. ; debug(" =======> Electron Beam Energy  {} Scaling = {} !!!! ",BeamEnergy, ScaleFactor); }
         fmt::print("=====> {}  {}  Scaling {} \n",beamID,BeamEnergy,ScaleFactor);
 
-
-
-
         if (!sourcefile) {                     // if it does not work
             cerr << "Can't open File with Lattice!\n";
         } else {
@@ -89,19 +86,17 @@ public:
         trace("AcceleratorMagnets::parse_line: Rin={}, Rin2={} Rout ={} ", Rin, Rin2, Rout);
         fmt::print("AcceleratorMagnets::parse_line: Rin={}, Rin2={} Rout ={} \n", Rin, Rin2, Rout);
 
-       if (fBeamLine == BeamLines::IP8) {
+        if (fBeamLine == BeamLines::IP6) {
             // TODO WTF * 100?
             // conversion from m to cm
             Rin = Rin * 100;
             Rin2 = Rin2 * 100;
             Rout = Rout * 100 / 2.; // Dout in the file is a diameter
-        }   else if(fBeamLine == BeamLines::IP6){
-           Rin = Rin * 100;
-           Rin2 = Rin2 * 100;
-           Rout = Rout * 100 ; //Dout  in the file is a radius
-
-
-       }// different usints for ERHIC and JLEIC designs
+        } else if(fBeamLine == BeamLines::IP8) {
+            Rin = Rin * 100;
+            Rin2 = Rin2 * 100;
+            Rout = Rout * 100 ; //Dout  in the file is a radius
+        }// different usints for ERHIC and JLEIC designs
         trace("AcceleratorMagnets::parse_line: Rin={}, Rin2={} Rout ={} ", Rin, Rin2, Rout);
         QuadrupoleMagnet *qmag = new QuadrupoleMagnet(name, type, LengthZ, Rin, Rin2, Rout, DipoleFieldBx, DipoleFieldBy, QuadrupolFieldQnorm, QuadrupolFieldQskew, SextupoleField, SolenoidField, Xcenter,
                                                       Ycenter, Zcenter, MagTheta, MagPhi, fMotherPhysVolume, fBeamLine,ScaleFactor);

@@ -1,0 +1,34 @@
+/control/execute refdet.mac
+/eic/beamline/name erhic
+/detsetup/eBeam 10
+/detsetup/pBeam 41
+/generator/select coneParticleGun
+/generator/coneParticleGun/particle e-
+/generator/coneParticleGun/direction 0 0 -1
+/generator/coneParticleGun/energy 6 GeV
+/generator/coneParticleGun/energyStdDev 1 GeV
+/generator/coneParticleGun/coneAngleStdDev 0.4 rad
+/generator/coneParticleGun/number 10
+/vis/geometry/set/visibility World_Logic -1 0
+/vis/geometry/set/visibility cb_Solenoid_GVol_Logic  0  1
+/vis/geometry/set/visibility cb_EMCAL_GVol_Logic     0  1
+/vis/geometry/set/visibility cb_HCAL_GVol_Logic      0  1
+/vis/geometry/set/visibility ci_ENDCAP_GVol_Logic    0  1
+/vis/geometry/set/visibility cb_VTX_GVol_Logic      -1  1
+/vis/geometry/set/visibility ce_GEM_GVol_Logic      -1  1
+/vis/geometry/set/visibility ce_MRICH_GVol_Logic    -1  1
+/vis/geometry/set/colour cb_EMCAL_GVol_Logic        0 ! ! ! 0.1
+/vis/geometry/set/colour cb_HCAL_GVol_Logic         0 ! ! ! 0.1
+/vis/geometry/set/colour ci_ENDCAP_GVol_Logic       0 ! ! ! 0.1
+/vis/geometry/set/colour ce_GEM_GVol_Logic         -1 ! ! ! 0.1
+/vis/geometry/set/colour ce_MRICH_GVol_Logic       -1 ! ! ! 0.1
+/vis/geometry/set/forceAuxEdgeVisible cb_EMCAL_GVol_Logic     0  1
+/vis/geometry/set/visibility ce_EMCAL_GVol_Logic      -1 1
+/vis/geometry/set/visibility ce_EMCAL_detPWO_Logic    -1 1
+/vis/geometry/set/visibility ce_EMCAL_detGLASS_Logic  -1 1
+/vis/viewer/clearCutawayPlanes
+/vis/viewer/clearCutawayPlanes
+/vis/ogl/set/displayListLimit 100000
+/run/initialize
+/run/beamOn 2
+/control/execute refdet.vis.mac

@@ -176,6 +176,7 @@ target_include_directories(g4e
             ${VGM_DIRECTORY}/test/include
             src/external/spdlog/include     # Header only library for str formatting and fast logging
             src/external/CLI11              # Header only library for argument parsing
+            src/external/CADMesh            # Header only library for importing CAD files
         )
 
 # All sources and includes for the project are there:

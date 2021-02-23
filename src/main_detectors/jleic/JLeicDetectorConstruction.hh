@@ -75,7 +75,7 @@
 //#include "ir_Lattice/ir_Lattice.hh"         // IR Lattice import from file
 #include "ir_Lattice/QuadrupoleMagnet.hh"     // New IR Lattice import from file
 #include "ir_Lattice/AcceleratorMagnets.hh"   // New IR Lattice import from file
-#include "ir_Beampipe/ir_Beampipe.hh"         // IR Lattice import from file
+#include "ir_Beampipe/ir_Beampipe_Design.hh"         // IR Lattice import from file
 
 
 class JLeicCalorimeterSD;
@@ -196,7 +196,7 @@ public:
 
     void CheckVolumeOverlap();
 
-    const G4VPhysicalVolume *GetWorldPhysicalVolume() { return World_Phys; }
+    const G4VPhysicalVolume *GetWorldPhysicalVolume() { return fWorldPhysical; }
 
     const G4VPhysicalVolume *GetAbsorberPhysicalVolume() { return fPhysicsAbsorber; }
 
@@ -277,7 +277,7 @@ private:
 
     G4Box *World_Solid;                         // pointer to the solid World
     G4LogicalVolume *World_Logic;               // pointer to the logical World
-    G4VPhysicalVolume *World_Phys;              // pointer to the physical World
+    G4VPhysicalVolume *fWorldPhysical;              // pointer to the physical World
     G4Material *World_Material;
 
     // Interaction region
@@ -352,14 +352,14 @@ inline void JLeicDetectorConstruction::CheckVolumeOverlap()
     //        bCheckOverlap=false;
 
     int nSubWorlds, nSubWorlds2;
-    for (int i = 0; i < (int) World_Phys->GetLogicalVolume()->GetNoDaughters(); i++) {
-        World_Phys->GetLogicalVolume()->GetDaughter(i)->CheckOverlaps();
-        nSubWorlds = (int) World_Phys->GetLogicalVolume()->GetDaughter(i)->GetLogicalVolume()->GetNoDaughters();
+    for (int i = 0; i < (int) fWorldPhysical->GetLogicalVolume()->GetNoDaughters(); i++) {
+        fWorldPhysical->GetLogicalVolume()->GetDaughter(i)->CheckOverlaps();
+        nSubWorlds = (int) fWorldPhysical->GetLogicalVolume()->GetDaughter(i)->GetLogicalVolume()->GetNoDaughters();
         for (int j = 0; j < nSubWorlds; j++) {
-            World_Phys->GetLogicalVolume()->GetDaughter(i)->GetLogicalVolume()->GetDaughter(j)->CheckOverlaps();
-            nSubWorlds2 = (int) World_Phys->GetLogicalVolume()->GetDaughter(i)->GetLogicalVolume()->GetDaughter(j)->GetLogicalVolume()->GetNoDaughters();
+            fWorldPhysical->GetLogicalVolume()->GetDaughter(i)->GetLogicalVolume()->GetDaughter(j)->CheckOverlaps();
+            nSubWorlds2 = (int) fWorldPhysical->GetLogicalVolume()->GetDaughter(i)->GetLogicalVolume()->GetDaughter(j)->GetLogicalVolume()->GetNoDaughters();
             for (int k = 0; k < nSubWorlds2; k++) {
-                World_Phys->GetLogicalVolume()->GetDaughter(i)->GetLogicalVolume()->GetDaughter(j)->GetLogicalVolume()->GetDaughter(k)->CheckOverlaps();
+                fWorldPhysical->GetLogicalVolume()->GetDaughter(i)->GetLogicalVolume()->GetDaughter(j)->GetLogicalVolume()->GetDaughter(k)->CheckOverlaps();
             }
         }
     }

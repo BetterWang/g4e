@@ -62,7 +62,7 @@ void Materials::Initialise()
     G4Element *elLi = new G4Element(name = "Lithium", symbol = "Li", z = 3., a);
 
     a = 9.01 * g / mole;
-    G4Element *elBe = new G4Element(name = "Berillium", symbol = "Be", z = 4., a);
+    G4Element *elBe = new G4Element(name = "Beryllium", symbol = "Be", z = 4., a);
 
     // a =19.32*g/mole;
     // G4Element* elAu  = new G4Element(name="Gold",symbol="Au" , z= 79., a);
@@ -424,10 +424,6 @@ void Materials::Initialise()
     SiO2->AddElement(elSi, natoms = 1);
     SiO2->AddElement(elO, natoms = 2);
 //-----------------------------------------------------------------------
-
-    density = 2.700 * g / cm3;
-    a = 26.98 * g / mole;
-    new G4Material(name = "Al", z = 13., a, density);
 
     density = 7.87 * g / cm3;
     a = 55.85 * g / mole;

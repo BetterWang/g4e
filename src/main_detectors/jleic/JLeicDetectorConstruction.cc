@@ -424,13 +424,15 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
         //            Hadron endcap GEM
         //------------------------------------------------
         if (USE_CI_GEM) {
-            fConfig.ci_GEM.PosZ = fConfig.cb_Solenoid.SizeZ / 2 - fConfig.ci_GEM.SizeZ / 2;   // --- need to find out why this 5 cm are needed
+            fConfig.ci_GEM.PosZ = fConfig.cb_Solenoid.SizeZ / 2 - fConfig.ci_GEM.SizeZ / 2 -fConfig.cb_CTD.SizeZCut /4.;   // --- need to find out why this 5 cm are needed
+
 
             // --- different crossing angle direction for IP8 and IP6
             if(beamLine == BeamLines::IP8)  {
-                fConfig.ci_GEM.PosX = -5 * cm;
+      //  for JLEIC         fConfig.ci_GEM.PosX = -5 * cm;
+                fConfig.ci_GEM.PosX = 6 * cm; // answer - for crossing angle
             } else {
-                fConfig.ci_GEM.PosX = 5 * cm;
+                fConfig.ci_GEM.PosX = 5 * cm;// answer - for crossing angle
             }
 
             ci_GEM.Construct(fConfig.ci_GEM, World_Material, cb_Solenoid.Phys);

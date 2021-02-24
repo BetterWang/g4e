@@ -21,7 +21,8 @@ struct cb_CTD_Config {
 
     double RIn  = 21 * cm;
     double ROut = 80* cm;
-    double SizeZCut=  60 * cm;
+    double SizeZCut=  120 * cm;
+ //   double SizeZCut=  60 * cm;
     double SizeZ;
     double SiLayerGap = 5.* cm;
     int    SiLayerCount = 15;

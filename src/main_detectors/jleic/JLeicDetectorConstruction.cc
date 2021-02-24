@@ -499,7 +499,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     //------------------------------------------------
     if (USE_FI_B0_TRK) {
         for (auto magnet: fIonLineMagnets->fMagnets) {
-            if ((BeamLines::IP8 == beamLine && magnet->name == "iBDS1a") || (BeamLines::IP6 == beamLine && magnet->name == "iB0PF" || (BeamLines::IP8 == beamLine && magnet->name == "ionBXSP01"))) {
+            if ((BeamLines::IP6 == beamLine && magnet->name == "iB0PF") || (BeamLines::IP8 == beamLine && magnet->name == "ionBXSP01")) {
                 if(beamLine == BeamLines::IP6) {
                     fConfig.fi_B0_TRK.PhiStart = -130*deg;
                     fConfig.fi_B0_TRK.PhiTot = 275*deg;
@@ -654,7 +654,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
             fConfig.ffi_ZDC.Xpos = 90 * cm;
         }
         if(beamLine == BeamLines::IP8){
-                fConfig.ffi_ZDC.Angle=-0.0125;
+                fConfig.ffi_ZDC.Angle=-0.025;
                 fConfig.ffi_ZDC.rot_matx.rotateY(-fConfig.ffi_ZDC.Angle * rad);
                 //         fConfig.ffi_ZDC.Zpos = 3800 * cm;
                 //         fConfig.ffi_ZDC.Xpos = 98.5 * cm;
@@ -676,7 +676,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     //------------------------------------------------
     if (beamLine == BeamLines::IP6) {
         if (USE_FFI_RPOT_D2 ) {  //---- First Roman Pot
-            fConfig.ffi_RPOT_D2.Angle = 0.025;
+            fConfig.ffi_RPOT_D2.Angle = 0.0125;
             fConfig.ffi_RPOT_D2.ROut = 20 * cm;
             fConfig.ffi_RPOT_D2.rot_matx.rotateY(fConfig.ffi_RPOT_D2.Angle * rad);
             fConfig.ffi_RPOT_D2.PosZ = 2620 * cm;
@@ -690,7 +690,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
         }
 
         if (USE_FFI_RPOT_D3 ) {
-          fConfig.ffi_RPOT_D3.Angle = 0.025;
+          fConfig.ffi_RPOT_D3.Angle = 0.0125;
           fConfig.ffi_RPOT_D3.rot_matx.rotateY(fConfig.ffi_RPOT_D3.Angle * rad);
           fConfig.ffi_RPOT_D3.PosZ = 2820 * cm;
           fConfig.ffi_RPOT_D3.PosX = 91 * cm;
@@ -711,7 +711,9 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
             fConfig.ffi_RPOT_D2.Angle = 0.025;
             fConfig.ffi_RPOT_D2.ROut = 20 * cm;
             fConfig.ffi_RPOT_D2.rot_matx.rotateY(fConfig.ffi_RPOT_D2.Angle * rad);
-            fConfig.ffi_RPOT_D2.PosZ = 3620 * cm;
+ //           fConfig.ffi_RPOT_D2.PosZ = 3620 * cm;
+            fConfig.ffi_RPOT_D2.PosZ = 4620 * cm;
+
             fConfig.ffi_RPOT_D2.PosX = 162 * cm;
 
             ffi_RPOT_D2.Construct(fConfig.ffi_RPOT_D2, World_Material, fWorldPhysical);

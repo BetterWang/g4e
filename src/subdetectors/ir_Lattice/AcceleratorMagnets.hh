@@ -86,13 +86,13 @@ public:
         trace("AcceleratorMagnets::parse_line: Rin={}, Rin2={} Rout ={} ", Rin, Rin2, Rout);
         fmt::print("AcceleratorMagnets::parse_line: Rin={}, Rin2={} Rout ={} \n", Rin, Rin2, Rout);
 
-        if (fBeamLine == BeamLines::IP6) {
+        if (fBeamLine == BeamLines::IP8) {
             // TODO WTF * 100?
             // conversion from m to cm
             Rin = Rin * 100;
             Rin2 = Rin2 * 100;
             Rout = Rout * 100 / 2.; // Dout in the file is a diameter
-        } else if(fBeamLine == BeamLines::IP8) {
+        } else if(fBeamLine == BeamLines::IP6) {
             Rin = Rin * 100;
             Rin2 = Rin2 * 100;
             Rout = Rout * 100 ; //Dout  in the file is a radius

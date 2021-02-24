@@ -41,5 +41,7 @@
 /cuts/verbose 0
 #
 #/run/dumpCouples
-/detsetup/beamlineName erhic
+#/eic/beamline/name ip8
+
+#/detsetup/beamlineName erhic
 #/detsetup/beamlineName EICIP2

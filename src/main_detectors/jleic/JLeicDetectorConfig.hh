@@ -65,7 +65,7 @@ struct JLeicDetectorConfig {
     struct ci_Endcap_Config {
         double RIn = 20. * cm;
         double ROut = NAN;
-        double SizeZ = 250 * cm;
+        double SizeZ = 150 * cm;
         double ShiftZ = 0. * cm;
         double PosX = 0. * cm;
         double PosZ = 0. * cm;

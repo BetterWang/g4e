@@ -18,7 +18,7 @@ struct ci_HCAL_Config {
 // define here Global volume parameters
     double RIn=0*cm ;
     double ROut=300*cm;
-    double SizeZ=195*cm;
+    double SizeZ=160*cm;
     double ShiftZ=5*cm;
     double PosZ=0.*cm;
     double det_RIn= 80*cm ;
@@ -64,7 +64,7 @@ public:
         ci_HCAL_det_ROut=cfg.ROut -1*cm;
         ci_HCAL_det_ThicknessZ=2*cm;
         ci_HCAL_det_GapZ=2*cm;
-        ci_HCAL_Nlay=25;
+        ci_HCAL_Nlay=20;
         ci_HCAL_det_Material= G4Material::GetMaterial("Iron");
         trace("ci_HCAL_det::1 {} {} , {}",cfg.det_RIn, ci_HCAL_det_ROut, ci_HCAL_det_ThicknessZ);
 

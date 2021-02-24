@@ -119,7 +119,7 @@ int main(int argc, char **argv)
     multiConstruction.RegisterDetectorConstruction("refdet",referenceDetector);
     multiConstruction.RegisterDetectorConstruction("beamline", new BeamlineConstruction(&initContext));
     multiConstruction.RegisterDetectorConstruction("beampipe", new BeamPipeConstruction(&initContext));
-    multiConstruction.SelectDetectorConstruction("refdet");
+    multiConstruction.SelectDetectorConstruction("beampipe");
 
     runManager->SetUserInitialization(&multiConstruction);
     runManager->SetUserInitialization(&physicsList);

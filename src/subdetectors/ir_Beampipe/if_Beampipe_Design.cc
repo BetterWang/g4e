@@ -1,4 +1,5 @@
 #include "CADMesh.hh"
+#include <G4TessellatedSolid.hh>
 #include <spdlog/common.h>
 #include "ir_Beampipe_Design.hh"
 
@@ -23,10 +24,10 @@ void ir_Beampipe_Design::Construct(ir_Beampipe_Config cfg, G4VPhysicalVolume *mo
     auto  beMaterial = G4Material::GetMaterial("Beryllium");
 
     // Electron IR tube (-440mm, 0)
-    IrElectronSolid = new G4Tubs("ir_Beampipe_IrElectron", cfg.IrInnerR, cfg.IrOuterR, cfg.IrElectronSizeZ / 2., 0., 360 * deg);
-    IrElectronLogic = new G4LogicalVolume(IrElectronSolid, beMaterial, "ir_Beampipe_IrElectron");
+    IrElectronSolid = new G4Tubs("ir_Beampipe_IrElectron_Solid", cfg.IrInnerR, cfg.IrOuterR, cfg.IrElectronSizeZ / 2., 0., 360 * deg);
+    IrElectronLogic = new G4LogicalVolume(IrElectronSolid, beMaterial, "ir_Beampipe_IrElectron_Logic");
     IrElectronPhysical = new G4PVPlacement(nullptr, G4ThreeVector(0, 0, -cfg.IrElectronSizeZ / 2.),  // Rotation translation
-                                           "ir_Beampipe_IrElectron", IrElectronLogic, motherVolume,           // Names and logical
+                                           "ir_Beampipe_IrElectron_Phys", IrElectronLogic, motherVolume,           // Names and logical
                                            false, 0);                                                 // How many, copy number
 
     IrElectronVisual = new G4VisAttributes(G4Color(1., 1., 0., 1.));
@@ -35,10 +36,10 @@ void ir_Beampipe_Design::Construct(ir_Beampipe_Config cfg, G4VPhysicalVolume *mo
 
 
     // Hadron part of Interaction region [0, 1000mm)
-    IrHadronSolid = new G4Tubs("ir_Beampipe_IrHadron", cfg.IrInnerR, cfg.IrOuterR, cfg.IrElectronSizeZ / 2., 0., 360 * deg);
-    IrHadronLogic = new G4LogicalVolume(IrElectronSolid, beMaterial, "ir_Beampipe_IrHadron");
+    IrHadronSolid = new G4Tubs("ir_Beampipe_IrHadron_Solid", cfg.IrInnerR, cfg.IrOuterR, cfg.IrElectronSizeZ / 2., 0., 360 * deg);
+    IrHadronLogic = new G4LogicalVolume(IrElectronSolid, beMaterial, "ir_Beampipe_IrHadron_Logic");
     IrHadronPhysical = new G4PVPlacement(nullptr, G4ThreeVector(0, 0, -cfg.IrElectronSizeZ / 2.),  // Rotation translation
-                                         "ir_Beampipe_IrHadron", IrElectronLogic, motherVolume,           // Names and logical
+                                         "ir_Beampipe_IrHadron_Phys", IrElectronLogic, motherVolume,           // Names and logical
                                          false, 0);                                               // How many, copy number
 
     IrHadronVisual = new G4VisAttributes(G4Color(1., 1., 0., 1.));
@@ -48,7 +49,7 @@ void ir_Beampipe_Design::Construct(ir_Beampipe_Config cfg, G4VPhysicalVolume *mo
 
     G4NistManager * nistManager = G4NistManager::Instance();
 
-    auto  beryllium = G4Material::GetMaterial("Beryllium");
+    auto  beryllium = G4Material::GetMaterial("Be");
     auto  aluminium = G4Material::GetMaterial("Al");
 
     /*
@@ -72,7 +73,8 @@ void ir_Beampipe_Design::Construct(ir_Beampipe_Config cfg, G4VPhysicalVolume *mo
 //
 
     auto hadronForwardChamberName = fmt::format("{}/DetectorChamberHadronForward.stl", cadDir);
-    auto hadronForwardChamberMesh = CADMesh::TessellatedMesh::FromSTL(hadronForwardChamberName);
+    hadronForwardChamberMesh = CADMesh::TessellatedMesh::FromSTL(hadronForwardChamberName);
+
     auto chamberLogical = new G4LogicalVolume( hadronForwardChamberMesh->GetSolid(), beryllium, "HadronForwardChamberLogical", nullptr, nullptr, nullptr);
     new G4PVPlacement(nullptr, G4ThreeVector(), chamberLogical, "HadronForwardChamberPhysical", motherVolume->GetLogicalVolume(), false, 0);
 

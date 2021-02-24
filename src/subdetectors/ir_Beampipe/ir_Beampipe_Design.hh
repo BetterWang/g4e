@@ -22,6 +22,10 @@ struct ir_Beampipe_Config
     double IrOuterR = 11.5 * mm;
 };
 
+namespace CADMesh {
+    class TessellatedMesh;
+}
+
 class ir_Beampipe_Design
 {
 public:
@@ -43,6 +47,7 @@ private:
     G4LogicalVolume *IrHadronLogic;
     G4PVPlacement *IrHadronPhysical;
     G4VisAttributes *IrHadronVisual;
+    std::shared_ptr<CADMesh::TessellatedMesh> hadronForwardChamberMesh;
 };
 
 #endif //G4E_IR_BEAMPIPE_HH

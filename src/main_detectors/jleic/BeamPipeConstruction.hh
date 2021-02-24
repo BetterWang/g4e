@@ -11,8 +11,10 @@
 #include <G4VPhysicalVolume.hh>
 #include <Materials.hh>
 #include <subdetectors/ir_Beampipe/ir_Beampipe_Design.hh>
-#include <subdetectors/ci_DRICH/ci_DRICH.hh>
+#include <subdetectors/ci_DRICH/ci_DRICH_Config.hh>
+#include <subdetectors/ci_DRICH/ci_DRICH_Design.hh>
 #include "InitializationContext.hh"
+
 
 
 class BeamPipeConstruction: public G4VUserDetectorConstruction {

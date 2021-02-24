@@ -29,7 +29,7 @@
 
 //------ Forward Hadron -----
 #include "ci_GEM/ci_GEM.hh"
-#include "ci_DRICH/ci_DRICH.hh"
+#include "ci_DRICH/ci_DRICH_Design.hh"
 #include "ci_TRD/ci_TRD_Config.hh"
 #include "ci_EMCAL/ci_EMCAL.hh"
 #include "ci_HCAL/ci_HCAL.hh"
@@ -43,6 +43,7 @@
 #include "ffi_ZDC/ffi_ZDC.hh"               // Far-forward Ion - HCAL ZDC
 #include "ffi_RPOT_D2/ffi_RPOT_D2.hh"       // Far-forward Ion - Roman Pots before D3
 #include "ffi_RPOT_D3/ffi_RPOT_D3.hh"       // Far-forward Ion - Roman Pots after D3
+#include "ci_DRICH/ci_DRICH_Config.hh"
 
 struct JLeicDetectorConfig {
     int ElectronBeamEnergy = 10;

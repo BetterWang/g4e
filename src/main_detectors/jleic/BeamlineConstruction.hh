@@ -54,7 +54,7 @@
 
 //--------------CI---------------
 #include "ci_GEM/ci_GEM.hh"             // Central Ion Endcap - TRD
-#include "ci_DRICH/ci_DRICH.hh"         // Central Ion Endcap - DRICH
+#include "ci_DRICH/ci_DRICH_Design.hh"         // Central Ion Endcap - DRICH
 #include "ci_TRD/ci_TRD_Config.hh"             // Central Ion Endcap - TRD
 #include "ci_EMCAL/ci_EMCAL.hh"         // Central Ion Endcap - EMCAL
 #include "ci_HCAL/ci_HCAL.hh"           // Central Ion Endcap - HCAL

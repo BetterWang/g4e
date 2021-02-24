@@ -42,7 +42,7 @@ G4VPhysicalVolume *BeamPipeConstruction::Construct(G4VPhysicalVolume *worldPhysV
 
     auto bpCadDirectory = fmt::format("{}/resources/ip6/beampipe/", fInitContext->Arguments->HomePath);
     ir_Beampipe.Construct(ir_BeampipeConfig, worldPhysVol, bpCadDirectory);
-    m_ci_DRICH.Construct(m_ci_DRICH_Config, fWorldMaterial, fWorldPhysicalVolume);
+    m_ci_DRICH.Construct(m_ci_DRICH_Config, fWorldMaterial,  fWorldPhysicalVolume);
     m_ci_DRICH.ConstructDetectors();
 
     return worldPhysVol;

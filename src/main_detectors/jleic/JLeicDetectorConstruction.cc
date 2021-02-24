@@ -119,14 +119,16 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
 
     // Checking the beamline
     auto beamLineName = g4e::ToLowerCopy(fConfig.BeamlineName);
-    auto beamLine = fConfig.BeamlineName == "ip6" ? BeamLines::IP8 : BeamLines::IP6;
+    auto beamLine = fConfig.BeamlineName == "ip6" ? BeamLines::IP6 : BeamLines::IP8;
 
     // Different Shifts for 0 IP
     if(BeamLines::IP8 == beamLine  ) {
-        fConfig.World.ShiftVTX=40*cm;
-    } else {
-         fConfig.World.ShiftVTX=0.;
-    }
+        fConfig.World.ShiftVTX=0*cm;
+    } else if(BeamLines::IP6 == beamLine ) {
+         fConfig.World.ShiftVTX=0.*cm;
+    } else {  fConfig.World.ShiftVTX=40.*cm;}
+
+
 
     // Load beam lines
     if(USE_FFQs )
@@ -468,14 +470,15 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
         //------------------------------------------------
         if (USE_CI_EMCAL) {
             fConfig.ci_EMCAL.PosZ = -fConfig.ci_Endcap.SizeZ / 2 + fConfig.ci_DRICH.ThicknessZ + fConfig.ci_TRD.ThicknessZ + fConfig.ci_EMCAL.ThicknessZ / 2;
-            if(beamLine == BeamLines::IP8)  {
+            if(beamLine == BeamLines::IP6)  {
                 fConfig.ci_EMCAL.USE_JLEIC = true;
-                fConfig.ci_EMCAL.det_Rin1 = 20*cm;
-                fConfig.ci_EMCAL.det_Rin2 = 55*cm;
+                fConfig.ci_EMCAL.det_Rin1 = 30*cm;
+                fConfig.ci_EMCAL.det_Rin2 = 30*cm;
             } else {
                 fConfig.ci_EMCAL.USE_ERHIC=true;
-                fConfig.ci_EMCAL.det_Rin1=30*cm;
-                fConfig.ci_EMCAL.det_Rin2=30*cm;
+                fConfig.ci_EMCAL.det_Rin1 = 30*cm;
+                fConfig.ci_EMCAL.det_Rin2 = 30*cm;
+
             }
 
             ci_EMCAL.Construct(fConfig.ci_EMCAL, World_Material, ci_ENDCAP_GVol_Phys);
@@ -546,11 +549,14 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
         if(beamLine == BeamLines::IP8) {
 
         // fConfig.ffi_OFFM_TRK.ROut = 35*cm;
+          fConfig.ffi_OFFM_TRK.SizeX=100 *cm;
+          fConfig.ffi_OFFM_TRK.SizeY=100 *cm;
+
             fConfig.ffi_OFFM_TRK.SizeZ = 10. * cm;
             fConfig.ffi_OFFM_TRK.Zpos = 30.5 * m;
             // fConfig.ffi_OFFM_TRK.Zpos = 27.5 * m;
 
-            fConfig.ffi_OFFM_TRK.Xpos = 125 * cm;
+            fConfig.ffi_OFFM_TRK.Xpos = 160 * cm;
             fConfig.ffi_OFFM_TRK.Nlayers=2;
             ffi_OFFM_TRK.Construct(fConfig.ffi_OFFM_TRK, World_Material, fWorldPhysical);
 
@@ -659,7 +665,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
                 //         fConfig.ffi_ZDC.Zpos = 3800 * cm;
                 //         fConfig.ffi_ZDC.Xpos = 98.5 * cm;
                 fConfig.ffi_ZDC.Zpos = 4200 * cm;
-                fConfig.ffi_ZDC.Xpos = 120 * cm;
+                fConfig.ffi_ZDC.Xpos = 220 * cm;
         }
         ffi_ZDC.Construct(fConfig.ffi_ZDC, World_Material, fWorldPhysical);
 	    // if(USE_FFI_ZDC_CRYSTAL) { ffi_ZDC.ConstructTowels(1); }
@@ -676,7 +682,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
     //------------------------------------------------
     if (beamLine == BeamLines::IP6) {
         if (USE_FFI_RPOT_D2 ) {  //---- First Roman Pot
-            fConfig.ffi_RPOT_D2.Angle = 0.0125;
+            fConfig.ffi_RPOT_D2.Angle = 0.025;
             fConfig.ffi_RPOT_D2.ROut = 20 * cm;
             fConfig.ffi_RPOT_D2.rot_matx.rotateY(fConfig.ffi_RPOT_D2.Angle * rad);
             fConfig.ffi_RPOT_D2.PosZ = 2620 * cm;
@@ -690,7 +696,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
         }
 
         if (USE_FFI_RPOT_D3 ) {
-          fConfig.ffi_RPOT_D3.Angle = 0.0125;
+          fConfig.ffi_RPOT_D3.Angle = 0.025;
           fConfig.ffi_RPOT_D3.rot_matx.rotateY(fConfig.ffi_RPOT_D3.Angle * rad);
           fConfig.ffi_RPOT_D3.PosZ = 2820 * cm;
           fConfig.ffi_RPOT_D3.PosX = 91 * cm;
@@ -714,7 +720,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
  //           fConfig.ffi_RPOT_D2.PosZ = 3620 * cm;
             fConfig.ffi_RPOT_D2.PosZ = 4620 * cm;
 
-            fConfig.ffi_RPOT_D2.PosX = 162 * cm;
+            fConfig.ffi_RPOT_D2.PosX = 190 * cm;
 
             ffi_RPOT_D2.Construct(fConfig.ffi_RPOT_D2, World_Material, fWorldPhysical);
             ffi_RPOT_D2.ConstructDetectors();
@@ -729,7 +735,7 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
             fConfig.ffi_RPOT_D3.rot_matx.rotateY(fConfig.ffi_RPOT_D3.Angle * rad);
             fConfig.ffi_RPOT_D3.PosZ = 3820 * cm;
             fConfig.ffi_RPOT_D3.PosZ = 4820 * cm;
-            fConfig.ffi_RPOT_D3.PosX = 181 * cm;
+            fConfig.ffi_RPOT_D3.PosX = 190 * cm;
 
             ffi_RPOT_D3.Construct(fConfig.ffi_RPOT_D3, World_Material, fWorldPhysical);
             ffi_RPOT_D3.ConstructDetectors();

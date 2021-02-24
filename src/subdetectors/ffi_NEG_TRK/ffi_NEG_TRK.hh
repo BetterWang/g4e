@@ -20,8 +20,8 @@ struct ffi_NEG_TRK_Config {
 // define here Global volume parameters
   //  double Rin = 0 * cm;
   //  double ROut;
-    double SizeX=500 *cm;
-    double SizeY=100*cm; 
+    double SizeX=50 *cm;
+    double SizeY=50*cm;
     double SizeZ = 30 * cm;
     double Zpos;
     double Xpos;

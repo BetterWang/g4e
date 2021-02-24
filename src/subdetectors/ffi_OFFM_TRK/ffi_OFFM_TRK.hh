@@ -20,8 +20,8 @@ struct ffi_OFFM_TRK_Config {
 // define here Global volume parameters
     double Rin = 0 * cm;
     double ROut;
-    double SizeX=230 *cm;
-    double SizeY=230*cm; 
+    double SizeX=50 *cm;
+    double SizeY=50*cm;
     double SizeZ = 30 * cm;
     double Zpos;
     double Xpos;
@@ -96,7 +96,7 @@ public:
 	    //if (fflay==0) {  //-- make a hole 
                ffi_OFFM_TRK_BH_Material=G4Material::GetMaterial("G4_Galactic");
          //   Beam_hole_Solid = new G4Tubs("ffi_OFFM_TRK_lay_BH_Solid",0.*cm, 6*cm,  ffi_OFFM_TRK_lay_SizeZ / 2., 0., 360 * deg);
-            Beam_hole_Solid = new G4Tubs("ffi_OFFM_TRK_lay_BH_Solid",0.*cm, 0.25*cm,  ffi_OFFM_TRK_lay_SizeZ / 2., 0., 360 * deg);
+            Beam_hole_Solid = new G4Tubs("ffi_OFFM_TRK_lay_BH_Solid",0.*cm, 2.5*cm,  ffi_OFFM_TRK_lay_SizeZ / 2., 0., 360 * deg);
 
 
             Beam_hole_Logic = new G4LogicalVolume( Beam_hole_Solid,	ffi_OFFM_TRK_BH_Material , "ffi_OFFM_TRK_lay_BH_Logic");

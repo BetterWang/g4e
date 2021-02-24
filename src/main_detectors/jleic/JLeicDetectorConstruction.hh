@@ -140,7 +140,7 @@ public:
 
     //------- subdetector-volumes H-encap -----
     bool USE_CI_GEM = true;
-    bool USE_CI_DRICH = true;
+    bool USE_CI_DRICH = false;
     bool USE_CI_TRD = true;
     bool USE_CI_EMCAL = true;
     bool USE_CI_HCAL = true;
@@ -152,8 +152,8 @@ public:
     //--------FARFORWARD HADRON------
 
     bool USE_FFI_OFFM_TRK = true;
-    bool USE_FFI_OFFM_TRK2 = true;
-    bool USE_FFI_NEG_TRK = true;
+    bool USE_FFI_OFFM_TRK2 = false ;
+    bool USE_FFI_NEG_TRK = false ;
     // 
     bool USE_FFI_ZDC = true;
     bool USE_FFI_ZDC_ALICE = false;

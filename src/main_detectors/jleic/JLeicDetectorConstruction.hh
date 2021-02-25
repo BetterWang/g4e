@@ -232,12 +232,12 @@ private:
     //  C E N T R A L   (BARREL)
     //==============================================
     cb_Solenoid_Design cb_Solenoid;
-    cb_VTX_Design     cb_VTX;         // Central Vertex
-    cb_SiDISCS_Design cb_SiDISCS;     // Silicon Vertex
-    cb_CTD_Design     cb_CTD;         // CTD
-    cb_DIRC_Design    cb_DIRC;        // DIRC
-    cb_EMCAL_Design   cb_EMCAL;       // EMCAL
-    cb_HCAL_Design    cb_HCAL;        // HCAL
+    cb_VTX_Design      cb_VTX;         // Central Vertex
+    cb_SiDISCS_Design  cb_SiDISCS;     // Silicon Vertex
+    cb_CTD_Design      cb_CTD;         // CTD
+    cb_DIRC_Design     cb_DIRC;        // DIRC
+    cb_EMCAL_Design    cb_EMCAL;       // EMCAL
+    cb_HCAL_Design     cb_HCAL;        // HCAL
 
     //  E - E N D C A P
     //==============================================

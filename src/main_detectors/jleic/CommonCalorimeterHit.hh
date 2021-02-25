@@ -5,23 +5,20 @@
 #include "G4THitsCollection.hh"
 #include "G4Allocator.hh"
 
-class JLeicCalorimeterHit : public G4VHit
+class CommonCalorimeterHit : public G4VHit
 {
 public:
 
-    JLeicCalorimeterHit();
+    CommonCalorimeterHit();
 
-    ~JLeicCalorimeterHit() override;
+    ~CommonCalorimeterHit() override;
 
-    JLeicCalorimeterHit(const JLeicCalorimeterHit &);
+    CommonCalorimeterHit(const CommonCalorimeterHit &);
 
     void *operator new(size_t);
 
     void operator delete(void *);
 
-    const JLeicCalorimeterHit &operator=(const JLeicCalorimeterHit &);
-
-    void Print();
 
 public:
 
@@ -52,24 +49,24 @@ private:
 };
 
 
-typedef G4THitsCollection<JLeicCalorimeterHit> JLeicCalorHitsCollection;
+typedef G4THitsCollection<CommonCalorimeterHit> JLeicCalorHitsCollection;
 
-extern G4ThreadLocal G4Allocator<JLeicCalorimeterHit> *JLeicCalorHitAllocator;
+extern G4ThreadLocal G4Allocator<CommonCalorimeterHit> *JLeicCalorHitAllocator;
 
 
-inline void *JLeicCalorimeterHit::operator new(size_t)
+inline void *CommonCalorimeterHit::operator new(size_t)
 {
     void *aHit;
-    if (!JLeicCalorHitAllocator) JLeicCalorHitAllocator = new G4Allocator<JLeicCalorimeterHit>();
+    if (!JLeicCalorHitAllocator) JLeicCalorHitAllocator = new G4Allocator<CommonCalorimeterHit>();
     aHit = (void *) JLeicCalorHitAllocator->MallocSingle();
     return aHit;
 }
 
 
-inline void JLeicCalorimeterHit::operator delete(void *aHit)
+inline void CommonCalorimeterHit::operator delete(void *aHit)
 {
-    if (!JLeicCalorHitAllocator) JLeicCalorHitAllocator = new G4Allocator<JLeicCalorimeterHit>();
-    JLeicCalorHitAllocator->FreeSingle((JLeicCalorimeterHit *) aHit);
+    if (!JLeicCalorHitAllocator) JLeicCalorHitAllocator = new G4Allocator<CommonCalorimeterHit>();
+    JLeicCalorHitAllocator->FreeSingle((CommonCalorimeterHit *) aHit);
 }
 
 #endif

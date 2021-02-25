@@ -49,7 +49,7 @@
 //class G4HCofThisEvent;
 //class G4Step;
 
-#include "JLeicVTXHit.hh"
+#include "CommonVertexHit.hh"
 #include "JLeicRunAction.hh"
 #include "G4RunManager.hh"
 

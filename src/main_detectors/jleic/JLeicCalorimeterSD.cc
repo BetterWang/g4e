@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include "G4UserRunAction.hh"
 #include "JLeicCalorimeterSD.hh"
-#include "JLeicCalorimeterHit.hh"
+#include "CommonCalorimeterHit.hh"
 
 
 #include "G4VTouchable.hh"

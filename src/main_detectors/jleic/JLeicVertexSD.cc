@@ -17,7 +17,7 @@ static int NVAR;
 
 #include "JLeicVertexSD.hh"
 
-#include "JLeicVTXHit.hh"
+#include "CommonVertexHit.hh"
 //#include "JLeicDetectorConstruction.hh"
 //#include "G4Step.hh"
 
@@ -308,7 +308,7 @@ G4bool JLeicVertexSD::ProcessHits(G4Step *aStep, G4TouchableHistory *)
     trace("--> JLeicVertexSD::ProcessHits() Vol=({}) {} Abs={} \n", physVol->GetName().c_str(), (void *) physVol, (void *) mDetector->GetAbsorberPhysicalVolume());
 
     if (HitID[JLeicNumber] == -1) {
-        JLeicVTXHit *vtxHit = new JLeicVTXHit();
+        CommonVertexHit *vtxHit = new CommonVertexHit();
         if (physVol == mDetector->GetAbsorberPhysicalVolume()) vtxHit->AddAbs(edep, stepl);
         HitID[JLeicNumber] = VTXCollection->insert(vtxHit) - 1;
         if (verboseLevel > 0)

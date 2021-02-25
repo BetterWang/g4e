@@ -44,7 +44,7 @@
 #include "JLeicDetectorConstruction.hh"
 #include "RootFlatIO.hh"
 
-#include "JLeicCalorimeterHit.hh"
+#include "CommonCalorimeterHit.hh"
 #include "JLeicRunAction.hh"
 #include "G4RunManager.hh"
 

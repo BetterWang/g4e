@@ -1,7 +1,7 @@
 target_sources_local(g4e
         PRIVATE
-        JLeicCalorimeterHit.cc
-        JLeicCalorimeterHit.hh
+        CommonCalorimeterHit.cc
+        CommonCalorimeterHit.hh
 
         BeamlineConstruction.cc
         BeamlineConstruction.hh
@@ -41,11 +41,8 @@ target_sources_local(g4e
             JLeicVertexSD.cc
             JLeicVertexSD.hh
 
-            JLeicVTXHit.cc
-            JLeicVTXHit.hh
-
-            TRTDetectorConstruction.hh
-            TRTMaterials.hh
+            CommonVertexHit.cc
+            CommonVertexHit.hh
 
             JLeicStepCut.cc
             JLeicStepCut.hh

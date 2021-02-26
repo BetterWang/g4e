@@ -1,12 +1,12 @@
-#include "BeamlineConstructionMessenger.hh"
+#include "BeamlineMessenger.hh"
 
 
 #include "DetectorConfig.hh"
 #include "G4UIdirectory.hh"
 #include "G4UIcmdWithAString.hh"
+#include <G4GenericMessenger.hh>
 
-
-BeamlineConstructionMessenger::BeamlineConstructionMessenger(DetectorConfig &config) :
+BeamlineMessenger::BeamlineMessenger(DetectorConfig &config) :
     G4UImessenger(),
     mBeamlineConstruction(config)
 {
@@ -17,17 +17,16 @@ BeamlineConstructionMessenger::BeamlineConstructionMessenger(DetectorConfig &con
     mBeamlineNameCmd->SetGuidance("Select beamline ip6 or ip8");
     mBeamlineNameCmd->SetParameterName("name", false);
     mBeamlineNameCmd->SetDefaultValue("ip6");
-
 }
 
-void BeamlineConstructionMessenger::SetNewValue(G4UIcommand *command, G4String newValue)
+void BeamlineMessenger::SetNewValue(G4UIcommand *command, G4String newValue)
 {
     if (command == mBeamlineNameCmd) {
-        if(newValue == "erhic") newValue = "ip6";
-        if(newValue == "eicIP2") newValue = "ip8";
-        if(newValue == "jleic") newValue = "ip6";
+        if(newValue == "erhic") newValue = "ip6";       // This is for backward compatibility
+        if(newValue == "eicIP2") newValue = "ip8";      // This is for backward compatibility
+        if(newValue == "jleic") newValue = "ip6";       // This is for backward compatibility
         if(newValue != "ip6" && newValue != "ip8") {
-            G4Exception("JLeicDetectorConstruction::Construct",
+            G4Exception("BeamlineMessenger::SetNewValue",
                         "InvalidSetup", FatalException,
                         "/g4e/beamline/name should be 'ip6' or 'ip8'");
         }
@@ -36,7 +35,7 @@ void BeamlineConstructionMessenger::SetNewValue(G4UIcommand *command, G4String n
     }
 }
 
-BeamlineConstructionMessenger::~BeamlineConstructionMessenger() {
+BeamlineMessenger::~BeamlineMessenger() {
     delete mDirectory;
     delete mBeamlineNameCmd;
 }

@@ -3,11 +3,11 @@ target_sources_local(g4e
         CommonCalorimeterHit.cc
         CommonCalorimeterHit.hh
 
-        BeamlineConstruction.cc
-        BeamlineConstruction.hh
+        SingleSubdetectorConstruction.cc
+        SingleSubdetectorConstruction.hh
 
-        BeamPipeConstruction.cc
-        BeamPipeConstruction.hh
+        SingleSubdetectorConstruction.cc
+        SingleSubdetectorConstruction.hh
 
         CommonCalorimeterSD.cc
         CommonCalorimeterSD.hh
@@ -18,8 +18,8 @@ target_sources_local(g4e
         ReferenceDetectorConstruction.cc
         ReferenceDetectorConstruction.hh
 
-        BeamlineConstructionMessenger.cc
-        BeamlineConstructionMessenger.hh
+        BeamlineMessenger.cc
+        BeamlineMessenger.hh
 
         ReferenceDetectorMessenger.cc
         ReferenceDetectorMessenger.hh

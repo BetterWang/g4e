@@ -167,18 +167,11 @@ public:
     //bool USE_FARFORWARD_VP
 
 
-    explicit ReferenceDetectorConstruction(g4e::InitializationContext *);
+    explicit ReferenceDetectorConstruction(g4e::InitializationContext *, DetectorConfig &config);
 
     ~ReferenceDetectorConstruction() override;
 
 public:
-
-
-    void SetWorldMaterial(G4String);
-
-    void SetWorldSizeZ(G4double);
-
-    void SetWorldSizeR(G4double);
 
     G4VPhysicalVolume *Construct() override;
 
@@ -192,15 +185,11 @@ public:
 
     DetectorConfig &GetConfigRef() { return fConfig; }
 
-    G4Material *GetWorldMaterial() { return World_Material; };
-
     void CheckVolumeOverlap();
 
     const G4VPhysicalVolume *GetWorldPhysicalVolume() { return fWorldPhysical; }
 
     const G4VPhysicalVolume *GetAbsorberPhysicalVolume() { return fPhysicsAbsorber; }
-
-
 
     G4double fadc_slice;
 
@@ -209,9 +198,7 @@ public:
 
     G4int fModuleNumber;   // the number of Rad-et modules
 
-    DetectorConfig fConfig;
-
-    void SetUpJLEIC2019();
+    DetectorConfig &fConfig;
 
 private:
 
@@ -262,10 +249,10 @@ private:
     // Far-Forward ION
     //==============================================
 
-    fi_B0_TRK_Design     fi_B0_TRK;       // Tracking
-    fi_B0_EMCAL_Design   fi_B0_EMCAL;     // EMCAL
+    fi_B0_TRK_Design     fi_B0_TRK;          // Tracking
+    fi_B0_EMCAL_Design   fi_B0_EMCAL;        // EMCAL
     ffi_OFFM_TRK_Design   ffi_OFFM_TRK;      // after B1 (in D2) Off-momentum Tracking
-     ffi_OFFM_TRK2_Design   ffi_OFFM_TRK2;      // virtual plane 
+     ffi_OFFM_TRK2_Design   ffi_OFFM_TRK2;   // virtual plane
     ffi_NEG_TRK_Design    ffi_NEG_TRK;      //  tracker for negarive particles lambda
     ffi_ZDC_Design      ffi_ZDC;
 
@@ -317,32 +304,6 @@ inline void ReferenceDetectorConstruction::PrintGeometryParameters()
     //  G4cout<<"fVTX_END_Z = "<<fVTX_END_Z/mm<<" mm"<<G4endl;
     G4cout << G4endl;
 }
-
-
-inline void ReferenceDetectorConstruction::SetWorldMaterial(G4String materialChoice)
-{
-    // get the pointer to the material table
-    const G4MaterialTable *theMaterialTable = G4Material::GetMaterialTable();
-
-    // search the material by its name
-    for (auto material : *theMaterialTable) {
-        if (material->GetName() == materialChoice) {
-            World_Material = material;
-            World_Logic->SetMaterial(material);
-        }
-    }
-}
-
-inline void ReferenceDetectorConstruction::SetWorldSizeZ(G4double val)
-{
-    fConfig.World.SizeZ = val;
-}
-
-inline void ReferenceDetectorConstruction::SetWorldSizeR(G4double val)
-{
-    fConfig.World.SizeR = val;
-}
-
 
 inline void ReferenceDetectorConstruction::CheckVolumeOverlap()
 {

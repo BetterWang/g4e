@@ -25,26 +25,25 @@
 
 #include <signal.h>
 
-#include "StringHelpers.hh"
-
-#include "main_detectors/ReferenceDetectorConstruction.hh"
-#include "main_detectors/BeamlineConstruction.hh"
-#include "main_detectors/BeamPipeConstruction.hh"
 #include "ArgumentProcessor.hh"
 #include "EicPhysicsList.hh"
+#include "InitializationContext.hh"
 #include "PrimaryGeneratorAction.hh"
+#include "StringHelpers.hh"
+#include "RootOutputManager.hh"
+#include "Logging.hh"
+#include "MultiActionInitialization.hh"
+#include "MultiDetectorConstruction.hh"
+
 
 #include "main_detectors/ReferenceDetectorRunAction.hh"
 #include "main_detectors/ReferenceDetectorEventAction.hh"
 #include "main_detectors/ReferenceDetectorSteppingVerbose.hh"
 #include "main_detectors/ReferenceDetectorTrackingAction.hh"
-#include "InitializationContext.hh"
+#include "main_detectors/ReferenceDetectorConstruction.hh"
+#include "main_detectors/SingleSubdetectorConstruction.hh"
+#include "main_detectors/BeamlineMessenger.hh"
 
-#include "RootOutputManager.hh"
-
-#include "Logging.hh"
-#include "MultiActionInitialization.hh"
-#include "MultiDetectorConstruction.hh"
 
 #include <G4MTRunManager.hh>
 #include <G4RunManager.hh>
@@ -52,12 +51,11 @@
 #include <Randomize.hh>
 #include <G4VisExecutive.hh>
 #include <G4UIExecutive.hh>
-
-//-- physics processes --
-#include <FTFP_BERT.hh>
-#include <QGSP_BIC.hh>
-#include <TFile.h>
 #include <G4GeometryManager.hh>
+
+
+#include <TFile.h>
+
 
 
 int main(int argc, char **argv)
@@ -79,7 +77,7 @@ int main(int argc, char **argv)
     //my Verbose output class
     G4VSteppingVerbose::SetInstance(new ReferenceDetectorSteppingVerbose);
 
-    //output root file
+    //open output root file
     std::string rootFileName(appArgs.OutputBaseName + ".root");
     std::unique_ptr<TFile> rootOutputFile(new TFile(rootFileName.c_str(), "RECREATE"));
     g4e::RootOutputManager mainRootOutput(rootOutputFile.get());
@@ -111,14 +109,17 @@ int main(int argc, char **argv)
     // After the run manager, we can combine initialization context
     g4e::InitializationContext initContext(&appArgs, &mainRootOutput, &actionInit, &physicsList);
 
+    // Detector/subdetector config structure and related messengers
+    DetectorConfig detectorConfig;
+    auto beamlineMessenger = new BeamlineMessenger(detectorConfig);
+
     // Detector constructions
-    auto referenceDetector = new ReferenceDetectorConstruction(&initContext);
-    auto beamlineMessenger = new BeamlineConstructionMessenger(referenceDetector->GetConfigRef());
+    auto referenceDetector = new ReferenceDetectorConstruction(&initContext, detectorConfig);
+    auto singleSubdetector = new SingleSubdetectorConstruction(&initContext, detectorConfig);
 
     MultiDetectorConstruction multiConstruction;
-    multiConstruction.RegisterDetectorConstruction("refdet",referenceDetector);
-    multiConstruction.RegisterDetectorConstruction("beamline", new BeamlineConstruction(&initContext));
-    multiConstruction.RegisterDetectorConstruction("beampipe", new BeamPipeConstruction(&initContext));
+    multiConstruction.RegisterDetectorConstruction("refdet", referenceDetector);
+    multiConstruction.RegisterDetectorConstruction("subdetector", singleSubdetector);
     multiConstruction.SelectDetectorConstruction("refdet");
 
     runManager->SetUserInitialization(&multiConstruction);

@@ -7,16 +7,16 @@
 #include "G4UIcmdWithAString.hh"
 #include "DetectorConfig.hh"
 
-class BeamlineConstruction;
+class SingleSubdetectorConstruction;
 
 
-class BeamlineConstructionMessenger: public G4UImessenger
+class BeamlineMessenger: public G4UImessenger
 {
   public:
 
-    explicit BeamlineConstructionMessenger(DetectorConfig &config);
+    explicit BeamlineMessenger(DetectorConfig &config);
 
-    virtual ~BeamlineConstructionMessenger();
+    virtual ~BeamlineMessenger();
     
     void SetNewValue(G4UIcommand*, G4String);
     

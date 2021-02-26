@@ -27,8 +27,8 @@
 class G4Event;
 class G4VPrimaryGenerator;
 class PrimaryGeneratorMessenger;
-class JLeicRunAction;
-class JLeicDetectorConstruction;
+class ReferenceDetectorRunAction;
+class ReferenceDetectorConstruction;
 class ConeParticleGun;
 class ConeParticleGunHW;
 

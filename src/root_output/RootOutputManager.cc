@@ -8,7 +8,7 @@
 #include <G4VProcess.hh>
 #include <G4SystemOfUnits.hh>
 #include <HitTypes.h>
-#include <JLeicTrackInformation.hh>
+#include <main_detectors/CommonTrackInformation.hh>
 
 g4e::RootOutputManager::RootOutputManager(TFile *rootFile):
     mRootFile(rootFile),
@@ -64,7 +64,7 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
         process_int = (int)process->GetProcessType();
     }
 
-    auto info = dynamic_cast<JLeicTrackInformation*>(track->GetUserInformation());
+    auto info = dynamic_cast<CommonTrackInformation*>(track->GetUserInformation());
     int ancestryLevel = info ? info->GetAncestryLevel() : -1;
 
 

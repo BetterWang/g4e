@@ -1,5 +1,5 @@
 #include "EicPhysicsList.hh"
-#include "main_detectors/jleic/JLeicDetectorConfig.hh"
+#include "main_detectors/DetectorConfig.hh"
 
 #include "G4ProcessManager.hh"
 
@@ -10,7 +10,7 @@
 
 #include "G4RegionStore.hh"
 
-#include "JLeicStepCut.hh"
+#include "main_detectors/ReferenceDetectorStepCut.hh"
 
 #include "G4LeptonConstructor.hh"
 #include "G4MesonConstructor.hh"

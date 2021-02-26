@@ -2,7 +2,7 @@
 #         (!) OBSOLETE (!)
 # !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
-/control/execute jleic.mac
+/control/execute refdet.mac
 
 /run/initialize
 

@@ -6,9 +6,9 @@
 
 class G4ForwardXrayTR;
 
-class JLeicStepCut;
+class ReferenceDetectorStepCut;
 
-class JLeicDetectorConfig;
+class DetectorConfig;
 
 class G4ProductionCuts;
 
@@ -37,8 +37,8 @@ private:
 
     G4ForwardXrayTR *fForwardXrayTR;
 
-    JLeicStepCut *fEMinusStepCut;
-    JLeicStepCut *fEPlusStepCut;
+    ReferenceDetectorStepCut *fEMinusStepCut;
+    ReferenceDetectorStepCut *fEPlusStepCut;
 
     G4double cutForGamma;
     G4double cutForElectron, cutForPositron;

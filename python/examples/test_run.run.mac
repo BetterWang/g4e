@@ -1,4 +1,4 @@
-/control/execute jleic.mac
+/control/execute refdet.mac
 /detsetup/beamlineName erhic
 /generator/select hepmcAscii
 /generator/hepmcAscii/open /home/romanov/Downloads/herwig6_20k.hepmc

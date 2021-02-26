@@ -12,7 +12,7 @@
 #include "G4Color.hh"
 #include "G4VisAttributes.hh"
 
-#include "JLeicDetectorConfig.hh"
+#include "main_detectors/DetectorConfig.hh"
 
 struct cb_EMCAL_Config
 {

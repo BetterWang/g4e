@@ -64,7 +64,7 @@
 #include "G4XTRRegularRadModel.hh"
 #include "G4XTRTransparentRegRadModel.hh"
 #include "ci_TRD_TransparentRegRadModel.hh"
-#include "JLeicStepCut.hh"
+#include "main_detectors/ReferenceDetectorStepCut.hh"
 #include "ci_TRD_Config.hh"
 #include "ci_TRD_PhysicsConstructor.hh"
 #include "ci_TRD_Design.hh"
@@ -84,6 +84,8 @@ ci_TRD_PhysicsConstructor::ci_TRD_PhysicsConstructor(ci_TRD_Design *p) :
 void ci_TRD_PhysicsConstructor::ConstructProcess()
 {
     namespace log = spdlog;
+
+
 
     log::debug("XTR model = {}\n", fXTRModel);
 
@@ -160,7 +162,7 @@ void ci_TRD_PhysicsConstructor::ConstructProcess()
 
         } else if (particleName == "e-") {
             // Construct processes for electron
-            theeminusStepCut = new JLeicStepCut();
+            theeminusStepCut = new ReferenceDetectorStepCut();
             theeminusStepCut->SetMaxStep(MaxChargedStep);
             //theeminusStepCut->SetMaxStep(100*um) ;
             G4eIonisation *eioni = new G4eIonisation();
@@ -179,7 +181,7 @@ void ci_TRD_PhysicsConstructor::ConstructProcess()
         } else if (particleName == "e+") {
             // Construct processes for positron
 
-            theeplusStepCut = new JLeicStepCut();
+            theeplusStepCut = new ReferenceDetectorStepCut();
             theeplusStepCut->SetMaxStep(MaxChargedStep);
             G4eIonisation *eioni = new G4eIonisation();
             eioni->SetVerboseLevel(0);
@@ -198,7 +200,7 @@ void ci_TRD_PhysicsConstructor::ConstructProcess()
         } else if (particleName == "mu+" || particleName == "mu-") {
             // Construct processes for muon+
 
-            JLeicStepCut *muonStepCut = new JLeicStepCut();
+            ReferenceDetectorStepCut *muonStepCut = new ReferenceDetectorStepCut();
             muonStepCut->SetMaxStep(MaxChargedStep);
 
             G4MuIonisation *muioni = new G4MuIonisation();
@@ -216,7 +218,7 @@ void ci_TRD_PhysicsConstructor::ConstructProcess()
 
         } else if (particleName == "proton" || particleName == "antiproton" || particleName == "pi+" || particleName == "pi-" || particleName == "kaon+" ||
                    particleName == "kaon-") {
-            JLeicStepCut *thehadronStepCut = new JLeicStepCut();
+            ReferenceDetectorStepCut *thehadronStepCut = new ReferenceDetectorStepCut();
             thehadronStepCut->SetMaxStep(MaxChargedStep);
 
             G4hIonisation *thehIonisation = new G4hIonisation();

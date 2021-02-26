@@ -7,7 +7,7 @@
 
     # Include default setup
     # Use jleic.mac for headless mode or jleicvis.mac for GUI visualization
-    /control/execute jleic.mac
+    /control/execute refdet.mac
 
     # Select Beagle generator
     # Options are: particleGun hepmcAscii pythiaAscii beagle

@@ -8,7 +8,7 @@
 #include "G4Color.hh"
 #include "G4VisAttributes.hh"
 #include <spdlog/spdlog.h>
-#include "JLeicDetectorConfig.hh"
+#include "main_detectors/DetectorConfig.hh"
 #include <InitializationContext.hh>
 
 struct ce_EMCAL_Config

@@ -1,6 +1,6 @@
 from g4epy import Geant4Eic
 
-g4e = Geant4Eic(beamline='erhic')
+g4e = Geant4Eic(beamline='ip6')
 
 # Select cone particle gun generator
 g4e.command('/generator/select coneParticleGun')

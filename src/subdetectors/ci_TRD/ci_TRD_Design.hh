@@ -8,7 +8,7 @@
 #include "G4VisAttributes.hh"
 #include "G4SystemOfUnits.hh"
 
-#include "JLeicDetectorConfig.hh"
+#include "main_detectors/DetectorConfig.hh"
 #include "ci_TRD_Messenger.hh"
 #include "ci_TRD_PhysicsConstructor.hh"
 

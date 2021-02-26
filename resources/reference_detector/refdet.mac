@@ -1,43 +1,34 @@
-# Default parameters for JLEIC detectors
+# Default parameters for EIC ReferenceDetector
 
 #------------------------------------------------------------------------
 # Macro file for the initialization phase
 #------------------------------------------------------------------------
 #
-/control/verbose 0
+
+# Switch off some verbosity values
 /run/verbose 0
+/control/verbose 0
 /geometry/navigator/verbose 0
-
-
-#/detsetup/pBeam 100
-#/detsetup/eBeam 5
-
-#--------Detector construction ------------------
-
+/tracking/verbose 0
+/cuts/verbose 0
 
 #-------------------------------------------------------
 # Set XTR model (default: transpM). Name list consits:
 # gammaR, gammaM, regR, regM, strawR, transpR, transpM
 # R - XTR dE/dx models, M - XTR flux after radiator models
 #-------------------------------------------------------
-/emphyslist/setXTRModel  transpM
+/eic/ci_TRD/setXTRModel  transpM
 #/emphyslist/eMinEnergy 100.
 #/emphyslist/gMinEnergy 100.
 #
 #/run/particle/applyCuts
 # ----------set cuts in XTR radiator -----
-/emphyslist/setRadiatorCuts 0.14
-/emphyslist/setGammaCut    0.020
-/emphyslist/setElectronCut 0.020
-/emphyslist/setPositronCut 0.020
-/emphyslist/setDetectorCuts 0.020
+/eic/ci_TRD/setRadiatorCuts 0.14
+/eic/ci_TRD/setGammaCut     0.020
+/eic/ci_TRD/setElectronCut  0.020
+/eic/ci_TRD/setPositronCut  0.020
+/eic/ci_TRD/setDetectorCuts 0.020
 
-#
+# set reference detector for the construction
 
-#--------------------------------------------------------------------
-/tracking/verbose 0
-
-/cuts/verbose 0
-#
-#/run/dumpCouples
-/detsetup/beamlineName erhic
+/eic/detector refdet

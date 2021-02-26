@@ -5,7 +5,7 @@
 #include "globals.hh"
 
 class G4ForwardXrayTR;
-class JLeicStepCut;
+class ReferenceDetectorStepCut;
 class G4ProductionCuts;
 class ci_TRD_Design;
 
@@ -53,15 +53,15 @@ private:
 
   G4ForwardXrayTR*       fForwardXrayTR ;
 
-  JLeicStepCut* theeminusStepCut ;
-  JLeicStepCut* theeplusStepCut ;
+  ReferenceDetectorStepCut* theeminusStepCut ;
+  ReferenceDetectorStepCut* theeplusStepCut ;
 
   ci_TRD_Design* fTrd;
 
   G4ProductionCuts* fRadiatorCuts;
   G4ProductionCuts* fDetectorCuts;
   G4double fElectronCut, fGammaCut, fPositronCut;
-  G4String fXTRModel;
+  G4String fXTRModel = "transpM";
 };
 
 #endif

@@ -18,7 +18,7 @@ Example:
 Macro file:
 .. code::
 
-   /control/execute jleicvis.mac
+   /control/execute refdet.vis.mac
    /detsetup/beamlineName erhic
    /generator/select beagle
    /generator/beagle/open /home/romanov/eic/data/eC_10x110_GCF_QE_Egaus_noINC_withcross.txt

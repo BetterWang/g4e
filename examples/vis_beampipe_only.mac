@@ -1,3 +1,5 @@
+/eic/detector beampipe
+
 /run/initialize
 
 # List available visualization drivers

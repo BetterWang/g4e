@@ -132,9 +132,9 @@ void InputProcessor::ProcessMacroPath(UserArguments &result, const char *macroPa
     // Add JLeic detector to default Macro Path
     std::vector<std::string> paths;
     if(result.IsSetMacroPath) {
-        result.MacroPath += ":"+result.ResourcePath+"/jleic";
+        result.MacroPath += ":"+result.ResourcePath+"/reference_detector";
     } else {
-        result.MacroPath = result.ResourcePath+"/jleic";
+        result.MacroPath = result.ResourcePath+"/reference_detector";
     }
     fmt::print("ENV:G4E_MACRO_PATH:  is-set={}, value='{}'",  result.IsSetMacroPath, result.MacroPath );
 

@@ -14,7 +14,7 @@
 #include "G4VisAttributes.hh"
 #include "G4SystemOfUnits.hh"
 
-#include "JLeicDetectorConfig.hh"
+#include "main_detectors/DetectorConfig.hh"
 //#include "../../ZDC/006.FoCalGeant4/source/include/constants.hh"
 #include "Alice_ZDC_Geometry.hh"
 

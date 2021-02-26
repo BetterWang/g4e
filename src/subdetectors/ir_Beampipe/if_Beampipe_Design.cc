@@ -3,25 +3,12 @@
 #include <spdlog/common.h>
 #include "ir_Beampipe_Design.hh"
 
-/*
- * Simple dRICH geometry, based on A. Del Dotto - GEMC MonteCarlo model
- * (https://github.com/EIC-eRD11/dualRICH_inMEIC/tree/master/gemc_drich)
- *
- * Date: May 2020
- *
- * Author: E. Cisbani
- *
- * Version: 0.2
- *
- * units are: cm, deg
- *
- */
 
 
 void ir_Beampipe_Design::Construct(ir_Beampipe_Config cfg, G4VPhysicalVolume *motherVolume, G4String cadDir) {
     ConstructionConfig = cfg;
 
-    auto  beMaterial = G4Material::GetMaterial("Beryllium");
+    auto  beMaterial = G4Material::GetMaterial("Be");
 
     // Electron IR tube (-440mm, 0)
     IrElectronSolid = new G4Tubs("ir_Beampipe_IrElectron_Solid", cfg.IrInnerR, cfg.IrOuterR, cfg.IrElectronSizeZ / 2., 0., 360 * deg);
@@ -35,16 +22,16 @@ void ir_Beampipe_Design::Construct(ir_Beampipe_Config cfg, G4VPhysicalVolume *mo
     IrElectronLogic->SetVisAttributes(IrElectronVisual);
 
 
-    // Hadron part of Interaction region [0, 1000mm)
-    IrHadronSolid = new G4Tubs("ir_Beampipe_IrHadron_Solid", cfg.IrInnerR, cfg.IrOuterR, cfg.IrElectronSizeZ / 2., 0., 360 * deg);
-    IrHadronLogic = new G4LogicalVolume(IrElectronSolid, beMaterial, "ir_Beampipe_IrHadron_Logic");
-    IrHadronPhysical = new G4PVPlacement(nullptr, G4ThreeVector(0, 0, -cfg.IrElectronSizeZ / 2.),  // Rotation translation
-                                         "ir_Beampipe_IrHadron_Phys", IrElectronLogic, motherVolume,           // Names and logical
-                                         false, 0);                                               // How many, copy number
-
-    IrHadronVisual = new G4VisAttributes(G4Color(1., 1., 0., 1.));
-    IrHadronVisual->SetForceSolid(true);
-    IrHadronLogic->SetVisAttributes(IrElectronVisual);
+//    // Hadron part of Interaction region [0, 1000mm)
+//    IrHadronSolid = new G4Tubs("ir_Beampipe_IrHadron_Solid", cfg.IrInnerR, cfg.IrOuterR, cfg.IrElectronSizeZ / 2., 0., 360 * deg);
+//    IrHadronLogic = new G4LogicalVolume(IrElectronSolid, beMaterial, "ir_Beampipe_IrHadron_Logic");
+//    IrHadronPhysical = new G4PVPlacement(nullptr, G4ThreeVector(0, 0, -cfg.IrElectronSizeZ / 2.),  // Rotation translation
+//                                         "ir_Beampipe_IrHadron_Phys", IrElectronLogic, motherVolume,           // Names and logical
+//                                         false, 0);                                               // How many, copy number
+//
+//    IrHadronVisual = new G4VisAttributes(G4Color(1., 1., 0., 1.));
+//    IrHadronVisual->SetForceSolid(true);
+//    IrHadronLogic->SetVisAttributes(IrElectronVisual);
 
 
     G4NistManager * nistManager = G4NistManager::Instance();

@@ -15,7 +15,7 @@
 #include <G4Trap.hh>
 #include <Materials.hh>
 
-#include "JLeicDetectorConfig.hh"
+#include "main_detectors/DetectorConfig.hh"
 
 typedef struct {
     double Dx;

@@ -10,7 +10,7 @@
 #include "G4SystemOfUnits.hh"
 
 
-JLeicCe_emcalSD::JLeicCe_emcalSD(G4String name, g4e::RootOutputManager *rootManager, JLeicDetectorConstruction *det) :
+JLeicCe_emcalSD::JLeicCe_emcalSD(G4String name, g4e::RootOutputManager *rootManager, ReferenceDetectorConstruction *det) :
         G4VSensitiveDetector(name),
         Detector(det),
         mRootEventsOut(rootManager) {

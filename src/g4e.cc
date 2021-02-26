@@ -27,17 +27,17 @@
 
 #include "StringHelpers.hh"
 
-#include "main_detectors/jleic/JLeicDetectorConstruction.hh"
-#include "main_detectors/jleic/BeamlineConstruction.hh"
-#include "main_detectors/jleic/BeamPipeConstruction.hh"
+#include "main_detectors/ReferenceDetectorConstruction.hh"
+#include "main_detectors/BeamlineConstruction.hh"
+#include "main_detectors/BeamPipeConstruction.hh"
 #include "ArgumentProcessor.hh"
 #include "EicPhysicsList.hh"
 #include "PrimaryGeneratorAction.hh"
 
-#include "JLeicRunAction.hh"
-#include "JLeicEventAction.hh"
-#include "JLeicSteppingVerbose.hh"
-#include "JLeicTrackingAction.hh"
+#include "main_detectors/ReferenceDetectorRunAction.hh"
+#include "main_detectors/ReferenceDetectorEventAction.hh"
+#include "main_detectors/ReferenceDetectorSteppingVerbose.hh"
+#include "main_detectors/ReferenceDetectorTrackingAction.hh"
 #include "InitializationContext.hh"
 
 #include "RootOutputManager.hh"
@@ -77,7 +77,7 @@ int main(int argc, char **argv)
     CLHEP::HepRandom::saveEngineStatus(rndmFilename.c_str());
 
     //my Verbose output class
-    G4VSteppingVerbose::SetInstance(new JLeicSteppingVerbose);
+    G4VSteppingVerbose::SetInstance(new ReferenceDetectorSteppingVerbose);
 
     //output root file
     std::string rootFileName(appArgs.OutputBaseName + ".root");
@@ -100,9 +100,9 @@ int main(int argc, char **argv)
     g4e::MultiActionInitialization actionInit;
 
     // Event, tracking, stepping actions
-    actionInit.AddUserActionGenerator([&mainRootOutput](){return new JLeicEventAction(mainRootOutput.GetJLeicRootOutput());});
-    actionInit.AddUserActionGenerator([&mainRootOutput](){return new JLeicRunAction(mainRootOutput.GetJLeicRootOutput());});
-    actionInit.AddUserActionGenerator([](){return new JLeicTrackingAction();});
+    actionInit.AddUserActionGenerator([&mainRootOutput](){return new ReferenceDetectorEventAction(mainRootOutput.GetJLeicRootOutput());});
+    actionInit.AddUserActionGenerator([&mainRootOutput](){return new ReferenceDetectorRunAction(mainRootOutput.GetJLeicRootOutput());});
+    actionInit.AddUserActionGenerator([](){return new ReferenceDetectorTrackingAction();});
 
     // Eic physics list
     EicPhysicsList physicsList;
@@ -112,7 +112,7 @@ int main(int argc, char **argv)
     g4e::InitializationContext initContext(&appArgs, &mainRootOutput, &actionInit, &physicsList);
 
     // Detector constructions
-    auto referenceDetector = new JLeicDetectorConstruction(&initContext);
+    auto referenceDetector = new ReferenceDetectorConstruction(&initContext);
     auto beamlineMessenger = new BeamlineConstructionMessenger(referenceDetector->GetConfigRef());
 
     MultiDetectorConstruction multiConstruction;

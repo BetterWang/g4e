@@ -41,11 +41,11 @@
 #include "G4HCofThisEvent.hh"
 #include "G4Step.hh"
 
-#include "JLeicDetectorConstruction.hh"
+#include "main_detectors/ReferenceDetectorConstruction.hh"
 #include "RootFlatIO.hh"
 
 #include "JLeicCe_emcalHit.hh"
-#include "JLeicRunAction.hh"
+#include "main_detectors/ReferenceDetectorRunAction.hh"
 #include "G4RunManager.hh"
 
 #include "root_output/RootFlatIO.hh"
@@ -58,7 +58,7 @@ class JLeicCe_emcalSD : public G4VSensitiveDetector
 {
 public:
 
-    JLeicCe_emcalSD(G4String, g4e::RootOutputManager*, JLeicDetectorConstruction *);
+    JLeicCe_emcalSD(G4String, g4e::RootOutputManager*, ReferenceDetectorConstruction *);
 
     ~JLeicCe_emcalSD() override;
 
@@ -78,7 +78,7 @@ public:
 private:
  //  int             HCID;                   ///< HCID increases every new hit collection.
     JLeicCe_emcalHitsCollection *Ce_emcalCollection;
-    JLeicDetectorConstruction *Detector;
+    ReferenceDetectorConstruction *Detector;
     uint_fast64_t mHitsCount = 0;
     g4e::RootOutputManager* mRootEventsOut = nullptr;
 

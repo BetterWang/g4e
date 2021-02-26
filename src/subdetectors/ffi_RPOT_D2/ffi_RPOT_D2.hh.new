@@ -12,7 +12,7 @@
 #include "G4VisAttributes.hh"
 #include "G4SystemOfUnits.hh"
 
-#include "JLeicDetectorConfig.hh"
+#include "main_detectors/DetectorConfig.hh"
 
 struct ffi_RPOT_D2_Config {
 // define here Global volume parameters

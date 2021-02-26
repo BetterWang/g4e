@@ -12,7 +12,7 @@
 #include <G4UniformMagField.hh>
 
 #include "spdlog/spdlog.h"
-#include "JLeicSolenoid3D.hh"
+#include "ReferenceDetectorSolenoid3D.hh"
 
 struct cb_Solenoid_Config {
     bool UseMagneticField = true;                       // field in helium pipe used?
@@ -99,7 +99,7 @@ public:
             }
 
             // Build 3d solenoid
-            MagneticField = new JLeicSolenoid3D(fileName, zOffset, zInvert);
+            MagneticField = new ReferenceDetectorSolenoid3D(fileName, zOffset, zInvert);
 
             auto *fieldMgr = new G4FieldManager(MagneticField);
             fieldMgr->SetDetectorField(MagneticField);
@@ -114,7 +114,7 @@ public:
     G4LogicalVolume *Logic;    //pointer to the logical
     G4VPhysicalVolume *Phys;  //pointer to the physical
     G4UniformMagField *MagneticFieldUni;      //pointer to the magnetic field
-    JLeicSolenoid3D *MagneticField;      //pointer to the magnetic field
+    ReferenceDetectorSolenoid3D *MagneticField;      //pointer to the magnetic field
     //G4MagneticField *SolenoidField;  
 
     /// Parameters that was used in the moment of construction

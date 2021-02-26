@@ -51,7 +51,7 @@ ReferenceDetectorEventAction::ReferenceDetectorEventAction(g4e::RootFlatIO *root
     vertexCollID(-1),
     Ce_emcalCollID(-1),
     mRootEventsOut(rootOutput),
-    fVerbose(1),
+    fVerbose(0),
     fMessenger(this, "/eic/refdet/eventAction/")
 {
     fMessenger.DeclareProperty("verbose", fVerbose, "Verbosity. 0-none, 1-some, 2 many");
@@ -221,7 +221,7 @@ void ReferenceDetectorEventAction::EndOfEventAction(const G4Event *evt)
     if (vertexHitsCollection) {
         int n_hit = vertexHitsCollection->entries();
         if (fVerbose >= 1)
-            G4cout << "     " << n_hit << " hits are stored in JLeicVTXHitsCollection." << G4endl;
+            G4cout << "     " << n_hit << " hits are stored in VTXHitsCollection." << G4endl;
 
         G4double totEAbs = 0, totLAbs = 0;
         for (int i = 0; i < n_hit; i++) {

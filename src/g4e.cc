@@ -105,7 +105,6 @@ int main(int argc, char **argv)
     // Eic physics list
     EicPhysicsList physicsList;
 
-
     // After the run manager, we can combine initialization context
     g4e::InitializationContext initContext(&appArgs, &mainRootOutput, &actionInit, &physicsList);
 
@@ -138,12 +137,12 @@ int main(int argc, char **argv)
     // Vis manager?
     G4VisExecutive* visManager = nullptr;
     G4UIExecutive* uiExec = nullptr;
-    std::string defaultMacro = "jleic.mac";     // No GUI default macro. Default macro is used if no other macros given
+    std::string defaultMacro = "refdet.mac";     // No GUI default macro. Default macro is used if no other macros given
 
     // We show GUI if user didn't provided any macros of if he has --gui/-g flag
     if(appArgs.ShowGui) {
         appArgs.ShowGui = true;
-        defaultMacro = "jleicvis.mac";          // Default macro for GUI
+        defaultMacro = "refdet.vis.mac";          // Default macro for GUI
         visManager = new G4VisExecutive;
         visManager->Initialize();
         uiExec = new G4UIExecutive(argc, argv);

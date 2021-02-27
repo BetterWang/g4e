@@ -1,4 +1,5 @@
-/eic/detector beampipe
+/eic/detector subdetector
+/eic/subdetector/name ir_Beampipe
 
 /run/initialize
 

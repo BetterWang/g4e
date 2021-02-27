@@ -1,12 +1,7 @@
 import os
 from g4epy import Geant4Eic
 
-g4e = Geant4Eic(beamline='erhic')
-
-# Beagle provides beam energy information, but for the sake of simplicity we
-g4e.command(['/detsetup/eBeam 10',
-             '/detsetup/pBeam 41'
-             ])
+g4e = Geant4Eic(beamline='ip6')
 
 
 # If one would like to open a file
@@ -101,12 +96,12 @@ g4e.command('/vis/viewer/clearCutawayPlanes')
 # g4e.command('/vis/viewer/addCutawayPlane  1  0  0  cm   0  0  -0.001')
 
 # There are a lot of particles
-g4e.command('/vis/ogl/set/displayListLimit 100000')
+g4e.command('/vis/ogl/set/displayListLimit 150000')
+
+g4e.vis()   # - SHOW EVENT DISPLAY (use less number of events)
 
 # Number of events to process
 g4e.beam_on(2)
-
-g4e.vis()   # - SHOW EVENT DISPLAY (use less number of events)
 
 # This starts the simulation
 g4e.run()

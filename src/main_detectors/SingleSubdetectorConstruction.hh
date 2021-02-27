@@ -32,7 +32,7 @@ public:
     G4VPhysicalVolume *Construct() override;
     G4VPhysicalVolume *Construct_Beampipe();
     G4VPhysicalVolume *Construct_Beamline();
-    G4VPhysicalVolume *Construct_ci_DIRC();
+    G4VPhysicalVolume *Construct_ci_DRICH();
 
     void ConstructSDandField() override;
 
@@ -49,7 +49,7 @@ private:
     ci_DRICH_Design m_ci_DRICH;
 
 
-    G4GenericMessenger *fMessenger;
+    G4GenericMessenger fMessenger;
     G4String fSubdetectorName;
     DetectorConfig &fConfig;
 };

@@ -1,11 +1,8 @@
-//
-// Created by yulia on 6/19/19.
-//
-
+/**
+ * This file defines ce_GEM_Config, ce_GEM_Design classes to construct ce_GEM geometry
+ */
 #ifndef G4E_CE_GEM_HH
 #define G4E_CE_GEM_HH
-
-
 
 #include <G4PVDivision.hh>
 #include "G4RotationMatrix.hh"
@@ -14,108 +11,100 @@
 #include "G4VisAttributes.hh"
 #include "G4SystemOfUnits.hh"
 
-#include "main_detectors/DetectorConfig.hh"
 
+/// Geometry construction configuration
 struct ce_GEM_Config {
 // define here Global volume parameters
-    double RIn = 0 * cm;
-    double ROut = 45 * cm + 50 * cm;
-    double SizeZ = 30 * cm;
-    double ShiftZ = 0 * cm;
-    double PosZ =0.*cm;
-    int Nlayers =8;
+    double RIn = 0 * cm;                // Inner diameter
+    double ROut = 45 * cm + 50 * cm;    // Outer diameter
+    double SizeZ = 30 * cm;             // Size in Z direction
+    double PosZ =0*cm;                  // Absolute Z position (set by DetectorConst.)
+    int Nlayers =8;                     // Number of layers
+};
+
+/// Holds information for each GEM layer
+struct ce_Gem_Layer {
+    G4double RIn;
+    G4double ROut;
+    G4double SizeZ;
+    G4double PosZ;
+    G4Tubs *Solid;             //pointer to the solid World
+    G4LogicalVolume *Logic;    //pointer to the logical World
+    G4VPhysicalVolume *Phys;   //pointer to the physical World
 };
 
 
+/// Geometry construction
 class ce_GEM_Design {
 public:
+
+    /// This function constructs the outer GEM volume
     inline void Construct(ce_GEM_Config cfg, G4Material *worldMaterial, G4VPhysicalVolume *motherVolume) {
-        printf("Begin ce_GEM volume \n");
+        G4cout << "Constructing ce_GEM volume \n";
 
-        ConstructionConfig = cfg;
-        // create  a global volume for your detectors
+        ConstructionConfig = cfg;   // Config is copy constructed and this is OK as we capture the state on the moment of construction
 
+        // Create outer volume for GEM detector
         Solid = new G4Tubs("ce_GEM_GVol_Solid", cfg.RIn, cfg.ROut, cfg.SizeZ / 2., 0., 360 * deg);
-
-        Logic = new G4LogicalVolume(Solid, worldMaterial, "ce_GEM_GVol_Logic");
-
-        Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, cfg.PosZ), "ce_GEM_GVol_Phys", Logic,
-                                             motherVolume, false, 0);
-
-
+        Logical = new G4LogicalVolume(Solid, worldMaterial, "ce_GEM_GVol_Logic");
+        PhysicalVolume = new G4PVPlacement(0, G4ThreeVector(0, 0, cfg.PosZ), "ce_GEM_GVol_Phys", Logical, motherVolume, false, 0);
     };
 
+    /// This function construct all GEM details
     inline void ConstructDetectors() {
-        printf("Begin ce_GEM detector volumes \n");
+        G4cout << "Begin ce_GEM detector geometry \n";
         static char abname[256];
         auto cfg = ConstructionConfig;
 
         // construct here your detectors
         //===================================================================================
 
-        printf("Begin ce_GEM_lay_\n");
-        //ce_GEM_lay_Material = fMat->GetMaterial("Si");
-        ce_GEM_lay_Material = G4Material::GetMaterial("Ar10CO2");  //----   !!!!! ----
+        printf("Begin layer.\n");
+        //layer.Material = fMat->GetMaterial("Si");
+        fMaterial = G4Material::GetMaterial("Ar10CO2");  //----   !!!!! ----
 
-        for (int lay = 0; lay < cfg.Nlayers; lay++) {
+        fLayerVisualAttributes = new G4VisAttributes(G4Color(0.8, 0.4, 0.3, 0.8));
+        fLayerVisualAttributes->SetLineWidth(1);
+        fLayerVisualAttributes->SetForceSolid(true);
 
-            ce_GEM_lay_RIn[lay] = cfg.RIn + 1 * cm + (double(lay) * 0.5) * cm;
-            ce_GEM_lay_ROut[lay] =cfg.ROut - 25 * cm + (double(lay) * 2.) * cm;;
+        for (int layerIndex = 0; layerIndex < cfg.Nlayers; layerIndex++) {
 
-            //      ce_GEM_lay_PosZ[lay]=-ce_GEM_GVol_PosZ/2+(double(lay)*5.)*cm;
-            ce_GEM_lay_PosZ[lay] = cfg.SizeZ / 2 - 5 * cm - (double(lay) * 3.) * cm;
-            ce_GEM_lay_SizeZ[lay] = 1 * cm;
+            ce_Gem_Layer layer;
 
-            sprintf(abname, "ce_GEM_lay_Solid_%d", lay);
-            ce_GEM_lay_Solid[lay] = new G4Tubs(abname, ce_GEM_lay_RIn[lay], ce_GEM_lay_ROut[lay],
-                                               ce_GEM_lay_SizeZ[lay] / 2., 0., 360 * deg);
+            layer.RIn = cfg.RIn + 1 * cm + (double(layerIndex) * 0.5) * cm;
+            layer.ROut = cfg.ROut - 25 * cm + (double(layerIndex) * 2.) * cm;;
 
-            sprintf(abname, "ce_GEM_lay_Logic_%d", lay);
-            ce_GEM_lay_Logic[lay] = new G4LogicalVolume(ce_GEM_lay_Solid[lay],
-                                                        ce_GEM_lay_Material, abname);
+            //      layer.PosZ[lay]=-ce_GEM_GVol_PosZ/2+(double(lay)*5.)*cm;
+            layer.PosZ = cfg.SizeZ / 2 - 5 * cm - (double(layerIndex) * 3.) * cm;
+            layer.SizeZ = 1 * cm;
 
-            attr_ce_GEM_lay = new G4VisAttributes(G4Color(0.8, 0.4, 0.3, 0.8));
-            attr_ce_GEM_lay->SetLineWidth(1);
-            attr_ce_GEM_lay->SetForceSolid(true);
-            ce_GEM_lay_Logic[lay]->SetVisAttributes(attr_ce_GEM_lay);
+            sprintf(abname, "layer.Solid_%d", layerIndex);
+            layer.Solid = new G4Tubs(abname, layer.RIn, layer.ROut,
+                                                      layer.SizeZ / 2., 0., 360 * deg);
 
-            sprintf(abname, "ce_GEM_lay_Phys_%d", lay);
-            ce_GEM_lay_Phys[lay] = new G4PVPlacement(0, G4ThreeVector(0, 0, ce_GEM_lay_PosZ[lay]),
-                                                     abname, ce_GEM_lay_Logic[lay],
-                                                     Phys, false, 0);
+            sprintf(abname, "layer.Logic_%d", layerIndex);
+            layer.Logic = new G4LogicalVolume(layer.Solid, fMaterial, abname);
 
+            layer.Logic->SetVisAttributes(fLayerVisualAttributes);
 
+            sprintf(abname, "layer.Phys_%d", layerIndex);
+            layer.Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, layer.PosZ), abname, layer.Logic, PhysicalVolume, false, 0);
+
+            fLayers.push_back(layer);
         }
-
-        printf("END ce_GEM_lay_ \n");
-
-
     };
 
-    G4Tubs *Solid;      //pointer to the solid
-    G4LogicalVolume *Logic;    //pointer to the logical
-    G4VPhysicalVolume *Phys;  //pointer to the physical
+    G4Tubs *Solid;                      //pointer to the solid
+    G4LogicalVolume *Logical;           //pointer to the logical
+    G4VPhysicalVolume *PhysicalVolume;  //pointer to the physical
 
     /// Parameters that was used in the moment of construction
     ce_GEM_Config  ConstructionConfig;
 
-    G4VisAttributes *attr_ce_GEM_lay;
-    G4Tubs *ce_GEM_lay_Solid[20];    //pointer to the solid World
-    G4LogicalVolume *ce_GEM_lay_Logic[20];    //pointer to the logical World
-    G4VPhysicalVolume *ce_GEM_lay_Phys[20];    //pointer to the physical World
-
 private:
-
-    // define here local variables and parameter of detectors
-    //--------------- ENDCAP-E GEM  detector ------------------
-    G4double ce_GEM_lay_RIn[20];
-    G4double ce_GEM_lay_ROut[20];
-    G4double ce_GEM_lay_SizeZ[20];
-    G4double ce_GEM_lay_PosZ[20];
-    G4Material *ce_GEM_lay_Material;
-
-
-
+    G4VisAttributes *fLayerVisualAttributes;
+    G4Material *fMaterial;
+    std::vector<ce_Gem_Layer> fLayers;
 };
 
 

@@ -1,6 +1,6 @@
 {
     "config": {
-        "beamline": "erhic",
+        "beamline": "ip6",
         "build_prefix": "/home/romanov/eic/soft/g4e/g4e-dev/cmake-build-debug",
         "detector": "refdet",
         "executable": "/home/romanov/eic/soft/g4e/g4e-dev/bin/g4e",
@@ -13,8 +13,6 @@
         "work_dir": "/home/romanov/eic/soft/g4e/g4e-dev/examples"
     },
     "user_commands": [
-        "/detsetup/eBeam 10",
-        "/detsetup/pBeam 41",
         "/generator/select coneParticleGun",
         "/generator/coneParticleGun/particle e-",
         "/generator/coneParticleGun/direction 0 0 -1",
@@ -41,8 +39,7 @@
         "/vis/geometry/set/visibility ce_EMCAL_detGLASS_Logic  -1 1",
         "/vis/viewer/clearCutawayPlanes",
         "/vis/viewer/clearCutawayPlanes",
-        "/vis/ogl/set/displayListLimit 100000",
-        "/run/initialize",
+        "/vis/ogl/set/displayListLimit 150000",
         "/run/beamOn 2"
     ]
 }

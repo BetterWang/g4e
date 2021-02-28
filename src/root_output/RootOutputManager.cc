@@ -65,6 +65,7 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
 
     if(process) {
         process_int = (int)process->GetProcessType();
+        std::cout << "  --> QW debug process type = " << process_int << " process name = " << process->GetProcessName() << std::endl;
     }
 
     auto info = dynamic_cast<JLeicTrackInformation*>(track->GetUserInformation());
@@ -117,9 +118,9 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
                         point->GetPosition().x() / mm,                   /* hit x         */
                         point->GetPosition().y() / mm,                   /* hit y         */
                         point->GetPosition().z() / mm,                   /* hit z         */
-                        xloc / mm,                         /* hit ox */
-                        yloc / mm,                         /* hit oy */
-                        zloc / mm,                         /* hit oz */
+                        xinp / mm,                         /* hit ox */
+                        yinp / mm,                         /* hit oy */
+                        zinp / mm,                         /* hit oz */
                         aStep->GetTotalEnergyDeposit() / GeV,         /* aELoss        */
                         copyIDx,                                            /* vol replic x  */
                         copyIDy,                                            /* vol replic y  */

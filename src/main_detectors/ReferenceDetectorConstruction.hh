@@ -95,7 +95,7 @@ public:
     //===========================================
 
     bool USE_BARREL = true;
-    bool USE_BARREL_det = true;
+    bool USE_BARREL_DETECTORS = true;
 
     bool USE_BEAMPIPE = true;
 
@@ -288,9 +288,9 @@ private:
     g4e::Materials *fMat;
     g4e::InitializationContext *fInitContext;
     ReferenceDetectorMessenger *fDetectorMessenger;
-    CommonCalorimeterSD *fCalorimeterSD;
-    CommonVertexSD *fVertexSD;
-    JLeicCe_emcalSD *fCe_emcalSD;
+    // CommonCalorimeterSD *fCalorimeterSD;
+    // CommonVertexSD *fVertexSD;
+    //JLeicCe_emcalSD *fCe_emcalSD;
     G4VPhysicalVolume *fPhysicsAbsorber;
     AcceleratorMagnets* fElectronLineMagnets;
     AcceleratorMagnets* fIonLineMagnets;

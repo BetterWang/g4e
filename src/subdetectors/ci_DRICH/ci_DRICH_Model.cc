@@ -36,7 +36,7 @@ TGeoManager *BuildDRichModel(Double_t r_entr = 210., Double_t r_exit = 210.) {
     Double_t z0 = 0.;
 
     // dRICH vessel
-    Double_t dz_vessel = 0;
+    Double_t dz_vessel = 100;
     Double_t rin_vessel = 10.;
     //  Double_t rout0_vessel= 300.;
     //  Double_t rout1_vessel= 350.;

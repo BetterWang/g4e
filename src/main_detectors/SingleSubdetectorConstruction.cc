@@ -69,10 +69,12 @@ G4VPhysicalVolume *SingleSubdetectorConstruction::Construct_Beampipe() {
 }
 
 G4VPhysicalVolume *SingleSubdetectorConstruction::Construct_Beamline() {
-    return nullptr;
+    return fWorldPhysicalVolume;
 }
 
 G4VPhysicalVolume *SingleSubdetectorConstruction::Construct_ci_DRICH() {
-    //    m_ci_DRICH.Construct(m_ci_DRICH_Config, fWorldMaterial,  fWorldPhysicalVolume);
-//    m_ci_DRICH.ConstructDetectors();
+    ci_DRICH.Construct(fConfig.ci_DRICH, fWorldMaterial,  fWorldPhysicalVolume);
+    ci_DRICH.ConstructDetectors();
+
+    return fWorldPhysicalVolume;
 }

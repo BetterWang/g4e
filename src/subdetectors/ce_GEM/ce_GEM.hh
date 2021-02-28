@@ -23,14 +23,15 @@ struct ce_GEM_Config {
 };
 
 /// Holds information for each GEM layer
-struct ce_Gem_Layer {
+struct ce_GEM_Layer {
     G4double RIn;
     G4double ROut;
     G4double SizeZ;
     G4double PosZ;
-    G4Tubs *Solid;             //pointer to the solid World
-    G4LogicalVolume *Logic;    //pointer to the logical World
-    G4VPhysicalVolume *Phys;   //pointer to the physical World
+    G4Tubs *Solid;             // pointer to the solid World
+    G4LogicalVolume *Logic;    // pointer to the logical World
+    G4VPhysicalVolume *Phys;   // pointer to the physical World
+    G4String LogicName;        // name of the logic volume to set SD
 };
 
 
@@ -69,7 +70,7 @@ public:
 
         for (int layerIndex = 0; layerIndex < cfg.Nlayers; layerIndex++) {
 
-            ce_Gem_Layer layer;
+            ce_GEM_Layer layer;
 
             layer.RIn = cfg.RIn + 1 * cm + (double(layerIndex) * 0.5) * cm;
             layer.ROut = cfg.ROut - 25 * cm + (double(layerIndex) * 2.) * cm;;
@@ -78,25 +79,26 @@ public:
             layer.PosZ = cfg.SizeZ / 2 - 5 * cm - (double(layerIndex) * 3.) * cm;
             layer.SizeZ = 1 * cm;
 
-            sprintf(abname, "layer.Solid_%d", layerIndex);
-            layer.Solid = new G4Tubs(abname, layer.RIn, layer.ROut,
-                                                      layer.SizeZ / 2., 0., 360 * deg);
+            sprintf(abname, "ce_GEM_l%d_Solid", layerIndex);
+            layer.Solid = new G4Tubs(abname, layer.RIn, layer.ROut, layer.SizeZ / 2., 0., 360 * deg);
 
-            sprintf(abname, "layer.Logic_%d", layerIndex);
+            sprintf(abname, "ce_GEM_l%d_Logic", layerIndex);
             layer.Logic = new G4LogicalVolume(layer.Solid, fMaterial, abname);
+            layer.LogicName = abname;
 
             layer.Logic->SetVisAttributes(fLayerVisualAttributes);
 
-            sprintf(abname, "layer.Phys_%d", layerIndex);
+            sprintf(abname, "ce_GEM_l%d_Phys", layerIndex);
             layer.Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, layer.PosZ), abname, layer.Logic, PhysicalVolume, false, 0);
 
-            fLayers.push_back(layer);
+            Layers.push_back(layer);
         }
     };
 
     G4Tubs *Solid;                      //pointer to the solid
     G4LogicalVolume *Logical;           //pointer to the logical
     G4VPhysicalVolume *PhysicalVolume;  //pointer to the physical
+    std::vector<ce_GEM_Layer> Layers;
 
     /// Parameters that was used in the moment of construction
     ce_GEM_Config  ConstructionConfig;
@@ -104,7 +106,7 @@ public:
 private:
     G4VisAttributes *fLayerVisualAttributes;
     G4Material *fMaterial;
-    std::vector<ce_Gem_Layer> fLayers;
+
 };
 
 

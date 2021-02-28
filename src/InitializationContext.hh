@@ -1,3 +1,7 @@
+/***
+ * This class holds information available/needed for detector/subdetector construction procedure
+ */
+
 #ifndef G4E_INITIALIZATIONCONTEXT_HH
 #define G4E_INITIALIZATIONCONTEXT_HH
 
@@ -20,9 +24,17 @@ namespace g4e {
         {
         }
 
+        /// Holds information gained from user provided flags and G4E related environment variables
+        /// This includes files to process, macro files, if it is batch job or GUI, multithreading
         UserArguments * Arguments;
+
+        /// Holds information about output CERN ROOT file and helper classes that writes to the file
         g4e::RootOutputManager * RootManager;
+
+        /// Allows to add UserActions EventAction, RunAction, etc.
         g4e::MultiActionInitialization * ActionInitialization;
+
+        /// Global physics list
         EicPhysicsList *PhysicsList;
     };
 }

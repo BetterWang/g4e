@@ -1,3 +1,16 @@
+/**
+ * class MultiActionInitialization allows to add multiple UserActions such as EventAction, SteppingAction
+ *
+ * In order to work in Geant4 multithreading mode, each worker thread should create a new such user actions
+ * So this class accepts std::function-s that do such creations.
+ *
+ * Example of usage:
+ *   // Add stepping action that is executed on volume change
+ *   AddUserActionGenerator([rootManager](){
+ *       auto action = new g4e::VolumeChangeSteppingAction(rootManager);
+ *       return static_cast<G4UserSteppingAction*>(action);
+ *   });
+ */
 #ifndef G4E_INITIALIZATIONACTION_HH
 #define G4E_INITIALIZATIONACTION_HH
 

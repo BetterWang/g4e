@@ -27,14 +27,18 @@ public:
     G4Tubs *Solid;      //pointer to the solid
     G4LogicalVolume *Logic;    //pointer to the logical
     G4VPhysicalVolume *Phys;  //pointer to the physical
-    G4VPhysicalVolume *RichPhysical; // Physical volume of internals of rich detector
+    G4VPhysicalVolume *RichWorld; // Physical volume of internals of rich detector
 
     /// Parameters that was used in the moment of construction
     ci_DRICH_Config  ConstructionConfig;
 
+    std::vector<G4VPhysicalVolume*> PhotoDets;
+
 private:
 
     // define here local variables and parameter of detectors
+
+    G4VPhysicalVolume *RichVessel;
 
 };
 

@@ -127,25 +127,6 @@ G4VPhysicalVolume *ReferenceDetectorConstruction::Construct()
         //ir_Beampipe.Construct(fConfig.ir_Beampipe, fWorldPhysical, bpCadDirectory);
         //ir_Beampipe.ConstructForwardCone(fConfig.ir_Beampipe, World_Material, World_Phys);
     }
-    //=========================================================================
-    //                    Sensitive detectors
-    //=========================================================================
-
-    G4SDManager *SDman = G4SDManager::GetSDMpointer();
-
-    if (!fCalorimeterSD) {
-        fCalorimeterSD = new CommonCalorimeterSD("CalorSD", fInitContext->RootManager);
-        SDman->AddNewDetector(fCalorimeterSD);
-    }
-    if (!fVertexSD) {
-        fVertexSD = new CommonVertexSD("VertexSD", fInitContext->RootManager, this);
-        SDman->AddNewDetector(fVertexSD);
-    }
-
-    if (!fCe_emcalSD) {
-        fCe_emcalSD = new JLeicCe_emcalSD("Ce_emcalSD", fInitContext->RootManager, this);
-        SDman->AddNewDetector(fCe_emcalSD);
-    }
 
     //=========================================================================
     //                    Create Central Detector Major Parts
@@ -227,7 +208,7 @@ G4VPhysicalVolume *ReferenceDetectorConstruction::Construct()
     //                       CENTRAL BARREL (CB)
     // ******************************************************************************
 
-    if (USE_BARREL && USE_BARREL_det)  {
+    if (USE_BARREL && USE_BARREL_DETECTORS)  {
         //------------------------------------------------
         //           cb_VTX (Central Barrel Vertex)
         //------------------------------------------------
@@ -240,11 +221,6 @@ G4VPhysicalVolume *ReferenceDetectorConstruction::Construct()
             if (USE_CB_VTX_LADDERS) {
                 //----------vtx barrel ladder geometry--------------
                 cb_VTX.ConstructLaddersCentral();
-                for (size_t lay = 0; lay < cb_VTX.Lays.size(); lay++) {
-                    if (cb_VTX.cb_VTX_ladder_Logic) {
-                        cb_VTX.cb_VTX_ladder_Logic[lay]->SetSensitiveDetector(fVertexSD);
-                    }
-                }
             }
             if (USE_CB_VTX_ENDCAPS) {
                 cb_VTX.ConstructLaddersEndcaps();
@@ -275,10 +251,6 @@ G4VPhysicalVolume *ReferenceDetectorConstruction::Construct()
                 cb_CTD.ConstructLadders();
                 printf("Det construction cb_CTD_detSi::2 Number of layers =%d \n ",fConfig.cb_CTD.SiLayerCount);
 
-                for (int lay = 0; lay < fConfig.cb_CTD.SiLayerCount; lay++) {
-                    if(cb_CTD.SiLogics[lay]) cb_CTD.SiLogics[lay]->SetSensitiveDetector(fVertexSD);
-                }
-
             }
             else if (USE_CB_CTD_Straw) { cb_CTD.ConstructStraws(); }
 
@@ -302,7 +274,6 @@ G4VPhysicalVolume *ReferenceDetectorConstruction::Construct()
 
             if (USE_CB_DIRC_bars) {
                 cb_DIRC.ConstructBars();
-                cb_DIRC.cb_DIRC_bars_Logic->SetSensitiveDetector(fCalorimeterSD);
             }
 
         } // end DIRC detector
@@ -319,7 +290,6 @@ G4VPhysicalVolume *ReferenceDetectorConstruction::Construct()
 
             cb_EMCAL.Construct(fConfig.cb_EMCAL, fConfig.cb_Solenoid, World_Material, cb_Solenoid.Phys);
             cb_EMCAL.ConstructBars();
-            cb_EMCAL.Logic->SetSensitiveDetector(fCalorimeterSD);
         }
     }  // end Barrel
 
@@ -340,10 +310,6 @@ G4VPhysicalVolume *ReferenceDetectorConstruction::Construct()
 
             ce_GEM.Construct(fConfig.ce_GEM, World_Material, cb_Solenoid.Phys);
             ce_GEM.ConstructDetectors();
-            for (int lay = 0; lay < fConfig.ce_GEM.Nlayers; lay++) {
-                if (ce_GEM.ce_GEM_lay_Logic[lay]) ce_GEM.ce_GEM_lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD);
-            }
-
         }  // end USE_CI_GEM
 
         //------------------------------------------------
@@ -367,9 +333,7 @@ G4VPhysicalVolume *ReferenceDetectorConstruction::Construct()
             ce_EMCAL.OuterVolumeVisAttr->SetColor(G4Color(0.3, 0.5, 0.9, 0.1));
 
             ce_EMCAL.ConstructCrystalsSquare(); // --- inner detector with Crystals
-            ce_EMCAL.ce_EMCAL_detPWO_Logic->SetSensitiveDetector(fCe_emcalSD);
             ce_EMCAL.ConstructGlassSquare();    // --- outer part with Glass
-            ce_EMCAL.ce_EMCAL_detGLASS_Logic->SetSensitiveDetector(fCe_emcalSD);
         }
 
     } // USE_E_ENDCAP
@@ -397,9 +361,6 @@ G4VPhysicalVolume *ReferenceDetectorConstruction::Construct()
 
             ci_GEM.Construct(fConfig.ci_GEM, World_Material, cb_Solenoid.Phys);
             ci_GEM.ConstructDetectors();
-            for (int lay = 0; lay < fConfig.ci_GEM.Nlayers; lay++) {
-                if (ci_GEM.lay_Logic[lay]) ci_GEM.lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD);
-            }
         }  // end USE_CI_GEM
 
         //------------------------------------------------
@@ -440,12 +401,10 @@ G4VPhysicalVolume *ReferenceDetectorConstruction::Construct()
                 fConfig.ci_EMCAL.USE_ERHIC=true;
                 fConfig.ci_EMCAL.det_Rin1 = 30*cm;
                 fConfig.ci_EMCAL.det_Rin2 = 30*cm;
-
             }
 
             ci_EMCAL.Construct(fConfig.ci_EMCAL, World_Material, ci_ENDCAP_GVol_Phys);
             ci_EMCAL.ConstructDetectors();    // --- outer part with Glass
-            ci_EMCAL.ci_EMCAL_det_Logic->SetSensitiveDetector(fCalorimeterSD);
         } // end USE_CI_EMCAL
     }
 
@@ -477,9 +436,6 @@ G4VPhysicalVolume *ReferenceDetectorConstruction::Construct()
                 fConfig.fi_B0_TRK.Zpos = (magnet->LengthZ / 2.) * cm - fConfig.fi_B0_TRK.SizeZ / 2.;
                 fi_B0_TRK.ConstructA(fConfig.fi_B0_TRK, World_Material, magnet->fPhysics_BigDi_m);
                 fi_B0_TRK.ConstructDetectorsA();
-                for (int lay = 0; lay < fConfig.fi_B0_TRK.Nlayers; lay++) {
-                    if (fi_B0_TRK.fi_B0_TRK_lay_Logic[lay]) fi_B0_TRK.fi_B0_TRK_lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD);
-                }
             }
         }
     }
@@ -520,12 +476,6 @@ G4VPhysicalVolume *ReferenceDetectorConstruction::Construct()
 
             fConfig.ffi_OFFM_TRK.Xpos = 160 * cm;
             fConfig.ffi_OFFM_TRK.Nlayers=2;
-            ffi_OFFM_TRK.Construct(fConfig.ffi_OFFM_TRK, World_Material, fWorldPhysical);
-
-            ffi_OFFM_TRK.ConstructDetectors();
-            for (int lay = 0; lay < fConfig.ffi_OFFM_TRK.Nlayers; lay++) {
-                if (ffi_OFFM_TRK.lay_Logic) ffi_OFFM_TRK.lay_Logic->SetSensitiveDetector(fCalorimeterSD);
-            }
         }
         if(beamLine == BeamLines::IP6) {
             // fConfig.ffi_OFFM_TRK.RIn = 10 * cm;
@@ -533,31 +483,24 @@ G4VPhysicalVolume *ReferenceDetectorConstruction::Construct()
             fConfig.ffi_OFFM_TRK.SizeZ = 10. * cm;
             fConfig.ffi_OFFM_TRK.Zpos = 22.5 * m;
             // fConfig.ffi_OFFM_TRK.Zpos = 27.5 * m;
-
             fConfig.ffi_OFFM_TRK.Xpos = 75 * cm;
             fConfig.ffi_OFFM_TRK.Nlayers=2;
-            ffi_OFFM_TRK.Construct(fConfig.ffi_OFFM_TRK, World_Material, fWorldPhysical);
-
-            ffi_OFFM_TRK.ConstructDetectors();
-            for (int lay = 0; lay < fConfig.ffi_OFFM_TRK.Nlayers; lay++) {
-                if (ffi_OFFM_TRK.lay_Logic) ffi_OFFM_TRK.lay_Logic->SetSensitiveDetector(fCalorimeterSD);
-            }
 
             // virtual plane 2
             fConfig.ffi_OFFM_TRK2.SizeZ = 10. * cm;
             // fConfig.ffi_OFFM_TRK.Zpos = 22.5 * m;
             fConfig.ffi_OFFM_TRK2.Zpos = 27.5 * m;
-
             fConfig.ffi_OFFM_TRK2.Xpos = 75 * cm;
             fConfig.ffi_OFFM_TRK2.Nlayers=1;
-            ffi_OFFM_TRK2.Construct(fConfig.ffi_OFFM_TRK2, World_Material, fWorldPhysical);
 
 
-            ffi_OFFM_TRK2.ConstructDetectors();
-            for (int lay = 0; lay < fConfig.ffi_OFFM_TRK2.Nlayers; lay++) {
-                if (ffi_OFFM_TRK2.lay_Logic) ffi_OFFM_TRK2.lay_Logic->SetSensitiveDetector(fCalorimeterSD);
-            }
         }
+
+        ffi_OFFM_TRK.Construct(fConfig.ffi_OFFM_TRK, World_Material, fWorldPhysical);
+        ffi_OFFM_TRK.ConstructDetectors();
+
+        ffi_OFFM_TRK2.Construct(fConfig.ffi_OFFM_TRK2, World_Material, fWorldPhysical);
+        ffi_OFFM_TRK2.ConstructDetectors();
     }
 
 
@@ -578,13 +521,8 @@ G4VPhysicalVolume *ReferenceDetectorConstruction::Construct()
 
             fConfig.ffi_NEG_TRK.rot_matx.rotateY(fConfig.ffi_NEG_TRK.Angle);
             fConfig.ffi_NEG_TRK.Nlayers=1;
-            ffi_NEG_TRK.Construct(fConfig.ffi_NEG_TRK, World_Material, fWorldPhysical);
-
-            ffi_NEG_TRK.ConstructDetectors();
-            for (int lay = 0; lay < fConfig.ffi_NEG_TRK.Nlayers; lay++) {
-                if (ffi_NEG_TRK.lay_Logic) ffi_NEG_TRK.lay_Logic->SetSensitiveDetector(fCalorimeterSD);
-            }
         }
+
         // -- for Second IR
         if(beamLine == BeamLines::IP8) {
             // for angle 0
@@ -599,13 +537,9 @@ G4VPhysicalVolume *ReferenceDetectorConstruction::Construct()
 
             fConfig.ffi_NEG_TRK.rot_matx.rotateY(fConfig.ffi_NEG_TRK.Angle);
             fConfig.ffi_NEG_TRK.Nlayers=1;
-            ffi_NEG_TRK.Construct(fConfig.ffi_NEG_TRK, World_Material, fWorldPhysical);
-
-            ffi_NEG_TRK.ConstructDetectors();
-            for (int lay = 0; lay < fConfig.ffi_NEG_TRK.Nlayers; lay++) {
-                if (ffi_NEG_TRK.lay_Logic) ffi_NEG_TRK.lay_Logic->SetSensitiveDetector(fCalorimeterSD);
-            }
         }
+        ffi_NEG_TRK.Construct(fConfig.ffi_NEG_TRK, World_Material, fWorldPhysical);
+        ffi_NEG_TRK.ConstructDetectors();
     }
 
     //------------------------------------------------
@@ -633,82 +567,51 @@ G4VPhysicalVolume *ReferenceDetectorConstruction::Construct()
         // if(USE_FFI_ZDC_CRYSTAL) { ffi_ZDC.ConstructTowels(1); }
         // else if(USE_FFI_ZDC_GLASS) { ffi_ZDC.ConstructTowels(0); }
         // else if(USE_FFI_ZDC_ALICE) {  ffi_ZDC.ConstructALICE(); }
-        // Write enter volume like hits
-        // if (ffi_ZDC.ffi_ZDC_HCAL_Logic) ffi_ZDC.ffi_ZDC_HCAL_Logic->SetSensitiveDetector(fCalorimeterSD);
-
     } // end ffi_ZDC
 
-
-    //------------------------------------------------
-    //            Roman Pots for eRHIC
-    //------------------------------------------------
-    if (beamLine == BeamLines::IP6) {
-        if (USE_FFI_RPOT_D2 ) {  //---- First Roman Pot
+    if (USE_FFI_RPOT_D2 ) {  //---- First Roman Pot
+        if (beamLine == BeamLines::IP6) {
             fConfig.ffi_RPOT_D2.Angle = 0.025;
             fConfig.ffi_RPOT_D2.ROut = 20 * cm;
             fConfig.ffi_RPOT_D2.rot_matx.rotateY(fConfig.ffi_RPOT_D2.Angle * rad);
-            fConfig.ffi_RPOT_D2.PosZ = 2620 * cm;
             fConfig.ffi_RPOT_D2.PosX = 82 * cm;
-
-            ffi_RPOT_D2.Construct(fConfig.ffi_RPOT_D2, World_Material, fWorldPhysical);
-            ffi_RPOT_D2.ConstructDetectors();
-            for (int lay = 0; lay < fConfig.ffi_RPOT_D2.Nlayers; lay++) {
-                if (ffi_RPOT_D2.lay_Logic[lay]) ffi_RPOT_D2.lay_Logic[lay]->SetSensitiveDetector(fVertexSD);
-            }
+            fConfig.ffi_RPOT_D2.PosZ = 2620 * cm;
+        }
+        if (beamLine == BeamLines::IP8) {
+            fConfig.ffi_RPOT_D2.Angle = 0.025;
+            fConfig.ffi_RPOT_D2.ROut = 20 * cm;
+            fConfig.ffi_RPOT_D2.rot_matx.rotateY(fConfig.ffi_RPOT_D2.Angle * rad);
+            fConfig.ffi_RPOT_D2.PosX = 190 * cm;
+            fConfig.ffi_RPOT_D2.PosZ = 4620 * cm;
         }
 
-        if (USE_FFI_RPOT_D3 ) {
+        ffi_RPOT_D2.Construct(fConfig.ffi_RPOT_D2, World_Material, fWorldPhysical);
+        ffi_RPOT_D2.ConstructDetectors();
+    }
+
+    //------------------------------------------------
+    //            Roman Pots
+    //------------------------------------------------
+
+    if (USE_FFI_RPOT_D3 ) {
+        if (beamLine == BeamLines::IP6) {
             fConfig.ffi_RPOT_D3.Angle = 0.025;
             fConfig.ffi_RPOT_D3.rot_matx.rotateY(fConfig.ffi_RPOT_D3.Angle * rad);
             fConfig.ffi_RPOT_D3.PosZ = 2820 * cm;
-            fConfig.ffi_RPOT_D3.PosX = 91 * cm;
-
-            ffi_RPOT_D3.Construct(fConfig.ffi_RPOT_D3, World_Material, fWorldPhysical);
-            ffi_RPOT_D3.ConstructDetectors();
-            for (int lay = 0; lay < fConfig.ffi_RPOT_D3.Nlayers; lay++) {
-                if (ffi_RPOT_D3.lay_Logic[lay]) ffi_RPOT_D3.lay_Logic[lay]->SetSensitiveDetector(fVertexSD);
-            }
-            //  if (ffi_RPOT_D3.Logic) ffi_RPOT_D3.Logic->SetSensitiveDetector(fCalorimeterSD);
+            fConfig.ffi_RPOT_D3.PosX = 91 * cm;;
         } // end ffi_RPOT_D3
-    }// end erhic lattice placement
 
-    // ---- RPots for IP2
-    if(beamLine == BeamLines::IP8) {
-
-        if (USE_FFI_RPOT_D2 ) {  //---- First Roman Pot
-            fConfig.ffi_RPOT_D2.Angle = 0.025;
-            fConfig.ffi_RPOT_D2.ROut = 20 * cm;
-            fConfig.ffi_RPOT_D2.rot_matx.rotateY(fConfig.ffi_RPOT_D2.Angle * rad);
-            //           fConfig.ffi_RPOT_D2.PosZ = 3620 * cm;
-            fConfig.ffi_RPOT_D2.PosZ = 4620 * cm;
-
-            fConfig.ffi_RPOT_D2.PosX = 190 * cm;
-
-            ffi_RPOT_D2.Construct(fConfig.ffi_RPOT_D2, World_Material, fWorldPhysical);
-            ffi_RPOT_D2.ConstructDetectors();
-            for (int lay = 0; lay < fConfig.ffi_RPOT_D2.Nlayers; lay++) {
-                if (ffi_RPOT_D2.lay_Logic[lay]) ffi_RPOT_D2.lay_Logic[lay]->SetSensitiveDetector(fVertexSD);
-            }
-        }
-
-        //------------------------------------------------
-        if (USE_FFI_RPOT_D3 ) {
+        if(beamLine == BeamLines::IP8) {
             fConfig.ffi_RPOT_D3.Angle = 0.025;
             fConfig.ffi_RPOT_D3.rot_matx.rotateY(fConfig.ffi_RPOT_D3.Angle * rad);
-            fConfig.ffi_RPOT_D3.PosZ = 3820 * cm;
+            // fConfig.ffi_RPOT_D3.PosZ = 3820 * cm;
             fConfig.ffi_RPOT_D3.PosZ = 4820 * cm;
             fConfig.ffi_RPOT_D3.PosX = 190 * cm;
-
-            ffi_RPOT_D3.Construct(fConfig.ffi_RPOT_D3, World_Material, fWorldPhysical);
-            ffi_RPOT_D3.ConstructDetectors();
-            for (int lay = 0; lay < fConfig.ffi_RPOT_D3.Nlayers; lay++) {
-                if (ffi_RPOT_D3.lay_Logic[lay]) ffi_RPOT_D3.lay_Logic[lay]->SetSensitiveDetector(fVertexSD);
-            }
-            //  if (ffi_RPOT_D3.Logic) ffi_RPOT_D3.Logic->SetSensitiveDetector(fCalorimeterSD);
         } // end ffi_RPOT_D3
-    }// end RP IP2 placement
 
-
+        ffi_RPOT_D3.Construct(fConfig.ffi_RPOT_D3, World_Material, fWorldPhysical);
+        ffi_RPOT_D3.ConstructDetectors();
+    }
 
 
     //************************************************************************************
@@ -720,7 +623,7 @@ G4VPhysicalVolume *ReferenceDetectorConstruction::Construct()
     //------------------------------------------------
     if (USE_FFE_CPOL) {
         ffe_CPOL.Construct(fConfig.ffe_CPOL, World_Material, fWorldPhysical);
-    } // end ffe_CPOL
+    }
 
     //------------------------------------------------
     //                    Lumi
@@ -729,10 +632,8 @@ G4VPhysicalVolume *ReferenceDetectorConstruction::Construct()
         fConfig.ffe_LUMI.PosX=+0.7*m;
         fConfig.ffe_LUMI.PosY=0;
         fConfig.ffe_LUMI.PosZ=-25*m;
-
         ffe_LUMI.Construct(fConfig.ffe_LUMI, World_Material, fWorldPhysical);
-        //ffe_LUMI.ConstructDetectors(fConfig.ffe_LUMI);
-    } // end ffe_LUMI
+    }
 
     //------------------------------------------------
     //                    Low-Q2
@@ -740,16 +641,12 @@ G4VPhysicalVolume *ReferenceDetectorConstruction::Construct()
     if (USE_FFE_LOWQ2) {
         fConfig.ffe_LOWQ2.PosX=+0.3*m;
         fConfig.ffe_LOWQ2.PosY=0;
-        // just after dipole      fConfig.ffe_LOWQ2.PosZ=-18*m;
+        // just after dipole
         fConfig.ffe_LOWQ2.PosZ=-28*m;
 
         ffe_LOWQ2.Construct(fConfig.ffe_LOWQ2, World_Material, fWorldPhysical);
         ffe_LOWQ2.ConstructDetectors();
-        for (int lay = 0; lay < fConfig.ffe_LOWQ2.Nlayers; lay++) {
-            if (ffe_LOWQ2.lay_Logic) ffe_LOWQ2.Logic->SetSensitiveDetector(fCalorimeterSD);
-        }
-        if (ffe_LOWQ2.BPC_Logic) ffe_LOWQ2.BPC_Logic->SetSensitiveDetector(fCalorimeterSD);
-    } // end ffe_LOWQ2
+    }
 
 
     //===================================================================================
@@ -799,6 +696,142 @@ void ReferenceDetectorConstruction::Create_ce_Endcap(DetectorConfig::ce_Endcap_C
 
 void ReferenceDetectorConstruction::ConstructSDandField()
 {
+    //=========================================================================
+    //                    Sensitive detectors
+    //=========================================================================
+
+    G4SDManager *SDman = G4SDManager::GetSDMpointer();
+
+    auto fCalorimeterSD = new CommonCalorimeterSD("CalorSD", fInitContext->RootManager);
+    auto fVertexSD = new CommonVertexSD("VertexSD", fInitContext->RootManager, this);
+    auto fCe_emcalSD = new JLeicCe_emcalSD("Ce_emcalSD", fInitContext->RootManager, this);
+
+    if (USE_BARREL && USE_BARREL_DETECTORS)  {
+
+        // cb_VTX (Central Barrel Vertex)
+        if (USE_CB_VTX && USE_CB_VTX_LADDERS) {
+            for (size_t lay = 0; lay < cb_VTX.Lays.size(); lay++) {
+                if (cb_VTX.cb_VTX_ladder_Logic) {
+                    cb_VTX.cb_VTX_ladder_Logic[lay]->SetSensitiveDetector(fVertexSD);
+                }
+            }
+
+        }     // end VTX detector
+
+        //------------------------------------------------
+        //           CTD (Central Tracking Detector)
+        //------------------------------------------------
+        if (USE_CB_CTD && USE_CB_CTD_Si) {
+                for (int lay = 0; lay < fConfig.cb_CTD.SiLayerCount; lay++) {
+                    if(cb_CTD.SiLogics[lay]) cb_CTD.SiLogics[lay]->SetSensitiveDetector(fVertexSD);
+                }
+        } // end CTD detector
+
+
+        //------------------------------------------------
+        //                      cb_DIRC
+        //------------------------------------------------
+        if (USE_CB_DIRC) {
+            if (USE_CB_DIRC_bars) {
+                cb_DIRC.ConstructBars();
+                cb_DIRC.cb_DIRC_bars_Logic->SetSensitiveDetector(fCalorimeterSD);
+            }
+        } // end DIRC detector
+
+
+        //------------------------------------------------
+        //                    cb_EMCAL
+        //------------------------------------------------
+        if (USE_CB_EMCAL) {
+            cb_EMCAL.Logic->SetSensitiveDetector(fCalorimeterSD);
+        }
+    }  // end Barrel
+
+
+
+    // CE_ENDCAP
+    // ****************
+    if (USE_E_ENDCAP) {
+
+        // Hadron endcap GEM
+        if (USE_CE_GEM) {
+            for (int lay = 0; lay < fConfig.ce_GEM.Nlayers; lay++) {
+                SetSensitiveDetector(ce_GEM.Layers[lay].LogicName, fCalorimeterSD);
+            }
+        }
+
+        //  CE_EMCAL
+        if (USE_CE_EMCAL) {
+            ce_EMCAL.ce_EMCAL_detPWO_Logic->SetSensitiveDetector(fCe_emcalSD);
+            ce_EMCAL.ce_EMCAL_detGLASS_Logic->SetSensitiveDetector(fCe_emcalSD);
+        }
+    } // USE_E_ENDCAP
+
+
+    if (USE_CI_ENDCAP) {
+
+        // Hadron endcap GEM
+        if (USE_CI_GEM) {
+            for (int lay = 0; lay < fConfig.ci_GEM.Nlayers; lay++) {
+                if (ci_GEM.lay_Logic[lay]) ci_GEM.lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD);
+            }
+        }
+
+        // CI_EMCAL Hadron endcap
+        //-----------------------
+        if (USE_CI_EMCAL) {
+            ci_EMCAL.ci_EMCAL_det_Logic->SetSensitiveDetector(fCalorimeterSD);
+        }
+    }
+
+    //    Tracker at B0  ( D1a )
+    if (USE_FI_B0_TRK) {
+        for (int lay = 0; lay < fConfig.fi_B0_TRK.Nlayers; lay++) {
+            if (fi_B0_TRK.fi_B0_TRK_lay_Logic[lay]) fi_B0_TRK.fi_B0_TRK_lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD);
+        }
+    }
+
+    // OFF MOMENTUM TRK
+    if (USE_FFI_OFFM_TRK) {
+        for (int lay = 0; lay < fConfig.ffi_OFFM_TRK.Nlayers; lay++) {
+            if (ffi_OFFM_TRK.lay_Logic) ffi_OFFM_TRK.lay_Logic->SetSensitiveDetector(fCalorimeterSD);
+        }
+        for (int lay = 0; lay < fConfig.ffi_OFFM_TRK2.Nlayers; lay++) {
+            if (ffi_OFFM_TRK2.lay_Logic) ffi_OFFM_TRK2.lay_Logic->SetSensitiveDetector(fCalorimeterSD);
+        }
+    }
+
+    // NEG TRK for Lambda decays
+    if (USE_FFI_NEG_TRK) {
+        for (int lay = 0; lay < fConfig.ffi_NEG_TRK.Nlayers; lay++) {
+            if (ffi_NEG_TRK.lay_Logic) ffi_NEG_TRK.lay_Logic->SetSensitiveDetector(fCalorimeterSD);
+        }
+    }
+
+    if (USE_FFI_RPOT_D2 ) {  //---- First Roman Pot
+        for (int lay = 0; lay < fConfig.ffi_RPOT_D2.Nlayers; lay++) {
+            if (ffi_RPOT_D2.lay_Logic[lay]) ffi_RPOT_D2.lay_Logic[lay]->SetSensitiveDetector(fVertexSD);
+        }
+    }
+
+    if (USE_FFI_RPOT_D3 ) {
+        for (int lay = 0; lay < fConfig.ffi_RPOT_D3.Nlayers; lay++) {
+            if (ffi_RPOT_D3.lay_Logic[lay]) ffi_RPOT_D3.lay_Logic[lay]->SetSensitiveDetector(fVertexSD);
+        }
+    }
+
+    // Low-Q2 tagger
+    if (USE_FFE_LOWQ2) {
+        for (int lay = 0; lay < fConfig.ffe_LOWQ2.Nlayers; lay++) {
+            if (ffe_LOWQ2.lay_Logic) SetSensitiveDetector(ffe_LOWQ2.Logic->GetName(), fCalorimeterSD );
+        }
+        if (ffe_LOWQ2.BPC_Logic) SetSensitiveDetector(ffe_LOWQ2.BPC_Logic->GetName(), fCalorimeterSD);
+    }
+
+    //=========================================================================
+    //                    VOLUME ENTER ACTIONS
+    //=========================================================================
+
     if(USE_FFI_ZDC) { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_ZDC.Phys);}
     //  fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D2.lay_Phys[0]);
     if(USE_FFI_RPOT_D2)   { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D2.Phys);}

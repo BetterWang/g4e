@@ -21,8 +21,21 @@ void ci_DRICH_Design::Construct(ci_DRICH_Config cfg, G4Material* worldMaterial, 
     Phys = new G4PVPlacement(0, G4ThreeVector(0, 0, cfg.PosZ), "ci_DRICH_GVol_Phys", Logic, motherVolume, false, 0);
     fmt::print("Begin ci_DRICH volume {} {} {} {} \n",cfg.RIn, cfg.ROut, cfg.ThicknessZ, cfg.PosZ );
 
+    G4VisAttributes *outerVolumeVisAttr = new G4VisAttributes(G4Color(0., 0., 0.9, 0.5));
+
+    outerVolumeVisAttr->SetForceSolid(true);
+    outerVolumeVisAttr->SetVisibility(true);
+    outerVolumeVisAttr->SetLineWidth(1);
+    outerVolumeVisAttr->SetForceSolid(true);
+
     // Make this global volume - invisible
     Logic->SetVisAttributes(G4VisAttributes::Invisible);
+
+    //Logic->SetVisAttributes(outerVolumeVisAttr);
+}
+
+void ci_DRICH_Design::ConstructDetectors() {
+
 
     // Build detector geometry using ROOT function
     auto rich = BuildDRichModel();
@@ -37,49 +50,81 @@ void ci_DRICH_Design::Construct(ci_DRICH_Config cfg, G4Material* worldMaterial, 
     rtFactory.Export(&g4Factory);
     g4Factory.PrintVolumes();
 
-    RichPhysical = g4Factory.World();
-    RichPhysical->SetMotherLogical(Logic);
-    Logic->AddDaughter(RichPhysical);
-    Logic = Phys->GetLogicalVolume();
+    RichWorld = g4Factory.World();
 
+    // The first vessel in Rich World is ci_DRICH_Vessel
+    RichVessel = RichWorld->GetLogicalVolume()->GetDaughter(0);
 
-    G4VisAttributes *attr_ci_DRICH_GVol = new G4VisAttributes(G4Color(0.3, 0.5, 0.9, 0.1));
+    RichVessel->SetMotherLogical(Logic);
+    Logic->AddDaughter(RichVessel);
 
-    attr_ci_DRICH_GVol->SetVisibility(false);
-    attr_ci_DRICH_GVol->SetLineWidth(1);
-    attr_ci_DRICH_GVol->SetForceSolid(true);
-    RichPhysical->GetLogicalVolume()->SetVisAttributes(attr_ci_DRICH_GVol);
+    G4VisAttributes *RichVolumeVisAttr = new G4VisAttributes(G4Color(0.1, 0.1, 0.1, 0.5));
+
+    RichVolumeVisAttr->SetForceWireframe();
+    RichVolumeVisAttr->SetVisibility(true);
+    RichVolumeVisAttr->SetLineWidth(2);
+    RichVessel->GetLogicalVolume()->SetVisAttributes(RichVolumeVisAttr);
+
+    int pdetCounter = 0;
+    auto richLogical = RichVessel->GetLogicalVolume();
+    for (int i=0; i < richLogical->GetNoDaughters(); i++) {
+        auto dLV = richLogical->GetDaughter(i)->GetLogicalVolume();
+
+        // This one is basically coloring
+        if(dLV->GetName() == "ci_DRICH_vcenter") {
+            G4VisAttributes *visAttr = new G4VisAttributes(G4Color(0.0, 0.9, 0., 0.5));
+            visAttr->SetForceSolid();
+            visAttr->SetVisibility(true);
+            dLV->SetVisAttributes(visAttr);
+        }
+
+        if(dLV->GetName() == "ci_DRICH_aerogel") {
+            G4VisAttributes *visAttr = new G4VisAttributes(G4Color(0.0, 0.5, 5., 0.5));
+            visAttr->SetForceCloud();
+            visAttr->SetVisibility(true);
+            dLV->SetVisAttributes(visAttr);
+        }
+
+        if(dLV->GetName() == "ci_DRICH_acrylic") {
+            G4VisAttributes *visAttr = new G4VisAttributes(G4Color(0.8, 0.1, 0.8, 0.8));
+            visAttr->SetForceSolid();
+            visAttr->SetVisibility(true);
+            dLV->SetVisAttributes(visAttr);
+        }
+
+        if(dLV->GetName() == "ci_DRICH_mirror") {
+            G4VisAttributes *visAttr = new G4VisAttributes(G4Color(0.5, 0.5, 0.5, 1));
+            visAttr->SetForceLineSegmentsPerCircle(100);
+            visAttr->SetForceWireframe();
+            visAttr->SetVisibility(true);
+            visAttr->SetLineWidth(3);
+            dLV->SetVisAttributes(visAttr);
+        }
+
+        if(dLV->GetName() == "ci_DRICH_rotm") {
+            G4VisAttributes *visAttr = new G4VisAttributes(G4Color(0.7, 0, 0.7, 0.5));
+            visAttr->SetForceSolid();
+            visAttr->SetVisibility(true);
+            visAttr->SetLineWidth(1);
+            dLV->SetVisAttributes(visAttr);
+        }
+
+        if(dLV->GetName() == "ci_DRICH_phdet") {
+            G4VisAttributes *visAttr = new G4VisAttributes(G4Color(0, 0, 0.6, 0.5));
+            visAttr->SetForceSolid();
+            visAttr->SetVisibility(true);
+            visAttr->SetLineWidth(1);
+            visAttr->SetForceSolid(true);
+            dLV->SetVisAttributes(visAttr);
+
+            // (!) Save pdets so one can add sensitive detector to them later
+            auto pdetPhysical=richLogical->GetDaughter(i);
+            PhotoDets.push_back(pdetPhysical);
+
+            // Add pdet index to its name
+            pdetPhysical->SetName(fmt::format("ci_DRICH_phdet_{}", pdetCounter));
+            pdetPhysical->GetLogicalVolume()->SetName(fmt::format("ci_DRICH_phdet_{}", pdetCounter));
+        }
+    }
 }
 
-void ci_DRICH_Design::ConstructDetectors() {
-//        printf("Begin ci_DRICH detector volumes \n");
-//
-//
-//
-//        InternalsLogic = new G4LogicalVolume(Logic, fWorldMaterial, "WorldLogic");
-//        fWorldPhysicalVolume = new G4PVPlacement(nullptr, G4ThreeVector(), "WorldPhys", fWorldLogicVol, nullptr, false, 0);
-//
-//        //  fLogic_H->SetVisAttributes(G4VisAttributes::Invisible);
-//
-//        //    G4VisAttributes *attr_ci_DRICH_GVol = new G4VisAttributes(G4Color(1., 1., 0.2, 1.));
-//
-//        G4VisAttributes *attr_ci_DRICH_GVol = new G4VisAttributes(G4Color(0.3, 0.5, 0.9, 0.9));
-//
-//        attr_ci_DRICH_GVol->SetLineWidth(1);
-//        attr_ci_DRICH_GVol->SetForceSolid(true);
-//        Logic->SetVisAttributes(attr_ci_DRICH_GVol);
-
-
-
-//#include "TGeoOpticalSurface.h"
-
-
-    // construct here your detectors
-
-//        G4VisAttributes *attr_ci_DRICH_GVol = new G4VisAttributes(G4Color(1., 0.9, 0.6, 0.1));
-//
-//        attr_ci_DRICH_GVol->SetLineWidth(1);
-//        attr_ci_DRICH_GVol->SetForceSolid(true);
-//        Logic->SetVisAttributes(attr_ci_DRICH_GVol);
-
-}

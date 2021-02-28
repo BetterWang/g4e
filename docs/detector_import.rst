@@ -1,5 +1,5 @@
-Adding a detector
-=================
+Subdetector design
+==================
 
 
    The word "detector" is ambiguous. In this text and code we use "subdetector" to reference a single part of an
@@ -7,14 +7,41 @@ Adding a detector
    (e.g. JLEIC, BEAST, ePHENIX)
 
 
+Quick design overview
+---------------------
+
 In order to maintain many subdetectors G4E tries to isolate each individual subdetector.
 Each subdetector files are located in `src/subdetectors`_ directory.
-There is no strict API such (as particular base class) for a subdetector, but there are a number of recommendations.
+There is no strict API  for a subdetector (such as particular base class), but there are a number of recommendations.
 
-In order to add subdetecter one has to:
- - Add detector related files to `src/subdetectors`_
- - Add classes <detector-name>_Config and <detector-name>_Design
- - Add subdetector to main-detector DetectorConstruction class
+
+Each subdetector:
+
+- lives in its own directory located at `src/subdetectors`_
+- has <subdetector-name>_Config structure that holds public subdetector parameters (dimensions, number of layers, etc)
+- has <subdetector-name>_Design class that holds geometry creation and other logic
+- may obtain extended information (such as root output file, user flags, etc) through `InitializationContext`_ class
+- may have its own independent UserActions (such as EventAction) through `MultiActionInitialization`_
+- may use common sensitive detector classes or provide its own
+
+
+Main-detectors construction in G4E:
+
+- lives in `src/main_detectors`_
+- `ReferenceDetectorConstruction`_ - class builds EIC "ReferenceDetector" main-detector
+- `SingleSubdetectorConstruction`_ - class can be used to construct and render solo subdetector
+- `DetectorConfig`_ structure holds geometry configuration (such as dimensions) used in main-detector construction
+
+
+In order to add subdetector one has to:
+
+- Add detector related files to `src/subdetectors`_
+- Add classes <subdetector-name>_Config and <subdetector-name>_Design
+- Add subdetector to main-detector Detector-Construction class
+
+
+Adding subdetector
+------------------
 
 1. Adding detector related files:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -37,11 +64,11 @@ in a special dedicated place, where experts can work on it with minimum interfer
 (and vise versa).
 
 
-2. <detector-name>_Config and <detector-name>_Design paradigm:
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+2. <subdetector-name>_Config and <subdetector-name>_Design paradigm:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Subdetectors may have pretty complex logic in order to decouple it from the rest of G4E code it is recommended,
-that for each of the subdetector one creates <detector-name>_Config and <detector-name>_Design.
+that for each of the subdetector one creates <subdetector-name>_Config and <subdetector-name>_Design.
 
 - <detector-name>_Config is a flat structure (with Geant4 messenger if needed) with parameters
   that might be changed from global detector construction.
@@ -107,22 +134,16 @@ It is recommended that <detector-name>_Design class should have:
 One can see the full example here: `ce_GEM`_
 
 
-.. _src/subdetectors: https://gitlab.com/eic/escalate/g4e/-/tree/master/src/subdetectors
-.. _src/subdetectors/CMakeLists.txt: https://gitlab.com/eic/escalate/g4e/-/blob/master/src/subdetectors/CMakeLists.txt
-.. _ce_GEM: https://gitlab.com/eic/escalate/g4e/-/tree/master/src/subdetectors/ce_GEM
-.. _ce_EMCAL: https://gitlab.com/eic/escalate/g4e/-/tree/master/src/subdetectors/ce_EMCAL
-
-
 
 3. Main-detector construction
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Geant4 uses `DetectorConstruction` class in order to create geometry. There are currently 2 detector constructions:
 
-- ReferenceDetectorConstruction - class the builds whole ReferenceDetector
-- SingleSubdetectorConstruction - this class can be used to cunstruct and render solo subdetector
+- `ReferenceDetectorConstruction`_ - class the builds EIC "ReferenceDetector"
+- `SingleSubdetectorConstruction`_ - this class can be used to construct and render solo subdetector
 
-DetectorConfig structure holds _Config structures from all subdetectors.
+`DetectorConfig`_ structure holds xxx_Config structures from all subdetectors.
 
 So in order to render subdetector one has to:
 
@@ -138,3 +159,32 @@ So in order to render subdetector one has to:
 3. Add <subdetector-name>_Design to SingleSubdetectorConstruction to render the subdetector alone
 
 
+
+4. User Actions
+~~~~~~~~~~~~~~~
+
+ * class MultiActionInitialization allows to add multiple UserActions such as EventAction, SteppingAction
+ *
+ * In order to work in Geant4 multithreading mode, each worker thread should create a new such user actions
+ * So this class accepts std::function-s that do such creations.
+ *
+ * Example of usage:
+ *   // Add stepping action that is executed on volume change
+ *   AddUserActionGenerator([rootManager](){
+ *       auto action = new g4e::VolumeChangeSteppingAction(rootManager);
+ *       return static_cast<G4UserSteppingAction*>(action);
+ *   });
+
+
+.. LINKS:
+
+.. _src/subdetectors: https://gitlab.com/eic/escalate/g4e/-/tree/master/src/subdetectors
+.. _src/subdetectors/CMakeLists.txt: https://gitlab.com/eic/escalate/g4e/-/blob/master/src/subdetectors/CMakeLists.txt
+.. _src/main_detectors: https://gitlab.com/eic/escalate/g4e/-/tree/master/src/main_detectors
+.. _ce_GEM: https://gitlab.com/eic/escalate/g4e/-/tree/master/src/subdetectors/ce_GEM
+.. _ce_EMCAL: https://gitlab.com/eic/escalate/g4e/-/tree/master/src/subdetectors/ce_EMCAL
+.. _InitializationContext: https://gitlab.com/eic/escalate/g4e/-/blob/master/src/InitializationContext.hh
+.. _MultiActionInitialization: https://gitlab.com/eic/escalate/g4e/-/blob/master/src/MultiActionInitialization.hh
+.. _ReferenceDetectorConstruction: https://gitlab.com/eic/escalate/g4e/-/blob/master/src/main_detectors/ReferenceDetectorConstruction.cc
+.. _SingleSubdetectorConstruction: https://gitlab.com/eic/escalate/g4e/-/blob/master/src/main_detectors/SingleSubdetectorConstruction.cc
+.. _DetectorConfig: https://gitlab.com/eic/escalate/g4e/-/blob/master/src/main_detectors/DetectorConfig.hh

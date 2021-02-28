@@ -46,7 +46,7 @@ private:
 
 
     ir_Beampipe_Design ir_Beampipe;
-    ci_DRICH_Design m_ci_DRICH;
+    ci_DRICH_Design ci_DRICH;
 
 
     G4GenericMessenger fMessenger;

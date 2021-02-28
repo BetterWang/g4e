@@ -17,7 +17,7 @@ setup(
     description="Geant4Eic api and control through python",
     long_description=readme,
     long_description_content_type="text/markdown",
-    url="https://gitlab.com/jlab-eic/g4e",
+    url="https://gitlab.com/eic/escalate/g4e",
     author="Dmitry Romanov",
     author_email="romanov@jlab.org",
     license="MIT",

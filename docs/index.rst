@@ -39,7 +39,7 @@ Welcome to Geant 4 EIC's documentation!
    :maxdepth: 1
    :caption: Links:
 
-   GitHub <https://gitlab.com/jlab-eic/g4e>
+   GitHub <https://gitlab.com/eic/escalate/g4e>
    Issues? Help is here <https://gitlab.com/eic/ejpm/issues>
 
 

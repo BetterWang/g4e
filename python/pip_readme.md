@@ -2,6 +2,6 @@
 
 Geant4Eic python configuration wrapping
 
-https://gitlab.com/jlab-eic/g4e
+https://gitlab.com/eic/escalate/g4e
 
 

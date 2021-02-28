@@ -197,7 +197,7 @@ make
 ## CMake build
 
 ```bash
-git clone https://gitlab.com/jlab-eic/g4e.git
+git clone https://gitlab.com/eic/escalate/g4e.git
 mkdir g4e/build
 cd g4e/build
 cmake -DGEANT4_DIR=<geant4 installation> ../

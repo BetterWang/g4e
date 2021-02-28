@@ -21,6 +21,7 @@ Welcome to Geant 4 EIC's documentation!
    detector_naming
    detector_import
    multithreading
+   python_orchestrationl
 
 .. toctree::
    :maxdepth: 2
@@ -42,16 +43,14 @@ Welcome to Geant 4 EIC's documentation!
    Issues? Help is here <https://gitlab.com/eic/ejpm/issues>
 
 
-.. image:: _images/JLEICgeant4-v1a.png
-   :name: JLEIC detector
+.. image:: _images/g4e_event_display.png
+   :name: G4E Event display
+
+G4E is a lightweight pure Geant4 implementation of full simulation for EIC.
 
 
 
 
-Indices and tables
-==================
 
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+
 

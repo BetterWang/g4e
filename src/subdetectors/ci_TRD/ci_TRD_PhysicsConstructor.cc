@@ -74,7 +74,6 @@ ci_TRD_PhysicsConstructor::ci_TRD_PhysicsConstructor(ci_TRD_Design *p) :
     G4VPhysicsConstructor("ci_TRD_Physics")
 {
     fTrd = p;
-    SetXTRModel("none");
     SetVerboseLevel(0);
 }
 
@@ -101,6 +100,11 @@ void ci_TRD_PhysicsConstructor::ConstructProcess()
     auto gasMaterial = fTrd->fGasMat;
     auto foilThickness = fTrd->ConstructionConfig.fRadThickness;
     auto gasThickness = fTrd->ConstructionConfig.fGasGap;
+
+    if(foilNumber == 0) {
+        log::warn("XTR model foil number = {}. Probably not initialized. Skipping XTR \n", fXTRModel, foilNumber);
+        return;
+    }
 
     if (fXTRModel == "gammaR" && foilNumber > 0) {
         // G4GammaXTRadiator*

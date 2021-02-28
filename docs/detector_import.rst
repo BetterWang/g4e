@@ -138,7 +138,7 @@ One can see the full example here: `ce_GEM`_
 3. Main-detector construction
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Geant4 uses `DetectorConstruction` class in order to create geometry. There are currently 2 detector constructions:
+Geant4 uses G4UserDetectorConstruction derived class in order to create a main-detector. There are currently two main-detector constructions:
 
 - `ReferenceDetectorConstruction`_ - class the builds EIC "ReferenceDetector"
 - `SingleSubdetectorConstruction`_ - this class can be used to construct and render solo subdetector
@@ -153,27 +153,166 @@ So in order to render subdetector one has to:
 
       struct DetectorConfig {
       // ...
-      ci_GEM_Config ci_GEM
+      ce_GEM_Config ce_GEM
 
-2. Add <subdetector-name>_Design to ReferenceDetectorConstruction to render the subdetector as a part of ReferenceDetector
-3. Add <subdetector-name>_Design to SingleSubdetectorConstruction to render the subdetector alone
+2. Add <subdetector-name>_Design to `ReferenceDetectorConstruction`_ to render the subdetector as a part of ReferenceDetector
+3. Add <subdetector-name>_Design to `SingleSubdetectorConstruction`_ to render the subdetector alone
+
+Example of adding ce_GEM to ReferenceDetectorConstruction
+
+
+.. code:: c++
+
+    G4VPhysicalVolume *ReferenceDetectorConstruction::Construct()
+    {
+        // ...
+        if (USE_CE_GEM) {
+            // Set rigt absolute Z position
+            fConfig.ce_GEM.PosZ = -fConfig.cb_Solenoid.SizeZ / 2 + fConfig.ce_GEM.SizeZ / 2;
+
+            // Construct outer volume inside the right mother
+            ce_GEM.Construct(fConfig.ce_GEM, World_Material, cb_Solenoid.Phys);
+
+            // Construct inner layers
+            ce_GEM.ConstructDetectors();
+        }
+        // ...
+    }
+
+G4E ships several common SensitiveDetector (SD) classes. E.g. for calorimeter and tracking. Due to `Geant4 multithreading`_
+one should add such common SD or custom SD in ConstructSDandField()
+
+.. code:: c++
+
+    void ReferenceDetectorConstruction::ConstructSDandField()
+    {
+        // ...
+        if (USE_CE_GEM) {
+            for (int lay = 0; lay < fConfig.ce_GEM.Nlayers; lay++) {
+                SetSensitiveDetector(ce_GEM.Layers[lay].LogicName, fCalorimeterSD);
+            }
+        }
+        // ...
+    }
+
+P.S. Contrary to this example it is recommended that <subdetector-name>_Design class implemented some form of
+**ConstructSD(...)** method.
+
+
+4. Changing subdetector parameters within a macro
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+It is easy to add ability to change detector configuration from macros / python API.
+G4GenericMessenger is used for that. Add a constructor to _Config file which define parameters like this:
+
+.. code:: c++
+
+    struct ce_EMCAL_Config
+    {
+        // ...
+        double PWO_Thickness = 20. * cm;
+        double PWO_Width = 2. * cm;
+        double PWO_Gap = 0.01 * mm;
+
+        // ...
+
+
+        // Messenger to control initialization properties from geant config file
+        inline ce_EMCAL_Config() {
+            static G4GenericMessenger *Messenger;
+
+            // Create a global messenger that will be used
+            if(!Messenger) {
+                // Set geant options
+                Messenger = new G4GenericMessenger(this, "/eic/ce_EMCAL/");
+                Messenger->DeclareProperty("pwoThickness", PWO_Thickness, "Thikness (z direction dimention) of PWO crystals ");
+                Messenger->DeclareProperty("pwoWidth", PWO_Width, "Width (and higth) of each PWO crystal");
+                Messenger->DeclareProperty("pwoGap", PWO_Gap, "Gap between PWO crystals ");
+            }
+        }
+    };
+
+Now you can control those parameters from macros or python:
+
+
+.. tabs::
+
+   .. tab:: Geant4 macro
+
+      .. code:: yaml
+
+         # Set PWO crystal width
+         # It is very important to put such values before /run/initialize
+         /eic/ce_EMCAL/pwoWidth 20
+
+         # ...
+         /run/initialize
+         /run/beamOn 1000
+         exit
+
+   .. tab:: Python
+
+      .. code:: python
+
+          from g4epy import Geant4Eic
+
+          g4e = Geant4Eic()
+
+          # Set PWO crystal width
+          my_width = 20
+          g4e.command(f'/eic/ce_EMCAL/pwoWidth {my_width}')
+
+          # ... other configurations ...
+          # Run
+          g4e.beam_on(300).run()
+
+   (!) It is recommended that such commands was it format:
+
+    .. code::
+
+        /eic/<subdetector-name>/<command>
+
+    where command is given in a camelCase:
+
+    E.g. /eic/ce_EMCAL/pwoThickness
 
 
 
-4. User Actions
+5. Extended initialization information
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+For more complex subdetector scenarios `InitializationContext`_ object can be passed to <subdetector-name>_Design
+constructor. This class holds the next information:
+
+1. `UserArguments* Arguments` - Holds information gained from user provided flags and G4E related environment variables
+   This includes files to process, macro files, if it is batch job or GUI, multithreading, etc.;
+2. `g4e::RootOutputManager* RootManager` - Manages output CERN ROOT file and helper classes that writes data to the file;
+3. `g4e::MultiActionInitialization* ActionInitialization` - Allows to add UserActions EventAction, RunAction, per subdetector;
+4. `EicPhysicsList* PhysicsList` - Modular physics list
+
+
+6. User Actions
 ~~~~~~~~~~~~~~~
 
- * class MultiActionInitialization allows to add multiple UserActions such as EventAction, SteppingAction
- *
- * In order to work in Geant4 multithreading mode, each worker thread should create a new such user actions
- * So this class accepts std::function-s that do such creations.
- *
- * Example of usage:
- *   // Add stepping action that is executed on volume change
- *   AddUserActionGenerator([rootManager](){
- *       auto action = new g4e::VolumeChangeSteppingAction(rootManager);
- *       return static_cast<G4UserSteppingAction*>(action);
- *   });
+class `MultiActionInitialization`_ allows to add multiple UserActions such as EventAction, SteppingAction
+
+In order to work in Geant4 multithreading mode, each worker thread should create a new such user actions
+So this class accepts std::function-s that do such creations.
+
+Example of usage:
+
+.. code:: c++
+
+    // Add stepping action that is executed on volume change
+    initContext->ActionInitialization->AddUserActionGenerator([userVariable](){
+        auto action = new SomeUserSteppingAction(userVariable);
+        return static_cast<G4UserSteppingAction*>(action);
+    });
+
+
+  (!) While users can create their UserSteppingAction it is recommended to use SensitiveDetector-a instead
+
+7. ROOT output format
 
 
 .. LINKS:
@@ -188,3 +327,4 @@ So in order to render subdetector one has to:
 .. _ReferenceDetectorConstruction: https://gitlab.com/eic/escalate/g4e/-/blob/master/src/main_detectors/ReferenceDetectorConstruction.cc
 .. _SingleSubdetectorConstruction: https://gitlab.com/eic/escalate/g4e/-/blob/master/src/main_detectors/SingleSubdetectorConstruction.cc
 .. _DetectorConfig: https://gitlab.com/eic/escalate/g4e/-/blob/master/src/main_detectors/DetectorConfig.hh
+.. _Geant4 multithreading: https://twiki.cern.ch/twiki/bin/view/Geant4/QuickMigrationGuideForGeant4V10

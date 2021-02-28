@@ -2,8 +2,9 @@ Python Orchestration
 ====================
 
 G4E provides Python orchestration library 'g4epy' which is a thin wrapper around g4e executable.
-**g4epy** allows to configure G4E run in python and then (when run() method is executed) creates appropriate
-Geant4 macro file and runs **g4e** executable with right flags.
+
+**g4epy** allows to configure G4E run in python. When **run()** method is executed, the appropriate
+Geant4 macro file is created and **g4e** executable is run with the right flags.
 
 Example configuration
 
@@ -13,8 +14,8 @@ Example configuration
 
     g4e = Geant4Eic(beamline='ip6')
 
-    # Extension is omitted here
-    # g4e creates several files with this name and different extensions
+    # Set output file names. Extension is omitted here as g4e creates
+    # several files with this name and different extensions
     g4e.output('work/g4e_emcal')
 
     # (!) g4e.py will automatically identify the file format
@@ -23,7 +24,7 @@ Example configuration
     g4e.beam_on(1000)   # Process 1000 events
     g4e.run()           # Runs G4E with the above configuration
 
-Functions can be stacked. The same configuration:
+Functions can be stacked. The same configuration can be written as:
 
 .. code:: python
 
@@ -49,7 +50,7 @@ Functions can be stacked. The same configuration:
     g4e.vis()        # <== enable Geant4 GUI
     g4e.run()
 
-**command** function allows to add any Geant4 macro commands. Might be just one command or a list
+**command()** function allows to add any custom Geant4 macro commands. Might be a string or a list
 
 .. code:: python
 
@@ -79,7 +80,7 @@ Functions:
   - **is_batch** : True - no GUI, False - Geant4 event display
   - **thread_count** : Number of Threads (parallel workers)
 
-- command(value)->self - executes Geant4 macro command/s
+- **command(value)**->self - executes Geant4 macro command/s
 
   if value:
 

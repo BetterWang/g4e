@@ -67,6 +67,7 @@ public:
     ce_EMCAL_Design(ce_EMCAL_Config& cfg, g4e::InitializationContext *init):
         ConstructionConfig(cfg)
     {
+
     }
 
     inline void Construct(G4Material *worldMaterial, G4VPhysicalVolume *motherVolume)

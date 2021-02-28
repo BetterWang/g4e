@@ -197,10 +197,6 @@ spack-configure-args.txt
 
 *.odg#
 
-examples/cone_particle_gun.run.json
 
-examples/cone_particle_gun.run.mac
-
-examples/event_display.run.json
-
-examples/event_display.run.mac
+examples/*.run.mac
+examples/*.json

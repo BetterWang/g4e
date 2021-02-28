@@ -312,9 +312,35 @@ Example of usage:
 
   (!) While users can create their UserSteppingAction it is recommended to use SensitiveDetector-a instead
 
+
 7. ROOT output format
+~~~~~~~~~~~~~~~~~~~~~
+
+G4E creates "MainRootFile" - a root file which has TTree named 'events'.
+This tree contains flat aligned arrays with data described in `G4E output format <output>`_
+
+Subdetector designers may add their own trees with data (Trees names should correspond to subdetector name)
+or add branches following G4E flat data format. The former is recommended.
+
+One can get access to GetMainRootFile through `InitializationContext`_ . Example:
+
+.. code:: c++
+
+    class ce_EMCAL_Design
+    {
+    public:
+
+        ce_EMCAL_Design(g4e::InitializationContext *init):
+        {
+            TFile* output = init->RootManager->GetMainRootFile()
+            // ...
+        }
+
+Example of adding detector data to flat output tree can be located here: `FlatIoCe_EMCAL`_
 
 
+
+.. -----------------------------------
 .. LINKS:
 
 .. _src/subdetectors: https://gitlab.com/eic/escalate/g4e/-/tree/master/src/subdetectors
@@ -328,3 +354,4 @@ Example of usage:
 .. _SingleSubdetectorConstruction: https://gitlab.com/eic/escalate/g4e/-/blob/master/src/main_detectors/SingleSubdetectorConstruction.cc
 .. _DetectorConfig: https://gitlab.com/eic/escalate/g4e/-/blob/master/src/main_detectors/DetectorConfig.hh
 .. _Geant4 multithreading: https://twiki.cern.ch/twiki/bin/view/Geant4/QuickMigrationGuideForGeant4V10
+.. _FlatIoCe_EMCAL: https://gitlab.com/eic/escalate/g4e/-/blob/master/src/root_output/FlatIoCe_EMCAL.hh

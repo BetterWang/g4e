@@ -98,8 +98,10 @@ int main(int argc, char **argv)
     g4e::MultiActionInitialization actionInit;
 
     // Event, tracking, stepping actions
-    actionInit.AddUserActionGenerator([&mainRootOutput](){return new ReferenceDetectorEventAction(mainRootOutput.GetJLeicRootOutput());});
-    actionInit.AddUserActionGenerator([&mainRootOutput](){return new ReferenceDetectorRunAction(mainRootOutput.GetJLeicRootOutput());});
+    actionInit.AddUserActionGenerator([&mainRootOutput](){return new ReferenceDetectorEventAction(
+            mainRootOutput.GetMainRootOutput());});
+    actionInit.AddUserActionGenerator([&mainRootOutput](){return new ReferenceDetectorRunAction(
+            mainRootOutput.GetMainRootOutput());});
     actionInit.AddUserActionGenerator([](){return new ReferenceDetectorTrackingAction();});
 
     // Eic physics list

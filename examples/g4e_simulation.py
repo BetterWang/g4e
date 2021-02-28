@@ -1,10 +1,10 @@
 from g4epy import Geant4Eic
 
-g4e = Geant4Eic(beamline='erhic')
+g4e = Geant4Eic(beamline='ip6')
 
 # Beagle provides beam energy information, but for the sake of simplicity we
-g4e.command(['/detsetup/eBeam 5',
-             '/detsetup/pBeam 50'
+g4e.command(['/eic/refdet/eBeam 5',
+             '/eic/refdet/pBeam 50'
              ])
 
 # To control how many generation of secondaries (tracks and their hits) to save,

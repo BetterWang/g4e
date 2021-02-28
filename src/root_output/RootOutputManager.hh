@@ -28,7 +28,7 @@ namespace g4e {
 
         TFile *GetMainRootFile() { return mRootFile; }
 
-        g4e::RootFlatIO* GetJLeicRootOutput() {return jleicRootOutput.get(); }
+        g4e::RootFlatIO* GetMainRootOutput() {return jleicRootOutput.get(); }
 
         ///
         /// \param usePreStepPoint - true PreStepPoint is used for Volume and Coords, false - PostStepPoint

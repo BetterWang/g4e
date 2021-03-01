@@ -27,6 +27,7 @@ Welcome to Geant 4 EIC's documentation!
    :maxdepth: 2
    :caption: How to:
 
+   g4e_13-14_migration
    howto_process_mc_files
 
 .. toctree::

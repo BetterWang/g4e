@@ -13,9 +13,9 @@
 #include "G4LogicalVolumeStore.hh"
 #include "G4SolidStore.hh"
 #include "G4ProductionCuts.hh"
-#include "G4VisAttributes.hh" 
+#include "G4VisAttributes.hh"
 #include "G4Colour.hh"
-#include "G4ios.hh" 
+#include "G4ios.hh"
 #include "G4SystemOfUnits.hh"
 
 // export geometry through VGM
@@ -546,7 +546,6 @@ G4VPhysicalVolume *ReferenceDetectorConstruction::Construct()
     //             ZDC
     //------------------------------------------------
     if (USE_FFI_ZDC) {
-
         if(beamLine == BeamLines::IP6) {
             fConfig.ffi_ZDC.Angle=-0.0125;
             fConfig.ffi_ZDC.rot_matx.rotateY(-fConfig.ffi_ZDC.Angle * rad);
@@ -563,10 +562,23 @@ G4VPhysicalVolume *ReferenceDetectorConstruction::Construct()
             fConfig.ffi_ZDC.Zpos = 4200 * cm;
             fConfig.ffi_ZDC.Xpos = 220 * cm;
         }
-        ffi_ZDC.Construct(fConfig.ffi_ZDC, World_Material, fWorldPhysical);
+        // ffi_ZDC.Construct(fConfig.ffi_ZDC, World_Material, fWorldPhysical);
         // if(USE_FFI_ZDC_CRYSTAL) { ffi_ZDC.ConstructTowels(1); }
         // else if(USE_FFI_ZDC_GLASS) { ffi_ZDC.ConstructTowels(0); }
         // else if(USE_FFI_ZDC_ALICE) {  ffi_ZDC.ConstructALICE(); }
+        if (USE_FFI_ZDC_ALICE) {
+            std::cout << "  --> QW!! Using ALICE ZDC ";
+            if (USE_FFI_ZDC_ALICE_ABSORBER) {
+                fConfig.ffi_ZDC.bAliceAbsorber = true;
+                std::cout << "with absorber" << std::endl;
+            } else {
+                fConfig.ffi_ZDC.bAliceAbsorber = false;
+                std::cout << "without absorber" << std::endl;
+            }
+            ffi_ZDC.ConstructALICEPrototype(fConfig.ffi_ZDC, World_Material, fWorldPhysical);
+        } else {
+            ffi_ZDC.Construct(fConfig.ffi_ZDC, World_Material, fWorldPhysical);
+        }
     } // end ffi_ZDC
 
     if (USE_FFI_RPOT_D2 ) {  //---- First Roman Pot
@@ -828,24 +840,31 @@ void ReferenceDetectorConstruction::ConstructSDandField()
         if (ffe_LOWQ2.BPC_Logic) SetSensitiveDetector(ffe_LOWQ2.BPC_Logic->GetName(), fCalorimeterSD);
     }
 
+    if (USE_FFI_ZDC) {
+        if (USE_FFI_ZDC_ALICE) {
+            if ( fConfig.ffi_ZDC.bAliceAbsorber ) ffi_ZDC.ffi_ZDC_HCAL_Logic->SetSensitiveDetector(fCalorimeterSD);
+            ffi_ZDC.ffi_ZDC_SCI_Logic->SetSensitiveDetector(fCalorimeterSD);
+        }
+    }
+
     //=========================================================================
     //                    VOLUME ENTER ACTIONS
     //=========================================================================
 
     if(USE_FFI_ZDC) { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_ZDC.Phys);}
     //  fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D2.lay_Phys[0]);
-    if(USE_FFI_RPOT_D2)   { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D2.Phys);}
-    if(USE_FFI_RPOT_D3)   { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D3.Phys);}
-    if(USE_FFI_OFFM_TRK)  { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_OFFM_TRK.Phys);}
-    if(USE_FFI_OFFM_TRK2) { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_OFFM_TRK2.Phys);}
-    if(USE_FFI_NEG_TRK)   { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_NEG_TRK.Phys);}
-    if(USE_FI_B0_TRK)     { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->fi_B0_TRK.Phys);}
-    if(USE_CI_GEM)        { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ci_GEM.Phys);}
-    if(USE_CI_TRD)        { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ci_TRD.Phys);}
-    if(USE_CB_CTD)        { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->cb_CTD.Phys);}
-    if(USE_CE_GEM)        { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ce_GEM.PhysicalVolume);}
-    if(USE_CE_EMCAL)      { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ce_EMCAL.Phys);}
-    if(USE_CI_HCAL)       { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ci_HCAL.Phys);}
+//    if(USE_FFI_RPOT_D2)   { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D2.Phys);}
+//    if(USE_FFI_RPOT_D3)   { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_RPOT_D3.Phys);}
+//    if(USE_FFI_OFFM_TRK)  { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_OFFM_TRK.Phys);}
+//    if(USE_FFI_OFFM_TRK2) { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_OFFM_TRK2.Phys);}
+//    if(USE_FFI_NEG_TRK)   { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ffi_NEG_TRK.Phys);}
+//    if(USE_FI_B0_TRK)     { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->fi_B0_TRK.Phys);}
+//    if(USE_CI_GEM)        { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ci_GEM.Phys);}
+//    if(USE_CI_TRD)        { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ci_TRD.Phys);}
+//    if(USE_CB_CTD)        { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->cb_CTD.Phys);}
+//    if(USE_CE_GEM)        { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ce_GEM.PhysicalVolume);}
+//    if(USE_CE_EMCAL)      { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ce_EMCAL.Phys);}
+//    if(USE_CI_HCAL)       { fInitContext->ActionInitialization->OnEnterVolumeWriteHit(this->ci_HCAL.Phys);}
 
     // fIonLineMagnets->CreateMagneticFiles();
     // fElectronLineMagnets->CreateMagneticFiles();

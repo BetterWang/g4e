@@ -30,6 +30,7 @@ struct ffi_ZDC_Config {
   int NtowersX=20;
   int NtowersY=20;
 
+  bool bAliceAbsorber = true;
 };
 
 
@@ -47,18 +48,33 @@ public:
         Phys = new G4PVPlacement(G4Transform3D(cfg.rot_matx,G4ThreeVector(cfg.Xpos,0,cfg.Zpos)), "ffi_ZDC_GVol_Phys", Logic, motherVolume, false, 0);
 
         // ffi_ZDC_GVol_Logic->SetVisAttributes(G4VisAttributes::Invisible);
-	
+
         G4VisAttributes *visAttr = new G4VisAttributes(G4Color(0.1, 0, 1., 0.1));
         visAttr->SetLineWidth(1);
         visAttr->SetForceSolid(true);
         Logic->SetVisAttributes(visAttr);
-	
+
     }
 
 
       inline void ConstructALICE() {
 	Geometry* alice = new Geometry();
 	alice->ConstructZDC(Phys);
+      }
+
+      inline void ConstructALICEPrototype(ffi_ZDC_Config cfg, G4Material *worldMaterial, G4VPhysicalVolume *motherVolume) {
+          std::cout << " --> Construct ALICE ZDC Prototype Width = " << cfg.Width << " Thickness = " << cfg.Thickness << " rotation = " << cfg.rot_matx << std::endl;
+          Solid = new G4Box("ffi_ZDC_GVol_Solid", cfg.Width*0.5 , cfg.Width *0.5, cfg.Thickness *0.5);
+          Logic = new G4LogicalVolume(Solid, worldMaterial, "ffi_ZDC_GVol_Logic");
+          G4VisAttributes *visAttr = new G4VisAttributes(false);
+          Logic->SetVisAttributes(visAttr);
+          Phys = new G4PVPlacement(G4Transform3D(cfg.rot_matx,G4ThreeVector(cfg.Xpos,0,cfg.Zpos)), "ffi_ZDC_GVol_Phys", Logic, motherVolume, false, 0);
+
+          Geometry* alice = new Geometry(cfg.bAliceAbsorber);
+
+          alice->ConstructZDCPrototype(Phys);
+          ffi_ZDC_HCAL_Logic = alice->GetScoringVol_PAD();
+          ffi_ZDC_SCI_Logic  = alice->GetScoringVol_SCI();
       }
 
       inline void ConstructTowels(int Type) {
@@ -91,7 +107,7 @@ public:
 
           // Crystals
 
-          ffi_ZDC_HCAL_InnerR = 0. * cm; 
+          ffi_ZDC_HCAL_InnerR = 0. * cm;
           G4double y_C = 0;
           G4double x_C;
           ffi_ZDC_HCAL_PosZ = -cfg.Thickness / 2 + ffi_ZDC_HCAL_Thickness / 2 +2*mm;
@@ -102,16 +118,16 @@ public:
               if(j==0) {y_C=cfg.Width/2.-ffi_ZDC_HCAL_Width/2. - ffi_ZDC_HCAL_Gap;}
 	      else { y_C -= (ffi_ZDC_HCAL_Width + ffi_ZDC_HCAL_Gap);}
 
-              if( abs(y_C+ffi_ZDC_HCAL_Width/2.) > cfg.Width/2) continue; 
+              if( abs(y_C+ffi_ZDC_HCAL_Width/2.) > cfg.Width/2) continue;
 
-              
+
               x_C = cfg.Width/2.-(ffi_ZDC_HCAL_Width + ffi_ZDC_HCAL_Gap) * 0.5;
 
               for (int i = 0; i <  cfg.NtowersY; i++) {
 
 		if (i > 0)  x_C  -= (ffi_ZDC_HCAL_Width + ffi_ZDC_HCAL_Gap);
 
-                 if (abs(x_C +ffi_ZDC_HCAL_Width/2.  ) >  cfg.Width/2.) continue; 
+                 if (abs(x_C +ffi_ZDC_HCAL_Width/2.  ) >  cfg.Width/2.) continue;
 
                        printf("EMCALLL::k=%d  j=%d i =%d x=%f, y=%f   \n ",k, j,i, x_C,y_C );
 
@@ -122,7 +138,7 @@ public:
 		      //  printf("ffi_ZDC_HCAL::k=%d  j=%d i =%d x=%f, y=%f  R=%f ffi_ZDC_HCAL_InnerR=%f \n ",k, j,i, x_C,y_C, R, ffi_ZDC_HCAL_InnerR);
 
 	      }
-    
+
 	  }
 
       };
@@ -136,6 +152,7 @@ public:
     ffi_ZDC_Config  ConstructionConfig;
     G4Box *ffi_ZDC_HCAL_Solid;
     G4LogicalVolume *ffi_ZDC_HCAL_Logic;
+    G4LogicalVolume *ffi_ZDC_SCI_Logic;
 
 
 private:

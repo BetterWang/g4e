@@ -1,0 +1,5 @@
+/vis/viewer/set/viewpointThetaPhi 90. 0.
+/vis/viewer/panTo -3800 0 cm
+/vis/viewer/set/viewpointThetaPhi -30. -30.
+/vis/viewer/set/background 0.5 0.5 0.5
+

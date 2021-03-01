@@ -38,13 +38,24 @@ jleic.mac                 refdet.mac
 jleicvis.mac              refdet.vis.mac
 ========================  ==================
 
+If previously many macro files started with executing jleic.mac or jleicvis.mac now they need to be changed to refdet.mac and refdet.vis.mac.
+
+.. code:: yaml
+
+   # Beginning of file 
+   /control/execute jleic.mac    # Old (!) will not work (!)
+
+   # Use refdet.mac for headless mode or refdet.vis.mac for GUI visualization
+   /control/execute refdet.mac   # New
+
+
 Look at `examples macro and python scripts`_
 
 3. JLeic* classes where renamed to ReferenceDetector* classes. For example JLeicDetectorConstruction now is named ReferenceDetectorConstruction. Look at `main_detectors`_
 
 4. All sensitive are now created in ConstructSDandField() according to Geant4 multithreading model. 
 
-5. Output data format has several new fields. The format is backward compatible (no previous fields changed or removed). `The description is here <output>`_
+5. Output data format has several new fields. The format is backward compatible (no previous fields changed or removed). Look at `output`_ section
 
 
 .. _examples macro and python scripts: https://gitlab.com/eic/escalate/g4e/-/tree/master/examples

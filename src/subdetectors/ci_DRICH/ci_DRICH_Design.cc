@@ -80,7 +80,7 @@ void ci_DRICH_Design::ConstructDetectors() {
 
         if(dLV->GetName() == "ci_DRICH_aerogel") {
             G4VisAttributes *visAttr = new G4VisAttributes(G4Color(0.0, 0.5, 5., 0.5));
-            visAttr->SetForceCloud();
+            visAttr->SetForceSolid();
             visAttr->SetVisibility(true);
             dLV->SetVisAttributes(visAttr);
         }

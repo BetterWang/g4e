@@ -31,13 +31,11 @@ void g4e::GeometryExport::Export(const std::string& fileBaseName, G4VPhysicalVol
     auto rootFileName = fileBaseName + ".geo.root";
     auto gdmlFileName = fileBaseName + ".geo.gdml";
 
-
-
     // Export geometry in Root and save it in a file
     // Import Geant4 geometry to VGM
     Geant4GM::Factory g4Factory;
 
-    g4Factory.SetDebug(1);
+    g4Factory.SetDebug(0);
     g4Factory.Import(motherVolume);
 
     if(!gGeoManager) {

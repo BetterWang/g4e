@@ -31,8 +31,8 @@
 #include "CommonCalorimeterHit.hh"
 #include "CommonVertexHit.hh"
 
-#include "subdetectors/ce_EMCAL/JLeicCe_emcalDigiHit.hh"
-#include "subdetectors/ce_EMCAL/JLeicCe_emcalHit.hh"
+#include "subdetectors/ce_EMCAL/ce_EMCAL_DigiHit.hh"
+#include "subdetectors/ce_EMCAL/ce_EMCAL_Hit.hh"
 
 
 #include "G4Event.hh"
@@ -136,14 +136,14 @@ void ReferenceDetectorEventAction::EndOfEventAction(const G4Event *evt)
 
 
     if (hitCollectionCe_emcal) {
-        JLeicCe_emcalHit *aHit;
-        JLeicCe_emcalDigiHit *dHit;
+        ce_EMCAL_Hit *aHit;
+        ce_EMCAL_DigiHit *dHit;
         int nhitC = hitCollectionCe_emcal->GetSize();
 
         for (int i = 0; i < nhitC; i++) {
 
             aHit = (*hitCollectionCe_emcal)[i];
-            JLeicCe_emcalDigiHit *dHit2 = dHit->JLeicCe_emcalDigi(aHit);
+            ce_EMCAL_DigiHit *dHit2 = dHit->CreateHit(aHit);
             string name_det = dHit2->GetDetName();
             double Etot_crs = dHit2->GetEdep();
             int Npe = dHit2->GetNpe();

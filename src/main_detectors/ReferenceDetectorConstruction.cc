@@ -3,7 +3,7 @@
 #include "ReferenceDetectorConstruction.hh"
 #include "CommonCalorimeterSD.hh"
 #include "CommonVertexSD.hh"
-#include "subdetectors/ce_EMCAL/JLeicCe_emcalSD.hh"
+#include "subdetectors/ce_EMCAL/ce_EMCAL_SD.hh"
 
 #include "G4SDManager.hh"
 #include "G4GeometryManager.hh"
@@ -704,7 +704,7 @@ void ReferenceDetectorConstruction::ConstructSDandField()
 
     auto fCalorimeterSD = new CommonCalorimeterSD("CalorSD", fInitContext->RootManager);
     auto fVertexSD = new CommonVertexSD("VertexSD", fInitContext->RootManager, this);
-    auto fCe_emcalSD = new JLeicCe_emcalSD("Ce_emcalSD", fInitContext->RootManager, this);
+    auto fCe_emcalSD = new ce_EMCAL_SD("Ce_emcalSD", fInitContext->RootManager, this);
 
     if (USE_BARREL && USE_BARREL_DETECTORS)  {
 

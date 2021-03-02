@@ -64,22 +64,22 @@
 #include "fi_B0_TRK/fi_B0_TRK.hh"       // Far-forward Ion D1  - Tracking
 #include "fi_B0_EMCAL/fi_B0_EMCAL.hh"   // Far-forward Ion D1  - EMCAL
 
-#include "ffi_OFFM_TRK/ffi_OFFM_TRK.hh"  // Far-forward off-momentum - Tracking after B1( JLEIC Second  big dipole )
+#include "ffi_OFFM_TRK/ffi_OFFM_TRK.hh"    // Far-forward off-momentum - Tracking after B1( JLEIC Second  big dipole )
 #include "ffi_OFFM_TRK2/ffi_OFFM_TRK2.hh"  //  virtual plane 
-#include "ffi_NEG_TRK/ffi_NEG_TRK.hh"  // Far-forward for negative particles from decays -Lambda
-#include "ffi_ZDC/ffi_ZDC.hh"           // Far-forward Ion   - HCAL ZDC
-#include "ffi_RPOT_D2/ffi_RPOT_D2.hh"   // Far-forward Ion   - RomanPots system
-#include "ffi_RPOT_D3/ffi_RPOT_D3.hh"   // Far-forward Ion   - RomanPots system
+#include "ffi_NEG_TRK/ffi_NEG_TRK.hh"      // Far-forward for negative particles from decays -Lambda
+#include "ffi_ZDC/ffi_ZDC.hh"              // Far-forward Ion   - HCAL ZDC
+#include "ffi_RPOT_D2/ffi_RPOT_D2.hh"      // Far-forward Ion   - RomanPots system
+#include "ffi_RPOT_D3/ffi_RPOT_D3.hh"      // Far-forward Ion   - RomanPots system
 
 //---------Beam lattice ----------
 //#include "ir_Lattice/ir_Lattice.hh"         // IR Lattice import from file
 #include "ir_Lattice/QuadrupoleMagnet.hh"     // New IR Lattice import from file
 #include "ir_Lattice/AcceleratorMagnets.hh"   // New IR Lattice import from file
-#include "ir_Beampipe/ir_Beampipe_Design.hh"         // IR Lattice import from file
+#include "ir_Beampipe/ir_Beampipe_Design.hh"  // IR Lattice import from file
 
 
 class CommonCalorimeterSD;
-class JLeicCe_emcalSD;
+class ce_EMCAL_SD;
 class ReferenceDetectorMessenger;
 class CommonVertexSD;
 

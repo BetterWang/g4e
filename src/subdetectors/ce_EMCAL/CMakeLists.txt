@@ -1,11 +1,11 @@
 target_sources_local(g4e
         PRIVATE
-        JLeicCe_emcalDigiHit.cc
-        JLeicCe_emcalDigiHit.hh
-        JLeicCe_emcalHit.cc
-        JLeicCe_emcalHit.hh
-        JLeicCe_emcalSD.cc
-        JLeicCe_emcalSD.hh
+        ce_EMCAL_DigiHit.cc
+        ce_EMCAL_DigiHit.hh
+        ce_EMCAL_Hit.cc
+        ce_EMCAL_Hit.hh
+        ce_EMCAL_SD.cc
+        ce_EMCAL_SD.hh
         ce_EMCAL.hh
         )
 

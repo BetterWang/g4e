@@ -65,7 +65,7 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
 
     if(process) {
         process_int = (int)process->GetProcessType();
-        std::cout << "  --> QW debug process type = " << process_int << " process name = " << process->GetProcessName() << std::endl;
+        //std::cout << "  --> QW debug process type = " << process_int << " process name = " << process->GetProcessName() << std::endl;
     }
 
     auto info = dynamic_cast<JLeicTrackInformation*>(track->GetUserInformation());

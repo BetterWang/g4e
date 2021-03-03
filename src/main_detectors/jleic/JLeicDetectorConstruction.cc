@@ -718,9 +718,6 @@ void JLeicDetectorConstruction::SetUpJLEIC2019()
         } else {
             ffi_ZDC.Construct(fConfig.ffi_ZDC, World_Material, World_Phys);
         }
-        // Write enter volume like hits
-	       //           if (ffi_ZDC.ffi_ZDC_HCAL_Logic) ffi_ZDC.ffi_ZDC_HCAL_Logic->SetSensitiveDetector(fCalorimeterSD);
-
 
     } // end ffi_ZDC
 

@@ -121,11 +121,11 @@ void EicPhysicsList::SetCuts()
     }
     // set cut values for gamma at first and for e- second and next for e+,
     // because some processes for e+/e- need cut values for gamma
-    printf(" Set cuts for XTR processes: gamma=%f, e- = %f (%p) , e+ = %f, \n", cutForGamma, &cutForGamma, cutForElectron, cutForPositron);
+    //printf(" Set cuts for XTR processes: gamma=%f, e- = %f (%p) , e+ = %f, \n", cutForGamma, &cutForGamma, cutForElectron, cutForPositron);
 
-    SetCutValue(cutForGamma, "gamma", "DefaultRegionForTheWorld");
-    SetCutValue(cutForElectron, "e-", "DefaultRegionForTheWorld");
-    SetCutValue(cutForPositron, "e+", "DefaultRegionForTheWorld");
+    //SetCutValue(cutForGamma, "gamma", "DefaultRegionForTheWorld");
+    //SetCutValue(cutForElectron, "e-", "DefaultRegionForTheWorld");
+    //SetCutValue(cutForPositron, "e+", "DefaultRegionForTheWorld");
 
     // XTRphys->SetCuts();  // Doesn't affect anything
 

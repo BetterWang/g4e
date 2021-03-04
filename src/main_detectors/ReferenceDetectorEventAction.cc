@@ -74,7 +74,7 @@ void ReferenceDetectorEventAction::BeginOfEventAction(const G4Event *evt)
 
     if (Ce_emcalCollID == -1) {
         G4SDManager *SDman = G4SDManager::GetSDMpointer();
-        Ce_emcalCollID = SDman->GetCollectionID("Ce_emcalCollection");
+        Ce_emcalCollID = SDman->GetCollectionID("ce_EMCAL_HitCollection");
     }
 
 

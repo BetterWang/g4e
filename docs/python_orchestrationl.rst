@@ -93,7 +93,7 @@ Functions:
 
   All visualization commands should be used after vis() as it does driver activation
 
-  .. code:: yaml
+  .. code:: python
 
      # (!)  no effect, set before vis()
      g4e.command('/vis/geometry/set/visibility World_Logic -1 0')

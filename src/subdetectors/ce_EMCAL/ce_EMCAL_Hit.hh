@@ -126,30 +126,27 @@ public:
 
     void SetCopyNumber(G4int copyNumber) { mCopyNumber = copyNumber; }
     G4int GetCopyNumber() {return mCopyNumber;}
-
-
-
 };
 
 
-typedef G4THitsCollection<ce_EMCAL_Hit> JLeicCe_emcalHitsCollection;
+typedef G4THitsCollection<ce_EMCAL_Hit> ce_EMCAL_HitsCollection;
 
-extern G4ThreadLocal G4Allocator<ce_EMCAL_Hit> *JLeicCe_emcalHitAllocator;
+extern G4ThreadLocal G4Allocator<ce_EMCAL_Hit> *ce_EMCAL_HitAllocator;
 
 
 inline void *ce_EMCAL_Hit::operator new(size_t)
 {
     void *aHit;
-    if (!JLeicCe_emcalHitAllocator) JLeicCe_emcalHitAllocator = new G4Allocator<ce_EMCAL_Hit>();
-    aHit = (void *) JLeicCe_emcalHitAllocator->MallocSingle();
+    if (!ce_EMCAL_HitAllocator) ce_EMCAL_HitAllocator = new G4Allocator<ce_EMCAL_Hit>();
+    aHit = (void *) ce_EMCAL_HitAllocator->MallocSingle();
     return aHit;
 }
 
 
 inline void ce_EMCAL_Hit::operator delete(void *aHit)
 {
-    if (!JLeicCe_emcalHitAllocator) JLeicCe_emcalHitAllocator = new G4Allocator<ce_EMCAL_Hit>();
-    JLeicCe_emcalHitAllocator->FreeSingle((ce_EMCAL_Hit *) aHit);
+    if (!ce_EMCAL_HitAllocator) ce_EMCAL_HitAllocator = new G4Allocator<ce_EMCAL_Hit>();
+    ce_EMCAL_HitAllocator->FreeSingle((ce_EMCAL_Hit *) aHit);
 }
 
 #endif

@@ -2,7 +2,7 @@
 
 // Using G4ThreadLocal external JLeicCe_emcalHitAllocator as was suggested in
 //
-G4ThreadLocal G4Allocator<ce_EMCAL_Hit>* JLeicCe_emcalHitAllocator = nullptr;
+G4ThreadLocal G4Allocator<ce_EMCAL_Hit>* ce_EMCAL_HitAllocator = nullptr;
 
 
 ce_EMCAL_Hit::ce_EMCAL_Hit()

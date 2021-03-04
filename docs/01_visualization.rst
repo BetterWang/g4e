@@ -19,7 +19,7 @@ Macro file:
 .. code::
 
    /control/execute refdet.vis.mac
-   /detsetup/beamlineName erhic
+   /eic/beamline/name ip6
    /generator/select beagle
    /generator/beagle/open /home/romanov/eic/data/eC_10x110_GCF_QE_Egaus_noINC_withcross.txt
    /run/initialize

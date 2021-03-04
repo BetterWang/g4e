@@ -90,6 +90,20 @@ Functions:
 
 - **source(source_file)**->self - sets source file names. Might be a list
 - **vis(run_vis=True)**->self - Sets visualization display Geant4 GUI
+
+  All visualization commands should be used after vis() as it does driver activation
+
+  .. code:: yaml
+
+     # (!)  no effect, set before vis()
+     g4e.command('/vis/geometry/set/visibility World_Logic -1 0')
+
+     # Visualization driver is opened here
+     g4e.vis()
+
+     # Now it will work
+     g4e.command('/vis/geometry/set/visibility World_Logic -1 0')
+
 - **batch(run_batch=True)**->self - Sets if Geant runs in batch (no visualization) mode
 - **threads(thread_count)**->self - Sets the number of working threads
 - **get_run_command()**->self - Returns the command that will be used to run g4e

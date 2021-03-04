@@ -228,9 +228,10 @@ private:
 
     //  E - E N D C A P
     //==============================================
-    ce_GEM_Design   ce_GEM;    // GEM volume
-    ce_MRICH_Design ce_MRICH;  // MRICH volume
-    ce_EMCAL_Design ce_EMCAL;  // EMCAL volume
+    ce_GEM_Design   ce_GEM;                 // GEM volume
+    ce_MRICH_Design ce_MRICH;               // MRICH volume
+    ce_EMCAL_Design ce_EMCAL;               // EMCAL volume
+    G4Cache<ce_EMCAL_SD *> fCe_EMCAL_SD;    // EMCAL sensitive
 
     // I O N  -  E N D C A P
     //==============================================
@@ -288,12 +289,13 @@ private:
     g4e::Materials *fMat;
     g4e::InitializationContext *fInitContext;
     ReferenceDetectorMessenger *fDetectorMessenger;
-    // CommonCalorimeterSD *fCalorimeterSD;
-    // CommonVertexSD *fVertexSD;
-    //JLeicCe_emcalSD *fCe_emcalSD;
     G4VPhysicalVolume *fPhysicsAbsorber;
     AcceleratorMagnets* fElectronLineMagnets;
     AcceleratorMagnets* fIonLineMagnets;
+
+    // Common sensitive detectors
+    G4Cache<CommonCalorimeterSD *> fCalorimeterSD;    // Common EMCAL sensitive
+    G4Cache<CommonVertexSD *> fVertexSD;              // Common Vertex sensitive
 };
 
 inline void ReferenceDetectorConstruction::PrintGeometryParameters()

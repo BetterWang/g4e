@@ -1,68 +1,39 @@
 #include <stdio.h>
-#include "G4UserRunAction.hh"
+
 #include "ce_EMCAL_SD.hh"
 #include "ce_EMCAL_Hit.hh"
 #include "ce_EMCAL_DigiHit.hh"
 
-#include "G4VTouchable.hh"
-#include "G4TouchableHistory.hh"
-#include "G4SDManager.hh"
-#include "G4SystemOfUnits.hh"
+#include <G4VTouchable.hh>
+#include <G4TouchableHistory.hh>
+#include <G4SDManager.hh>
+#include <G4SystemOfUnits.hh>
+#include <G4Box.hh>
 
 
-ce_EMCAL_SD::ce_EMCAL_SD(G4String name, g4e::RootOutputManager *rootManager, ReferenceDetectorConstruction *det) :
+ce_EMCAL_SD::ce_EMCAL_SD(G4String name, g4e::RootOutputManager *rootManager) :
         G4VSensitiveDetector(name),
-        Detector(det),
-        mRootEventsOut(rootManager) {
-    if (mVerbose) {
-        printf("JLeicCe_emcalSD()::constructor  enter\n");
-    }
+        fRootManager(rootManager) {
 
-    collectionName.insert("Ce_emcalCollection");
-    //  collectionName.insert("Ce_emcalDigiCollection");
-    printf("--> JLeicCe_emcalSD::Constructor(%s) \n", name.c_str());
-
-
-}
-
-
-ce_EMCAL_SD::~ce_EMCAL_SD() {
-
-    /*
-      if(mHitsFile)
-      {
-          mHitsFile->cd();
-          mRootEventsOut.Write();
-          mHitsFile->Close();
-      }
-    */
-
-    printf("JLeicCe_emcalSD():: Done ...  \n");
+    collectionName.insert("ce_EMCAL_HitCollection");
 }
 
 
 void ce_EMCAL_SD::Initialize(G4HCofThisEvent *) {
-    if (mVerbose > 2) {
-        printf("JLeicCe_emcalSD()::Initialize\n");
+    if (fVerbose > 2) {
+        G4cout<<"ce_EMCAL_SD()::Initialize\n";
     }
 
-    Ce_emcalCollection = new JLeicCe_emcalHitsCollection(SensitiveDetectorName, collectionName[0]);
-    //  Ce_emcalDigiCollection = new JLeicCe_emcalDigiHitCollection(SensitiveDetectorName, collectionName[1]);
-
-    mHitsCount = 0;
-    spdlog::debug("JLeicCe_emcalSD()::Initialize exit\n");
-
-    // cout << "INIZIO Ci EMCAL SD"<<endl;
+    fHitsCollection = new ce_EMCAL_HitsCollection(SensitiveDetectorName, collectionName[0]);
+    fHitsCount = 0;
 }
 
 
 G4bool ce_EMCAL_SD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
-    if (mVerbose > 2) printf("--> JLeicCe_emcalSD::ProcessHits() Enter\n");
+    if (fVerbose > 2) {
+        G4cout<<"ce_EMCAL_SD()::ProcessHits\n";
+    }
 
-    //     cout << "JLeicCe_emcalSD::ProcessHits()"<<endl;
-    //  const G4TouchableHandle touchablepre[128];
-
-    //  cout << aStep->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetName()<<endl;
     G4double stepl = 0.;
     if (aStep->GetTrack()->GetDefinition()->GetPDGCharge() != 0.) //-- gamma ??
         stepl = aStep->GetStepLength();
@@ -100,7 +71,7 @@ G4bool ce_EMCAL_SD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
     G4double zloc = (zinp + zend) / 2;
 
 
-    if (mVerbose > 2)
+    if (fVerbose > 2)
         printf("--> JLeicCe_emcalSD::ProcessHits() xloc=%f yloc=%f zloc=%f  copyIDy_pre=%d \n", xloc, yloc, zloc,
                copyIDy_pre);
 
@@ -113,7 +84,7 @@ G4bool ce_EMCAL_SD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
     G4TouchableHistory *theTouchable = (G4TouchableHistory *) (aStep->GetPreStepPoint()->GetTouchable());
 
 
-    if (mVerbose > 3)
+    if (fVerbose > 3)
         printf("--> JLeicCe_emcalSD::ProcessHits() Vol: 0=%s \n", theTouchable->GetVolume()->GetName().c_str());
 
     // process    track
@@ -146,9 +117,9 @@ G4bool ce_EMCAL_SD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
 
     std::string volumeName = theTouchable->GetVolume()->GetName();
 
-    mRootEventsOut->SaveStep(aStep, g4e::WriteStepPointChoices::PreStepPoint, copyIDx_pre, copyIDy_pre);
+    fRootManager->SaveStep(aStep, g4e::WriteStepPointChoices::PreStepPoint, copyIDx_pre, copyIDy_pre);
 
-    if (mVerbose > 2) printf("--> JLeicCe_emcalSD::ProcessHits() Exit\n");
+    if (fVerbose > 2) printf("--> JLeicCe_emcalSD::ProcessHits() Exit\n");
 
 
     G4StepPoint *prestep = aStep->GetPreStepPoint();
@@ -177,7 +148,7 @@ G4bool ce_EMCAL_SD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
     double z_half_det = box->GetZHalfLength();
 
 
-    ce_EMCAL_Hit *thisHit2 = find_existing_hit(name);
+    ce_EMCAL_Hit *thisHit2 = FindExistingHit(name);
 
     if (!thisHit2) {
 
@@ -201,7 +172,7 @@ G4bool ce_EMCAL_SD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
         thisHit->SetZHalfLength(z_half_det);
 
         thisHit->SetPid(PDG);
-        Ce_emcalCollection->insert(thisHit);
+        fHitsCollection->insert(thisHit);
 
     } else {
 
@@ -211,11 +182,7 @@ G4bool ce_EMCAL_SD::ProcessHits(G4Step *aStep, G4TouchableHistory *) {
         thisHit2->SetEdep(edep / MeV);
         thisHit2->SetCharge(q);
         thisHit2->SetDx(Dx);
-
-
         thisHit2->SetPid(PDG);
-
-
     }
 
 
@@ -227,7 +194,7 @@ void ce_EMCAL_SD::EndOfEvent(G4HCofThisEvent *HCE) {
 
     static G4int HCID = -1;
     if (HCID < 0) { HCID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]); }
-    HCE->AddHitsCollection(HCID, Ce_emcalCollection);
+    HCE->AddHitsCollection(HCID, fHitsCollection);
     //printf("--> JLeicCe_emcalSD::EndOfEvent() \n");
     // Total hits/steps per event. Set it back to 0
     /*
@@ -290,19 +257,18 @@ void ce_EMCAL_SD::EndOfEvent(G4HCofThisEvent *HCE) {
 
 
 void ce_EMCAL_SD::clear() {
-    printf("--> JLeicCe_emcalSD::clear() \n");
 }
 
 
 void ce_EMCAL_SD::PrintAll() {
-    printf("--> JLeicCe_emcalSD::PrintAll() \n");
+
 
 }
 
 
-ce_EMCAL_Hit *ce_EMCAL_SD::find_existing_hit(string PID)  ///< returns hit collection hit inside identifer
+ce_EMCAL_Hit *ce_EMCAL_SD::FindExistingHit(string PID)  ///< returns hit collection hit inside identifier
 {
-    for (unsigned int i = 0; i < Ce_emcalCollection->GetSize(); i++)
-        if ((*Ce_emcalCollection)[i]->GetDetName() == PID) return (*Ce_emcalCollection)[i];
-    return NULL;
+    for (size_t i = 0; i < fHitsCollection->GetSize(); i++)
+        if ((*fHitsCollection)[i]->GetDetName() == PID) return (*fHitsCollection)[i];
+    return nullptr;
 }

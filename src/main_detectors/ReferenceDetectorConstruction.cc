@@ -700,11 +700,27 @@ void ReferenceDetectorConstruction::ConstructSDandField()
     //                    Sensitive detectors
     //=========================================================================
 
-    G4SDManager *SDman = G4SDManager::GetSDMpointer();
+    G4SDManager *sdManager = G4SDManager::GetSDMpointer();
 
-    auto fCalorimeterSD = new CommonCalorimeterSD("CalorSD", fInitContext->RootManager);
-    auto fVertexSD = new CommonVertexSD("VertexSD", fInitContext->RootManager, this);
-    auto fCe_emcalSD = new ce_EMCAL_SD("Ce_emcalSD", fInitContext->RootManager, this);
+    // common calorimeter SD
+    if (!fCalorimeterSD.Get()) {
+        fCalorimeterSD.Put(new CommonCalorimeterSD("CommonCalorimeterSD", fInitContext->RootManager));
+    }
+    sdManager->AddNewDetector(fCalorimeterSD.Get());
+
+    // Common vertex SD
+    if (!fVertexSD.Get()) {
+        fVertexSD.Put(new CommonVertexSD("CommonVertexSD", fInitContext->RootManager, this));
+    }
+    sdManager->AddNewDetector(fVertexSD.Get());
+
+    // Central electron calorimeter SD
+    if (!fCe_EMCAL_SD.Get()) {
+        auto ce_emcal_sd = new ce_EMCAL_SD("ce_EMCAL_SD", fInitContext->RootManager);
+        fCe_EMCAL_SD.Put(ce_emcal_sd);
+    }
+    sdManager->AddNewDetector(fCe_EMCAL_SD.Get());
+
 
     if (USE_BARREL && USE_BARREL_DETECTORS)  {
 
@@ -712,7 +728,7 @@ void ReferenceDetectorConstruction::ConstructSDandField()
         if (USE_CB_VTX && USE_CB_VTX_LADDERS) {
             for (size_t lay = 0; lay < cb_VTX.Lays.size(); lay++) {
                 if (cb_VTX.cb_VTX_ladder_Logic) {
-                    cb_VTX.cb_VTX_ladder_Logic[lay]->SetSensitiveDetector(fVertexSD);
+                    cb_VTX.cb_VTX_ladder_Logic[lay]->SetSensitiveDetector(fVertexSD.Get());
                 }
             }
 
@@ -723,7 +739,7 @@ void ReferenceDetectorConstruction::ConstructSDandField()
         //------------------------------------------------
         if (USE_CB_CTD && USE_CB_CTD_Si) {
                 for (int lay = 0; lay < fConfig.cb_CTD.SiLayerCount; lay++) {
-                    if(cb_CTD.SiLogics[lay]) cb_CTD.SiLogics[lay]->SetSensitiveDetector(fVertexSD);
+                    if(cb_CTD.SiLogics[lay]) cb_CTD.SiLogics[lay]->SetSensitiveDetector(fVertexSD.Get());
                 }
         } // end CTD detector
 
@@ -734,7 +750,7 @@ void ReferenceDetectorConstruction::ConstructSDandField()
         if (USE_CB_DIRC) {
             if (USE_CB_DIRC_bars) {
                 cb_DIRC.ConstructBars();
-                cb_DIRC.cb_DIRC_bars_Logic->SetSensitiveDetector(fCalorimeterSD);
+                cb_DIRC.cb_DIRC_bars_Logic->SetSensitiveDetector(fCalorimeterSD.Get());
             }
         } // end DIRC detector
 
@@ -743,7 +759,7 @@ void ReferenceDetectorConstruction::ConstructSDandField()
         //                    cb_EMCAL
         //------------------------------------------------
         if (USE_CB_EMCAL) {
-            cb_EMCAL.Logic->SetSensitiveDetector(fCalorimeterSD);
+            cb_EMCAL.Logic->SetSensitiveDetector(fCalorimeterSD.Get());
         }
     }  // end Barrel
 
@@ -756,14 +772,14 @@ void ReferenceDetectorConstruction::ConstructSDandField()
         // Hadron endcap GEM
         if (USE_CE_GEM) {
             for (int lay = 0; lay < fConfig.ce_GEM.Nlayers; lay++) {
-                SetSensitiveDetector(ce_GEM.Layers[lay].LogicName, fCalorimeterSD);
+                SetSensitiveDetector(ce_GEM.Layers[lay].LogicName, fCalorimeterSD.Get());
             }
         }
 
         //  CE_EMCAL
         if (USE_CE_EMCAL) {
-            ce_EMCAL.ce_EMCAL_detPWO_Logic->SetSensitiveDetector(fCe_emcalSD);
-            ce_EMCAL.ce_EMCAL_detGLASS_Logic->SetSensitiveDetector(fCe_emcalSD);
+            ce_EMCAL.ce_EMCAL_detPWO_Logic->SetSensitiveDetector(fCe_EMCAL_SD.Get());
+            ce_EMCAL.ce_EMCAL_detGLASS_Logic->SetSensitiveDetector(fCe_EMCAL_SD.Get());
         }
     } // USE_E_ENDCAP
 
@@ -773,59 +789,59 @@ void ReferenceDetectorConstruction::ConstructSDandField()
         // Hadron endcap GEM
         if (USE_CI_GEM) {
             for (int lay = 0; lay < fConfig.ci_GEM.Nlayers; lay++) {
-                if (ci_GEM.lay_Logic[lay]) ci_GEM.lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD);
+                if (ci_GEM.lay_Logic[lay]) ci_GEM.lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD.Get());
             }
         }
 
         // CI_EMCAL Hadron endcap
         //-----------------------
         if (USE_CI_EMCAL) {
-            ci_EMCAL.ci_EMCAL_det_Logic->SetSensitiveDetector(fCalorimeterSD);
+            ci_EMCAL.ci_EMCAL_det_Logic->SetSensitiveDetector(fCalorimeterSD.Get());
         }
     }
 
     //    Tracker at B0  ( D1a )
     if (USE_FI_B0_TRK) {
         for (int lay = 0; lay < fConfig.fi_B0_TRK.Nlayers; lay++) {
-            if (fi_B0_TRK.fi_B0_TRK_lay_Logic[lay]) fi_B0_TRK.fi_B0_TRK_lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD);
+            if (fi_B0_TRK.fi_B0_TRK_lay_Logic[lay]) fi_B0_TRK.fi_B0_TRK_lay_Logic[lay]->SetSensitiveDetector(fCalorimeterSD.Get());
         }
     }
 
     // OFF MOMENTUM TRK
     if (USE_FFI_OFFM_TRK) {
         for (int lay = 0; lay < fConfig.ffi_OFFM_TRK.Nlayers; lay++) {
-            if (ffi_OFFM_TRK.lay_Logic) ffi_OFFM_TRK.lay_Logic->SetSensitiveDetector(fCalorimeterSD);
+            if (ffi_OFFM_TRK.lay_Logic) ffi_OFFM_TRK.lay_Logic->SetSensitiveDetector(fCalorimeterSD.Get());
         }
         for (int lay = 0; lay < fConfig.ffi_OFFM_TRK2.Nlayers; lay++) {
-            if (ffi_OFFM_TRK2.lay_Logic) ffi_OFFM_TRK2.lay_Logic->SetSensitiveDetector(fCalorimeterSD);
+            if (ffi_OFFM_TRK2.lay_Logic) ffi_OFFM_TRK2.lay_Logic->SetSensitiveDetector(fCalorimeterSD.Get());
         }
     }
 
     // NEG TRK for Lambda decays
     if (USE_FFI_NEG_TRK) {
         for (int lay = 0; lay < fConfig.ffi_NEG_TRK.Nlayers; lay++) {
-            if (ffi_NEG_TRK.lay_Logic) ffi_NEG_TRK.lay_Logic->SetSensitiveDetector(fCalorimeterSD);
+            if (ffi_NEG_TRK.lay_Logic) ffi_NEG_TRK.lay_Logic->SetSensitiveDetector(fCalorimeterSD.Get());
         }
     }
 
     if (USE_FFI_RPOT_D2 ) {  //---- First Roman Pot
         for (int lay = 0; lay < fConfig.ffi_RPOT_D2.Nlayers; lay++) {
-            if (ffi_RPOT_D2.lay_Logic[lay]) ffi_RPOT_D2.lay_Logic[lay]->SetSensitiveDetector(fVertexSD);
+            if (ffi_RPOT_D2.lay_Logic[lay]) ffi_RPOT_D2.lay_Logic[lay]->SetSensitiveDetector(fVertexSD.Get());
         }
     }
 
     if (USE_FFI_RPOT_D3 ) {
         for (int lay = 0; lay < fConfig.ffi_RPOT_D3.Nlayers; lay++) {
-            if (ffi_RPOT_D3.lay_Logic[lay]) ffi_RPOT_D3.lay_Logic[lay]->SetSensitiveDetector(fVertexSD);
+            if (ffi_RPOT_D3.lay_Logic[lay]) ffi_RPOT_D3.lay_Logic[lay]->SetSensitiveDetector(fVertexSD.Get());
         }
     }
 
     // Low-Q2 tagger
     if (USE_FFE_LOWQ2) {
         for (int lay = 0; lay < fConfig.ffe_LOWQ2.Nlayers; lay++) {
-            if (ffe_LOWQ2.lay_Logic) SetSensitiveDetector(ffe_LOWQ2.Logic->GetName(), fCalorimeterSD );
+            if (ffe_LOWQ2.lay_Logic) SetSensitiveDetector(ffe_LOWQ2.Logic->GetName(), fCalorimeterSD.Get() );
         }
-        if (ffe_LOWQ2.BPC_Logic) SetSensitiveDetector(ffe_LOWQ2.BPC_Logic->GetName(), fCalorimeterSD);
+        if (ffe_LOWQ2.BPC_Logic) SetSensitiveDetector(ffe_LOWQ2.BPC_Logic->GetName(), fCalorimeterSD.Get());
     }
 
     //=========================================================================

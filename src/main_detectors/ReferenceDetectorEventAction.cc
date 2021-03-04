@@ -122,7 +122,7 @@ void ReferenceDetectorEventAction::EndOfEventAction(const G4Event *evt)
     G4HCofThisEvent *hitCollection = evt->GetHCofThisEvent();
 
     CommonCalorimeterHitsCollection *hitCollectionCalo = nullptr;
-    JLeicCe_emcalHitsCollection *hitCollectionCe_emcal = nullptr;
+    ce_EMCAL_HitsCollection *hitCollectionCe_emcal = nullptr;
 
 
     if (hitCollection && calorimeterCollID!=-1) {
@@ -131,7 +131,7 @@ void ReferenceDetectorEventAction::EndOfEventAction(const G4Event *evt)
 
     if(hitCollection && Ce_emcalCollID!=-1
     ) {
-        hitCollectionCe_emcal = (JLeicCe_emcalHitsCollection *) (hitCollection->GetHC(Ce_emcalCollID));
+        hitCollectionCe_emcal = (ce_EMCAL_HitsCollection *) (hitCollection->GetHC(Ce_emcalCollID));
     }
 
 

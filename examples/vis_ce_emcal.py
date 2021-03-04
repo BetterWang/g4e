@@ -21,7 +21,10 @@ g4e.command('/generator/coneParticleGun/number 10')                 # N particle
 
 # What is the output
 # g4e creates a bunch of files with this name and different extensions
-g4e.output('vis')
+g4e.output('vis_ce_emcal')
+
+# (!) Should be set prior giving any additional vis command
+g4e.vis()   # - SHOW EVENT DISPLAY
 
 # Next we will switch things on and off
 # /vis/geometry/set/visibility has 3 parameters:
@@ -98,9 +101,8 @@ g4e.command('/vis/viewer/clearCutawayPlanes')
 # There are a lot of particles
 g4e.command('/vis/ogl/set/displayListLimit 150000')
 
-g4e.vis()   # - SHOW EVENT DISPLAY (use less number of events)
-
 # Number of events to process
+# (use less number of events because of event display)
 g4e.beam_on(2)
 
 # This starts the simulation

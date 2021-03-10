@@ -11,21 +11,21 @@
 #include "StringHelpers.hh"
 
 #include "ConeParticleGun.hh"
-#include "ConeParticleGunHW.hh"
+#include "ConeParticleGunEta.hh"
 
 #include <spdlog/fmt/ostr.h>
 
 PrimaryGeneratorAction::PrimaryGeneratorAction(): G4VUserPrimaryGeneratorAction()
 {
     // default generator is particle gun.
-    fConeParticleGunHWGenerator = new ConeParticleGunHW();
+    fConeParticleGunHWGenerator = new ConeParticleGunEta();
     fConeParticleGunGenerator = new ConeParticleGun();
     fParticleGunGenerator = new G4ParticleGun();
     fHepMcAsciiGenerator = new HepMcAsciiGenerator();
     fPythiaAsciiGenerator = new PythiaAsciiReader();
     fBeagleGenerator = new g4e::BeagleGenerator();
 
-    gentypeMap["coneParticleGunHW"] = fConeParticleGunGenerator;
+    gentypeMap["coneParticleGunEta"] = fConeParticleGunGenerator;
     gentypeMap["coneParticleGun"] = fConeParticleGunGenerator;
     gentypeMap["particleGun"] = fParticleGunGenerator;
     gentypeMap["hepmcAscii"] = fHepMcAsciiGenerator;

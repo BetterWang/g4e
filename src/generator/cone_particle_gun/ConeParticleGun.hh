@@ -77,6 +77,8 @@ public: // with description
 
     void SetParticlePositionStdDev(G4ThreeVector vector);
 
+    void SetConeAngle(G4double d);
+
 public:
     virtual ~ConeParticleGun();
 
@@ -148,6 +150,7 @@ private:
     G4double fConeAngleStdDev = 0;
     G4double fEnergyStdDev = 0;
     G4ThreeVector fPositionStdDev = {0, 0 , 0};
+    G4double fConeAngle = 0;
 };
 
 #endif

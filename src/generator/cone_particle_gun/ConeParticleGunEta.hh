@@ -40,7 +40,7 @@
 
 class G4Event;
 
-class ConeParticleGunMessengerHW;
+class ConeParticleGunMessengerEta;
 
 // class description:
 //
@@ -60,14 +60,14 @@ class ConeParticleGunMessengerHW;
 // GeneratePrimaryVertex() method twice and set quantities on demand to the particle gun.
 //
 
-class ConeParticleGunHW : public G4VPrimaryGenerator
+class ConeParticleGunEta : public G4VPrimaryGenerator
 {
 public: // with description
-    ConeParticleGunHW();
+    ConeParticleGunEta();
 
-    ConeParticleGunHW(G4int numberofparticles);
+    ConeParticleGunEta(G4int numberofparticles);
 
-    ConeParticleGunHW(G4ParticleDefinition *particleDef, G4int numberofparticles = 1);
+    ConeParticleGunEta(G4ParticleDefinition *particleDef, G4int numberofparticles = 1);
     // costructors. "numberofparticles" is number of particles to be shoot at one invokation
     // of GeneratePrimaryVertex() method. All paricles are shot with the same physical
     // quantities.
@@ -79,16 +79,16 @@ public: // with description
     void SetParticlePositionStdDev(G4ThreeVector vector);
 
 public:
-    virtual ~ConeParticleGunHW();
+    virtual ~ConeParticleGunEta();
 
 private:
-    ConeParticleGunHW(const ConeParticleGunHW &) = delete;
+    ConeParticleGunEta(const ConeParticleGunEta &) = delete;
 
-    const ConeParticleGunHW &operator=(const ConeParticleGunHW &) = delete;
+    const ConeParticleGunEta &operator=(const ConeParticleGunEta &) = delete;
 
-    G4bool operator==(const ConeParticleGunHW &) const = delete;
+    G4bool operator==(const ConeParticleGunEta &) const = delete;
 
-    G4bool operator!=(const ConeParticleGunHW &) const = delete;
+    G4bool operator!=(const ConeParticleGunEta &) const = delete;
 
 public: // with description
     virtual void GeneratePrimaryVertex(G4Event *evt);
@@ -159,7 +159,7 @@ protected:
     G4ThreeVector particle_polarization;
 
 private:
-    ConeParticleGunMessengerHW *theMessenger;
+    ConeParticleGunMessengerEta *theMessenger;
     G4double fConeAngleStdDev = 0;
     G4double fEnergyStdDev = 0;
     G4ThreeVector fPositionStdDev = {0, 0 , 0};

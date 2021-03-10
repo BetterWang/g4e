@@ -47,10 +47,10 @@ target_sources_local(g4e
             cone_particle_gun/ConeParticleGunMessenger.hh
 
             # Cone particle gun HW
-            cone_particle_gun/ConeParticleGunMessengerHW.cc
-            cone_particle_gun/ConeParticleGunMessengerHW.hh
-            cone_particle_gun/ConeParticleGunHW.hh
-            cone_particle_gun/ConeParticleGunHW.cc
+        cone_particle_gun/ConeParticleGunMessengerEta.cc
+        cone_particle_gun/ConeParticleGunMessengerEta.hh
+        cone_particle_gun/ConeParticleGunEta.hh
+        cone_particle_gun/ConeParticleGunEta.cc
 
             #cone_generator/ConeGenerator.cc
             #cone_generator/ConeGenerator.hh

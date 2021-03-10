@@ -78,7 +78,7 @@ ConeParticleGunMessenger::ConeParticleGunMessenger(ConeParticleGun *fPtclGun) : 
     directionCmd->SetGuidance("Set momentum direction.");
     directionCmd->SetGuidance("Direction needs not to be a unit vector.");
     directionCmd->SetParameterName("ex", "ey", "ez", true, true);
-    directionCmd->SetRange("ex != 0 || ey != 0 || ez != 0");
+
 
     energyCmd = new G4UIcmdWithADoubleAndUnit("/generator/coneParticleGun/energy", this);
     energyCmd->SetGuidance("Set kinetic energy.");
@@ -91,6 +91,12 @@ ConeParticleGunMessenger::ConeParticleGunMessenger(ConeParticleGun *fPtclGun) : 
     energyStdDevCmd->SetDefaultUnit("GeV");
     //energyCmd->SetUnitCategory("Energy");
     //energyCmd->SetUnitCandidates("eV keV MeV GeV TeV");
+
+    coneAngleCmd = new G4UIcmdWithADoubleAndUnit("/generator/coneParticleGun/coneAngle", this);
+    coneAngleCmd->SetGuidance("Cone angle");
+    coneAngleCmd->SetParameterName("Cone angle", true, true);
+    coneAngleCmd->SetDefaultUnit("deg");
+    coneAngleCmd->SetUnitCategory("Angle");
 
     coneAngleStdDevCmd = new G4UIcmdWithADoubleAndUnit("/generator/coneParticleGun/coneAngleStdDev", this);
     coneAngleStdDevCmd->SetGuidance("Cone angle standard deviation");
@@ -216,9 +222,10 @@ void ConeParticleGunMessenger::SetNewValue(G4UIcommand *command, G4String newVal
     else if (command == timeCmd) { fParticleGun->SetParticleTime(timeCmd->GetNewDoubleValue(newValues)); }
     else if (command == polCmd) { fParticleGun->SetParticlePolarization(polCmd->GetNew3VectorValue(newValues)); }
     else if (command == numberCmd) { fParticleGun->SetNumberOfParticles(numberCmd->GetNewIntValue(newValues)); }
-    else if (command == coneAngleStdDevCmd) { fParticleGun->SetConeAngleStdDev(timeCmd->GetNewDoubleValue(newValues)); }
-    else if (command == energyStdDevCmd) { fParticleGun->SetParticleEnergyStdDev(timeCmd->GetNewDoubleValue(newValues)); }
-    else if (command == positionStdDevCmd) { fParticleGun->SetParticlePositionStdDev(momCmd->GetNew3VectorValue(newValues)); }
+    else if (command == coneAngleCmd) {fParticleGun->SetConeAngle(coneAngleCmd->GetNewDoubleValue(newValues));}
+    else if (command == coneAngleStdDevCmd) { fParticleGun->SetConeAngleStdDev(coneAngleStdDevCmd->GetNewDoubleValue(newValues)); }
+    else if (command == energyStdDevCmd) { fParticleGun->SetParticleEnergyStdDev(energyStdDevCmd->GetNewDoubleValue(newValues)); }
+    else if (command == positionStdDevCmd) { fParticleGun->SetParticlePositionStdDev(positionStdDevCmd->GetNew3VectorValue(newValues)); }
     else if (command == ionCmd) {
         if (fShootIon) {
             IonCommand(newValues);

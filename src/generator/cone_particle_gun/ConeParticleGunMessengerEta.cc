@@ -26,9 +26,9 @@
 //
 //
 
-#include "ConeParticleGunMessengerHW.hh"
+#include "ConeParticleGunMessengerEta.hh"
 #include "G4SystemOfUnits.hh"
-#include "ConeParticleGunHW.hh"
+#include "ConeParticleGunEta.hh"
 #include "G4Geantino.hh"
 #include "G4ThreeVector.hh"
 #include "G4ParticleTable.hh"
@@ -44,19 +44,19 @@
 #include "G4ios.hh"
 #include "G4Tokenizer.hh"
 
-ConeParticleGunMessengerHW::ConeParticleGunMessengerHW(ConeParticleGunHW *fPtclGun) : fParticleGun(fPtclGun), fShootIon(false), fAtomicNumber(0), fAtomicMass(0), fIonCharge(0),
-                                                                                fIonExciteEnergy(0.0), fIonFloatingLevelBase('\0'), fIonEnergyLevel(0)
+ConeParticleGunMessengerEta::ConeParticleGunMessengerEta(ConeParticleGunEta *fPtclGun) : fParticleGun(fPtclGun), fShootIon(false), fAtomicNumber(0), fAtomicMass(0), fIonCharge(0),
+                                                                                         fIonExciteEnergy(0.0), fIonFloatingLevelBase('\0'), fIonEnergyLevel(0)
 {
     particleTable = G4ParticleTable::GetParticleTable();
 
-    gunDirectory = new G4UIdirectory("/generator/coneParticleGunHW/");
+    gunDirectory = new G4UIdirectory("/generator/coneParticleGunEta/");
     gunDirectory->SetGuidance("Particle Gun control commands.");
 
-    listCmd = new G4UIcmdWithoutParameter("/generator/coneParticleGunHW/List", this);
+    listCmd = new G4UIcmdWithoutParameter("/generator/coneParticleGunEta/List", this);
     listCmd->SetGuidance("List available particles.");
     listCmd->SetGuidance(" Invoke G4ParticleTable.");
 
-    particleCmd = new G4UIcmdWithAString("/generator/coneParticleGunHW/particle", this);
+    particleCmd = new G4UIcmdWithAString("/generator/coneParticleGunEta/particle", this);
     particleCmd->SetGuidance("Set particle to be generated.");
     particleCmd->SetGuidance(" (geantino is default)");
     particleCmd->SetGuidance(" (ion can be specified for shooting ions)");
@@ -75,73 +75,73 @@ ConeParticleGunMessengerHW::ConeParticleGunMessengerHW(ConeParticleGunHW *fPtclG
     candidateList += "ion ";
     particleCmd->SetCandidates(candidateList);
 
-    directionCmd = new G4UIcmdWith3Vector("/generator/coneParticleGunHW/direction", this);
+    directionCmd = new G4UIcmdWith3Vector("/generator/coneParticleGunEta/direction", this);
     directionCmd->SetGuidance("Set momentum direction.");
     directionCmd->SetGuidance("Direction needs not to be a unit vector.");
     directionCmd->SetParameterName("ex", "ey", "ez", true, true);
     directionCmd->SetRange("ex != 0 || ey != 0 || ez != 0");
 
-    energyCmd = new G4UIcmdWithADoubleAndUnit("/generator/coneParticleGunHW/energy", this);
+    energyCmd = new G4UIcmdWithADoubleAndUnit("/generator/coneParticleGunEta/energy", this);
     energyCmd->SetGuidance("Set kinetic energy.");
     energyCmd->SetParameterName("Energy", true, true);
     energyCmd->SetDefaultUnit("GeV");
 
-    energyStdDevCmd = new G4UIcmdWithADoubleAndUnit("/generator/coneParticleGunHW/energyStdDev", this);
+    energyStdDevCmd = new G4UIcmdWithADoubleAndUnit("/generator/coneParticleGunEta/energyStdDev", this);
     energyStdDevCmd->SetGuidance("Energy spread");
     energyStdDevCmd->SetParameterName("Energy", true, true);
     energyStdDevCmd->SetDefaultUnit("GeV");
     //energyCmd->SetUnitCategory("Energy");
     //energyCmd->SetUnitCandidates("eV keV MeV GeV TeV");
 
-    coneAngleStdDevCmd = new G4UIcmdWithADoubleAndUnit("/generator/coneParticleGunHW/coneAngleStdDev", this);
+    coneAngleStdDevCmd = new G4UIcmdWithADoubleAndUnit("/generator/coneParticleGunEta/coneAngleStdDev", this);
     coneAngleStdDevCmd->SetGuidance("Cone angle standard deviation");
     coneAngleStdDevCmd->SetParameterName("Cone angle deviation", true, true);
     coneAngleStdDevCmd->SetDefaultUnit("deg");
     coneAngleStdDevCmd->SetUnitCategory("Angle");
 
-    momCmd = new G4UIcmdWith3VectorAndUnit("/generator/coneParticleGunHW/momentum", this);
+    momCmd = new G4UIcmdWith3VectorAndUnit("/generator/coneParticleGunEta/momentum", this);
     momCmd->SetGuidance("Set momentum. This command is equivalent to two commands /gun/direction and /gun/momentumAmp");
     momCmd->SetParameterName("px", "py", "pz", true, true);
     momCmd->SetRange("px != 0 || py != 0 || pz != 0");
     momCmd->SetDefaultUnit("GeV");
 
-    momAmpCmd = new G4UIcmdWithADoubleAndUnit("/generator/coneParticleGunHW/momentumAmp", this);
+    momAmpCmd = new G4UIcmdWithADoubleAndUnit("/generator/coneParticleGunEta/momentumAmp", this);
     momAmpCmd->SetGuidance("Set absolute value of momentum.");
     momAmpCmd->SetGuidance("Direction should be set by /gun/direction command.");
     momAmpCmd->SetGuidance("This command should be used alternatively with /gun/energy.");
     momAmpCmd->SetParameterName("Momentum", true, true);
     momAmpCmd->SetDefaultUnit("GeV");
 
-    positionCmd = new G4UIcmdWith3VectorAndUnit("/generator/coneParticleGunHW/position", this);
+    positionCmd = new G4UIcmdWith3VectorAndUnit("/generator/coneParticleGunEta/position", this);
     positionCmd->SetGuidance("Set starting position of the particle.");
     positionCmd->SetParameterName("X", "Y", "Z", true, true);
     positionCmd->SetDefaultUnit("cm");
 
-    positionStdDevCmd = new G4UIcmdWith3VectorAndUnit("/generator/coneParticleGunHW/positionStdDev", this);
+    positionStdDevCmd = new G4UIcmdWith3VectorAndUnit("/generator/coneParticleGunEta/positionStdDev", this);
     positionStdDevCmd->SetGuidance("Set starting position smearing of the particle.");
     positionStdDevCmd->SetParameterName("dX", "dY", "dZ", true, true);
     positionStdDevCmd->SetDefaultUnit("cm");
     //positionCmd->SetUnitCategory("Length");
     //positionCmd->SetUnitCandidates("microm mm cm m km");
 
-    timeCmd = new G4UIcmdWithADoubleAndUnit("/generator/coneParticleGunHW/time", this);
+    timeCmd = new G4UIcmdWithADoubleAndUnit("/generator/coneParticleGunEta/time", this);
     timeCmd->SetGuidance("Set initial time of the particle.");
     timeCmd->SetParameterName("t0", true, true);
     timeCmd->SetDefaultUnit("ns");
     //timeCmd->SetUnitCategory("Time");
     //timeCmd->SetUnitCandidates("ns ms s");
 
-    polCmd = new G4UIcmdWith3Vector("/generator/coneParticleGunHW/polarization", this);
+    polCmd = new G4UIcmdWith3Vector("/generator/coneParticleGunEta/polarization", this);
     polCmd->SetGuidance("Set polarization.");
     polCmd->SetParameterName("Px", "Py", "Pz", true, true);
     polCmd->SetRange("Px>=-1.&&Px<=1.&&Py>=-1.&&Py<=1.&&Pz>=-1.&&Pz<=1.");
 
-    numberCmd = new G4UIcmdWithAnInteger("/generator/coneParticleGunHW/number", this);
+    numberCmd = new G4UIcmdWithAnInteger("/generator/coneParticleGunEta/number", this);
     numberCmd->SetGuidance("Set number of particles to be generated.");
     numberCmd->SetParameterName("N", true, true);
     numberCmd->SetRange("N>0");
 
-    ionCmd = new G4UIcommand("/generator/coneParticleGunHW/ion", this);
+    ionCmd = new G4UIcommand("/generator/coneParticleGunEta/ion", this);
     ionCmd->SetGuidance("Set properties of ion to be generated.");
     ionCmd->SetGuidance("[usage] /gun/ion Z A [Q E flb]");
     ionCmd->SetGuidance("        Z:(int) AtomicNumber");
@@ -150,22 +150,22 @@ ConeParticleGunMessengerHW::ConeParticleGunMessengerHW(ConeParticleGunHW *fPtclG
     ionCmd->SetGuidance("        E:(double) Excitation energy (in keV)");
     ionCmd->SetGuidance("        flb:(char) Floating level base");
 
-	minMomCmd = new G4UIcmdWithADoubleAndUnit("/generator/coneParticleGunHW/minMomentum", this);
+	minMomCmd = new G4UIcmdWithADoubleAndUnit("/generator/coneParticleGunEta/minMomentum", this);
     minMomCmd->SetGuidance("Set minimum momentum.");
     minMomCmd->SetParameterName("pMin", true, true);
     minMomCmd->SetDefaultUnit("GeV");
 	
-	maxMomCmd = new G4UIcmdWithADoubleAndUnit("/generator/coneParticleGunHW/maxMomentum", this);
+	maxMomCmd = new G4UIcmdWithADoubleAndUnit("/generator/coneParticleGunEta/maxMomentum", this);
     maxMomCmd->SetGuidance("Set maximum momentum.");
     maxMomCmd->SetParameterName("pMax", true, true);
     maxMomCmd->SetDefaultUnit("GeV");
 	
 	
-	minEtaCmd = new G4UIcmdWithADouble("/generator/coneParticleGunHW/minEta", this);
+	minEtaCmd = new G4UIcmdWithADouble("/generator/coneParticleGunEta/minEta", this);
     minEtaCmd->SetGuidance("Set minimum pseudorapidity.");
     minEtaCmd->SetParameterName("minEta", true, true);
 	
-	maxEtaCmd = new G4UIcmdWithADouble("/generator/coneParticleGunHW/maxEta", this);
+	maxEtaCmd = new G4UIcmdWithADouble("/generator/coneParticleGunEta/maxEta", this);
     maxEtaCmd->SetGuidance("Set maximum pseudorapidity.");
     maxEtaCmd->SetParameterName("maxEta", true, true);
 	
@@ -196,7 +196,7 @@ ConeParticleGunMessengerHW::ConeParticleGunMessengerHW(ConeParticleGunHW *fPtclG
     fParticleGun->SetParticleTime(0.0 * ns);
 }
 
-ConeParticleGunMessengerHW::~ConeParticleGunMessengerHW()
+ConeParticleGunMessengerEta::~ConeParticleGunMessengerEta()
 {
     delete listCmd;
     delete particleCmd;
@@ -216,7 +216,7 @@ ConeParticleGunMessengerHW::~ConeParticleGunMessengerHW()
     
 }
 
-void ConeParticleGunMessengerHW::SetNewValue(G4UIcommand *command, G4String newValues)
+void ConeParticleGunMessengerEta::SetNewValue(G4UIcommand *command, G4String newValues)
 {
     G4ExceptionDescription ed;
     if (command == listCmd) {
@@ -263,7 +263,7 @@ void ConeParticleGunMessengerHW::SetNewValue(G4UIcommand *command, G4String newV
     }
 }
 
-G4String ConeParticleGunMessengerHW::GetCurrentValue(G4UIcommand *command)
+G4String ConeParticleGunMessengerEta::GetCurrentValue(G4UIcommand *command)
 {
     G4String cv;
 
@@ -297,7 +297,7 @@ G4String ConeParticleGunMessengerHW::GetCurrentValue(G4UIcommand *command)
 
 #include "G4IonTable.hh"
 
-void ConeParticleGunMessengerHW::IonCommand(G4String newValues)
+void ConeParticleGunMessengerEta::IonCommand(G4String newValues)
 {
     G4Tokenizer next(newValues);
     // check argument

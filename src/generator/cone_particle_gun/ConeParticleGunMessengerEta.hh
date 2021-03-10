@@ -30,7 +30,7 @@
 #ifndef ConeParticleGunMessengerHW_h
 #define ConeParticleGunMessengerHW_h 1
 
-class ConeParticleGunHW;
+class ConeParticleGunEta;
 class G4ParticleTable;
 class G4UIcommand;
 class G4UIdirectory;
@@ -51,11 +51,11 @@ class G4UIcmdWithAnInteger;
 // ConeParticleGun.
 //
 
-class ConeParticleGunMessengerHW: public G4UImessenger
+class ConeParticleGunMessengerEta: public G4UImessenger
 {
   public:
-    ConeParticleGunMessengerHW(ConeParticleGunHW * fPtclGun);
-    ~ConeParticleGunMessengerHW();
+    ConeParticleGunMessengerEta(ConeParticleGunEta * fPtclGun);
+    ~ConeParticleGunMessengerEta();
     
   public:
     void SetNewValue(G4UIcommand * command,G4String newValues);
@@ -65,7 +65,7 @@ class ConeParticleGunMessengerHW: public G4UImessenger
     void IonCommand(G4String newValues);
 
   private:
-    ConeParticleGunHW * fParticleGun;
+    ConeParticleGunEta * fParticleGun;
     G4ParticleTable * particleTable;
 
   private: //commands

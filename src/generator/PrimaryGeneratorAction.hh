@@ -30,7 +30,7 @@ class PrimaryGeneratorMessenger;
 class ReferenceDetectorRunAction;
 class ReferenceDetectorConstruction;
 class ConeParticleGun;
-class ConeParticleGunHW;
+class ConeParticleGunEta;
 
 class PrimaryGeneratorAction : public G4VUserPrimaryGeneratorAction {
 public:

@@ -219,7 +219,7 @@ void ConeParticleGun::GeneratePrimaryVertex(G4Event *evt)
         double theta = acos(pz / ptot);
         double phi = atan2(py, px);
 
-        double deltaTheta = G4RandGauss::shoot(0, fConeAngleStdDev / rad);
+        double deltaTheta = G4RandGauss::shoot(fConeAngle / rad, fConeAngleStdDev / rad);
         double conePhi = G4UniformRand() * 2. * M_PI; // --- flat in phi
         G4ThreeVector smearedDirection(std::sin(deltaTheta) * std::cos(conePhi), std::sin(deltaTheta) * std::sin(conePhi), std::cos(deltaTheta));
         smearedDirection.rotateY(theta);
@@ -253,6 +253,10 @@ void ConeParticleGun::SetParticleEnergyStdDev(G4double d)
 void ConeParticleGun::SetConeAngleStdDev(G4double d)
 {
     fConeAngleStdDev = d;
+}
+
+void ConeParticleGun::SetConeAngle(G4double d) {
+    fConeAngle = d;
 }
 
 

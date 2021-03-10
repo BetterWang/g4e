@@ -79,6 +79,7 @@ class ConeParticleGunMessenger: public G4UImessenger
     G4UIcmdWithADoubleAndUnit * timeCmd;
     G4UIcmdWith3Vector *        polCmd;
     G4UIcmdWithAnInteger *      numberCmd;
+    G4UIcmdWithADoubleAndUnit * coneAngleCmd;
     G4UIcmdWithADoubleAndUnit * coneAngleStdDevCmd;
     G4UIcmdWith3VectorAndUnit * positionStdDevCmd;
     G4UIcmdWithADoubleAndUnit * energyStdDevCmd;

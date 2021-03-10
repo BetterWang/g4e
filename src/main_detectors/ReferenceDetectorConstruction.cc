@@ -835,6 +835,12 @@ void ReferenceDetectorConstruction::ConstructSDandField()
         if (ffe_LOWQ2.BPC_Logic) SetSensitiveDetector(ffe_LOWQ2.BPC_Logic->GetName(), fCalorimeterSD.Get());
     }
 
+    // ZDC
+    if(USE_FFI_ZDC) {
+        //if (ffi_ZDC.ffi_ZDC_HCAL_Logic) ffi_ZDC.ffi_ZDC_HCAL_Logic->SetSensitiveDetector(fCalorimeterSD.Get());
+    }
+
+
     //=========================================================================
     //                    VOLUME ENTER ACTIONS
     //=========================================================================

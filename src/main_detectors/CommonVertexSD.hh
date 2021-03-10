@@ -53,7 +53,7 @@
 #include "ReferenceDetectorRunAction.hh"
 #include "G4RunManager.hh"
 
-#include "rootlib.h"
+#include <TH2F.h>
 
 
 class CommonVertexSD : public G4VSensitiveDetector
@@ -85,7 +85,6 @@ private:
     ReferenceDetectorConstruction *mDetector;
     G4int *HitID;
     G4double dEslice[100];
-    TH2F *hmatrix1[120], *hmatrix2;
     TH1F *dedx_fadc;
     int nevent;
     G4int ntr, ntr1, ntr2, ntr3;

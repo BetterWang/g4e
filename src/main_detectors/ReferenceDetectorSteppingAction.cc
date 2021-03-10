@@ -4,7 +4,7 @@
 
 
 
-ReferenceDetectorSteppingAction::ReferenceDetectorSteppingAction(JLeicHistogramManager *histo, g4e::RootFlatIO* rootEventOut): fHistoManager(histo), mFlatIo(rootEventOut)
+ReferenceDetectorSteppingAction::ReferenceDetectorSteppingAction(g4e::RootFlatIO* rootEventOut): mFlatIo(rootEventOut)
 {
 }
 

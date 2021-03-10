@@ -11,13 +11,13 @@
 class ReferenceDetectorConstruction;
 class ReferenceDetectorRunAction;
 class ReferenceDetectorEventAction;
-class JLeicHistogramManager;
+
 
 
 class ReferenceDetectorSteppingAction : public G4UserSteppingAction
 {
   public:
-    ReferenceDetectorSteppingAction(JLeicHistogramManager *histo, g4e::RootFlatIO*);
+    ReferenceDetectorSteppingAction(g4e::RootFlatIO*);
     ~ReferenceDetectorSteppingAction() override;
 
     void UserSteppingAction(const G4Step*) override;
@@ -25,7 +25,6 @@ class ReferenceDetectorSteppingAction : public G4UserSteppingAction
   FILE* rc{};
   private:
     g4e::RootFlatIO*           mFlatIo;
-    JLeicHistogramManager*     fHistoManager;
 };
 
 #endif

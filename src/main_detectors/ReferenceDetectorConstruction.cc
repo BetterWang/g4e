@@ -12,10 +12,8 @@
 #include "G4PhysicalVolumeStore.hh"
 #include "G4LogicalVolumeStore.hh"
 #include "G4SolidStore.hh"
-#include "G4ProductionCuts.hh"
 #include "G4VisAttributes.hh" 
 #include "G4Colour.hh"
-#include "G4ios.hh" 
 #include "G4SystemOfUnits.hh"
 
 // export geometry through VGM
@@ -88,8 +86,6 @@ G4VPhysicalVolume *ReferenceDetectorConstruction::Construct()
         fConfig.World.ShiftVTX=0.*cm;
     } else {  fConfig.World.ShiftVTX=40.*cm;}
 
-
-
     // Load beam lines
     if(USE_FFQs )
     {
@@ -97,16 +93,13 @@ G4VPhysicalVolume *ReferenceDetectorConstruction::Construct()
             G4Exception("ReferenceDetectorConstruction::Construct",
                         "InvalidSetup", FatalException,
                         "AcceleratorMagnets file opening err :: please setup env. G4E_HOME");
-
         }
 
         auto eFileName = fmt::format("{}/resources/{}/mdi/e_ir_10.txt", fInitContext->Arguments->HomePath, fConfig.BeamlineName);
         auto ionFileName = fmt::format("{}/resources/{}/mdi/ion_ir_275.txt", fInitContext->Arguments->HomePath, fConfig.BeamlineName);
-//        auto eFileName = fmt::format("{}/resources/{}/mdi/e_ir_{}.txt", fInitContext->Arguments->HomePath, fConfig.BeamlineName, fConfig.ElectronBeamEnergy);
-//        auto ionFileName = fmt::format("{}/resources/{}/mdi/ion_ir_{}.txt", fInitContext->Arguments->HomePath, fConfig.BeamlineName, fConfig.IonBeamEnergy);
 
         fmt::print("Init AcceleratorMagnets... I\n");
-        fmt::print(" |- Ion E      {}   A={}  Z={} \n", fConfig.IonBeamEnergy,fConfig.IonBeamA, fConfig.IonBeamZ);
+        fmt::print(" |- Ion E      {}   A={}  Z={} \n", fConfig.IonBeamEnergy, fConfig.IonBeamA, fConfig.IonBeamZ);
         fmt::print(" |- Electron E {}\n", fConfig.ElectronBeamEnergy);
         fmt::print(" |- File names:\n");
         fmt::print("    |- Electron {}\n", eFileName);
@@ -114,8 +107,7 @@ G4VPhysicalVolume *ReferenceDetectorConstruction::Construct()
 
         // Create electron and ion beam lines
         fElectronLineMagnets = new AcceleratorMagnets(eFileName, fWorldPhysical, World_Material, beamLine, 0, fConfig.ElectronBeamEnergy);
-        fIonLineMagnets = new AcceleratorMagnets(ionFileName, fWorldPhysical, World_Material, beamLine, 1, fConfig.IonBeamEnergy);
-
+        fIonLineMagnets = new AcceleratorMagnets(ionFileName, fWorldPhysical, World_Material, beamLine, 1, fConfig.IonBeamEnergy, fConfig.IonBeamA, fConfig.IonBeamZ);
     }
 
     //=========================================================================
@@ -492,8 +484,6 @@ G4VPhysicalVolume *ReferenceDetectorConstruction::Construct()
             fConfig.ffi_OFFM_TRK2.Zpos = 27.5 * m;
             fConfig.ffi_OFFM_TRK2.Xpos = 75 * cm;
             fConfig.ffi_OFFM_TRK2.Nlayers=1;
-
-
         }
 
         ffi_OFFM_TRK.Construct(fConfig.ffi_OFFM_TRK, World_Material, fWorldPhysical);
@@ -713,6 +703,7 @@ void ReferenceDetectorConstruction::ConstructSDandField()
         fVertexSD.Put(new CommonVertexSD("CommonVertexSD", fInitContext->RootManager, this));
     }
     sdManager->AddNewDetector(fVertexSD.Get());
+
 
     // Central electron calorimeter SD
     if (!fCe_EMCAL_SD.Get()) {

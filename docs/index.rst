@@ -29,6 +29,7 @@ Welcome to Geant 4 EIC's documentation!
 
    howto/migrate_13-14
    howto/process_mc_files
+   howto/speedup
 
 .. toctree::
    :maxdepth: 1

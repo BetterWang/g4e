@@ -15,6 +15,7 @@ G4E v1.4 brought several breaking changes:
 /detsetup/beamlineName    /eic/beamline/name
 /XTRdetector              /eic/ci_TRD
 /emphyslist               /eic/ci_TRD
+/rootOutput/              Not changed!
 /generator/               Not changed!
 ========================  ==================
 

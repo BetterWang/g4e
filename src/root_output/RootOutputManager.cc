@@ -11,16 +11,16 @@
 #include <main_detectors/CommonTrackInformation.hh>
 
 g4e::RootOutputManager::RootOutputManager(TFile *rootFile):
-    mRootFile(rootFile),
-    jleicRootOutput(new RootFlatIO()),
-    fMessenger(this, "/rootOutput/")
+        fRootFile(rootFile),
+        fFlatRootOutput(new RootFlatIO()),
+        fObsoleteMessenger(this, "/rootOutput/"),
+        fMessenger(this, "/eic/rootOutput/")
 {
     mFlatEventTree = new TTree("events", "Flattened root tree with event data");
-    mFlatEventTree->SetDirectory(mRootFile);
-    // We also create JLeic root output here , while g4e is in transition
-    // TODO Move JLeic initialization to the appropriate phase
-    jleicRootOutput->Initialize(mRootFile, mFlatEventTree);
+    mFlatEventTree->SetDirectory(fRootFile);
+    fFlatRootOutput->Initialize(fRootFile, mFlatEventTree);
     mSaveSecondaryLevel = 3;
+    fObsoleteMessenger.DeclareProperty("saveSecondaryLevel", mSaveSecondaryLevel, "-1 save all, 0 - save only generated particles, 1 - n level of secondaries to save");
     fMessenger.DeclareProperty("saveSecondaryLevel", mSaveSecondaryLevel, "-1 save all, 0 - save only generated particles, 1 - n level of secondaries to save");
 }
 
@@ -78,7 +78,7 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
     if(aStep->IsLastStepInVolume()) type = HitTypes::VolumeLeave;
 
     //-- fill tracks --
-    uint64_t trackIndex = jleicRootOutput->AddTrack(
+    uint64_t trackIndex = fFlatRootOutput->AddTrack(
             curTrackID,                /* int aTrackId    */
             parentId,                  /* int aParentId   */
             pdg,                       /* int aTrackPdg   */
@@ -94,7 +94,7 @@ void g4e::RootOutputManager::SaveStep(const G4Step * aStep, WriteStepPointChoice
     );
 
 
-    jleicRootOutput->AddHit(
+    fFlatRootOutput->AddHit(
                         trackIndex,                                         /* index of a track in tracks array */
                         aStep->GetTrack()->GetTrackID(),                    /* track id      */
                         aStep->GetTrack()->GetParentID(),                   /* parent Trk Id */

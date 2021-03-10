@@ -149,9 +149,7 @@ ConeParticleGunMessengerHW::ConeParticleGunMessengerHW(ConeParticleGunHW *fPtclG
     ionCmd->SetGuidance("        Q:(int) Charge of Ion (in unit of e)");
     ionCmd->SetGuidance("        E:(double) Excitation energy (in keV)");
     ionCmd->SetGuidance("        flb:(char) Floating level base");
-	
-	
-	
+
 	minMomCmd = new G4UIcmdWithADoubleAndUnit("/generator/coneParticleGunHW/minMomentum", this);
     minMomCmd->SetGuidance("Set minimum momentum.");
     minMomCmd->SetParameterName("pMin", true, true);

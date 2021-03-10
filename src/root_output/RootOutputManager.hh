@@ -26,24 +26,25 @@ namespace g4e {
     public:
         explicit RootOutputManager(TFile*);
 
-        TFile *GetMainRootFile() { return mRootFile; }
+        TFile *GetMainRootFile() { return fRootFile; }
 
-        g4e::RootFlatIO* GetMainRootOutput() {return jleicRootOutput.get(); }
+        g4e::RootFlatIO* GetMainRootOutput() {return fFlatRootOutput.get(); }
 
         ///
         /// \param usePreStepPoint - true PreStepPoint is used for Volume and Coords, false - PostStepPoint
         void SaveStep(const G4Step *, WriteStepPointChoices usePoint, G4int copyIDx=0, G4int copyIDy=0);
 
         void Write() {
-            jleicRootOutput->Write();
+            fFlatRootOutput->Write();
         }
 
     private:
-        TFile *mRootFile;
+        TFile *fRootFile;
         TTree *mFlatEventTree;
         // We also create JLeic root output here , while g4e is in transition
         // TODO Move JLeic initialization to the appropriate phase
-        std::unique_ptr<g4e::RootFlatIO> jleicRootOutput;
+        std::unique_ptr<g4e::RootFlatIO> fFlatRootOutput;
+        G4GenericMessenger fObsoleteMessenger;
         G4GenericMessenger fMessenger;
         G4int mSaveSecondaryLevel;
     };

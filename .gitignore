@@ -200,3 +200,11 @@ spack-configure-args.txt
 
 examples/*.run.mac
 examples/*.json
+
+test/notebooks/cone_particle_gun.run.json
+
+test/notebooks/cone_particle_gun.run.mac
+
+test/notebooks/neutron_particle_gun.run.json
+
+test/notebooks/neutron_particle_gun.run.mac

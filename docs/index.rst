@@ -16,8 +16,8 @@ Welcome to Geant 4 EIC's documentation!
    :maxdepth: 2
    :caption: Design:
 
-   generators
-   output
+   generators/generators
+   root_output
    detector_naming
    detector_import
    multithreading
@@ -27,8 +27,8 @@ Welcome to Geant 4 EIC's documentation!
    :maxdepth: 2
    :caption: How to:
 
-   g4e_13-14_migration
-   howto_process_mc_files
+   howto/migrate_13-14
+   howto/process_mc_files
 
 .. toctree::
    :maxdepth: 1

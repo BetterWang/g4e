@@ -28,14 +28,14 @@ As the result at least 3 files should be created:
 * ``g4e_out.root``` - events
 
 
-4. To open visualization GUI change ``run_mc.mac``. Use ``jleicvis.mac`` instead of ``jleic.mac``.
+4. To open visualization GUI change ``run_mc.mac``. Add ``refdet.vis.mac`` instead of ``/run/initialize``.
 Run with ``--gui`` flag:
 
 .. code:: bash
 
    g4e --gui run_mc.mac
 
-See also :doc:`More about using MC generators <generators>`
+See also :doc:`More about using MC generators <../generators/generators>`
 
-:doc:`Flags and environment variables<01_run>`
+:doc:`Flags and environment variables<../01_run>`
 

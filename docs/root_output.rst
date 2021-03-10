@@ -1,5 +1,5 @@
-Output
-======
+Root Output
+===========
 
 G4E output data structure
 -------------------------

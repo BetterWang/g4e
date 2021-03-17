@@ -1,6 +1,6 @@
 //
 // Created by romanov on 2/20/21.
-//
+///vis/viewer/clearCutawayPlanes
 
 #include "MultiDetectorConstruction.hh"
 

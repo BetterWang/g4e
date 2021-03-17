@@ -837,7 +837,7 @@ void ReferenceDetectorConstruction::ConstructSDandField()
 
     // ZDC
     if(USE_FFI_ZDC) {
-        //if (ffi_ZDC.ffi_ZDC_HCAL_Logic) ffi_ZDC.ffi_ZDC_HCAL_Logic->SetSensitiveDetector(fCalorimeterSD.Get());
+        if (ffi_ZDC.ffi_ZDC_HCAL_Logic) ffi_ZDC.ffi_ZDC_HCAL_Logic->SetSensitiveDetector(fCalorimeterSD.Get());
     }
 
 

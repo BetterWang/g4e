@@ -17,6 +17,9 @@ namespace g4e {
             tree->Branch("hit_x", &XPosVect);
             tree->Branch("hit_y", &YPosVect);
             tree->Branch("hit_z", &ZPosVect);
+            tree->Branch("hit_ox", &OXPosVect);
+            tree->Branch("hit_oy", &OYPosVect);
+            tree->Branch("hit_oz", &OZPosVect);
             tree->Branch("hit_type", &TypeVect);
             tree->Branch("hit_i_rep", &IRepVect);
             tree->Branch("hit_j_rep", &JRepVect);
@@ -29,6 +32,9 @@ namespace g4e {
             XPosVect.clear();
             YPosVect.clear();
             ZPosVect.clear();
+            OXPosVect.clear();
+            OYPosVect.clear();
+            OZPosVect.clear();
             ELossVect.clear();
             IdVect.clear();
             TrackIdVect.clear();
@@ -52,6 +58,9 @@ namespace g4e {
         std::vector<double> XPosVect;
         std::vector<double> YPosVect;
         std::vector<double> ZPosVect;
+        std::vector<double> OXPosVect;
+        std::vector<double> OYPosVect;
+        std::vector<double> OZPosVect;
         std::vector<double> ELossVect;
         std::vector<uint64_t> IRepVect;
         std::vector<uint64_t> JRepVect;

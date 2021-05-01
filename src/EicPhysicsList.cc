@@ -24,6 +24,7 @@
 #include "G4Ions.hh"
 
 #include "G4HadronPhysicsQGSP_BIC_HP.hh"
+#include "G4EmStandardPhysics_option3.hh"
 #include "G4DecayPhysics.hh"
 #include "subdetectors/ci_TRD/ci_TRD_PhysicsConstructor.hh"
 
@@ -56,11 +57,11 @@ EicPhysicsList::EicPhysicsList() :
     */
 
     //--- hadron physics !!! OFF by default
-    // RegisterPhysics( new G4HadronPhysicsQGSP_BIC_HP());
+    RegisterPhysics( new G4HadronPhysicsQGSP_BIC_HP());
 
 
     //--- electrons physics  !!
-    //RegisterPhysics( new G4EmStandardPhysics_option4() );
+    RegisterPhysics( new G4EmStandardPhysics_option3() );
     // all physics processes having to do with electrons
 
     auto decayPhysics = new G4DecayPhysics();

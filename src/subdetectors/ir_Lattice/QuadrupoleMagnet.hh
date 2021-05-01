@@ -200,7 +200,7 @@ public:
         // fLogic_QUADS_hd_v->SetFieldManager(fieldMgr_QUADS_hd, true);
         //printf("create %s ");
 	//fLogic_QUADS_hd_v->SetVisAttributes(vb1);
-	
+
         //--------------------Iron---------
         sprintf(abname, "Solid_QUADS_hd_ir_%s", name.c_str());
         fSolid_QUADS_hd_ir = new G4Tubs(abname, (Rin2 + 0.1) * cm, (Rout) * cm, (LengthZ / 2.) * m, 0., 360 * deg);
@@ -209,7 +209,7 @@ public:
         sprintf(abname, "Physics_QUADS_hd_ir_%s", name.c_str());
         fPhysics_QUADS_hd_ir = new G4PVPlacement(0, G4ThreeVector(), abname, fLogic_QUADS_hd_ir, fPhysics_QUADS_hd_v, false, 0);
         fLogic_QUADS_hd_ir->SetVisAttributes(vb1);
-	
+
         //----------------  magnetic field volume---------------
         sprintf(abname, "Solid_QUADS_hd_m_%s", name.c_str());
         fSolid_QUADS_hd_m = new G4Tubs(abname, 0. * cm, Rin2 * cm, (LengthZ / 2.) * m, 0., 360 * deg);
@@ -218,7 +218,7 @@ public:
         sprintf(abname, "Physics_QUADS_hd_m_%s", name.c_str());
         fPhysics_QUADS_hd_m = new G4PVPlacement(0, G4ThreeVector(), abname, fLogic_QUADS_hd_m, fPhysics_QUADS_hd_v, false, 0);
         //fLogic_QUADS_hd_m->SetVisAttributes(vb2);
-	
+
         //---------------- create  magnetic field ---------------
 
         debug("CreateQuad:: name={}  FIELD = Dx {}  Dy {} --  Qn {} Qs {} -- Sek {}  Sol {} ", name.c_str(), DipoleFieldBx, DipoleFieldBy, QuadrupolFieldQnorm, QuadrupolFieldQskew,

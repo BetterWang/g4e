@@ -72,6 +72,9 @@ namespace g4e
                 double aX,
                 double aY,
                 double aZ,
+                double oX,
+                double oY,
+                double oZ,
                 double aELoss,
                 uint64_t aIRep,
                 uint64_t aJRep,
@@ -86,6 +89,9 @@ namespace g4e
             mHitIo.XPosVect.push_back(aX);
             mHitIo.YPosVect.push_back(aY);
             mHitIo.ZPosVect.push_back(aZ);
+            mHitIo.OXPosVect.push_back(oX);
+            mHitIo.OYPosVect.push_back(oY);
+            mHitIo.OZPosVect.push_back(oZ);
             mHitIo.ELossVect.push_back(aELoss);
             mHitIo.TrackIdVect.push_back(aTrackId);
             mHitIo.TrackIndexVect.push_back(trackIndex);
@@ -102,6 +108,7 @@ namespace g4e
                 uint64_t aTrackId,
                 uint64_t aParentId,
                 int64_t  aTrackPdg,
+                double   aTrackCharge,
                 int64_t  creatorProc,
                 uint64_t ancestryLevel,
                 double   aXVertex,
@@ -122,6 +129,7 @@ namespace g4e
             mTrackIo.IdVect.push_back(aTrackId);
             mTrackIo.ParentId.push_back(aParentId);
             mTrackIo.PdgVect.push_back(aTrackPdg);
+            mTrackIo.Charge.push_back(aTrackCharge);
             mTrackIo.CreateProc.push_back(creatorProc);
             mTrackIo.AncestryLevel.push_back(ancestryLevel);
             mTrackIo.XVtxVect.push_back(aXVertex);
